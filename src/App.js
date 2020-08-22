@@ -205,7 +205,7 @@ class App extends Component {
         {
           jobTitle: '実験データの可視化Webアプリの作成',
           company: 'シスナビ/Sysnavi',
-          tags: ['Python(Django)', 'MySQL5.7', 'TypeScript'],
+          tags: ['Python(Django)', 'MySQL5.7', 'TypeScript', 'HTML'],
           startDate: 'Dec 2029',
           endDate: 'Feb 2020',
           jobDescriptions: [
@@ -219,12 +219,15 @@ class App extends Component {
             {
               title: '業務内容',
               jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
-              大手化学メーカーの実験データ(可視光・紫外・赤外領域における吸光度スペクトル)の結果をエクセルから読み込みデータとして表示・検索ができるソフト作成
+              大手化学メーカーの実験データ(可視光・紫外・赤外領域における吸光度スペクトル)の結果をエクセルから読み込みデータとして表示・検索ができるWebアプリ作成
               `,
             },
             {
               title: '業務詳細',
-              jd: ``,
+              jd: `化学メーカーのDX推進関連プロジェクト
+              多くの実験データが、エクセルで管理されており、かつフォーマットがバラバラな状態になっており、主任研究者や作業者が変わるとどうしても
+              
+              `,
             },
             {
               title: '経験',
