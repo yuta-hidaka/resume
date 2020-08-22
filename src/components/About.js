@@ -30,7 +30,7 @@ About.propTypes = {
   profession: PropTypes.string,
   bio: PropTypes.string,
   address: PropTypes.string,
-  social: PropTypes.node,
+  social: PropTypes.array,
 };
 
 export default About;

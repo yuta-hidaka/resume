@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import About from './components/About';
 import Experience from './components/Experience';
 import Education from './components/Education';
-import Certificate from './components/Certificate';
 import Skills from './components/Skills';
 import avatar from './img/yuta.jpg';
 import particlesOptions from './assets/particle.json';
@@ -36,8 +35,8 @@ class App extends Component {
           jobTitle: '研究開発補助/RD-support',
           company: '住友化学/Sumitomo Chemical',
           tags: ['Polypropylene', 'Film'],
-          startDate: 'Apl 2012',
-          endDate: 'Mar 2015',
+          startDate: '2012-4',
+          endDate: '2015-5',
           jobDescriptions: [
             {
               title: '業務内容',
@@ -52,8 +51,8 @@ class App extends Component {
           jobTitle: '研究開発/RD-2015',
           company: '住友化学/Sumitomo Chemical',
           tags: ['Polypropylene', 'Separator'],
-          startDate: 'Apl 2015',
-          endDate: 'Mar 2016',
+          startDate: '2015-6',
+          endDate: '2016-10',
           jobDescriptions: [
             {
               title: '業務内容',
@@ -69,8 +68,8 @@ class App extends Component {
           jobTitle: '研究開発/RD-2016',
           company: '住友化学/Sumitomo Chemical',
           tags: ['Polypropylene', 'Medical Grade'],
-          startDate: 'Apl 2016',
-          endDate: 'Mar 2018',
+          startDate: '2016-11',
+          endDate: '2018-3',
           jobDescriptions: [
             {
               title: '業務内容',
@@ -87,8 +86,8 @@ class App extends Component {
           jobTitle: '生ハムの輸入販売/',
           company: '個人事業主',
           tags: ['輸入', '食品衛生法'],
-          startDate: 'Apl 2018',
-          endDate: 'Sept 2018',
+          startDate: '2018-4',
+          endDate: '2018-9',
           jobDescriptions: [
             {
               title: '業務内容',
@@ -104,8 +103,8 @@ class App extends Component {
           jobTitle: '研修',
           company: 'シスナビ/Sysnavi',
           tags: ['JAVA', 'OracleDB', 'servlet/jsp', 'html', 'javascript'],
-          startDate: 'Apl 2016',
-          endDate: 'Mar 2018',
+          startDate: '2019-10',
+          endDate: '2018-11',
           jobDescriptions: [
             {
               title: '業務内容',
@@ -119,8 +118,8 @@ class App extends Component {
           jobTitle: 'ウェブアプリ開発-予実管理ソフト作成-',
           company: 'シスナビ/Sysnavi',
           tags: ['ASP.Net C#', 'SQL Sever', 'BootStrap4', 'html', 'javascript'],
-          startDate: 'Dec 2029',
-          endDate: 'Feb 2020',
+          startDate: '2020-12',
+          endDate: '2020-2',
           jobDescriptions: [
             {
               title: '技術',
@@ -155,9 +154,15 @@ class App extends Component {
         {
           jobTitle: 'データ移行とバッチ処理の開発',
           company: 'シスナビ/Sysnavi',
-          tags: ['Alteryx', 'SQL Sever', 'Windows Sever', 'バッチスクリプト'],
-          startDate: 'Dec 2029',
-          endDate: 'Feb 2020',
+          tags: [
+            'Alteryx',
+            'SQL Sever',
+            'Windows Sever',
+            'バッチスクリプト',
+            'Python(Django)',
+          ],
+          startDate: '2020-2',
+          endDate: '2020-6',
           jobDescriptions: [
             {
               title: '技術',
@@ -180,11 +185,12 @@ class App extends Component {
               jd: `顧客が所有しているデータはNotesDBやCSV、MicrosoftAccessなど多種多様なデータが存在するそれらをすべて、一度Alteryxで読み込み、SQLSeverへ入れ込んでいく。
               システム構築後は顧客が自分でデータを操作できるようにするためにAlteryxを導入したことにより、GUIベースでの開発を行った。
               顧客のデータを検証する為、顧客のデータを秘匿化する処理の作成からスタート。
-              大量のテーブル・カラムがありかつそれらに数百万件のレコードがあるため、Alteryxにある並列処理の導入や、それぞれのソースから取り込むため型や桁の変換やバリデーション処理の実装を行った。
+              大量のテーブル・カラムがあり、それらの役割、説明、型桁等を管理する為、Djangoを使用。
+              数百万件のレコードがあるため、Alteryxにある並列処理の導入や、それぞれのソースから取り込むため型や桁の変換やバリデーション処理の実装を行った。
               併せて、随時更新されるデータを定期的に取り込むためのバッチ処理にも応用できる作りにした。
               また、従来手作業で行っているデータの集計(売上管理やKPI算出など)を業務フローから書き出し、AlteryxとSQLを組み合わせながら作成した。
               CSVのデータに至ってはデータのエスケープ処理が行われていなかった場合や等が多くそれらを回避するための、正規表現の作成、仕組みづくりなどに注力。
-              6か月後にデータをSQLSeverに統合するところまで遂行し、プロジェクトを離脱。
+              4か月後にデータをSQLSeverに統合するところまで遂行し、プロジェクトを離脱。
               `,
             },
             {
@@ -206,8 +212,8 @@ class App extends Component {
           jobTitle: '実験データの可視化Webアプリの作成',
           company: 'シスナビ/Sysnavi',
           tags: ['Python(Django)', 'MySQL5.7', 'TypeScript', 'HTML'],
-          startDate: 'Dec 2029',
-          endDate: 'Feb 2020',
+          startDate: '2020-6',
+          endDate: '2020-8',
           jobDescriptions: [
             {
               title: '技術',
@@ -225,13 +231,20 @@ class App extends Component {
             {
               title: '業務詳細',
               jd: `化学メーカーのDX推進関連プロジェクト
-              多くの実験データが、エクセルで管理されており、かつフォーマットがバラバラな状態になっており、主任研究者や作業者が変わるとどうしても
-              
+              多くの実験データが、エクセルで管理されており、かつフォーマットがバラバラな状態になっており、主任研究者や作業者が変わると実験データのまとめ方が変わってしまう。
+              このような属人的な状況を改善するために、過去の実験データを含むすべてのデータをウェブアプリ上で管理し、実験の条件や、組成なので検索・参照できるような仕組みを作れるようにするプロジェクト。
+              typescriptで「xlsx.js」を用いてエクセルを取り込む処理を実装し、これらのデータをJSONに整形し、DjangoRestFrameworkを用いてREST-APIにしてデータを登録するようにした。
+              データを集計し、吸光度のデータなどを計算しplotly.jsを用いてグラフとして可視化するようにした。
+              プロジェクトそのものが検証段階のため、代表的な実験データを取り込み、グラフで可視化・多様な検索条件を表示できるようにしたが、実験の生データに規則性が無さすぎるためプログラミングの工数がかかるとのことから、DJangoでの開発が中止となった。
+              代替手段としてAWSのデータレイクとラムダを用いた手法を検討することとなったが、こちらについては関与せずにプロジェクトを離脱。              
               `,
             },
             {
               title: '経験',
-              jd: ``,
+              jd: `MVCモデルのフレームワークではなく、MVTモデルのDjango特有のモデルでのWebアプリの作成経験の習得
+              全職の経験を生かして、データのまとめ方やグラフの出力、DB設計等をPM等に提言しながらの作業。
+              TypeScriptを用いた静的型付言語でのフロントエンド開発
+              `,
             },
             {
               title: 'チーム',
@@ -241,32 +254,92 @@ class App extends Component {
           ],
         },
         {
-          jobTitle: 'データ移行とバッチ処理の開発',
+          jobTitle: '業務処理のRPA化',
           company: 'シスナビ/Sysnavi',
-          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
-          startDate: 'Dec 2029',
-          endDate: 'Feb 2020',
+          tags: ['WinActor', 'PHP', 'MicrosoftAccess'],
+          startDate: '2020-10',
+          endDate: '2020-12',
           jobDescriptions: [
             {
               title: '技術',
-              jd: `データ移行：Alteryx
-              バッチ処理：Alteryx
-              DB:SQL Server
+              jd: `データ処理：Winactor`,
+            },
+            {
+              title: '業務内容',
+              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              上記と同じ化学メーカーでバックオフィスのDX推進の一貫
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: `
+              NTTアドバンステクノロジ社が提供しているRPAソフトを用いて、バックオフィスで定型業務であるが属人化してしまっている業務をRPA化する業務。
+              人のリソース不足の為応援として参画。
+              バックオフィスといえども化学メーカの物流などの知識が必要であったが、経験の上から同じ業務従事者にアドバイスなどを行いながらRPA作成作業を行った。
+              RPA推進の始まりの段階であったため、これらのRPA作成・管理を依頼者側で回すことができるように仕組み作りの企画立ち上げなどにも参加。
+              その中でRPAの死活管理サイトをMicrosoftAccessとPHPを用いて作成したり、今後エンドユーザーが使用することを前提として、プログラミングにあるようなフレームワークの提案、頻繁に利用するRPA動作のモジュール化とライブラリ化などを提案していった。
+              `,
+            },
+            {
+              title: '経験',
+              jd: `
+              WinActorを用いたRPAの作成知識
+              エンドユーザーにも理解できるようなRPAの仕組み作りなどの、ユーザー目線での企画
+              プログラミングからの経験を
+              `,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：2人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: '弁護士法人の時間。請求管理システム',
+          company: 'シスナビ/Sysnavi',
+          tags: [
+            'PHP(Laravel)',
+            'MySQL5.7',
+            'FreeBSD',
+            'jQuery',
+            'docker-compose',
+          ],
+          startDate: '2020-6',
+          endDate: '2020-6',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `バックエンド:PHP(Laravel)
+              フロントエンド:PHP(Laravel)/jQuery
+              DB:MySQL
+              開発環境:Docker
+              
               
               `,
             },
             {
               title: '業務内容',
-              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              jd: `社内の受託開発業務
+              SES業務終了後に、モックアップの作成、DB設計、インフラ構築などを担当、2020年1月から専任としてプロジェクトに参加し客先調整・課題管理や実装を依頼しているフリーランス様との進捗管理などを行う。
               `,
             },
             {
               title: '業務詳細',
-              jd: ``,
+              jd: `弁護士法人が、弁護士の稼働時間をベースに顧客に、稼働分の金額を請求しているが現状それらすべてをエクセル上で管理しているためミスオペや、金額等の確認に時間がかかってしまっていた。
+              これらを要件定義を社内のPMと行い、顧客が期待する画面モックアップの作成、DB設計を0から行う。
+              また、請求書をPDFで発行できるようにするためにHTMLtoCanvas等を用いてPDF出力機能などを実装。また、サーバーは顧客側が使用しているレンタルサーバーを利用することが前提条件となっていたためそちらの環境調査、デプロイ環境の構築などを行った。
+              第一フェーズ・第二フェーズと分かれて開発のため第一フェーズに関してはモックアップや、
+
+              `,
             },
             {
               title: '経験',
-              jd: ``,
+              jd: `
+              WinActorを用いたRPAの作成知識
+              エンドユーザーにも理解できるようなRPAの仕組み作りなどの、ユーザー目線での企画
+              プログラミングからの経験を
+              `,
             },
             {
               title: 'チーム',
@@ -291,20 +364,6 @@ class App extends Component {
           講義：18:00-21:10
           帰宅：21:10-23:30
           `,
-        },
-      ],
-      certificate: [
-        {
-          name: 'FrontEnd Developer',
-          institution: 'Platzi',
-          date: 'Jan 2015',
-          description: 'Aenean commodo ligula eget dolor. Aenean massa.',
-        },
-        {
-          name: 'Backend Developer',
-          institution: 'Platzi',
-          date: 'Jan 2016',
-          description: 'Aenean commodo ligula eget dolor. Aenean massa.',
         },
       ],
       skills: [
@@ -334,7 +393,6 @@ class App extends Component {
             <div className="content">
               <Experience experience={person.experience} />
               <Education education={person.education} />
-              <Certificate certificate={person.certificate} />
               <Skills skills={person.skills} />
             </div>
           </div>

@@ -15,7 +15,7 @@ const Experience = (props) => {
             {exp.tags.map((t, id) => {
               return (
                 <span
-                  key={id}
+                  key={t}
                   className="badge badge-pill badge-secondary mr-2"
                 >
                   {t}
@@ -25,7 +25,7 @@ const Experience = (props) => {
           </div>
           {exp.jobDescriptions.map((jd, id) => {
             return (
-              <dl key={id}>
+              <dl key={jd.title+id}>
                 <dt>{jd.title}</dt>
                 <dd className="new-line">{jd.jd}</dd>
               </dl>
