@@ -494,11 +494,11 @@ class App extends Component {
           tags: ['JavaScript', 'BootStrap4', 'centos8'],
         },
         {
-          title: 'docker-compsoe for Django',
+          title: 'docker-compose for Django',
           desc: `Djangoのプロジェクトを最速で立ち上げられるどdocker-comspoe ファイルを作成しtemplateとしてgithubで共有しています。
           `,
           link: 'https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn',
-          tags: ['docker-compsoe', 'django'],
+          tags: ['docker-compose', 'django'],
         },
       ],
       education: [
