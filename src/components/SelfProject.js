@@ -35,7 +35,7 @@ const SelfProject = (props) => {
   );
   return (
     <div className="title">
-      <i className="fa fa-briefcase"></i>
+      <i className="fa fa-address-card"></i>
       <h2>SelfProject-Hobby-</h2>
       {MySelfProject}
     </div>
