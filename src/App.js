@@ -103,7 +103,7 @@ class App extends Component {
         {
           jobTitle: '研修',
           company: 'シスナビ/Sysnavi',
-          tags: ['', ''],
+          tags: ['JAVA', 'OracleDB', 'servlet/jsp', 'html', 'javascript'],
           startDate: 'Apl 2016',
           endDate: 'Mar 2018',
           jobDescriptions: [
@@ -118,7 +118,7 @@ class App extends Component {
         {
           jobTitle: 'ウェブアプリ開発-予実管理ソフト作成-',
           company: 'シスナビ/Sysnavi',
-          tags: ['ASP.Net C#', 'SQL Sever', 'BootStrap4'],
+          tags: ['ASP.Net C#', 'SQL Sever', 'BootStrap4', 'html', 'javascript'],
           startDate: 'Dec 2029',
           endDate: 'Feb 2020',
           jobDescriptions: [
@@ -129,7 +129,7 @@ class App extends Component {
             },
             {
               title: '業務内容',
-              jd: `SESとして、客先に常駐して作業を行う。
+              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
               OutlookとAPI連携して、予定と実績の可視化を行うプロジェクトに参画。`,
             },
             {
@@ -144,6 +144,146 @@ class App extends Component {
               jd: `少人数での作業だったため、フロントエンドとバックエンドの両方の経験を積むことができた。
           バックエンドではMVCモデルを用いたアプリ構造、razor記法、LINQでのDB操作、外部APIとの連携などの知識を習得。
           フロントエンドでは、サーバーサイドレンダリングに加えて、Jqueryによるajax非同期通信によるリアルタイム画面更新、DOM操作について経験を深めることができた`,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：2人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: 'データ移行とバッチ処理の開発',
+          company: 'シスナビ/Sysnavi',
+          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
+          startDate: 'Dec 2029',
+          endDate: 'Feb 2020',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `データ移行：Alteryx
+              バッチ処理：Alteryx
+              DB:SQL Server
+              
+              `,
+            },
+            {
+              title: '業務内容',
+              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: ``,
+            },
+            {
+              title: '経験',
+              jd: ``,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：2人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: 'データ移行とバッチ処理の開発',
+          company: 'シスナビ/Sysnavi',
+          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
+          startDate: 'Dec 2029',
+          endDate: 'Feb 2020',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `データ移行：Alteryx
+              バッチ処理：Alteryx
+              DB:SQL Server
+              
+              `,
+            },
+            {
+              title: '業務内容',
+              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: ``,
+            },
+            {
+              title: '経験',
+              jd: ``,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：2人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: 'データ移行とバッチ処理の開発',
+          company: 'シスナビ/Sysnavi',
+          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
+          startDate: 'Dec 2029',
+          endDate: 'Feb 2020',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `データ移行：Alteryx
+              バッチ処理：Alteryx
+              DB:SQL Server
+              
+              `,
+            },
+            {
+              title: '業務内容',
+              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: ``,
+            },
+            {
+              title: '経験',
+              jd: ``,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：2人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: 'データ移行とバッチ処理の開発',
+          company: 'シスナビ/Sysnavi',
+          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
+          startDate: 'Dec 2029',
+          endDate: 'Feb 2020',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `データ移行：Alteryx
+              バッチ処理：Alteryx
+              DB:SQL Server
+              
+              `,
+            },
+            {
+              title: '業務内容',
+              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: ``,
+            },
+            {
+              title: '経験',
+              jd: ``,
             },
             {
               title: 'チーム',
