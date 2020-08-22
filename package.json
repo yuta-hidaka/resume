@@ -6,7 +6,8 @@
     "classnames": "^2.2.5",
     "prop-types": "^15.5.10",
     "react": "^15.6.2",
-    "react-dom": "^15.6.2"
+    "react-dom": "^15.6.2",
+    "react-tsparticles": "^1.17.9"
   },
   "devDependencies": {
     "nib": "^1.1.2",

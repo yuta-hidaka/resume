@@ -5,6 +5,8 @@ import Education from './components/Education';
 import Certificate from './components/Certificate';
 import Skills from './components/Skills';
 import avatar from './img/yuta.jpg';
+import particlesOptions from './assets/particle.json';
+import Particles from 'react-tsparticles';
 
 class App extends Component {
   render() {
@@ -12,7 +14,7 @@ class App extends Component {
       avatar: avatar,
       name: '日髙　悠太',
       profession: 'Backend Developer',
-      bio: 'This page created by React.js',
+      bio: 'This page created by React.js :)',
       address: 'Shinjuku-Waseda Tokyo',
       social: [
         {
@@ -314,6 +316,7 @@ class App extends Component {
       <header>
         <div className="wrapper">
           <div className="sidebar">
+            <Particles options={particlesOptions} />
             <About
               avatar={person.avatar}
               name={person.name}
