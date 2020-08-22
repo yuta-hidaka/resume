@@ -5,8 +5,6 @@ import Education from './components/Education';
 import Certificate from './components/Certificate';
 import Skills from './components/Skills';
 import avatar from './img/yuta.jpg';
-import particlesOptions from './assets/particle.json';
-import Particles from 'react-tsparticles';
 
 class App extends Component {
   render() {
@@ -155,91 +153,71 @@ class App extends Component {
         {
           jobTitle: 'データ移行とバッチ処理の開発',
           company: 'シスナビ/Sysnavi',
-          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
+          tags: ['Alteryx', 'SQL Sever', 'Windows Sever', 'バッチスクリプト'],
           startDate: 'Dec 2029',
           endDate: 'Feb 2020',
           jobDescriptions: [
             {
               title: '技術',
-              jd: `データ移行：Alteryx
+              jd: `データ移行ツール：Alteryx*
               バッチ処理：Alteryx
               DB:SQL Server
+              *データブレンディングソフト、データの取り込みか、加工、基本的なアルゴリズム構築、DBへの書き込みなどをGUIベースで行うソフト
+              参考リンク：https://www.alteryx.com/
               
               `,
             },
             {
               title: '業務内容',
               jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              大手会計監査法人が所有している、所員のデータや売上、単価などを一つのDBに移管し、データ分析を行うためにバッチ処理でSQL文を実行しデータの加工、アラートメールの送出などを行う。
               `,
             },
             {
               title: '業務詳細',
-              jd: ``,
+              jd: `顧客が所有しているデータはNotesDBやCSV、MicrosoftAccessなど多種多様なデータが存在するそれらをすべて、一度Alteryxで読み込み、SQLSeverへ入れ込んでいく。
+              システム構築後は顧客が自分でデータを操作できるようにするためにAlteryxを導入したことにより、GUIベースでの開発を行った。
+              顧客のデータを検証する為、顧客のデータを秘匿化する処理の作成からスタート。
+              大量のテーブル・カラムがありかつそれらに数百万件のレコードがあるため、Alteryxにある並列処理の導入や、それぞれのソースから取り込むため型や桁の変換やバリデーション処理の実装を行った。
+              併せて、随時更新されるデータを定期的に取り込むためのバッチ処理にも応用できる作りにした。
+              また、従来手作業で行っているデータの集計(売上管理やKPI算出など)を業務フローから書き出し、AlteryxとSQLを組み合わせながら作成した。
+              CSVのデータに至ってはデータのエスケープ処理が行われていなかった場合や等が多くそれらを回避するための、正規表現の作成、仕組みづくりなどに注力。
+              6か月後にデータをSQLSeverに統合するところまで遂行し、プロジェクトを離脱。
+              `,
             },
             {
               title: '経験',
-              jd: ``,
+              jd: `大量のデータを扱った時の処理に対応するための並列処理の経験
+              多様なデータソースからのデータ取得と加工に対する知見
+              GUIベースのAlteryxでのデータ加工・データ管理
+              SQLを用いたデータ加工の手法
+              `,
             },
             {
               title: 'チーム',
               jd: `PM:1人
-              実装：2人(担当)`,
+              実装：4人(担当)`,
             },
           ],
         },
         {
-          jobTitle: 'データ移行とバッチ処理の開発',
+          jobTitle: '実験データの可視化Webアプリの作成',
           company: 'シスナビ/Sysnavi',
-          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
+          tags: ['Python(Django)', 'MySQL5.7', 'TypeScript'],
           startDate: 'Dec 2029',
           endDate: 'Feb 2020',
           jobDescriptions: [
             {
               title: '技術',
-              jd: `データ移行：Alteryx
-              バッチ処理：Alteryx
-              DB:SQL Server
-              
+              jd: `バックエンド:Python(Django)
+              フロントエンド:TypeScript/Django-Template
+              DB:MySQL
               `,
             },
             {
               title: '業務内容',
               jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
-              `,
-            },
-            {
-              title: '業務詳細',
-              jd: ``,
-            },
-            {
-              title: '経験',
-              jd: ``,
-            },
-            {
-              title: 'チーム',
-              jd: `PM:1人
-              実装：2人(担当)`,
-            },
-          ],
-        },
-        {
-          jobTitle: 'データ移行とバッチ処理の開発',
-          company: 'シスナビ/Sysnavi',
-          tags: ['Alteryx', 'SQL Sever', 'バッチスクリプト'],
-          startDate: 'Dec 2029',
-          endDate: 'Feb 2020',
-          jobDescriptions: [
-            {
-              title: '技術',
-              jd: `データ移行：Alteryx
-              バッチ処理：Alteryx
-              DB:SQL Server
-              
-              `,
-            },
-            {
-              title: '業務内容',
-              jd: `SESとして、客先に常駐して作業を行う。(※2019-12から2020-12まで同じ常駐先です)
+              大手化学メーカーの実験データ(可視光・紫外・赤外領域における吸光度スペクトル)の結果をエクセルから読み込みデータとして表示・検索ができるソフト作成
               `,
             },
             {
@@ -336,7 +314,6 @@ class App extends Component {
       <header>
         <div className="wrapper">
           <div className="sidebar">
-            <Particles options={particlesOptions} />
             <About
               avatar={person.avatar}
               name={person.name}
