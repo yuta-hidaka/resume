@@ -4,7 +4,7 @@ import Experience from './components/Experience';
 import Education from './components/Education';
 import Skills from './components/Skills';
 import avatar from './img/yuta.jpg';
-import particlesOptions from './assets/particle.json';
+import particlesOptions from './assets/particle2.json';
 import Particles from 'react-tsparticles';
 
 class App extends Component {
