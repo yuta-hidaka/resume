@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Social from './Social';
-import particlesOptions from '../assets/particle.json';
-import Particles from 'react-tsparticles';
 const About = ({ avatar, name, profession, bio, address, social }) => {
   return (
     <div>
@@ -26,7 +24,7 @@ const About = ({ avatar, name, profession, bio, address, social }) => {
   );
 };
 
-About.PropTypes = {
+About.propTypes = {
   avatar: PropTypes.string,
   name: PropTypes.string,
   profession: PropTypes.string,

@@ -20,21 +20,16 @@
     "eject": "react-scripts eject",
     "stylus": "stylus -u nib -c -w -o public/css/style.css src/index.styl"
   },
-  "description": "Professional Resume CV Template in ReactJS",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gndx/gresume-react.git"
-  },
-  "keywords": [
-    "Gresume",
-    "react",
-    "jsx"
-  ],
-  "author": "Oscar Barajas <oscar@dragons.mx>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gndx/gresume-react/issues"
-  },
-  "homepage": "https://github.com/gndx/gresume-react#readme"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

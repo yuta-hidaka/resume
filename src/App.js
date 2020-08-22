@@ -12,7 +12,7 @@ class App extends Component {
       avatar: avatar,
       name: '日髙　悠太',
       profession: 'Backend Developer',
-      bio: 'This page created by React.js :)',
+      bio: 'This page created by React.js',
       address: 'Shinjuku-Waseda Tokyo',
       social: [
         {
