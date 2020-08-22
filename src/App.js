@@ -164,7 +164,7 @@ class App extends Component {
             'Windows Sever',
             'バッチスクリプト',
             'Python(Django)',
-            'Jira'
+            'Jira',
           ],
           startDate: '2019-2',
           endDate: '2019-6',
@@ -520,20 +520,20 @@ class App extends Component {
       ],
       motivation: [
         {
-          title: '探究心',
-          desc: `研究開発を行ってきたこともあり常に新しいことに挑戦し、問題について、細分化し問題に対して常に解を求めていきます。`,
-        },
-        {
-          title: '好奇心',
-          desc: `新しいものや技術にたいし抵抗や偏見をもたずに常に変化を受け入れるように心がけています`,
-        },
-        {
           title: 'プログラムに対する考え方',
           desc: `業務で今まで無駄であったこと、人に対して苦痛であったことをプログラムを通して解消していきたい。
           解消した先にある余った時間は家族や友人、パートナーと一緒に過ごす時間や自分の趣味など人として文化的な生活を送るための時間に対して割いて欲しい。
           無駄を省くだけではなく、今までになかったユニークなサービスで人々の生活の質を高めていけるようにしたい。
           ※非効率を効率化するプログラマーも終電まで残業・土日出勤がある会社様に違和感を感じております。
           `,
+        },
+        {
+          title: '探究心',
+          desc: `研究開発を行ってきたこともあり常に新しいことに挑戦し、問題について、細分化し問題に対して常に解を求めていきます。`,
+        },
+        {
+          title: '好奇心',
+          desc: `新しいものや技術にたいし抵抗や偏見をもたずに常に変化を受け入れるように心がけています`,
         },
         {
           title: '今後のキャリア',
@@ -571,7 +571,7 @@ class App extends Component {
               <Education education={person.education} />
               <Experience experience={person.experience} />
               <SelfProject selfProject={person.selfProject} />
-              <Motivation motivation ={person.motivation} />
+              <Motivation motivation={person.motivation} />
               <Skills skills={person.skills} />
             </div>
           </div>
