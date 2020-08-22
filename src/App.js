@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import About from './components/About';
 import Experience from './components/Experience';
+import SelfProject from './components/SelfProject';
 import Education from './components/Education';
 import Skills from './components/Skills';
 import avatar from './img/yuta.jpg';
@@ -445,6 +446,26 @@ class App extends Component {
           ],
         },
       ],
+      selfProject: [
+        {
+          title: 'バイク燃費.com',
+          desc: `バイクの燃費を登録記録できます。Java・jsp/servletだけで作られています。
+          バイクのデータはBeautifulSoup4でスクレイピングをして集めました。
+          `,
+          link: 'https:bike-nenpi.com',
+          tags: ['JAVA', 'python', 'Beautifulsoup4', 'centos8'],
+        },
+        {
+          title: 'SAVE EAT',
+          desc: `コロナの中で苦境に立たされている飲食店を少しでも支援したいと思い、飲食店支援サイトを作成しました。
+          1週間で作成しました。
+          Docker-composeで作成し、そのままdockerコンテナとしてデプロイしました。
+          数人利用していただいただけで現在は音沙汰なしです。
+          `,
+          link: 'https:save-eat.me',
+          tags: ['python(Django)', 'Beautifulsoup4', 'centos8'],
+        },
+      ],
       education: [
         {
           degree: '化学科第二部',
@@ -490,6 +511,7 @@ class App extends Component {
           <div className="content-wrapper">
             <div className="content">
               <Experience experience={person.experience} />
+              <SelfProject selfProject={person.selfProject} />
               <Education education={person.education} />
               <Skills skills={person.skills} />
             </div>
