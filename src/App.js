@@ -118,8 +118,8 @@ class App extends Component {
           jobTitle: 'ウェブアプリ開発-予実管理ソフト作成-',
           company: 'シスナビ/Sysnavi',
           tags: ['ASP.Net C#', 'SQL Sever', 'BootStrap4', 'html', 'javascript'],
-          startDate: '2020-12',
-          endDate: '2020-2',
+          startDate: '2019-12',
+          endDate: '2019-2',
           jobDescriptions: [
             {
               title: '技術',
@@ -161,8 +161,8 @@ class App extends Component {
             'バッチスクリプト',
             'Python(Django)',
           ],
-          startDate: '2020-2',
-          endDate: '2020-6',
+          startDate: '2019-2',
+          endDate: '2019-6',
           jobDescriptions: [
             {
               title: '技術',
@@ -211,9 +211,9 @@ class App extends Component {
         {
           jobTitle: '実験データの可視化Webアプリの作成',
           company: 'シスナビ/Sysnavi',
-          tags: ['Python(Django)', 'MySQL5.7', 'TypeScript', 'HTML'],
-          startDate: '2020-6',
-          endDate: '2020-8',
+          tags: ['Python(Django)', 'MySQL5.7', 'TypeScript', 'HTML', 'gitHub'],
+          startDate: '2019-6',
+          endDate: '2019-8',
           jobDescriptions: [
             {
               title: '技術',
@@ -257,8 +257,8 @@ class App extends Component {
           jobTitle: '業務処理のRPA化',
           company: 'シスナビ/Sysnavi',
           tags: ['WinActor', 'PHP', 'MicrosoftAccess'],
-          startDate: '2020-10',
-          endDate: '2020-12',
+          startDate: '2019-10',
+          endDate: '2019-12',
           jobDescriptions: [
             {
               title: '技術',
@@ -296,7 +296,7 @@ class App extends Component {
           ],
         },
         {
-          jobTitle: '弁護士法人の時間。請求管理システム',
+          jobTitle: '弁護士法人の時間・請求管理システム',
           company: 'シスナビ/Sysnavi',
           tags: [
             'PHP(Laravel)',
@@ -304,8 +304,9 @@ class App extends Component {
             'FreeBSD',
             'jQuery',
             'docker-compose',
+            'gitLab',
           ],
-          startDate: '2020-6',
+          startDate: '2019-6',
           endDate: '2020-6',
           jobDescriptions: [
             {
@@ -313,10 +314,7 @@ class App extends Component {
               jd: `バックエンド:PHP(Laravel)
               フロントエンド:PHP(Laravel)/jQuery
               DB:MySQL
-              開発環境:Docker
-              
-              
-              `,
+              開発環境:Docker`,
             },
             {
               title: '業務内容',
@@ -326,25 +324,123 @@ class App extends Component {
             },
             {
               title: '業務詳細',
-              jd: `弁護士法人が、弁護士の稼働時間をベースに顧客に、稼働分の金額を請求しているが現状それらすべてをエクセル上で管理しているためミスオペや、金額等の確認に時間がかかってしまっていた。
+              jd: `弁護士法人が、弁護士の稼働時間をベースに顧客に、稼働分の金額を請求しているが現状それらすべてをエクセル上で管理しているためミスオペや、入金や金額等の確認に時間がかかってしまっていた。
+              また、請求書発行業務が大きな負担になっていた。
               これらを要件定義を社内のPMと行い、顧客が期待する画面モックアップの作成、DB設計を0から行う。
               また、請求書をPDFで発行できるようにするためにHTMLtoCanvas等を用いてPDF出力機能などを実装。また、サーバーは顧客側が使用しているレンタルサーバーを利用することが前提条件となっていたためそちらの環境調査、デプロイ環境の構築などを行った。
-              第一フェーズ・第二フェーズと分かれて開発のため第一フェーズに関してはモックアップや、
-
+              第一フェーズ・第二フェーズと分かれて開発のため第一フェーズに関してはモックアップや、DB定義書の作成・顧客との要件調整などを行う。
+              第一フェーズでの納品が終了となったタイミングで株式会社シスナビを退職
               `,
             },
             {
               title: '経験',
               jd: `
-              WinActorを用いたRPAの作成知識
-              エンドユーザーにも理解できるようなRPAの仕組み作りなどの、ユーザー目線での企画
-              プログラミングからの経験を
+              DB設計の経験
+              顧客のフィードバックを基にしたモックアップの作成
+              dockerを用いた開発
               `,
             },
             {
               title: 'チーム',
               jd: `PM:1人
-              実装：2人(担当)`,
+              実装：3人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: '弁護士法人の時間・請求管理システム',
+          company: 'フリーランス',
+          tags: [
+            'PHP(Laravel)',
+            'MySQL5.7',
+            'FreeBSD',
+            'jQuery',
+            'docker-compose',
+            'gitLab',
+          ],
+          startDate: '2020-7',
+          endDate: '',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `バックエンド:PHP(Laravel)
+              フロントエンド:PHP(Laravel)/jQuery
+              DB:MySQL
+              開発環境:Docker`,
+            },
+            {
+              title: '業務内容',
+              jd: `全職の社内の受託開発業務
+              退職後に、一部業務に携わっていただきたいとの依頼からフリーランスとして一部業務を受託
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: `フェーズ２では初期段階の予算で実現できなかった機能や、追加要望の実装などを行った。
+              前回は客先調整等がメインであったが、こちらの案件を頂いた際には、PHPを用いてサーバーサイドロジックの作成や、ページの編集などコーディングを中心とした作業を主業務として担当
+              `,
+            },
+            {
+              title: '経験',
+              jd: `PHPのフレームワークであるLaravelでの開発経験
+              `,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：3人(担当)`,
+            },
+          ],
+        },
+        {
+          jobTitle: 'まとめサイトのスクレイピング',
+          company: 'Fignny',
+          tags: [
+            'Python(Django)',
+            'AWS Aurora(Mysql)',
+            'AWS EC2',
+            'AWS S3',
+            'docker-compose',
+            'beautifulSoup4',
+          ],
+          startDate: '2020-8',
+          endDate: '',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: `バックエンド:Python(Django)
+              DB:Aurora
+              開発環境:Docker`,
+            },
+            {
+              title: '業務内容',
+              jd: `2020年9月末に終了するあるまとめサイトのデータを全て取得したいという依頼があったため一人でスクレイピング処理を実装
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: `PythonのBeautifulSoup4を用いて、スクレイピング処理を作成。1.5か月の実装見積であったが、2週間でスクレイピングの処理を完成させ、EC2上で実行させた。
+              スクレイピング処理でリクエスト側のサイトの過負荷防止とAWS上の通信制限対策のため1処理の実行速度に待機時間を大量に持たせてある。
+              そのため、使用しているサーバーの負荷は低くリソースが余っている状況であった。その状況を改善するためにスクレイピング処理の並列処理化を導入。
+              バックグランド処理・並列処理にCeleryを導入、並列処理にPython組み込み関数のThredPoolExecutorを利用し、2CPUのマシンで最大1プロセスしか処理できなかったものを20処理同時に実行できるように改善
+              結果として同一IPからの大量アクセスとなってしまたためAWS側にアクセス制限を掛けられてしまう。
+              そのため、EC2のスペックを下げ、プログラムをEC2を20インスタンスに分散させてスクレイピングを実行。
+              取得したデータは20万件以上
+              データは画像データなどを含め全て取得したデータを再現できるようになっている
+              `,
+            },
+            {
+              title: '経験',
+              jd: `
+              スクレイピングの経験
+              AWSでの環境構築
+              dockerを用いた開発
+              `,
+            },
+            {
+              title: 'チーム',
+              jd: `PM:1人
+              実装：1人(担当)`,
             },
           ],
         },
@@ -370,7 +466,9 @@ class App extends Component {
         { name: 'HTML5', percentage: '95%' },
         { name: 'CSS', percentage: '90%' },
         { name: 'JavaScript', percentage: '75%' },
-        { name: 'PHP', percentage: '50%' },
+        { name: 'PHP(Laravel)', percentage: '50%' },
+        { name: 'Pyhton(Django)', percentage: '50%' },
+        { name: 'Docker', percentage: '50%' },
       ],
     };
 
