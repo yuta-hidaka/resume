@@ -5,19 +5,19 @@ const Experience = (props) => {
     <div>
       {props.experience.map((exp) => (
         <div className="item" key={exp.jobTitle}>
-          <h4>
-            -{exp.jobTitle} #{exp.company}{' '}
-            <small>
-              | {exp.startDate} - {exp.endDate}
-            </small>
-          </h4>
+          <i className="fas fa-project-diagram"></i>
+          <h4>{exp.jobTitle}</h4>
+          <h5>
+            {'@'}
+            {exp.company}
+          </h5>
+          <small>
+            | {exp.startDate} - {exp.endDate}
+          </small>
           <div>
             {exp.tags.map((t, id) => {
               return (
-                <span
-                  key={t}
-                  className="badge badge-pill badge-secondary mr-2"
-                >
+                <span key={t} className="badge badge-pill badge-secondary mr-2">
                   {t}
                 </span>
               );
@@ -25,7 +25,7 @@ const Experience = (props) => {
           </div>
           {exp.jobDescriptions.map((jd, id) => {
             return (
-              <dl key={jd.title+id}>
+              <dl key={jd.title + id}>
                 <dt>{jd.title}</dt>
                 <dd className="new-line">{jd.jd}</dd>
               </dl>

@@ -3,6 +3,7 @@ import About from './components/About';
 import Experience from './components/Experience';
 import SelfProject from './components/SelfProject';
 import Education from './components/Education';
+import Motivation from './components/Motivation';
 import Skills from './components/Skills';
 import avatar from './img/yuta.jpg';
 import particlesOptions from './assets/particle.json';
@@ -14,7 +15,9 @@ class App extends Component {
       avatar: avatar,
       name: '日髙　悠太',
       profession: 'Backend Developer',
-      bio: 'This page created by React.js :)',
+      bio: `This page created by React.js :)
+      REACT面白いです。
+      `,
       address: 'Shinjuku-Waseda Tokyo',
       social: [
         {
@@ -101,7 +104,7 @@ class App extends Component {
           ],
         },
         {
-          jobTitle: '研修',
+          jobTitle: 'プログラミング研修',
           company: 'シスナビ/Sysnavi',
           tags: ['JAVA', 'OracleDB', 'servlet/jsp', 'html', 'javascript'],
           startDate: '2019-10',
@@ -153,7 +156,7 @@ class App extends Component {
           ],
         },
         {
-          jobTitle: 'データ移行とバッチ処理の開発',
+          jobTitle: 'データ移行処理とバッチ処理の開発',
           company: 'シスナビ/Sysnavi',
           tags: [
             'Alteryx',
@@ -161,6 +164,7 @@ class App extends Component {
             'Windows Sever',
             'バッチスクリプト',
             'Python(Django)',
+            'Jira',
           ],
           startDate: '2019-2',
           endDate: '2019-6',
@@ -184,9 +188,9 @@ class App extends Component {
             {
               title: '業務詳細',
               jd: `顧客が所有しているデータはNotesDBやCSV、MicrosoftAccessなど多種多様なデータが存在するそれらをすべて、一度Alteryxで読み込み、SQLSeverへ入れ込んでいく。
-              システム構築後は顧客が自分でデータを操作できるようにするためにAlteryxを導入したことにより、GUIベースでの開発を行った。
+              システム構築後は顧客が自分でデータを操作できるようにするためにGUIでの開発が必須となりAlteryxでの開発を行った。
               顧客のデータを検証する為、顧客のデータを秘匿化する処理の作成からスタート。
-              大量のテーブル・カラムがあり、それらの役割、説明、型桁等を管理する為、Djangoを使用。
+              大量のテーブル・カラムがあり、それらの役割、説明、型桁等を管理する為、内部でDjangoを使用。
               数百万件のレコードがあるため、Alteryxにある並列処理の導入や、それぞれのソースから取り込むため型や桁の変換やバリデーション処理の実装を行った。
               併せて、随時更新されるデータを定期的に取り込むためのバッチ処理にも応用できる作りにした。
               また、従来手作業で行っているデータの集計(売上管理やKPI算出など)を業務フローから書き出し、AlteryxとSQLを組み合わせながら作成した。
@@ -257,7 +261,7 @@ class App extends Component {
         {
           jobTitle: '業務処理のRPA化',
           company: 'シスナビ/Sysnavi',
-          tags: ['WinActor', 'PHP', 'MicrosoftAccess'],
+          tags: ['WinActor', 'PHP', 'MicrosoftAccess', 'Jira'],
           startDate: '2019-10',
           endDate: '2019-12',
           jobDescriptions: [
@@ -297,7 +301,7 @@ class App extends Component {
           ],
         },
         {
-          jobTitle: '弁護士法人の時間・請求管理システム',
+          jobTitle: '弁護士法人の時間・請求管理システム1',
           company: 'シスナビ/Sysnavi',
           tags: [
             'PHP(Laravel)',
@@ -306,6 +310,7 @@ class App extends Component {
             'jQuery',
             'docker-compose',
             'gitLab',
+            'redmine',
           ],
           startDate: '2019-6',
           endDate: '2020-6',
@@ -349,7 +354,7 @@ class App extends Component {
           ],
         },
         {
-          jobTitle: '弁護士法人の時間・請求管理システム',
+          jobTitle: '弁護士法人の時間・請求管理システム2',
           company: 'フリーランス',
           tags: [
             'PHP(Laravel)',
@@ -358,6 +363,7 @@ class App extends Component {
             'jQuery',
             'docker-compose',
             'gitLab',
+            'backlog',
           ],
           startDate: '2020-7',
           endDate: '',
@@ -403,6 +409,7 @@ class App extends Component {
             'AWS S3',
             'docker-compose',
             'beautifulSoup4',
+            'backlog',
           ],
           startDate: '2020-8',
           endDate: '',
@@ -433,6 +440,7 @@ class App extends Component {
             {
               title: '経験',
               jd: `
+              並列処理による負荷分散処理の実装知見
               スクレイピングの経験
               AWSでの環境構築
               dockerを用いた開発
@@ -453,7 +461,14 @@ class App extends Component {
           バイクのデータはBeautifulSoup4でスクレイピングをして集めました。
           `,
           link: 'https:bike-nenpi.com',
-          tags: ['JAVA', 'python', 'Beautifulsoup4', 'centos8'],
+          tags: [
+            'JAVA',
+            'python',
+            'Beautifulsoup4',
+            'centos8',
+            'Apache2.4',
+            'TomCat',
+          ],
         },
         {
           title: 'SAVE EAT',
@@ -463,7 +478,27 @@ class App extends Component {
           数人利用していただいただけで現在は音沙汰なしです。
           `,
           link: 'https:save-eat.me',
-          tags: ['python(Django)', 'Beautifulsoup4', 'centos8'],
+          tags: [
+            'python(Django)',
+            'Beautifulsoup4',
+            'GitHub',
+            'centos8',
+            'nginx',
+          ],
+        },
+        {
+          title: '音声文字起こしサイト',
+          desc: `会話の記録を取得したくてJavaScriptのAPIを用いて文字起こしのウェブサイトを作成しました。
+          `,
+          link: 'https://voice-to-text.web-tool.tokyo/',
+          tags: ['JavaScript', 'BootStrap4', 'centos8'],
+        },
+        {
+          title: 'docker-compose for Django',
+          desc: `Djangoのプロジェクトを最速で立ち上げられるどdocker-comspoe ファイルを作成しtemplateとしてgithubで共有しています。
+          `,
+          link: 'https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn',
+          tags: ['docker-compose', 'django'],
         },
       ],
       education: [
@@ -483,12 +518,35 @@ class App extends Component {
           `,
         },
       ],
+      motivation: [
+        {
+          title: 'プログラムに対する考え方',
+          desc: `業務で今まで無駄であったこと、人に対して苦痛であったことをプログラムを通して解消していきたい。
+          解消した先にある余った時間は家族や友人、パートナーと一緒に過ごす時間や自分の趣味など人として文化的な生活を送るための時間に対して割いて欲しい。
+          無駄を省くだけではなく、今までになかったユニークなサービスで人々の生活の質を高めていけるようにしたい。
+          ※非効率を効率化するプログラマーも終電まで残業・土日出勤がある会社様に違和感を感じております。
+          `,
+        },
+        {
+          title: '探究心',
+          desc: `研究開発を行ってきたこともあり常に新しいことに挑戦し、問題について、細分化し問題に対して常に解を求めていきます。`,
+        },
+        {
+          title: '好奇心',
+          desc: `新しいものや技術にたいし抵抗や偏見をもたずに常に変化を受け入れるように心がけています`,
+        },
+        {
+          title: '今後のキャリア',
+          desc: `社会問題をプログラミング(広義ではIT)で解決するような業務に携わりたい。
+          `,
+        },
+      ],
       skills: [
         { name: 'HTML5', percentage: '95%' },
         { name: 'CSS', percentage: '90%' },
         { name: 'JavaScript', percentage: '75%' },
-        { name: 'PHP(Laravel)', percentage: '50%' },
-        { name: 'Pyhton(Django)', percentage: '50%' },
+        { name: 'Laravel', percentage: '50%' },
+        { name: 'Django', percentage: '50%' },
         { name: 'Docker', percentage: '50%' },
       ],
     };
@@ -510,9 +568,10 @@ class App extends Component {
 
           <div className="content-wrapper">
             <div className="content">
+              <Education education={person.education} />
               <Experience experience={person.experience} />
               <SelfProject selfProject={person.selfProject} />
-              <Education education={person.education} />
+              <Motivation motivation={person.motivation} />
               <Skills skills={person.skills} />
             </div>
           </div>

@@ -12,7 +12,7 @@ const About = ({ avatar, name, profession, bio, address, social }) => {
           <h1>{name}</h1>
           <h2>{profession}</h2>
         </div>
-        <div className="desc">
+        <div className="desc new-line">
           <p>{bio}</p>
         </div>
         <div className="address">
