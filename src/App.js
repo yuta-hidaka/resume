@@ -568,9 +568,9 @@ class App extends Component {
 
           <div className="content-wrapper">
             <div className="content">
-              <Education education={person.education} />
               <Experience experience={person.experience} />
               <SelfProject selfProject={person.selfProject} />
+              <Education education={person.education} />
               <Motivation motivation={person.motivation} />
               <Skills skills={person.skills} />
             </div>
