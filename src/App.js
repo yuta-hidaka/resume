@@ -505,8 +505,8 @@ class App extends Component {
         {
           degree: '化学科第二部',
           institution: '東京理科大学(Tokyo University of Science)',
-          startDate: 'Apl 2014',
-          endDate: 'Apl 2017',
+          startDate: '2014-4',
+          endDate: '2018-3',
           description: `住友化学でのキャリアアップ、研究の基礎を習得したく、上司と相談しながら大学へ通学。
           住友化学に正社員として勤務しながら、終業後に4年間有機化学を中心に学び学士号を取得。
           週6日、終業後に千葉(姉ヶ崎)から東京(飯田橋)まで通学。
