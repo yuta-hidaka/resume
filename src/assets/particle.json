@@ -20,10 +20,10 @@
     },
     "modes": {
       "bubble": {
-        "distance": 100,
+        "distance": 10,
         "duration": 2,
         "opacity": 0.8,
-        "size": 100
+        "size": 1000
       },
       "push": {
         "quantity": 1
@@ -71,7 +71,7 @@
     },
     "size": {
       "random": true,
-      "value": 10
+      "value": 5
     }
   },
   "detectRetina": true
