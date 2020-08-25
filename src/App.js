@@ -121,7 +121,7 @@ class App extends Component {
         {
           jobTitle: 'ウェブアプリ開発-予実管理ソフト作成-',
           company: 'シスナビ/Sysnavi',
-          tags: ['ASP.Net C#', 'SQL Sever', 'BootStrap4', 'html', 'javascript'],
+          tags: ['ASP.NET C#', 'SQL Sever', 'BootStrap4', 'html', 'javascript'],
           startDate: '2019-12',
           endDate: '2019-2',
           jobDescriptions: [
