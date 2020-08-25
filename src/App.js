@@ -499,7 +499,8 @@ class App extends Component {
         },
         {
           title: 'docker-compose for Django',
-          desc: `Djangoのプロジェクトを最速で立ち上げられるどdocker-comspoe ファイルを作成しtemplateとしてgithubで共有しています。
+          desc: `Djangoのプロジェクトを最速で立ち上げられる。docker-comspoe ファイルを作成しtemplateとしてgithubで共有しています。
+          Nginx-Unitバージョンも作成中。
           `,
           link: 'https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn',
           tags: ['docker-compose', 'django'],
