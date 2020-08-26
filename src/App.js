@@ -550,12 +550,18 @@ class App extends Component {
         },
       ],
       skills: [
-        { name: 'HTML5', percentage: '95%' },
-        { name: 'CSS', percentage: '90%' },
-        { name: 'JavaScript', percentage: '75%' },
-        { name: 'Laravel', percentage: '50%' },
-        { name: 'Django', percentage: '50%' },
+        { name: 'HTML5', percentage: '80%' },
+        { name: 'CSS', percentage: '80%' },
+        { name: 'JavaScript', percentage: '80%' },
+        { name: 'Django', percentage: '80%' },
+        { name: 'Laravel', percentage: '70%' },
+        { name: 'C#.NET', percentage: '50%' },
+        { name: 'JAVA', percentage: '50%' },
         { name: 'Docker', percentage: '50%' },
+        { name: 'Centos7,8', percentage: '50%' },
+        { name: 'Ubuntu20', percentage: '50%' },
+        { name: 'Apache2.4', percentage: '50%' },
+        { name: 'Nginx', percentage: '50%' },
       ],
     };
 
