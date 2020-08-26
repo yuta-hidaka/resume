@@ -17,6 +17,11 @@ class App extends Component {
       profession: 'Backend Developer',
       bio: ` This page created by React.js :)
       REACT面白いです。
+      
+      2018年10月からプログラマー業界にキャリアチェンジしました。
+      SESを中心とした会社に1.8か月勤務。
+      その後、1か月フリーランス。
+      現在は受託開発をメインとしている会社に勤務しています。
       `,
       address: 'Shinjuku-Waseda Tokyo',
       social: [
