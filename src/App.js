@@ -223,7 +223,14 @@ class App extends Component {
         {
           jobTitle: '実験データの可視化Webアプリの作成',
           company: 'シスナビ/Sysnavi',
-          tags: ['Python(Django)', 'MySQL5.7', 'TypeScript', 'HTML', 'gitHub'],
+          tags: [
+            'Python(Django)',
+            'DRF',
+            'MySQL5.7',
+            'TypeScript',
+            'HTML',
+            'gitHub',
+          ],
           startDate: '2019-6',
           endDate: '2019-8',
           jobDescriptions: [
@@ -509,7 +516,7 @@ class App extends Component {
           tags: ['JavaScript', 'BootStrap4', 'centos8'],
         },
         {
-          title: 'docker-compose for Django',
+          title: 'docker-compose for Django with Gunicorn',
           desc: ` Djangoのプロジェクトを最速で立ち上げられる。docker-comspoe ファイルを作成しtemplateとしてgithubで共有しています。
           Nginx-Unitバージョンも作成中。
           `,
@@ -517,7 +524,7 @@ class App extends Component {
           tags: ['docker-compose', 'django'],
         },
         {
-          title: 'docker-compose for Django',
+          title: 'docker-compose for Django with nginx-unit',
           desc: ` Djangoのプロジェクトを最速で立ち上げられる。Nginx-Unitバージョンかつ、見直し版。
           `,
           link:
