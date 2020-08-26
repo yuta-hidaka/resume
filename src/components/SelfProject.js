@@ -23,10 +23,12 @@ const SelfProject = (props) => {
           </div>
           <div>
             <dl>
-              <dt>参考リンク</dt>
-              <dd>
-                <a href={exp.link}>{exp.link}</a>
-              </dd>
+              <dt>
+                <span>参考リンク : </span>
+                <span>
+                  <a href={exp.link}>{exp.title}</a>
+                </span>
+              </dt>
             </dl>
           </div>
         </div>
