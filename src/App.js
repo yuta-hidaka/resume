@@ -516,6 +516,14 @@ class App extends Component {
           link: 'https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn',
           tags: ['docker-compose', 'django'],
         },
+        {
+          title: 'docker-compose for Django',
+          desc: ` Djangoのプロジェクトを最速で立ち上げられる。Nginx-Unitバージョンかつ、見直し版。
+          `,
+          link:
+            'https://github.com/yuta-hidaka/Docker-Django-MariaDB-NginxUnit',
+          tags: ['docker-compose', 'django', 'Nginx-Unit'],
+        },
       ],
       education: [
         {
