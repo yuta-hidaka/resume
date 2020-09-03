@@ -444,6 +444,7 @@ class App extends Component {
             {
               title: '業務詳細',
               jd: ` PythonのBeautifulSoup4を用いて、スクレイピング処理を作成。1.5か月の実装見積であったが、2週間でスクレイピングの処理を完成させ、EC2上で実行させた。
+              また、顧客の要望に応じてスクレイピングした記事をwordで出力できるようにした。(python-docx使用)
               スクレイピング処理でリクエスト側のサイトとAWS上の通信制限対策のため1処理の実行速度に待機時間を持たせてある。
               また、画像のリクエストなどでレスポンスに時間がかかる。
               
@@ -453,7 +454,7 @@ class App extends Component {
               結果として同一IPからの大量アクセスとなってしまたためAWS側にアクセス制限を掛けられてしまう。
              
               そのため、EC2のスペック2CPUに下げ、EC2を20インスタンス作成し処理を分散させてスクレイピングを実行。
-              取得したデータは100万件以上。
+              取得したデータは200万件以上。
               データは画像データなどを含め全て取得したデータを再現できるようになっている。
               また、大量のデータを扱うため、DB側のパフォーマンスチューニング,Django ORMのクエリ見直し等を行い、スクレイピングのリクエスト以外での待機時間を削減するようにした。
               `,
@@ -466,6 +467,7 @@ class App extends Component {
               DBのパフォーマンスチューニング
               AWSでの環境構築
               dockerを用いた開発
+              メモリ管理
               `,
             },
             {
@@ -477,6 +479,31 @@ class App extends Component {
         },
       ],
       selfProject: [
+        {
+          title: 'BikeHub',
+          desc: ` 下記にあるバイク燃費.comの後継版(アプリ化)。
+          燃費の登録と、バイク関連のニュースを見ることができる。
+          バックエンドAPI
+          -Django(DRF)で作成、スクレイピングとRSSでバイク関連のニュース記事を定期バッチで取得し、形態素解析を用い記事のカテゴライズを行う。
+          -開発環境として、nginx-unitベースのdocker-composeで開発。
+
+          フロントエンド
+          -ReactNative Expoでフロントエンドは作成、現状はバイクNews用のAPIを叩いて表示、更新まで実装完了。
+          -継続して認証関連及び、燃費登録機能を実装予定
+          `,
+          link: 'https://expo.io/@yuta322/bikehub-frontend',
+          tags: [
+            'python(Django)',
+            'React Native',
+            'DRF',
+            'Expo',
+            'Beautifulsoup4',
+            'Mecab',
+            'Morphological Analysis',
+            'centos8',
+            'nginx',
+          ],
+        },
         {
           title: 'バイク燃費.com',
           desc: ` バイクの燃費を登録記録できます。Java・jsp/servletだけで作られています。
