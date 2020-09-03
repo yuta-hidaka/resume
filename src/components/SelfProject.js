@@ -18,7 +18,7 @@ const SelfProject = (props) => {
           <div>
             <dl>
               <dt>説明</dt>
-              <dd>{exp.desc}</dd>
+              <dd className="new-line">{exp.desc}</dd>
             </dl>
           </div>
           <div>
