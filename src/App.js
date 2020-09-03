@@ -490,6 +490,8 @@ class App extends Component {
           フロントエンド
           -ReactNative Expoでフロントエンドは作成、現状はバイクNews用のAPIを叩いて表示、更新まで実装完了。
           -継続して認証関連及び、燃費登録機能を実装予定
+
+          「Expo」のアプリをスマートフォンにインストールされている状況で下記リンクをクリックすると、開発中のアプリを見ることができます。
           `,
           link: 'https://expo.io/@yuta322/bikehub-frontend',
           tags: [
