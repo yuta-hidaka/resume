@@ -492,11 +492,13 @@ class App extends Component {
           -継続して認証関連及び、燃費登録機能を実装予定
 
           「Expo」のアプリをスマートフォンにインストールされている状況で下記リンクをクリックすると、開発中のアプリを見ることができます。
+          ・2020-09-23
+          アプリが完成し、google play store , apple store にて公開中です。
           `,
           link: 'https://expo.io/@yuta322/bikehub-frontend',
           tags: [
             'python(Django)',
-            'React Native',
+            'React Native(EXPO)',
             'DRF',
             'Expo',
             'Beautifulsoup4',
@@ -505,6 +507,18 @@ class App extends Component {
             'centos8',
             'nginx',
           ],
+        },
+        {
+          title: 'BikeHub(iOS)',
+          desc: `Apple Storeのリンク`,
+          link: 'https://apps.apple.com/jp/app/bike-hub/id1531692067',
+          tags: [],
+        },
+        {
+          title: 'BikeHub(Android)',
+          desc: `Google play storeのリンク`,
+          link: 'https://play.google.com/store/apps/details?id=app.bikehub',
+          tags: [],
         },
         {
           title: 'バイク燃費.com',
