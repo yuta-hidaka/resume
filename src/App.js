@@ -562,6 +562,7 @@ class App extends Component {
             'Morphological Analysis',
             'centos8',
             'nginx',
+            'nginx unit',
           ],
         },
         {
