@@ -565,6 +565,12 @@ class App extends Component {
           ],
         },
         {
+          title: 'BikeHub(Web)',
+          desc: `BikeHubのリンク`,
+          link: 'https://bikehub.app',
+          tags: [],
+        },
+        {
           title: 'BikeHub(iOS)',
           desc: `Apple Storeのリンク`,
           link: 'https://apps.apple.com/jp/app/bike-hub/id1531692067',
