@@ -476,6 +476,62 @@ class App extends Component {
               実装：1人(担当)`,
             },
           ],
+        },        {
+          jobTitle: 'CRMソフト開発',
+          company: 'Fignny',
+          tags: [
+            'Python(独自FW)',
+            'DyanamoDB',
+            'AWS EC2',
+            'AWS Lambda',
+            'Jenkins',
+            'MongoDB',
+            'MySQL',
+            'PHP',
+            'Vue.js',
+            'Angular.js1.2',
+            'MySQL',
+            'MySQL',
+            'docker-compose',
+          ],
+          startDate: '2020-9',
+          endDate: '',
+          jobDescriptions: [
+            {
+              title: '技術',
+              jd: ` バックエンド:Python(独自FW)
+              DB:Aurora
+              開発環境:Docker`,
+            },
+            {
+              title: '業務内容',
+              jd: ` CRMサービスを提供している企業にSESとしてFignnyから参画、フロントが複数のFW、言語で構築されいる。
+              `,
+            },
+            {
+              title: '業務詳細',
+              jd: ` 
+              CRMサービスを開発、新規機能の追加やバグの修正を主に担当。
+              Lambda上にpythonで記述したAPIを展開し、すべての機能をAPIで提供する形にしている。
+              また、ログ管理や、当CRMの売りである顧客が自由に項目定義(カラム・テーブル追加)できるようにNoSQLで実装されている
+              ドキュメントなどが往々にして不足しているのでドキュメントの作成、軽量版エディタでのデバッグ環境構築など後続の担当者にも配慮しながら作業を行う。
+              `,
+            },
+            {
+              title: '経験',
+              jd: ` 
+              NoSQLの取り扱い
+              大人数でのチーム開発
+              AWS
+              `,
+            },
+            {
+              title: 'チーム',
+              jd: ` PM:1人
+              TL:2人
+              実装：20人(担当)`,
+            },
+          ],
         },
       ],
       selfProject: [
