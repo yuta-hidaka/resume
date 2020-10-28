@@ -47,7 +47,7 @@ export const person = {
             'docker-compose',
           ],
           startDate: '2020-9',
-          endDate: '',
+          endDate: '現在',
           jobDescriptions: [
             {
               title: '技術',
@@ -73,6 +73,7 @@ export const person = {
               title: '経験',
               jd: ` 
               NoSQLの取り扱い
+              混沌としたソースコードの読解
               大人数でのチーム開発
               AWS
               `,
@@ -102,7 +103,7 @@ export const person = {
             'backlog',
           ],
           startDate: '2020-8',
-          endDate: '',
+          endDate: '2020-9',
           jobDescriptions: [
             {
               title: '技術',
@@ -222,7 +223,7 @@ export const person = {
             {
               title: '業務内容',
               jd: ` 社内の受託開発業務
-              SES業務終了後に、モックアップの作成、DB設計、インフラ構築などを担当、2020年1月から専任としてプロジェクトに参加し客先調整・課題管理や実装を依頼しているフリーランス様との進捗管理などを行う。
+              SES業務と兼務して、モックアップの作成、DB設計、インフラ構築などを担当、2020年1月から専任としてプロジェクトに参加し実装や客先調整・課題管理や実装を依頼しているフリーランス様との進捗管理などを行う。
               `,
             },
             {
