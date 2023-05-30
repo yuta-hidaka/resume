@@ -17,6 +17,7 @@ export default function Home() {
 
   return (
     <main className="h-full w-full p-3">
+      <h1 className="text-2xl h-full w-full px-10 mt-5">About</h1>
       <div
         onClick={() => skip("education")}
         className="p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border"

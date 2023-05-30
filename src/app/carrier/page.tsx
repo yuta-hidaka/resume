@@ -14,6 +14,7 @@ export default function Home() {
 
   return (
     <>
+      <h1 className="text-2xl h-full w-full px-10 mt-5">Carrier</h1>
       <main className="h-full w-full md:p-20 p-5">
         {data.experience.map((v, i) => {
           return (
