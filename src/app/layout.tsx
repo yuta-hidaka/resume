@@ -28,6 +28,7 @@ export default function RootLayout({
         <meta
           property="og:title"
           content="日髙悠太 - Yuta Hidaka - Portfolio"
+          key="og:title"
         />
         <meta
           name="description"
@@ -54,10 +55,9 @@ export default function RootLayout({
         <header className="border-b border-green-700">
           <ul className="flex m-5 justify-center">
             {links.map((v, i) => (
-              <li className="mr-6">
+              <li className="mr-6" key={i}>
                 <Link
                   href={v.path}
-                  key={i}
                   className="text-green-600 hover:text-green-700 p-3"
                 >
                   {v.label}
