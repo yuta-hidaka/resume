@@ -9,6 +9,8 @@ type HistoryCardType = {
   onCurrentIndexChange: (value: number) => void;
 };
 
+
+
 export const HistoryCard = ({
   v,
   index,
@@ -29,6 +31,8 @@ export const HistoryCard = ({
       if (index === currentIndex - 1) onCurrentIndexChange(index);
     }
   };
+
+  
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);

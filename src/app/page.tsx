@@ -17,7 +17,7 @@ export default function Home() {
           />
         </div>
         {/* <div className="h-screen bg-green-800 w-[1px]"></div> */}
-        <div className="m-5 md:w-2/3 w-full p-5 transition hover:scale-105 hover:ease-in rounded-lg border-green-600 border">
+        <div className="ml-0 mt-5 md:mt-0 md:ml-5 md:w-2/3 w-full p-5 transition hover:scale-105 hover:ease-in rounded-lg border-green-600 border">
           <TypingEffect
             deleteCursorOnEnd={true}
             text={`${data.family_name} ${data.given_name}`}

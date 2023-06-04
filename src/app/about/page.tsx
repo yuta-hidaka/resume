@@ -1,7 +1,6 @@
 "use client";
 import TypingEffect from "@/components/TypingEffect";
 import { data } from "@/data/about";
-import Head from "next/head";
 import { useState } from "react";
 
 export default function Home() {
@@ -18,10 +17,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>日髙悠太 - Yuta Hidaka - About</title>
-        <meta property="og:title" content="日髙悠太 - Yuta Hidaka - About" />
-      </Head>
       <main className="h-full w-full p-3">
         <h1 className="text-2xl h-full w-full px-10 mt-5">About</h1>
         <div
