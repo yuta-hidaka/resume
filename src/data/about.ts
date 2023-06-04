@@ -1,10 +1,19 @@
-// import avatar from "../img/yuta.jpg";s
+"use client";
+
+import { data as dataEN } from "./about.en";
+
+export const getData = (locale: string | undefined): Data => {
+  if (locale === "ja") {
+    return data;
+  }
+  return dataEN;
+};
 
 export const data = {
   //   avatar: avatar,
   family_name: "日髙",
   given_name: "悠太",
-  profession: "full stack developer",
+  profession: "Full Stack Developer",
   bio: `高校卒業後に総合化学メーカーへ勤務。
   石油化学品系の研究開発補助から、製品開発業務へ従事し６年間キャリアを積みました。
   会社に勤務しながら４年間学士号を取得するため、週６日東京の大学へ通学し、化学の基礎、特に有機化学を中心に学習。
@@ -436,3 +445,53 @@ export const data = {
     "NextJS",
   ],
 };
+
+export interface Data {
+  family_name: string;
+  given_name: string;
+  profession: string;
+  bio: string;
+  address: string;
+  social?: SocialEntity[] | null;
+  experience?: ExperienceEntity[] | null;
+  selfProject?: SelfProjectEntity[] | null;
+  education?: EducationEntity[] | null;
+  motivation?: MotivationEntityOrJob[] | null;
+  job: MotivationEntityOrJob;
+  skills?: string[] | null;
+}
+export interface SocialEntity {
+  name: string;
+  url: string;
+}
+export interface ExperienceEntity {
+  jobTitle: string;
+  company: string;
+  startDate: string;
+  endDate: string;
+  projects: Projects;
+}
+export interface Projects {
+  tags?: string[] | null;
+  job: string;
+  jobDescription: string;
+  experience?: string[] | null;
+  team?: number | null;
+}
+export interface SelfProjectEntity {
+  title: string;
+  desc: string;
+  link: string;
+  tags?: (string | null)[] | null;
+}
+export interface EducationEntity {
+  degree: string;
+  institution: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+export interface MotivationEntityOrJob {
+  title: string;
+  desc: string;
+}

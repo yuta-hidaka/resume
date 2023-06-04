@@ -1,14 +1,18 @@
 "use client";
 
 import { HistoryCard } from "@/components/HistoryCard";
-import { data } from "@/data/about";
+import { Data, getData } from "@/data/about";
+import { useRouter } from "next/compat/router";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  data.experience;
+  const router = useRouter();
+  const [data, setData] = useState<Data>();
+  useEffect(() => {
+    setData(getData(router?.locale));
+  }, []);
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const onCurrentIndexChange = (index: number) => {
     if (index !== currentIndex) setCurrentIndex(index);
   };
@@ -21,17 +25,18 @@ export default function Home() {
         <meta property="og:title" content="日髙悠太 - Yuta Hidaka - Carrier" />
       </Head>
       <main className="h-full w-full md:p-20 p-5">
-        {data.experience.map((v, i) => {
-          return (
-            <HistoryCard
-              key={i}
-              v={v}
-              index={i}
-              currentIndex={currentIndex}
-              onCurrentIndexChange={onCurrentIndexChange}
-            />
-          );
-        })}
+        {data?.experience &&
+          data.experience.map((v, i) => {
+            return (
+              <HistoryCard
+                key={i}
+                v={v}
+                index={i}
+                currentIndex={currentIndex}
+                onCurrentIndexChange={onCurrentIndexChange}
+              />
+            );
+          })}
       </main>
     </>
   );
