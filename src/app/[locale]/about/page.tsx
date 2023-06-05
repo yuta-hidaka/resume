@@ -2,15 +2,19 @@
 
 import TypingEffect from "@/components/TypingEffect";
 import { Data, getData } from "@/data/about";
-import { useRouter } from "next/compat/router";
 import { useEffect, useState } from "react";
 
-export default function Home() {
-  const router = useRouter();
+type Props = {
+  params: { locale: string };
+  searchParams: {};
+};
+
+export default function Home(props: Props) {
   const [data, setData] = useState<Data>();
+
   useEffect(() => {
-    setData(getData(router?.locale));
-  }, []);
+    setData(getData(props.params.locale));
+  }, [props.params.locale]);
 
   const [skips, setSkips] = useState({
     education: false,

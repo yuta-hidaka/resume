@@ -1,10 +1,10 @@
-export const HistoryLine = ({
+export default function HistoryLine({
   index,
   currentIndex,
 }: {
   currentIndex: number;
   index: number;
-}) => {
+}) {
   return (
     <>
       <div className="flex items-center justify-center">
@@ -27,4 +27,4 @@ export const HistoryLine = ({
       <div className="w-[1px] bg-green-200 h-full"></div>
     </>
   );
-};
+}

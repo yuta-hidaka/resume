@@ -1,6 +1,6 @@
 import { Experience } from "@/types/history";
 import { useEffect, useRef, useState } from "react";
-import { HistoryLine } from "./HistoryLine";
+import HistoryLine from "./HistoryLine";
 
 type HistoryCardType = {
   v: Experience;
@@ -9,14 +9,12 @@ type HistoryCardType = {
   onCurrentIndexChange: (value: number) => void;
 };
 
-
-
-export const HistoryCard = ({
+export default function HistoryCard({
   v,
   index,
   currentIndex,
   onCurrentIndexChange,
-}: HistoryCardType) => {
+}: HistoryCardType) {
   const ref = useRef<HTMLInputElement>(null);
   const [expand, setExpand] = useState(false);
 
@@ -31,8 +29,6 @@ export const HistoryCard = ({
       if (index === currentIndex - 1) onCurrentIndexChange(index);
     }
   };
-
-  
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -67,4 +63,4 @@ export const HistoryCard = ({
       </div>
     </div>
   );
-};
+}
