@@ -13,7 +13,6 @@ type Props = {
 export default function Home(props: Props) {
   const [data, setData] = useState<Data>();
   useEffect(() => {
-    console.log(props.params.locale);
     setData(getData(props.params.locale));
   }, [props.params.locale]);
 
