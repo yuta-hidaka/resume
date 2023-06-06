@@ -4,15 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const Header = ({ locale }: { locale: string }) => {
+export const Header = ({ lang }: { lang: string }) => {
   const [links, setLinks] = useState([
-    { label: "Home", path: "/", locale: locale, isI18nSwitcher: false },
-    { label: "carrier", path: "/carrier", locale: locale, isI18nSwitcher: false },
-    { label: "about", path: "/about", locale: locale, isI18nSwitcher: false },
     {
-      label: locale === "ja" ? "English" : "日本語",
-      path: locale === "ja" ? "en" : "ja",
-      locale: locale === "ja" ? "en" : "ja",
+      label: lang === "ja" ? "Home" : "ホーム",
+      path: "/",
+      locale: lang,
+      isI18nSwitcher: false,
+    },
+    {
+      label: lang === "ja" ? "carrier" : "キャリア",
+      path: "/carrier",
+      locale: lang,
+      isI18nSwitcher: false,
+    },
+    {
+      label: lang === "ja" ? "about" : "アバウト",
+      path: "/about",
+      lang: lang,
+      isI18nSwitcher: false,
+    },
+    {
+      label: lang === "ja" ? "English" : "日本語",
+      path: lang === "ja" ? "en" : "ja",
+      lang: lang === "ja" ? "en" : "ja",
       isI18nSwitcher: true,
     },
   ]);
@@ -22,16 +37,16 @@ export const Header = ({ locale }: { locale: string }) => {
   useEffect(() => {
     setLinks(
       links.map((v) => {
-        v.locale = locale;
+        v.lang = lang;
         if (v.isI18nSwitcher) {
           const p = r.slice(1).split("/");
-          p[0] = locale === "ja" ? "en" : "ja";
+          p[0] = lang === "ja" ? "en" : "ja";
           v.path = "/" + p.join("/");
         }
         return v;
       })
     );
-  }, []);
+  }, [r]);
 
   return (
     <header className="border-b border-green-700">
@@ -40,7 +55,7 @@ export const Header = ({ locale }: { locale: string }) => {
           return (
             <li className="mr-6" key={i}>
               <Link
-                href={v.isI18nSwitcher ? v.path : locale + v.path}
+                href={v.isI18nSwitcher ? v.path : lang + v.path}
                 className="text-green-600 hover:text-green-700 p-3"
                 locale={"ja"}
               >

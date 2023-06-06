@@ -18,22 +18,20 @@ export async function generateMetadata() {
   };
 }
 
-export function generateStaticParams() {
-  return [{ locale: "en" }, { locale: "ja" }];
-}
-
 export default function RootLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { lang: string };
 }) {
   return (
-    <html lang={params.locale}>
+    <html lang={params.lang}>
       <body>
-        <Header locale={params.locale} />
+        <Header lang={params.lang} />
+        <div className="max-w-5xl m-auto">
         {children}
+        </div>
       </body>
     </html>
   );

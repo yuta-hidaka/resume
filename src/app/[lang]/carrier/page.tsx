@@ -5,7 +5,7 @@ import { Data, getData } from "@/data/about";
 import { useEffect, useState } from "react";
 
 type Props = {
-  params: { locale: string };
+  params: { lang: string };
   searchParams: {};
 };
 
@@ -13,8 +13,8 @@ export default function Home(props: Props) {
   const [data, setData] = useState<Data>();
 
   useEffect(() => {
-    setData(getData(props.params.locale));
-  }, [props.params.locale]);
+    setData(getData(props.params.lang));
+  }, [props.params.lang]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const onCurrentIndexChange = (index: number) => {

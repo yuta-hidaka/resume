@@ -6,20 +6,20 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type Props = {
-  params: { locale: string };
+  params: { lang: string };
   searchParams: {};
 };
 
 export default function Home(props: Props) {
   const [data, setData] = useState<Data>();
   useEffect(() => {
-    setData(getData(props.params.locale));
-  }, [props.params.locale]);
+    setData(getData(props.params.lang));
+  }, [props.params.lang]);
 
   return (
     <>
       <h1 className="text-2xl h-full w-full px-10 mt-5">Home</h1>
-      <main className="h-full w-full md:flex flex-none p-10">
+      <main className="h-full w-full md:flex flex-none p-5 md:p-10">
         <div className="md:m-0 m-auto md:w-1/3 w-full transition hover:scale-105 hover:ease-in rounded-lg">
           <Image
             className="rounded-lg hue-rotate-15 m-auto md:m-0"
