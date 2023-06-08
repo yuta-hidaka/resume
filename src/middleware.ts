@@ -1,11 +1,11 @@
-import { MiddlewareRequest, NextRequest } from "@netlify/next";
-import { NextResponse } from "next/server";
+// import { MiddlewareRequest, NextRequest } from "@netlify/next";
+import { NextResponse, NextRequest } from "next/server";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-export async function middleware(nextRequest: NextRequest) {
+export async function middleware(req: NextRequest) {
   try {
-    const req = new MiddlewareRequest(nextRequest);
+    // const req = new MiddlewareRequest(nextRequest);
 
     if (
       req.nextUrl.pathname.startsWith("/_next") ||
