@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Metadata } from "next";
-import "../globals.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "日髙悠太 - Yuta Hidaka - Portfolio",
