@@ -15,7 +15,6 @@ export default function Home(props: Props) {
   useEffect(() => {
     setData(getData(props.params.locale));
   }, [props.params.locale]);
-  console.log("params", props);
 
   return (
     <>

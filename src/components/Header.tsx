@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const Header = ({ locale }: { locale: string }) => {
-  console.log(locale);
-
   const [links, setLinks] = useState([
     {
       label: locale !== "ja" ? "Home" : "ホーム",
