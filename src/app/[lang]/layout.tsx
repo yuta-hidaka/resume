@@ -33,3 +33,14 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const getStaticPaths = () => {
+  return {
+    paths: [
+      // if no `locale` is provided only the defaultLocale will be generated
+      { lang: "en" },
+      { lang: "ja" },
+    ],
+    fallback: true,
+  };
+};
