@@ -38,8 +38,8 @@ export const getStaticPaths = () => {
   return {
     paths: [
       // if no `locale` is provided only the defaultLocale will be generated
-      { params: { locale: "en" }, locale: "en" },
-      { params: { locale: "ja" }, locale: "ja" },
+      { locale: "en" },
+      { locale: "ja" },
     ],
     fallback: true,
   };

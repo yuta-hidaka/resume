@@ -38,11 +38,11 @@ export const Header = ({ locale }: { locale: string }) => {
     setLinks(
       links.map((v) => {
         v.locale = locale;
-        if (v.isI18nSwitcher) {
-          const p = r.slice(1).split("/");
-          p[0] = locale === "ja" ? "en" : "ja";
-          v.path = "/" + p.join("/");
-        }
+        // if (v.isI18nSwitcher) {
+        //   const p = r.slice(1).split("/");
+        //   p[0] = locale === "ja" ? "en" : "ja";
+        //   v.path = "/" + p.join("/");
+        // }
         return v;
       })
     );
@@ -55,9 +55,9 @@ export const Header = ({ locale }: { locale: string }) => {
           return (
             <li className="mr-6" key={i}>
               <Link
-                href={v.isI18nSwitcher ? v.path : locale + v.path}
+                href={v.path}
                 className="text-green-600 hover:text-green-700 p-3"
-                locale={"ja"}
+                locale={v.locale}
               >
                 {v.label}
               </Link>
