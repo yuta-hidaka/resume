@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 
 export const metadata: Metadata = {
   title: "日髙悠太 - Yuta Hidaka - Portfolio",
@@ -24,6 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
+  console.log("params =====> ", params);
   return (
     <html lang={params.locale}>
       <body>
@@ -34,13 +35,6 @@ export default function RootLayout({
   );
 }
 
-export const getStaticPaths = () => {
-  return {
-    paths: [
-      // if no `locale` is provided only the defaultLocale will be generated
-      { locale: "en" },
-      { locale: "ja" },
-    ],
-    fallback: true,
-  };
-};
+export function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "ja" }];
+}

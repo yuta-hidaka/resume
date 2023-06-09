@@ -5,21 +5,23 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const Header = ({ locale }: { locale: string }) => {
+  console.log(locale);
+
   const [links, setLinks] = useState([
     {
-      label: locale === "ja" ? "Home" : "ホーム",
+      label: locale !== "ja" ? "Home" : "ホーム",
       path: "/",
       locale: locale,
       isI18nSwitcher: false,
     },
     {
-      label: locale === "ja" ? "carrier" : "キャリア",
+      label: locale !== "ja" ? "carrier" : "キャリア",
       path: "/carrier",
       locale: locale,
       isI18nSwitcher: false,
     },
     {
-      label: locale === "ja" ? "about" : "アバウト",
+      label: locale !== "ja" ? "about" : "アバウト",
       path: "/about",
       locale: locale,
       isI18nSwitcher: false,
@@ -33,20 +35,19 @@ export const Header = ({ locale }: { locale: string }) => {
   ]);
 
   const r = usePathname();
-
   useEffect(() => {
     setLinks(
       links.map((v) => {
         v.locale = locale;
-        // if (v.isI18nSwitcher) {
-        //   const p = r.slice(1).split("/");
-        //   p[0] = locale === "ja" ? "en" : "ja";
-        //   v.path = "/" + p.join("/");
-        // }
+        if (v.isI18nSwitcher) {
+          const p = r.slice(1).split("/");
+          p[0] = locale === "ja" ? "en" : "ja";
+          v.path = "/" + p.join("/");
+        }
         return v;
       })
     );
-  }, [r]);
+  }, [locale]);
 
   return (
     <header className="border-b border-green-700">
