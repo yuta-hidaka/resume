@@ -1,6 +1,20 @@
-module.exports = {
-    // i18n: {
-    //   locales: ['en', 'ja'],
-    //   defaultLocale: 'en',
-    // },
-  };
+// @ts-check
+
+/**
+ * @type {import('next').NextConfig}
+ **/
+const nextConfig = {
+  i18n: {
+    locales: ["en", "ja"],
+    defaultLocale: "en",
+  },
+  reactStrictMode: true,
+  poweredByHeader: false,
+  swcMinify: true,
+  experimental: {
+    appDir: true,
+    // typedRoutes: true,
+  },
+};
+
+module.exports = nextConfig;
