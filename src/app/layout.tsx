@@ -22,14 +22,25 @@ export default function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { lang: string };
+  params: { locale: string };
 }) {
   return (
-    <html lang={params.lang}>
+    <html lang={params.locale}>
       <body>
-        <Header lang={params.lang} />
+        <Header locale={params.locale} />
         <div className="max-w-5xl m-auto">{children}</div>
       </body>
     </html>
   );
 }
+
+export const getStaticPaths = () => {
+  return {
+    paths: [
+      // if no `locale` is provided only the defaultLocale will be generated
+      { params: { locale: "en" }, locale: "en" },
+      { params: { locale: "ja" }, locale: "ja" },
+    ],
+    fallback: true,
+  };
+};

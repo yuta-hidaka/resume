@@ -4,30 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const Header = ({ lang }: { lang: string }) => {
+export const Header = ({ locale }: { locale: string }) => {
   const [links, setLinks] = useState([
     {
-      label: lang === "ja" ? "Home" : "ホーム",
+      label: locale === "ja" ? "Home" : "ホーム",
       path: "/",
-      locale: lang,
+      locale: locale,
       isI18nSwitcher: false,
     },
     {
-      label: lang === "ja" ? "carrier" : "キャリア",
+      label: locale === "ja" ? "carrier" : "キャリア",
       path: "/carrier",
-      locale: lang,
+      locale: locale,
       isI18nSwitcher: false,
     },
     {
-      label: lang === "ja" ? "about" : "アバウト",
+      label: locale === "ja" ? "about" : "アバウト",
       path: "/about",
-      lang: lang,
+      locale: locale,
       isI18nSwitcher: false,
     },
     {
-      label: lang === "ja" ? "English" : "日本語",
-      path: lang === "ja" ? "en" : "ja",
-      lang: lang === "ja" ? "en" : "ja",
+      label: locale === "ja" ? "English" : "日本語",
+      path: locale === "ja" ? "en" : "ja",
+      locale: locale === "ja" ? "en" : "ja",
       isI18nSwitcher: true,
     },
   ]);
@@ -37,10 +37,10 @@ export const Header = ({ lang }: { lang: string }) => {
   useEffect(() => {
     setLinks(
       links.map((v) => {
-        v.lang = lang;
+        v.locale = locale;
         if (v.isI18nSwitcher) {
           const p = r.slice(1).split("/");
-          p[0] = lang === "ja" ? "en" : "ja";
+          p[0] = locale === "ja" ? "en" : "ja";
           v.path = "/" + p.join("/");
         }
         return v;
@@ -55,7 +55,7 @@ export const Header = ({ lang }: { lang: string }) => {
           return (
             <li className="mr-6" key={i}>
               <Link
-                href={v.isI18nSwitcher ? v.path : lang + v.path}
+                href={v.isI18nSwitcher ? v.path : locale + v.path}
                 className="text-green-600 hover:text-green-700 p-3"
                 locale={"ja"}
               >
