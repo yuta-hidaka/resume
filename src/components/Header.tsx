@@ -42,12 +42,13 @@ export const Header = ({ locale }: { locale: string }) => {
         if (v.isI18nSwitcher) {
           const p = r.slice(1).split("/");
           p[0] = locale === "ja" ? "en" : "ja";
+          v.locale = locale === "ja" ? "en" : "ja";
           v.path = "/" + p.join("/");
         }
         return v;
       })
     );
-  }, [locale]);
+  }, [r]);
 
   return (
     <header className="border-b border-green-700">
