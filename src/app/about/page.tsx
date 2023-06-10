@@ -3,7 +3,6 @@
 import TypingEffect from "@/components/TypingEffect";
 import { Data, getData } from "@/data/about.ja";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/router'
 type Props = {
   params: { locale: string };
   searchParams: {};
@@ -11,8 +10,7 @@ type Props = {
 
 export default function Home(props: Props) {
   const [data, setData] = useState<Data>();
-  const router = useRouter()
-  const { defaultLocale } = router
+
   useEffect(() => {
     setData(getData(props.params.locale));
   }, [props.params.locale]);
