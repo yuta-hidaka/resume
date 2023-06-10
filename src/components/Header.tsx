@@ -53,10 +53,10 @@ export const Header = ({ locale }: { locale: string }) => {
       <ul className="flex m-5 justify-center">
         {links.map((v, i) => {
           return (
-            <li className="mr-6" key={i}>
+            <li className="mr-3 md:mr-6 text-sm md:text-base" key={i}>
               <Link
                 href={v.isI18nSwitcher ? v.path : locale + v.path}
-                className="text-green-600 hover:text-green-700 p-3"
+                className="text-green-600 hover:text-green-700"
                 locale={v.locale}
               >
                 {v.label}
