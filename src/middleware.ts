@@ -7,10 +7,7 @@ acceptLanguage.languages(["en", "ja"]);
 
 export const config = {
   // matcher: '/:lng*'
-  matcher: [
-    "/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js).*)",
-    "/([^/.]*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js).*)"],
 };
 
 const cookieName = "i18next";
@@ -32,10 +29,7 @@ export function middleware(req: any) {
 
   // Redirect if lng in path is not supported
   if (
-    !["en", "ja"].some((loc: any) =>
-      req.nextUrl.pathname.startsWith(`/${loc}`)
-    ) &&
-    !req.nextUrl.pathname.startsWith("/_next")
+    !["en", "ja"].some((loc: any) => req.nextUrl.pathname.startsWith(`/${loc}`))
   ) {
     return NextResponse.redirect(
       new URL(`/${lng}${req.nextUrl.pathname}`, req.url)
