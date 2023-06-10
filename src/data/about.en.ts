@@ -25,6 +25,20 @@ export const data = {
   experience: [
     {
       jobTitle: "FullStack Engineer",
+      company: "MonstarLab",
+      startDate: "2022-09-01",
+      endDate: "",
+      projects: {
+        tags: ["Golang", "Vue", "MySQL", "AWS", "HubSpot"],
+        job: "Outsourced development",
+        jobDescription:
+          "Updating company website, working as a FullStack Engineer responsible for both backend and frontend development in collaboration with an international team",
+        experience: [""],
+        team: 20,
+      },
+    },
+    {
+      jobTitle: "FullStack Engineer",
       company: "KiteRa",
       startDate: "2021-05-01",
       endDate: "2022-07-31",

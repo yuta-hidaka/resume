@@ -1,7 +1,7 @@
 "use client";
 
 import HistoryCard from "@/components/HistoryCard";
-import { Data, getData } from "@/data/about";
+import { Data, getData } from "@/data/about.ja";
 import { useEffect, useState } from "react";
 
 type Props = {

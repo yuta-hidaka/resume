@@ -1,7 +1,7 @@
 "use client";
 
 import TypingEffect from "@/components/TypingEffect";
-import { Data, getData } from "@/data/about";
+import { Data, getData } from "@/data/about.ja";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
