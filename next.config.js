@@ -3,15 +3,6 @@ const nextConfig = {
     locales: ["en", "ja"],
     defaultLocale: "en",
   },
-  async rewrites() {
-    return [
-      {
-        source: "/:locale*",
-        destination: "/:locale*",
-        locale: true,
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;
