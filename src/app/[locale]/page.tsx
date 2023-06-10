@@ -10,6 +10,10 @@ type Props = {
   searchParams: {};
 };
 
+export async function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "ja" }];
+}
+
 export default function Home(props: Props) {
   const [data, setData] = useState<Data>();
   useEffect(() => {

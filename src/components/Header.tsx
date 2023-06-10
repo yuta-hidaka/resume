@@ -55,7 +55,7 @@ export const Header = ({ locale }: { locale: string }) => {
           return (
             <li className="mr-6" key={i}>
               <Link
-                href={v.path}
+                href={v.isI18nSwitcher ? v.path : locale + v.path}
                 className="text-green-600 hover:text-green-700 p-3"
                 locale={v.locale}
               >
