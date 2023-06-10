@@ -5,8 +5,7 @@ export const data = {
   family_name: "Yuta",
   given_name: "Hidaka",
   profession: "Full Stack Developer",
-  bio: `After graduating from high school, I started working at a comprehensive chemical manufacturer. I gained six years of experience in research and development support for petrochemical products, and later transitioned to product development. While working at the company, I attended a university in Tokyo six days a week for four years to obtain a bachelor's degree. I focused on studying the fundamentals of chemistry, particularly organic chemistry.
-  In October 2018, I made a career change into the programming industry. I worked for a company mainly engaged in systems engineering and support for about 1.8 months. After that, I worked as a freelancer, at a small-scale contract development company, and at a startup in its seed phase. Currently, I am employed at a digital consulting company.`,
+  bio: `After graduating from high school, I started working at a comprehensive chemical manufacturer.\n\nI gained six years of experience in research and development support for petrochemical products, and later transitioned to product development. \n\nWhile working at the company, I attended a university in Tokyo six days a week for four years to obtain a bachelor's degree. I focused on studying the fundamentals of chemistry, particularly organic chemistry.\n\nIn October 2018, I made a career change into the programming industry. I worked for a company mainly engaged in systems engineering and support for about 1.8 months. After that, I worked as a freelancer, at a small-scale contract development company, and at a startup in its seed phase. \n\nCurrently, I am employed at a digital consulting company.`,
   address: "Shinjuku-Waseda Tokyo",
   social: [
     {
@@ -198,11 +197,11 @@ export const data = {
         ],
         job: "Development of a web application for visualizing experimental data",
         jobDescription:
-          " 化学メーカーのDX推進関連プロジェクト\n多くの実験データが、エクセルで管理されており、かつフォーマットがバラバラな状態になっており、主任研究者や作業者が変わると実験データのまとめ方が変わってしまう。\nこのような属人的な状況を改善するために、過去の実験データを含むすべてのデータをウェブアプリ上で管理し、実験の条件や、組成なので検索・参照できるような仕組みを作れるようにするプロジェクト。\ntypescriptで「xlsx.js」を用いてエクセルを取り込む処理を実装し、これらのデータをJSONに整形し、DjangoRestFrameworkを用いてREST-APIにしてデータを登録するようにした。\nデータを集計し、吸光度のデータなどを計算しplotly.jsを用いてグラフとして可視化するようにした。\nプロジェクトそのものが検証段階のため、代表的な実験データを取り込み、グラフで可視化・多様な検索条件を表示できるようにしたが、実験の生データに規則性が無さすぎるためプログラミングの工数がかかるとのことから、DJangoでの開発が中止となった。\n代替手段としてAWSのデータレイクとラムダを用いた手法を検討することとなったが、こちらについては関与せずにプロジェクトを離脱。",
+          "Project related to DX promotion in a chemical manufacturing company. Many experimental data are managed in Excel and have inconsistent formatting. The organization of experimental data changes when the principal researcher or operator changes. This project aims to improve such personalized situations by managing all data, including past experimental data, on a web application. The goal is to create a system where experiment conditions and compositions can be searched and referenced. The implementation includes importing Excel files using 'xlsx.js' in TypeScript, formatting the data into JSON, and registering the data as a REST API using DjangoRestFramework. Data is aggregated, and parameters such as absorbance are calculated and visualized as graphs using plotly.js. Since the project is in the verification stage, representative experimental data was imported and visualized as graphs, allowing for various search conditions. However, due to the lack of regularity in the raw experimental data, the programming effort required became extensive, leading to the discontinuation of development with Django. An alternative approach using AWS Data Lake and Lambda was considered but was not pursued, and I exited the project.",
         experience: [
-          "MVCモデルのフレームワークではなく、MVTモデルのDjango特有のモデルでのWebアプリの作成経験の習得",
-          "全職の経験を生かして、データのまとめ方やグラフの出力、DB設計等をPM等に提言しながらの作業。",
-          "TypeScriptを用いた静的型付言語でのフロントエンド開発",
+          "Acquired experience in creating web applications using Django's MVT (Model-View-Template) model, which is specific to Django, rather than the MVC model.",
+          "Utilized overall professional experience to propose data organization, graph output, and database design to project managers and others.",
+          "Front-end development using TypeScript, a statically-typed programming language.",
         ],
         team: 4,
       },

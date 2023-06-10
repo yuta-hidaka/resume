@@ -42,21 +42,19 @@ export default function HistoryCard({
       <div className="flex flex-col items-center" ref={ref}>
         <HistoryLine currentIndex={currentIndex} index={index} />
       </div>
-      <div className="transition hover:scale-105 hover:ease-in flex w-full flex-col border hover:border-green-600 md:mx-10 mx-3 my-5 p-3 md:my-5 md:p-5 rounded-md ease-in-out duration-200">
-        <div className="font-extrabold break-all leading-none ml-5 mb-5 text-green-600">
+      <div className="break-all whitespace-pre-wrap tracking-wide leading-5 transition hover:scale-105 hover:ease-in flex w-full flex-col border hover:border-green-600 md:mx-10 mx-3 my-5 p-3 md:my-5 md:p-5 rounded-md ease-in-out duration-200">
+        <div className="font-extrabold break-all ml-5 mb-5 text-green-600">
           {v.company}
         </div>
-        <div className="text-sm font-bold break-all leading-none ml-5 mb-5">
+        <div className="text-sm font-bold break-all ml-5 mb-5">
           {v.startDate} - {v.endDate}
         </div>
-        <div className="break-all leading-none ml-5 mb-5">{v.jobTitle}</div>
-        <div className="break-all leading-none ml-5 mb-3 line-clamp-2">
-          {v.projects.job}
-        </div>
+        <div className="break-all ml-5 mb-5">{v.jobTitle}</div>
+        <div className="break-all ml-5 mb-3 line-clamp-2">{v.projects.job}</div>
         <div
           className={`${
             expand ? "whitespace-break-spaces" : "line-clamp-2"
-          } leading-none ml-5 mb-5`}
+          } ml-5 mb-5`}
         >
           {v.projects.jobDescription}
         </div>

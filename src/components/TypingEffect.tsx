@@ -58,21 +58,25 @@ export default function TypingEffect({
   return (
     <>
       {skip ? (
-        <span className={className}>
+        <p className={className + " break-all whitespace-pre-wrap tracking-wide leading-7"}>
           {showPrefix && prefix && <span>{prefix}</span>}
           {link ? <a href={text}>{text}</a> : text}
           {showCursor && (
             <span className="align-middle border-l-2 h-1 animate-ping"></span>
           )}
-        </span>
+        </p>
       ) : (
-        <span className={_text !== "" ? className : ""}>
+        <p
+          className={
+            _text !== "" ? className + " break-all whitespace-pre-wrap tracking-wide leading-7" : ""
+          }
+        >
           {showPrefix && prefix && <span>{prefix}</span>}
           {link ? <a href={_text}>{_text}</a> : _text}
           {showCursor && (
             <span className="align-middle border-l-2 h-1 animate-ping"></span>
           )}
-        </span>
+        </p>
       )}
       {/* <span className={_text !== "" ? className : ""}>
         {showPrefix && prefix && <span>{prefix}</span>}
