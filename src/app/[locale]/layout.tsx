@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  console.error("[locale] layout");
+  console.warn("[locale] layout");
   return (
     <html lang={params.locale}>
       <body>

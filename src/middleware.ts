@@ -11,6 +11,7 @@ export const config = {
 const cookieName = "i18next";
 
 export function middleware(req: any) {
+  console.warn("middleware -- -- - - - - - - -");
   let lng;
   if (req.cookies.has(cookieName))
     lng = acceptLanguage.get(req.cookies.get(cookieName).value);
