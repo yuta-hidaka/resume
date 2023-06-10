@@ -24,12 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  return (children
-    // <html lang={params.locale}>
-    //   <body>
-    //     <Header locale={params.locale} />
-    //     <div className="max-w-5xl m-auto">{children}</div>
-    //   </body>
-    // </html>
+  return (
+    <html lang={params.locale}>
+      <body>
+        <Header locale={params.locale} />
+        <div className="max-w-5xl m-auto">{children}</div>
+      </body>
+    </html>
   );
 }
