@@ -13,8 +13,8 @@ export const Header = ({ locale }: { locale: string }) => {
       isI18nSwitcher: false,
     },
     {
-      label: locale !== "ja" ? "carrier" : "キャリア",
-      path: "/carrier",
+      label: locale !== "ja" ? "career" : "キャリア",
+      path: "/career",
       locale: locale,
       isI18nSwitcher: false,
     },

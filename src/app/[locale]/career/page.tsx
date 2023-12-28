@@ -27,7 +27,7 @@ export default function Home(props: Props) {
 
   return (
     <>
-      <h1 className="text-2xl h-full w-full px-10 mt-5">Carrier</h1>
+      <h1 className="text-2xl h-full w-full px-10 mt-5">Career</h1>
       <main className="h-full w-full md:p-20 p-5">
         {data?.experience &&
           data.experience.map((v, i) => {
