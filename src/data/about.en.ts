@@ -281,9 +281,9 @@ export const data = {
       endDate: "2016-10-31",
       projects: {
         tags: ["Polypropylene", "Separator"],
-        job: "バッテリーセパレータの材料開発",
+        job: "Material Development of Battery Separator",
         jobDescription:
-          "廉価版のバッテリーに使用するPPをベースとしたセパレーターフィルムの材料模索や構造解析など実施。\n耐熱性・Li-ionが結晶化した時の突き刺し強度、微多孔の均一性、空孔率等に焦点を当てて材料開発。\n途中で部署移動のため、基礎調査で終了。\n",
+          "Conducted material exploration and structural analysis of PP-based separator film to be used in low-cost batteries.\nFocused on heat resistance, puncture strength when Li-ion crystallizes, uniformity of micro-pores, void ratio, and other aspects for material development.\nDue to a department transfer midway, concluded with preliminary research.\n",
       },
     },
     {
