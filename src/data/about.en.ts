@@ -1,21 +1,23 @@
 "use client";
 
+import { data as dataEN } from "./about.en";
+
+export const getData = (locale: string | undefined): Data => {
+  if (locale === "ja") {
+    return data;
+  }
+  return dataEN;
+};
+
 export const data = {
-  //   avatar: avatar,
-  family_name: "Yuta",
-  given_name: "Hidaka",
+  family_name: "Hidaka",
+  given_name: "Yuta",
   profession: "Full Stack Developer",
-  bio: `After graduating from high school, I started working at a comprehensive chemical manufacturer.\n\nI gained six years of experience in research and development support for petrochemical products, and later transitioned to product development. \n\nWhile working at the company, I attended a university in Tokyo six days a week for four years to obtain a bachelor's degree. I focused on studying the fundamentals of chemistry, particularly organic chemistry.\n\nIn October 2018, I made a career change into the programming industry. I worked for a company mainly engaged in systems engineering and support for about 1.8 months. After that, I worked as a freelancer, at a small-scale contract development company, and at a startup in its seed phase. \n\nCurrently, I am employed at a digital consulting company.`,
-  address: "Shinjuku-Waseda Tokyo",
+  bio: `After graduating high school, worked in product development at a comprehensive chemical manufacturer for 6 years. While working, attended a university in Tokyo 6 days a week, studying organic chemistry and earning a bachelor's degree. Changed careers to a programmer in October 2018. After working for an SES company for 2 years, gained experience as a freelancer, at a contract development company, and at a startup, and now works at a digital consulting company.`,
+  address: "Shinjuku Tokyo",
   social: [
-    {
-      name: "Twitter",
-      url: "https://twitter.com/amateur_prog",
-    },
-    {
-      name: "GitHub",
-      url: "https://github.com/yuta-hidaka",
-    },
+    { name: "Twitter", url: "https://twitter.com/amateur_prog" },
+    { name: "GitHub", url: "https://github.com/yuta-hidaka" },
     {
       name: "LinkedIn",
       url: "https://www.linkedin.com/in/%E6%82%A0%E5%A4%AA-%E6%97%A5%E9%AB%98-2823a8195/",
@@ -23,15 +25,29 @@ export const data = {
   ],
   experience: [
     {
-      jobTitle: "FullStack Engineer",
-      company: "MonstarLab",
-      startDate: "2022-09-01",
+      jobTitle: "Tech Lead",
+      company: "Monstarlab",
+      startDate: "2022-04-01",
       endDate: "",
       projects: {
-        tags: ["Golang", "Vue", "MySQL", "AWS", "HubSpot"],
-        job: "Outsourced development",
+        tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
+        job: "Contract Development",
         jobDescription:
-          "Updating company website, working as a FullStack Engineer responsible for both backend and frontend development in collaboration with an international team",
+          "Participated as a tech lead in a CMS migration project. Architecture decision, infrastructure construction, CMS selection, estimation. Headless CMS migration.",
+        experience: [""],
+        team: 5,
+      },
+    },
+    {
+      jobTitle: "FullStack Engineer",
+      company: "Monstarlab",
+      startDate: "2022-09-01",
+      endDate: "2023-10-30",
+      projects: {
+        tags: ["Golang", "Vue3", "Nuxt3", "MySQL", "AWS", "HubSpot"],
+        job: "Contract Development",
+        jobDescription:
+          "Corporate website update. Worked as a full-stack engineer handling both backend and frontend in cooperation with overseas teams. Adjusted specifications with customers in agile development.",
         experience: [""],
         team: 20,
       },
@@ -43,79 +59,74 @@ export const data = {
       endDate: "2022-07-31",
       projects: {
         tags: ["Golang", "Svelte", "PostgreSQL", "AWS"],
-        job: "SaaS development for managing regulations",
+        job: "Regulation Management SaaS Development",
         jobDescription:
-          "The backend is built using Golang and communicates with the frontend through JSON-RPC. We are focused on developing at a fast pace as it is a company in the early stage of growth.",
-        experience: [
-          "Experience in development environments using the latest languages.",
-        ],
+          "Built backend with Golang, communicating with the frontend via JSON-RPC. Fast-paced development. Responsible for electronic application for the 36 Agreement, e-Gov linkage, etc.",
+        experience: ["Development environment using the latest languages"],
         team: 5,
       },
     },
     {
-      jobTitle: "FullStack Developper",
+      jobTitle: "CRM Software Development",
       company: "Fignny",
       startDate: "2020-09-01",
       endDate: "2021-04-30",
       projects: {
         tags: [
-          "Python (custom framework)",
+          "Python(独自FW)",
           "PHP",
           "Angular.js1.2",
           "Vue.js",
           "jQuery",
           "AWS EC2",
           "AWS Lambda",
-          "DyanamoDB",
+          "DynamoDB",
           "MongoDB",
           "MySQL",
           "Jenkins",
           "docker-compose",
         ],
-        job: "SES at Fignny, contributing to a company providing CRM services. The frontend is built using multiple frameworks and languages.",
+        job: "CRM Service Development",
         jobDescription:
-          "Responsible for developing CRM services, including adding new features and fixing bugs. Deploying APIs written in Python on Lambda to provide all functionalities through APIs. Implemented using NoSQL to allow customers to freely define columns and add tables, which is a key feature of our CRM. Due to often insufficient documentation, tasks involve creating documentation and setting up a lightweight debugging environment using an editor. Work is performed with consideration for subsequent team members.",
-        experience: [
-          "Experience with NoSQL databases",
-          "Experience in large team development",
-          "AWS",
-        ],
+          "Added new features and fixed bugs, provided APIs, and defined items using NoSQL. Also responsible for documentation and debugging environment construction.",
+        experience: ["Handling NoSQL", "Team development with large numbers", "AWS"],
         team: 20,
       },
     },
     {
-      jobTitle: "FullStack Developper",
+      jobTitle: "Scraping Summary Site",
       company: "Fignny",
       startDate: "2020-08-31",
       endDate: "2020-09-30",
       projects: {
         tags: [
           "Python(Django)",
-          "AWS Aurora(mysql5.6)",
+          "AWS Aurora(MySQL5.6)",
           "AWS EC2",
           "AWS S3",
           "docker-compose",
-          "beautifulSoup4",
-          "celery",
-          "redis",
-          "backlog",
+          "BeautifulSoup4",
+          "Celery",
+          "Redis",
+          "Backlog",
         ],
-        job: "Web scraping for content aggregation website",
+        job: "Data Scraping for Summary Site",
         jobDescription:
-          "Developed a scraping process using Python's BeautifulSoup4. Despite an initial estimate of 1.5 months, completed the scraping process within 2 weeks and executed it on EC2 instances. Implemented the ability to output scraped articles in Word format based on client requests (using python-docx). Introduced waiting time in the execution speed of each process to handle communication restrictions between the requesting site and AWS. Additionally, image requests resulted in longer response times. Consequently, there were significant waiting periods during the processing, resulting in a longer processing time. However, the server load remained low, with sufficient available resources. To optimize processing time and server resource utilization, implemented background processing and parallelization for the scraping process. Introduced Celery for background processing and utilized Python's built-in ThreadPoolExecutor for parallelization, improving the capacity to execute up to 80 processes simultaneously on a 4 CPU machine (compared to the initial limitation of only 1 process). However, this led to an excessive amount of requests from the same IP, prompting access restrictions from AWS. Therefore, downgraded the EC2 instance to 2 CPUs and created 20 EC2 instances to distribute the processing load and execute the scraping. Acquired over 2 million data entries, including image data, ensuring the ability to reproduce all the retrieved data. Additionally, performed performance tuning on the database, reviewed Django ORM queries, and reduced waiting time for processes other than scraping to handle the large amount of data being processed.",
+          "Implemented scraping process with BeautifulSoup4 in 2 weeks. Introduced parallel processing with Celery and ThreadPoolExecutor, and distributed processing with 20 EC2 instances.",
         experience: [
-          "Experience in implementing load distribution through parallel processing",
-          "Web scraping experience",
+          "Load balancing with parallel processing",
+          "Scraping",
           "DB performance tuning",
-          "AWS environment setup",
-          "Development using Docker",
+          "AWS environment construction",
+          "Docker development",
+          "Memory management",
         ],
         team: 2,
       },
     },
     {
-      jobTitle: "FullStack Developper ",
-      company: "フリーランス",
+      jobTitle: "Time and Billing Management System for Law Firm 2",
+      company: "Freelancer",
       startDate: "2020-07-01",
       endDate: "2020-07-31",
       projects: {
@@ -125,20 +136,17 @@ export const data = {
           "FreeBSD",
           "jQuery",
           "docker-compose",
-          "gitLab",
-          "backlog",
+          "GitLab",
+          "Backlog",
         ],
-        job: "Development of time and billing management system for a law firm (Previous job as an in-house contractor)",
-        jobDescription:
-          "In phase 2, implemented functionalities that were not achievable within the initial budget and incorporated additional requested features. While the previous phase involved primarily client coordination, in this project, I was responsible for server-side logic development using PHP, as well as coding-centric tasks such as implementing new functionalities.",
-        experience: [
-          "Experience in development using Laravel, a PHP framework",
-        ],
+        job: "Time and Billing Management System Development",
+        jobDescription: "Added new features and created server-side logic.",
+        experience: ["Development experience with Laravel"],
         team: 4,
       },
     },
     {
-      jobTitle: "FullStack Developper",
+      jobTitle: "Time and Billing Management System for Law Firm 1",
       company: "Sysnavi",
       startDate: "2019-06-01",
       endDate: "2020-06-30",
@@ -149,40 +157,32 @@ export const data = {
           "FreeBSD",
           "jQuery",
           "docker-compose",
-          "gitLab",
-          "redmine",
+          "GitLab",
+          "Redmine",
         ],
-        job: "In-house contract development work",
+        job: "Time and Billing Management System Development",
         jobDescription:
-          "In addition to my SES duties, I was responsible for tasks such as creating mockups, designing databases, and setting up infrastructure. From January 2020, I participated in the project full-time, handling implementation, client coordination, issue management, and progress tracking with freelance professionals whom we outsourced development tasks to.",
-        experience: [
-          "Experience in database design",
-          "Creating mockups based on client feedback",
-          "Development using Docker",
-        ],
+          "Requirements definition, mockup creation, DB design, PDF output function implementation, rental server environment investigation and deployment.",
+        experience: ["DB design", "Mockup creation", "Docker development"],
         team: 4,
       },
     },
     {
-      jobTitle: "Fullstack / RPA Enginner",
+      jobTitle: "RPA of Business Processes",
       company: "Sysnavi",
       startDate: "2019-10-01",
       endDate: "2019-12-31",
       projects: {
         tags: ["WinActor", "PHP", "MicrosoftAccess"],
-        job: "On-site work as an SES, stationed at the client's office. (Note: It was the same on-site location from December 2019 to December 2020). Part of the back-office DX promotion at the same chemical manufacturing company as mentioned before.",
+        job: "RPA",
         jobDescription:
-          "Engaged in the RPA (Robotic Process Automation) implementation of routine tasks in the back-office that had become person-dependent using RPA software provided by NTT Advanced Technology. Joined as support due to a shortage of human resources. Although it was a back-office role, knowledge of chemical manufacturing logistics was required. Provided advice and assistance to colleagues performing the same tasks based on my experience while working on RPA development. Since it was the early stage of RPA promotion, I also participated in planning and launching initiatives to enable the client to handle RPA creation and management internally. Created a management site for RPA using Microsoft Access and PHP. Proposed frameworks similar to programming for user understanding and suggested modularization and library development for frequently used RPA operations, considering end-user usage in the future.",
-        experience: [
-          "Knowledge of creating RPA using WinActor",
-          "Planning from a user perspective, aiming for RPA frameworks that end-users can understand",
-          "Experience transitioning from programming",
-        ],
+          "Automated back-office tasks with NTT Advanced Technology's RPA software. Planned the creation and management system of RPA.",
+        experience: ["RPA creation with WinActor", "RPA planning for end-users"],
         team: 3,
       },
     },
     {
-      jobTitle: "FullStack Developper",
+      jobTitle: "Web Application Development - Visualization of Experimental Data",
       company: "Sysnavi",
       startDate: "2019-06-01",
       endDate: "2019-08-31",
@@ -193,21 +193,20 @@ export const data = {
           "MySQL5.7",
           "TypeScript",
           "HTML",
-          "gitHub",
+          "GitHub",
         ],
-        job: "Development of a web application for visualizing experimental data",
+        job: "Experimental Data Visualization Web Application Development",
         jobDescription:
-          "Project related to DX promotion in a chemical manufacturing company. Many experimental data are managed in Excel and have inconsistent formatting. The organization of experimental data changes when the principal researcher or operator changes. This project aims to improve such personalized situations by managing all data, including past experimental data, on a web application. The goal is to create a system where experiment conditions and compositions can be searched and referenced. The implementation includes importing Excel files using 'xlsx.js' in TypeScript, formatting the data into JSON, and registering the data as a REST API using DjangoRestFramework. Data is aggregated, and parameters such as absorbance are calculated and visualized as graphs using plotly.js. Since the project is in the verification stage, representative experimental data was imported and visualized as graphs, allowing for various search conditions. However, due to the lack of regularity in the raw experimental data, the programming effort required became extensive, leading to the discontinuation of development with Django. An alternative approach using AWS Data Lake and Lambda was considered but was not pursued, and I exited the project.",
+          "Formatted Excel data into JSON and registered with REST-API using Django Rest Framework. Visualized data with plotly.js.",
         experience: [
-          "Acquired experience in creating web applications using Django's MVT (Model-View-Template) model, which is specific to Django, rather than the MVC model.",
-          "Utilized overall professional experience to propose data organization, graph output, and database design to project managers and others.",
-          "Front-end development using TypeScript, a statically-typed programming language.",
+          "Development experience with Django's MVT model",
+          "Frontend development with TypeScript",
         ],
         team: 4,
       },
     },
     {
-      jobTitle: "Fullstack / RPA Enginner",
+      jobTitle: "Data Migration and Batch Processing Development",
       company: "Sysnavi",
       startDate: "2019-02-01",
       endDate: "2019-06-30",
@@ -217,199 +216,191 @@ export const data = {
           "SQL Server",
           "Windows Server",
           "Batch Script",
-          "Python (Django)",
+          "Python(Django)",
           "Jira",
         ],
-        job: "Development of data migration and batch processing",
+        job: "Data Migration and Analysis",
         jobDescription:
-          "Responsible for developing data migration and batch processing solutions. The task involves migrating various types of data owned by the client, such as NotesDB, CSV, and Microsoft Access, into SQL Server using Alteryx. After system setup, the development of a GUI is essential to enable the client to manipulate the data independently, which was achieved through Alteryx development. The process begins with creating data anonymization processes to validate and secure the client's data. Django is utilized internally to manage the roles, descriptions, and data types of numerous tables and columns. With millions of records, parallel processing in Alteryx, data type conversion, and validation implementations were performed when importing data from various sources. Additionally, batch processing was incorporated to regularly import constantly updated data. Furthermore, manual data aggregation tasks such as sales management and KPI calculation were automated by exporting them from the workflow and utilizing Alteryx in combination with SQL. Special attention was given to CSV data, including the creation of regular expressions and mechanisms to avoid issues caused by missing data escape processing. The project was successfully carried out for four months, culminating in the integration of data into SQL Server before departure from the project.",
+          "Loaded diverse data sources with Alteryx and integrated them into SQL Server. Implemented parallel processing, data anonymization, and batch processing.",
         experience: [
-          "Experience with parallel processing to handle large volumes of data",
-          "Knowledge of data acquisition and processing from diverse data sources",
-          "Experience in GUI-based data processing and management using Alteryx",
-          "Expertise in data manipulation using SQL",
+          "Parallel processing",
+          "Data acquisition and processing",
+          "Data management with GUI-based Alteryx",
+          "SQL data processing",
         ],
         team: 5,
       },
     },
     {
-      jobTitle: "Fullstack Enginner",
+      jobTitle: "Web Application Development - Forecast Management Software Creation",
       company: "Sysnavi",
-      startDate: "2019-12-01",
+      startDate: "2018-12-01",
       endDate: "2019-02-28",
       projects: {
-        tags: ["ASP.NET C#", "SQL Sever", "BootStrap4", "html", "javascript"],
-        job: "Development of budget management web application",
+        tags: ["ASP.NET C#", "SQL Server", "Bootstrap4", "HTML", "JavaScript"],
+        job: "Forecast and Actual Management Project",
         jobDescription:
-          "Started by combining the markup data received from the designer with ASP.Net logic. Involved in developing nearly 70% of the user interface screens. Also responsible for creating the administration panel and backend logic for asynchronous communication. Subsequently, conducted testing for one week according to the test specifications to prepare for delivery. Participated in the project with approximately 60% focus on frontend development and 40% on backend development.",
+          "Combined markup data and ASP.Net logic. Responsible for user interface and admin interface, backend logic.",
         experience: [
-          "Experience in both frontend and backend development due to working in a small team",
-          "Backend development experience includes knowledge of app structure using the MVC model, working with Razor syntax, performing database operations using LINQ, and integrating with external APIs",
-          "Frontend development experience includes server-side rendering, real-time screen updates using AJAX asynchronous communication with jQuery, and DOM manipulation",
+          "Experience in both frontend and backend",
+          "MVC model, LINQ, external API integration",
         ],
         team: 3,
       },
     },
     {
-      jobTitle: "Importer",
+      jobTitle: "Ham Import and Sales",
       company: "Sole Proprietor",
       startDate: "2018-04-01",
       endDate: "2018-09-30",
       projects: {
         tags: ["Import", "Food Sanitation Law"],
-        job: "Import and sales of cured ham",
+        job: "Ham Import and Sales",
         jobDescription:
-          "Inspired by my Spanish girlfriend, I aimed to import and sell cured ham from Spain. Conducted negotiations with local suppliers, visited farms, performed bacterial tests for pathogens like Listeria, and tested the import flow for customs clearance. Obtained the qualification of a food hygiene manager and engaged in sales activities, including direct sales. However, the launch was interrupted due to frequent arguments with my girlfriend during the process of raising funds through borrowing from the Japan Finance Corporation.",
+          "Aimed to import and sell Spanish ham. Negotiated with suppliers, visited farms, conducted bacterial tests, and handled customs clearance. Obtained food sanitation supervisor qualification. Interrupted during fundraising.",
       },
     },
     {
-      jobTitle: "Research and Development",
+      jobTitle: "Research and Development / RD-2016",
       company: "Sumitomo Chemical",
       startDate: "2016-11-01",
       endDate: "2018-03-31",
       projects: {
         tags: ["Polypropylene", "Medical Grade"],
-        job: "Development of Medical Grade Polypropylene at a Functional Materials Research Institute",
+        job: "Development of Medical Grade Polypropylene Materials",
         jobDescription:
-          "Engage in the development of medical grade polypropylene at a functional materials research institute. This involves establishing the composition for polymerization of polypropylene for contact lens applications and developing materials for medical-grade PP bottles.\nDuring the production of contact lenses using polymerized PP, distortion may occur due to cooling conditions. The focus is on developing materials that minimize distortion and enable easy molding under various conditions.\nIn the case of PP bottles used for disinfection with UV irradiation, radical generation within the PP can cause leaching of low-molecular-weight components, leading to container contamination. The aim is to develop materials that suppress such issues by establishing a UV-resistant composition.\nUpon successful establishment of the UV-resistant composition, the project concludes with my departure from the institute.",
+          "Developed medical grade polypropylene materials. Developed materials to suppress warping during injection molding and prevent contamination from UV irradiation.",
       },
     },
     {
-      jobTitle: "Research and Development",
+      jobTitle: "Research and Development / RD-2015",
       company: "Sumitomo Chemical",
       startDate: "2015-06-01",
       endDate: "2016-10-31",
       projects: {
         tags: ["Polypropylene", "Separator"],
-        job: "Material Development of Battery Separator",
+        job: "Battery Separator Material Development",
         jobDescription:
-          "Conducted material exploration and structural analysis of PP-based separator film to be used in low-cost batteries.\nFocused on heat resistance, puncture strength when Li-ion crystallizes, uniformity of micro-pores, void ratio, and other aspects for material development.\nDue to a department transfer midway, concluded with preliminary research.\n",
+          "Explored PP-based separator film materials. Focused on heat resistance, puncture strength, and porosity.",
       },
     },
     {
-      jobTitle: "Research and Development Assistance",
+      jobTitle: "Research and Development Support / RD-support",
       company: "Sumitomo Chemical",
       startDate: "2012-04-01",
       endDate: "2015-05-31",
       projects: {
         tags: ["Polypropylene", "Film"],
-        job: "Assistance in Packaging Material Development",
+        job: "Packaging Material Development Support",
         jobDescription:
-          "Joined Sumitomo Chemical after high school graduation and was assigned to the Petrochemical Research Laboratory. Assisted in the research and development of polypropylene film at Sumitomo Chemical's Petrochemical Research Laboratory. Conducted experiments to assist in the development of packaging materials and battery separators.",
+          "Assisted in research and development of polypropylene film at Sumitomo Chemical's petrochemical research institute. Supported the development of packaging materials and battery separators.",
       },
     },
   ],
   selfProject: [
     {
       title: "BikeHub",
-      desc: `A successor version (in the form of an app) of BikeMileage.com. Allows users to register fuel mileage and view bike-related news. Backend API: - Developed using Django (DRF), with periodic batch scraping and RSS to fetch bike-related news articles, and perform morphological analysis for categorization. - Development environment based on docker-compose using nginx-unit. Frontend: - Created using React Native Expo, currently implemented to fetch and display bike news using the API. - Planned implementation of authentication and fuel mileage registration functionality. You can view the app in development by clicking the link below if you have the "Expo" app installed on your smartphone. ・2020-09-23 The app is completed and available on Google Play Store and Apple Store.,`,
+      desc: `Successor app to BikeFuel.com. Allows fuel registration and displays bike news. Backend API created with Django (DRF), frontend created with ReactNative Expo.`,
       link: "https://expo.io/@yuta322/bikehub-frontend",
       tags: [
-        "python(Django)",
+        "Python(Django)",
         "React Native(EXPO)",
         "DRF",
         "Expo",
-        "Beautifulsoup4",
+        "BeautifulSoup4",
         "Mecab",
         "Morphological Analysis",
-        "centos8",
+        "CentOS8",
         "nginx",
         "nginx unit",
       ],
     },
     {
       title: "BikeHub(Web)",
-      desc: "Link to BikeHub",
+      desc: `Link to BikeHub`,
       link: "https://bikehub.app",
       tags: [],
     },
     {
       title: "BikeHub(iOS)",
-      desc: "Link to Apple Store",
+      desc: `Apple Store link`,
       link: "https://apps.apple.com/jp/app/bike-hub/id1531692067",
       tags: [],
     },
     {
       title: "BikeHub(Android)",
-      desc: "Link to Google Play Store",
+      desc: `Google Play Store link`,
       link: "https://play.google.com/store/apps/details?id=app.bikehub",
       tags: [],
     },
     {
-      title: "バイク燃費.com(Service Ended)",
-      desc: `Allows registration and recording of motorcycle fuel efficiency. Developed using only Java, JSP, and Servlets. Motorcycle data was collected by web scraping using BeautifulSoup4.,`,
+      title: "BikeFuel.com (Service Ended)",
+      desc: `Allows registration and recording of bike fuel consumption. Created with Java and JSP/Servlet. Scraping with BeautifulSoup4.`,
       link: "https://bike-nenpi.com",
       tags: [
-        "JAVA",
-        "python",
-        "Beautifulsoup4",
-        "centos8",
+        "Java",
+        "Python",
+        "BeautifulSoup4",
+        "CentOS8",
         "Apache2.4",
-        "TomCat",
+        "Tomcat",
       ],
     },
     {
-      title: "SAVE EAT(Service Ended)",
-      desc: `Created a restaurant support website to assist struggling restaurants during the COVID-19 pandemic. Developed within one week. Created and deployed using Docker-compose as a Docker container. Received limited usage and no activity since then.,`,
+      title: "SAVE EAT (Service Ended)",
+      desc: `Support site for restaurants during the COVID-19 pandemic. Created in 1 week and deployed with Docker-compose.`,
       link: "https://save-eat.me",
-      tags: ["python(Django)", "Beautifulsoup4", "GitHub", "centos8", "nginx"],
+      tags: ["Python(Django)", "BeautifulSoup4", "GitHub", "CentOS8", "nginx"],
     },
     {
-      title: "Voice-to-Text Website(Service Ended)",
-      desc: `Created a web tool for transcription using JavaScript's API to record conversations.,`,
+      title: "Voice Transcription Site (Service Ended)",
+      desc: `Voice transcription site using JavaScript API.`,
       link: "https://voice-to-text.web-tool.tokyo/",
-      tags: ["JavaScript", "BootStrap4", "centos8"],
+      tags: ["JavaScript", "Bootstrap4", "CentOS8"],
     },
     {
       title: "docker-compose for Django with Gunicorn",
-      desc: `Quickly launches Django projects. Created a docker-compose file shared as a template on GitHub. Also working on an Nginx-Unit version.,`,
+      desc: `Template for the fastest setup of Django projects. Also creating an Nginx-Unit version.`,
       link: "https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn",
       tags: ["docker-compose", "django"],
     },
     {
       title: "docker-compose for Django with nginx-unit",
-      desc: `Quickly launches Django projects. Nginx-Unit version with revisions.,`,
+      desc: `Template for the fastest setup of Django projects.`,
       link: "https://github.com/yuta-hidaka/Docker-Django-MariaDB-NginxUnit",
-      tags: ["docker-compose", "django", "Nginx-Unit"],
+      tags: ["docker-compose", "django", "nginx-unit"],
     },
   ],
   education: [
     {
-      degree: "Bachelor of Science in Chemistry",
+      degree: "Department of Chemistry, Evening Division",
       institution: "Tokyo University of Science",
       startDate: "2014-04-01",
       endDate: "2018-03-01",
-      description: `To enhance my career and acquire a solid foundation in research while working at Sumitomo Chemical, I discussed with my superiors and decided to attend university.
-        I worked as a full-time employee at Sumitomo Chemical while studying for four years in the evening to obtain a bachelor's degree, with a focus on organic chemistry.
-        I commuted from Chiba (Kisarazu) to Tokyo (Iidabashi) after work, six days a week.
-        Typical schedule:
-        Work: 7:00-16:00
-        Commute: 16:00-18:00
-        Classes: 18:00-21:10
-        Return home: 21:10-23:30`,
+      description: `Attended university to advance career while working at Sumitomo Chemical. Attended classes 6 days a week, studying organic chemistry and earning a bachelor's degree.`,
     },
   ],
   motivation: [
     {
-      title: "Approach to Programming",
-      desc: "Through programming, I aim to eliminate inefficiencies and pains that have existed in my work and in interactions with others. The time saved from eliminating these inefficiencies can be dedicated to spending quality time with family, friends, partners, and pursuing personal hobbies, thus leading a culturally enriched life. I not only strive to eliminate waste but also aim to create unique services that enhance the quality of people's lives in ways that haven't been seen before.",
-    },
-    {
-      title: "Inquisitiveness",
-      desc: "Having a background in research and development, I am always curious and eager to seek answers to questions. I approach new things without resistance and embrace challenges, constantly seeking solutions to problems.",
+      title: "Thoughts on Programming",
+      desc: `Through programming, I want to eliminate waste and pain in work, and increase time for family, friends, and hobbies. I want to improve quality of life with unique services.`,
     },
     {
       title: "Curiosity",
-      desc: "I maintain an open-minded attitude towards new things and technologies, without harboring resistance or prejudice. I always strive to embrace change.",
+      desc: `I investigate questions immediately, always challenge new things, and seek solutions to problems.`,
+    },
+    {
+      title: "Curiosity",
+      desc: `I accept new things and technologies without resistance or prejudice, always embracing change.`,
     },
     {
       title: "Future Career",
-      desc: "I aspire to be involved in tasks that use programming (broadly, IT) to solve social issues.",
+      desc: `I want to engage in work that solves social problems through programming (IT).`,
     },
   ],
   job: {
-    title: "From Consulting to Development, I'm here to assist you",
-    desc: "Software Engineer",
+    title: "Consultant to Developer Assistance",
+    desc: `Software Engineer`,
   },
   skills: [
     "Python",
@@ -423,3 +414,53 @@ export const data = {
     "NextJS",
   ],
 };
+
+export interface Data {
+  family_name: string;
+  given_name: string;
+  profession: string;
+  bio: string;
+  address: string;
+  social?: SocialEntity[] | null;
+  experience?: ExperienceEntity[] | null;
+  selfProject?: SelfProjectEntity[] | null;
+  education?: EducationEntity[] | null;
+  motivation?: MotivationEntityOrJob[] | null;
+  job: MotivationEntityOrJob;
+  skills?: string[] | null;
+}
+export interface SocialEntity {
+  name: string;
+  url: string;
+}
+export interface ExperienceEntity {
+  jobTitle: string;
+  company: string;
+  startDate: string;
+  endDate: string;
+  projects: Projects;
+}
+export interface Projects {
+  tags?: string[] | null;
+  job: string;
+  jobDescription: string;
+  experience?: string[] | null;
+  team?: number | null;
+}
+export interface SelfProjectEntity {
+  title: string;
+  desc: string;
+  link: string;
+  tags?: (string | null)[] | null;
+}
+export interface EducationEntity {
+  degree: string;
+  institution: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+export interface MotivationEntityOrJob {
+  title: string;
+  desc: string;
+}
