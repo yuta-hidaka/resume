@@ -318,7 +318,7 @@ export const data = {
     {
       title: "BikeHub(Web)",
       desc: `BikeHubのリンク`,
-      link: "https://bikehub.app",
+      link: "https://www.bikehub.app",
       tags: [],
     },
     {
@@ -336,7 +336,7 @@ export const data = {
     {
       title: "バイク燃費.com(サービス終了)",
       desc: `バイクの燃費を登録記録できる。Java・JSP/Servletで作成。BeautifulSoup4でスクレイピング。`,
-      link: "https:bike-nenpi.com",
+      link: "https://bike-nenpi.com",
       tags: [
         "Java",
         "Python",
@@ -349,7 +349,7 @@ export const data = {
     {
       title: "SAVE EAT(サービス終了)",
       desc: `コロナ禍での飲食店支援サイト。1週間で作成し、Docker-composeでデプロイ。`,
-      link: "https:save-eat.me",
+      link: "https://save-eat.me",
       tags: ["Python(Django)", "BeautifulSoup4", "GitHub", "CentOS8", "nginx"],
     },
     {
@@ -403,8 +403,10 @@ export const data = {
     desc: `ソフトウェアエンジニア`,
   },
   skills: [
-    "Python",
     "Golang",
+    "Astro",
+    "Terraform",
+    "Python",
     "Svelte",
     "React",
     "React Native EXPO",

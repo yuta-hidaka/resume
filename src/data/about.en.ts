@@ -318,7 +318,7 @@ export const data = {
     {
       title: "BikeHub(Web)",
       desc: `Link to BikeHub`,
-      link: "https://bikehub.app",
+      link: "https://www.bikehub.app",
       tags: [],
     },
     {
@@ -403,8 +403,10 @@ export const data = {
     desc: `Software Engineer`,
   },
   skills: [
-    "Python",
     "Golang",
+    "Astro",
+    "Terraform",
+    "Python",
     "Svelte",
     "React",
     "React Native EXPO",
