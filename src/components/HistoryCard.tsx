@@ -1,11 +1,15 @@
 import { Experience } from "@/types/history";
+import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import HistoryLine from "./HistoryLine";
+require("dayjs/locale/en");
+require("dayjs/locale/ja");
 
 type HistoryCardType = {
   v: Experience;
   index: number;
   currentIndex: number;
+  locale: string;
   onCurrentIndexChange: (value: number) => void;
 };
 
@@ -13,6 +17,7 @@ export default function HistoryCard({
   v,
   index,
   currentIndex,
+  locale,
   onCurrentIndexChange,
 }: HistoryCardType) {
   const ref = useRef<HTMLInputElement>(null);
@@ -22,7 +27,7 @@ export default function HistoryCard({
 
   const handleScroll = (_: Event) => {
     const offsetTop = ref.current?.offsetTop ?? 0;
-    const pageYOffset = window.pageYOffset - 12;
+    const pageYOffset = window.scrollY - 12;
     if (pageYOffset > offsetTop) {
       if (index === currentIndex) onCurrentIndexChange(currentIndex + 1);
     } else {
@@ -47,7 +52,15 @@ export default function HistoryCard({
           {v.company}
         </div>
         <div className="text-sm font-bold break-all ml-5 mb-5">
-          {v.startDate} - {v.endDate}
+          {locale === "en"
+            ? dayjs(v.startDate).locale("en").format("MMM. DD, YYYY")
+            : dayjs(v.startDate).locale("ja").format("YYYY年 MMMM DD日")}{" "}
+          -{" "}
+          {v.endDate
+            ? locale === "en"
+              ? dayjs(v.endDate).locale("en").format("MMM. DD, YYYY")
+              : dayjs(v.endDate).locale("ja").format("YYYY年 MMMM DD日")
+            : ""}
         </div>
         <div className="break-all ml-5 mb-5">{v.jobTitle}</div>
         <div className="break-all ml-5 mb-3 line-clamp-2">{v.projects.job}</div>

@@ -12,7 +12,7 @@ export const getData = (locale: string | undefined): Data => {
 export const data = {
   family_name: "日髙",
   given_name: "悠太",
-  profession: "Full Stack Developer",
+  profession: "Full Stack Developer / Tech lead",
   bio: `高校卒業後、総合化学メーカーで6年間製品開発に従事。働きながら東京の大学に週6日通学し、有機化学を学び学士号を取得。2018年10月にプログラマーに転職。SES会社で2年勤務後、フリーランスや受託開発会社、スタートアップを経て、現在はデジタルコンサルティング会社で働いています。`,
   address: "Shinjuku Tokyo",
   social: [
@@ -33,7 +33,7 @@ export const data = {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
         job: "受託開発",
         jobDescription:
-          "CMS移行プロジェクトでテックリードとして参画。アーキテクチャ決定、インフラ構築、CMS選定、見積もり。ヘッドレスCMS移行。",
+          "CMS移行プロジェクトでテックリードとして参画。アーキテクチャ決定、インフラ構築、CMS選定、見積もり。",
         experience: [""],
         team: 5,
       },
@@ -61,7 +61,7 @@ export const data = {
         tags: ["Golang", "Svelte", "PostgreSQL", "AWS"],
         job: "規程管理SaaS開発",
         jobDescription:
-          "Golangでバックエンドを構築し、JSON-RPCでフロントエンドと通信。スピード感のある開発。36協定の電子申請、e-Gov連携などを担当。",
+          "Golangでバックエンドを構築し、JSON-RPCでフロントエンドと通信。スピード感のある開発。日本初のe-Govを経由した36協定の電子申請システムの実装リード",
         experience: ["最新の言語を用いた開発環境"],
         team: 5,
       },

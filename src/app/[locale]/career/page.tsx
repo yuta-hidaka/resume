@@ -38,6 +38,7 @@ export default function Home(props: Props) {
                 index={i}
                 currentIndex={currentIndex}
                 onCurrentIndexChange={onCurrentIndexChange}
+                locale={props.params.locale}
               />
             );
           })}
