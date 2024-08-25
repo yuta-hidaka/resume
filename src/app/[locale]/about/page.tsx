@@ -23,8 +23,9 @@ export default function Home(props: Props) {
   const [skips, setSkips] = useState({
     education: false,
     motivation: false,
-    myProject: false,
-    skills: false,
+    myProjects: false,
+    ProgrammingSkills: false,
+    LanguageSkills: false,
   });
 
   const skip = (key: string) => {
@@ -110,10 +111,10 @@ export default function Home(props: Props) {
         </div>
 
         <div
-          onClick={() => skip("myProject")}
+          onClick={() => skip("myProjects")}
           className="p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10  rounded-lg border-green-600 border"
         >
-          <h2 className="text-3xl mb-2 text-green-600"># my project</h2>
+          <h2 className="text-3xl mb-2 text-green-600"># my projects</h2>
           {data?.selfProject &&
             data.selfProject.map((v, i) => {
               return (
@@ -125,7 +126,7 @@ export default function Home(props: Props) {
                     typingSpeed={20}
                     className="block text-xl mb-2 text-green-500"
                     prefix="## "
-                    skip={skips["myProject"]}
+                    skip={skips["myProjects"]}
                   />
                   <TypingEffect
                     deleteCursorOnEnd={true}
@@ -133,7 +134,7 @@ export default function Home(props: Props) {
                     delay={51000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
                     typingSpeed={20}
                     className="block mb-1"
-                    skip={skips["myProject"]}
+                    skip={skips["myProjects"]}
                   />
                   <TypingEffect
                     deleteCursorOnEnd={true}
@@ -142,7 +143,7 @@ export default function Home(props: Props) {
                     typingSpeed={20}
                     className="block mb-5 text-green-400"
                     link
-                    skip={skips["myProject"]}
+                    skip={skips["myProjects"]}
                   />
                 </div>
               );
@@ -150,21 +151,45 @@ export default function Home(props: Props) {
         </div>
 
         <div
-          onClick={() => skip("skills")}
+          onClick={() => skip("LanguageSkills")}
           className="p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 my-14 rounded-lg border-green-600 border"
         >
-          <h2 className="text-3xl mb-2 text-green-600"># skills</h2>
+          <h2 className="text-3xl mb-2 text-green-600"># Languages</h2>
           {data?.skills &&
-            data.skills.map((v, i) => {
+            data.skills.LanguageSkills.map((v, i) => {
               return (
                 <TypingEffect
                   key={i}
                   deleteCursorOnEnd={true}
-                  text={v}
+                  text={`${v.name} - ${v.description}`}
                   delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
                   typingSpeed={10}
                   className="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block"
-                  skip={skips["skills"]}
+                  skip={skips["LanguageSkills"]}
+                />
+              );
+            })}
+        </div>
+        <div
+          onClick={() => skip("ProgrammingSkills")}
+          className="p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 my-14 rounded-lg border-green-600 border"
+        >
+          <h2 className="text-3xl mb-2 text-green-600"># skills</h2>
+          {data?.skills &&
+            data.skills.ProgrammingSkills.map((v, i) => {
+              return (
+                <TypingEffect
+                  key={i}
+                  deleteCursorOnEnd={true}
+                  text={
+                    v.description === ""
+                      ? [v.name, `+${v.year} years`].join(" / ")
+                      : [v.name, v.description, `+${v.year} years`].join(" / ")
+                  }
+                  delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
+                  typingSpeed={10}
+                  className="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block"
+                  skip={skips["ProgrammingSkills"]}
                 />
               );
             })}

@@ -13,7 +13,7 @@ export const data = {
   family_name: "日髙",
   given_name: "悠太",
   profession: "Full Stack Developer / Tech lead",
-  bio: `高校卒業後、総合化学メーカーで6年間製品開発に従事。働きながら東京の大学に週6日通学し、有機化学を学び学士号を取得。2018年10月にプログラマーに転職。SES会社で2年勤務後、フリーランスや受託開発会社、スタートアップを経て、現在はデジタルコンサルティング会社で働いています。`,
+  bio: `高校卒業後、総合化学メーカーで6年間製品開発に従事。働きながら東京の大学に週6日通学し、有機化学を学び学士号を取得。2018年10月にプログラマーに転職。SES会社で2年勤務後、フリーランスや受託開発会社、スタートアップを経て、現在はMonstarlabで働いています。`,
   address: "Shinjuku Tokyo",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },
@@ -33,9 +33,9 @@ export const data = {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
         job: "受託開発",
         jobDescription:
-          "CMS移行プロジェクトでテックリードとして参画。アーキテクチャ決定、インフラ構築、CMS選定、見積もり。",
+          "開発チーム３人、QAが３名のチームでテックリードを担当。月額25万円ほどインフラ費用がかかっているシステムを移行後に、LambdaとCloudFrontを用いた、月額1万円ほどのシステムへ置き換える提案を行いました。また、プリセールスが出していた当初想定月額費用が150万円だったものを改善し運用費用を含めいて、費用の圧縮を行いました。属人性を避けるため、IaCの導入、移行作業は手作業での作業を避け、全てGolangで記述を行いました。フロントエンドは、SEOや表示速度を考え、Astro JSでISRのような構成で、アーキテクトを構成しました。通常はFEエンジニア、BEエンジニア、インフラエンジニアと単一役割のメンバーをアサインしますが、全てを行うフルスタックエンジニアとしての経験があると言うことでPJにアサインいただきました。",
         experience: [""],
-        team: 5,
+        team: 7,
       },
     },
     {
@@ -47,7 +47,7 @@ export const data = {
         tags: ["Golang", "Vue3", "Nuxt3", "MySQL", "AWS", "HubSpot"],
         job: "受託開発",
         jobDescription:
-          "企業サイト更新。海外チームと協力しフルスタックエンジニアとしてバックエンド・フロントエンドを担当。アジャイル開発で顧客と仕様調整。",
+          "企業サイト更新。海外チームと協力しフルスタックエンジニアとしてバックエンド・フロントエンド・インフラを担当。バングラディッシュチームとの開発を行う、時差がある中ら非同期に作業を行い、必要に応じてミーティングや仕様説明などを行う。",
         experience: [""],
         team: 20,
       },
@@ -61,7 +61,7 @@ export const data = {
         tags: ["Golang", "Svelte", "PostgreSQL", "AWS"],
         job: "規程管理SaaS開発",
         jobDescription:
-          "Golangでバックエンドを構築し、JSON-RPCでフロントエンドと通信。スピード感のある開発。日本初のe-Govを経由した36協定の電子申請システムの実装リード",
+          "Golangでバックエンドを構築し、JSON-RPCでフロントエンドと通信。スピード感のある開発。日本初のe-Govを経由した36協定の電子申請システムの実装、リード",
         experience: ["最新の言語を用いた開発環境"],
         team: 5,
       },
@@ -383,38 +383,122 @@ export const data = {
   motivation: [
     {
       title: "プログラムに対する考え方",
-      desc: `プログラムを通して業務の無駄や苦痛を解消し、家族や友人との時間や趣味のための時間を増やしたい。ユニークなサービスで生活の質を高めたい。`,
+      desc: `プログラムを通して業務の無駄や苦痛を解消し、家族や友人との時間や趣味のための時間を増やしたい。日本でユニークなサービスで生活の質を高めたい。例えば、KiteRaにて働いていた時に、日本初の36協定に関する電子申請機能をリリースしましたが、この機能のおかげでこのSaaSを利用している社労士の方から時間が大きく節約でき、より顧客に近い業務に時間を使えるようになったと喜びの声をいただきました。`,
     },
     {
-      title: "探究心",
-      desc: `疑問に思ったことはすぐに調べ、新しいことに挑戦し、問題の解決を求め続ける。`,
-    },
-    {
-      title: "好奇心",
-      desc: `新しいものや技術に抵抗や偏見を持たず、常に変化を受け入れる。`,
+      title: "好奇心・探究心",
+      desc: `新しいものや技術に抵抗や偏見を持たず、常に変化を受け入れる。興味のあるGitHubレポジトリをwatchし、新しい技術を学んだり、twitter、Udemyなどから発信される新しい技術などをキャッチアップしています。新しいものを追いかけるだけではなく、基礎も大切にしており、基礎的な部分は書籍などから学ぶようにしています。`,
     },
     {
       title: "今後のキャリア",
-      desc: `社会問題をプログラミング（IT）で解決する業務に携わりたい。`,
+      desc: `社会問題をプログラミング（IT）で解決する業務に携わりたい。顧客に近いサービスなどに携われると嬉しく思います。Monstarlabで働いているときやKiteRaで働いているときもリリース後にお客様から、苦労して作業していたことが自動化されてとても楽になったなど聞いた時が一番嬉しかったです。`,
     },
   ],
   job: {
     title: "コンサルタントから開発までお手伝いします",
     desc: `ソフトウェアエンジニア`,
   },
-  skills: [
-    "Golang",
-    "Astro",
-    "Terraform",
-    "Python",
-    "Svelte",
-    "React",
-    "React Native EXPO",
-    "Linux",
-    "AWS",
-    "Docker",
-    "NextJS",
-  ],
+  skills: {
+    LanguageSkills: [
+      {
+        name: "日本語",
+        description: "ネイティブ",
+        year: -1,
+      },
+      {
+        name: "英語",
+        description: "日常会話",
+        year: -1,
+      },
+    ],
+    ProgrammingSkills: [
+      {
+        name: "Golang",
+        description: "Ent, sqlc, gin, JSON-RPC",
+        year: 4,
+      },
+      {
+        name: "AWS",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "Linux",
+        description: "Ubuntu18,20 CentOS8",
+        year: 5,
+      },
+      {
+        name: "Docker",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "Terraform",
+        description: "AWS",
+        year: 1,
+      },
+      {
+        name: "MySQL",
+        description: "",
+        year: 5,
+      },
+      {
+        name: "PostggreSQL",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "MongoDB",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "DynamoDB",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Javescript / Typescript",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "Astro",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Svelte",
+        description: "",
+        year: 2,
+      },
+      {
+        name: "React",
+        description: "",
+        year: 2,
+      },
+      {
+        name: "SolidJS",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Python",
+        description: "Django, DRF, BeautifulSoup4, Mecab, Selenium",
+        year: 4,
+      },
+      {
+        name: "PHP",
+        description: "CakePHP, Laravel",
+        year: 1,
+      },
+      {
+        name: "NextJS",
+        description: "",
+        year: 2,
+      },
+    ],
+  },
 };
 
 export interface Data {
@@ -429,7 +513,10 @@ export interface Data {
   education?: EducationEntity[] | null;
   motivation?: MotivationEntityOrJob[] | null;
   job: MotivationEntityOrJob;
-  skills?: string[] | null;
+  skills?: {
+    LanguageSkills: { name: string; description: string; year: number }[];
+    ProgrammingSkills: { name: string; description: string; year: number }[];
+  } | null;
 }
 export interface SocialEntity {
   name: string;

@@ -13,14 +13,20 @@ export const Header = ({ locale }: { locale: string }) => {
       isI18nSwitcher: false,
     },
     {
-      label: locale !== "ja" ? "career" : "キャリア",
+      label: locale !== "ja" ? "Career" : "キャリア",
       path: "/career",
       locale: locale,
       isI18nSwitcher: false,
     },
     {
-      label: locale !== "ja" ? "about" : "アバウト",
+      label: locale !== "ja" ? "About" : "アバウト",
       path: "/about",
+      locale: locale,
+      isI18nSwitcher: false,
+    },
+    {
+      label: locale !== "ja" ? "CV download" : "履歴書 ダウンロード",
+      path: "/downloads",
       locale: locale,
       isI18nSwitcher: false,
     },

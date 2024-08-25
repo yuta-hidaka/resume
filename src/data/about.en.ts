@@ -1,20 +1,11 @@
 "use client";
 
-import { data as dataEN } from "./about.en";
-
-export const getData = (locale: string | undefined): Data => {
-  if (locale === "ja") {
-    return data;
-  }
-  return dataEN;
-};
-
 export const data = {
   family_name: "Hidaka",
   given_name: "Yuta",
-  profession: "Full Stack Developer / Tech lead",
-  bio: `After graduating from high school, I worked in product development at a comprehensive chemical manufacturer for six years. While working, I attended a university in Tokyo six days a week, studying organic chemistry and obtaining a bachelor's degree. In October 2018, I changed my career to a programmer. After working for a SES company for two years, I worked as a freelancer, at a contract development company, and at a startup, and currently I am working at a digital consulting company.`,
-  address: "Shinjuku Tokyo",
+  profession: "Full Stack Developer / Tech Lead",
+  bio: `After graduating from high school, I worked for six years in product development at a comprehensive chemical manufacturer. While working, I attended university in Tokyo six days a week to study organic chemistry and earned a bachelor's degree. In October 2018, I transitioned to a career as a programmer. After working for two years at an SES company, I became a freelancer, worked at a contract development company, and at a startup, and I am currently working at Monstarlab.`,
+  address: "Shinjuku, Tokyo",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },
     { name: "GitHub", url: "https://github.com/yuta-hidaka" },
@@ -33,9 +24,9 @@ export const data = {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
         job: "Contract Development",
         jobDescription:
-          "Participated as a tech lead in a CMS migration project. Responsible for architecture decisions, infrastructure setup, CMS selection, and estimation.",
+          "As a tech lead, I managed a team of three developers and three QAs. Proposed a system migration from one costing around 250,000 yen per month to a system costing around 10,000 yen per month using Lambda and CloudFront. Also improved and reduced the initially estimated monthly cost of 1.5 million yen from pre-sales by optimizing the system, including operational costs. To avoid dependency on specific individuals, introduced IaC and avoided manual migration tasks, writing everything in Golang. For the frontend, considering SEO and display speed, architected using Astro JS in an ISR-like configuration. Typically, team members are assigned single roles like FE engineer, BE engineer, and infrastructure engineer, but I was assigned to the project as a full-stack engineer because of my experience handling everything.",
         experience: [""],
-        team: 5,
+        team: 7,
       },
     },
     {
@@ -47,7 +38,7 @@ export const data = {
         tags: ["Golang", "Vue3", "Nuxt3", "MySQL", "AWS", "HubSpot"],
         job: "Contract Development",
         jobDescription:
-          "Updated company website. Collaborated with overseas teams as a full-stack engineer, handling both backend and frontend. Coordinated specifications with clients using agile development.",
+          "Worked on updating a corporate website. Collaborated with an overseas team and handled backend, frontend, and infrastructure as a full-stack engineer. Coordinated development with a team in Bangladesh, working asynchronously across time zones and holding meetings and specifications explanations as needed.",
         experience: [""],
         team: 20,
       },
@@ -61,7 +52,7 @@ export const data = {
         tags: ["Golang", "Svelte", "PostgreSQL", "AWS"],
         job: "Regulation Management SaaS Development",
         jobDescription:
-          "Built backend with Golang, communicating with frontend via JSON-RPC. Led the implementation of Japan's first electronic application system for 36 agreements via e-Gov.",
+          "Developed the backend in Golang and communicated with the frontend via JSON-RPC. A fast-paced development environment. Led the implementation of Japan's first electronic application system for the 36 Agreement via e-Gov.",
         experience: ["Development environment using the latest languages"],
         team: 5,
       },
@@ -73,7 +64,7 @@ export const data = {
       endDate: "2021-04-30",
       projects: {
         tags: [
-          "Python (Custom FW)",
+          "Python(Custom FW)",
           "PHP",
           "Angular.js1.2",
           "Vue.js",
@@ -88,20 +79,20 @@ export const data = {
         ],
         job: "CRM Service Development",
         jobDescription:
-          "Added new features and fixed bugs, provided APIs, defined items using NoSQL. Also responsible for document creation and debugging environment setup.",
+          "Responsible for adding new features, fixing bugs, providing APIs, and defining items using NoSQL. Also handled document creation and debugging environment setup.",
         experience: ["Handling NoSQL", "Large team development", "AWS"],
         team: 20,
       },
     },
     {
-      jobTitle: "Scraping Summary Sites",
+      jobTitle: "Scraping for Summary Sites",
       company: "Fignny",
       startDate: "2020-08-31",
       endDate: "2020-09-30",
       projects: {
         tags: [
-          "Python (Django)",
-          "AWS Aurora (MySQL5.6)",
+          "Python(Django)",
+          "AWS Aurora(MySQL5.6)",
           "AWS EC2",
           "AWS S3",
           "docker-compose",
@@ -110,14 +101,14 @@ export const data = {
           "Redis",
           "Backlog",
         ],
-        job: "Scraping Data from Summary Sites",
+        job: "Data Scraping for Summary Sites",
         jobDescription:
-          "Implemented scraping processing with BeautifulSoup4 in two weeks. Introduced parallel processing with Celery and ThredPoolExecutor, distributing processing across 20 EC2 instances.",
+          "Implemented scraping with BeautifulSoup4 in two weeks. Introduced parallel processing with Celery and ThredPoolExecutor, and distributed processing on 20 EC2 instances.",
         experience: [
-          "Load balancing with parallel processing",
+          "Load balancing through parallel processing",
           "Scraping",
           "DB performance tuning",
-          "Building AWS environments",
+          "AWS environment setup",
           "Docker development",
           "Memory management",
         ],
@@ -125,13 +116,13 @@ export const data = {
       },
     },
     {
-      jobTitle: "Law Firm Time and Billing Management System 2",
-      company: "Freelance",
+      jobTitle: "Time and Billing Management System for Law Firms 2",
+      company: "Freelancer",
       startDate: "2020-07-01",
       endDate: "2020-07-31",
       projects: {
         tags: [
-          "PHP (Laravel)",
+          "PHP(Laravel)",
           "MySQL5.7",
           "FreeBSD",
           "jQuery",
@@ -146,13 +137,13 @@ export const data = {
       },
     },
     {
-      jobTitle: "Law Firm Time and Billing Management System 1",
-      company: "Sysnavi",
+      jobTitle: "Time and Billing Management System for Law Firms 1",
+      company: "SysNavi",
       startDate: "2019-06-01",
       endDate: "2020-06-30",
       projects: {
         tags: [
-          "PHP (Laravel)",
+          "PHP(Laravel)",
           "MySQL5.7",
           "FreeBSD",
           "jQuery",
@@ -162,52 +153,52 @@ export const data = {
         ],
         job: "Time and Billing Management System Development",
         jobDescription:
-          "Requirements definition, mockups, DB design, PDF output function implementation, rental server environment investigation and deployment.",
-        experience: ["DB design", "Mockup creation", "Docker development"],
+          "Requirement definition, mock-up, DB design, PDF output feature implementation, rental server environment investigation, and deployment.",
+        experience: ["DB design", "Mock-up creation", "Docker development"],
         team: 4,
       },
     },
     {
-      jobTitle: "RPA for Business Processing",
-      company: "Sysnavi",
+      jobTitle: "Automation of Business Processes with RPA",
+      company: "SysNavi",
       startDate: "2019-10-01",
       endDate: "2019-12-31",
       projects: {
-        tags: ["WinActor", "PHP", "Microsoft Access"],
-        job: "RPA Implementation",
+        tags: ["WinActor", "PHP", "MicrosoftAccess"],
+        job: "RPA Development",
         jobDescription:
-          "Automated back-office operations with NTT Advanced Technology's RPA software. Planned the mechanism for RPA creation and management.",
-        experience: ["Creating RPA with WinActor", "Planning RPA for end-users"],
+          "Automated back-office operations with NTT Advanced Technology's RPA software. Planned the framework for RPA creation and management.",
+        experience: ["WinActor RPA creation", "Planning for end-user RPA"],
         team: 3,
       },
     },
     {
-      jobTitle: "Web Application Development - Experimental Data Visualization",
-      company: "Sysnavi",
+      jobTitle: "Creation of Web Application for Visualizing Experimental Data",
+      company: "SysNavi",
       startDate: "2019-06-01",
       endDate: "2019-08-31",
       projects: {
         tags: [
-          "Python (Django)",
+          "Python(Django)",
           "DRF",
           "MySQL5.7",
           "TypeScript",
           "HTML",
           "GitHub",
         ],
-        job: "Experimental Data Visualization Web Application Development",
+        job: "Development of Web Application for Visualizing Experimental Data",
         jobDescription:
-          "Formatted Excel data to JSON and registered it with REST-API using Django Rest Framework. Visualized data with plotly.js.",
+          "Formatted Excel data into JSON and registered it in the REST-API using Django Rest Framework. Visualized data with plotly.js.",
         experience: [
-          "Development with Django MVT model",
-          "Frontend development with TypeScript",
+          "Development experience with Django's MVT model",
+          "Front-end development with TypeScript",
         ],
         team: 4,
       },
     },
     {
       jobTitle: "Data Migration and Batch Processing Development",
-      company: "Sysnavi",
+      company: "SysNavi",
       startDate: "2019-02-01",
       endDate: "2019-06-30",
       projects: {
@@ -215,13 +206,13 @@ export const data = {
           "Alteryx",
           "SQL Server",
           "Windows Server",
-          "Batch Scripts",
-          "Python (Django)",
+          "Batch Script",
+          "Python(Django)",
           "Jira",
         ],
         job: "Data Migration and Analysis",
         jobDescription:
-          "Loaded various data sources with Alteryx and integrated them into SQL Server. Implemented parallel processing, data masking, and batch processing.",
+          "Loaded various data sources with Alteryx and integrated them into SQL Server. Implemented parallel processing, data anonymization, and batch processing.",
         experience: [
           "Parallel processing",
           "Data acquisition and processing",
@@ -232,36 +223,36 @@ export const data = {
       },
     },
     {
-      jobTitle: "Web App Development - Budget and Actual Management Software",
-      company: "Sysnavi",
+      jobTitle: "Web Application Development - Budget Management Software Creation",
+      company: "SysNavi",
       startDate: "2018-12-01",
       endDate: "2019-02-28",
       projects: {
         tags: ["ASP.NET C#", "SQL Server", "Bootstrap4", "HTML", "JavaScript"],
-        job: "Project for Visualizing Plans and Actual Results",
+        job: "Project for Visualizing Plans and Actuals",
         jobDescription:
-          "Combined markup data with ASP.Net logic. Responsible for user and admin screens, backend logic.",
+          "Combined markup data with ASP.Net logic. Responsible for user interface, admin interface, and backend logic.",
         experience: [
           "Experience with both frontend and backend",
-          "MVC model, LINQ, integration with external APIs",
+          "MVC model, LINQ, external API integration",
         ],
         team: 3,
       },
     },
     {
-      jobTitle: "Import and Sales of Raw Ham",
-      company: "Self-employed",
+      jobTitle: "Import and Sale of Raw Ham",
+      company: "Independent Business Owner",
       startDate: "2018-04-01",
       endDate: "2018-09-30",
       projects: {
         tags: ["Import", "Food Sanitation Law"],
-        job: "Import and Sales of Raw Ham",
+        job: "Import and Sale of Raw Ham",
         jobDescription:
-          "Aimed to import and sell Spanish raw ham. Negotiated with suppliers, visited farms, conducted bacterial tests, and completed customs procedures. Acquired food sanitation manager qualification. Halted during funding.",
+          "Aimed to import and sell raw ham from Spain, conducting supplier negotiations, farm visits, bacterial inspections, and customs clearance procedures. Acquired a food sanitation manager qualification. The project was suspended during fundraising.",
       },
     },
     {
-      jobTitle: "Research and Development / RD-2016",
+      jobTitle: "Research and Development/RD-2016",
       company: "Sumitomo Chemical",
       startDate: "2016-11-01",
       endDate: "2018-03-31",
@@ -269,42 +260,42 @@ export const data = {
         tags: ["Polypropylene", "Medical Grade"],
         job: "Development of Medical Grade Polypropylene Materials",
         jobDescription:
-          "Developed medical grade polypropylene materials. Developed materials to prevent contamination under UV irradiation and reduce warping during injection molding.",
+          "Development of medical-grade polypropylene materials. Focused on suppressing injection molding distortion and developing materials to prevent contamination from UV exposure.",
       },
     },
     {
-      jobTitle: "Research and Development / RD-2015",
+      jobTitle: "Research and Development/RD-2015",
       company: "Sumitomo Chemical",
       startDate: "2015-06-01",
       endDate: "2016-10-31",
       projects: {
         tags: ["Polypropylene", "Separator"],
-        job: "Development of Battery Separator Materials",
+        job: "Battery Separator Material Development",
         jobDescription:
           "Explored PP-based separator film materials. Focused on heat resistance, puncture strength, and porosity.",
       },
     },
     {
-      jobTitle: "Research and Development Support / RD-support",
+      jobTitle: "Research and Development Support/RD-support",
       company: "Sumitomo Chemical",
       startDate: "2012-04-01",
       endDate: "2015-05-31",
       projects: {
         tags: ["Polypropylene", "Film"],
-        job: "Support for Development of Packaging Materials",
+        job: "Material Development Support for Packaging Materials",
         jobDescription:
-          "Supported research and development of polypropylene film at Sumitomo Chemical's Petrochemical Research Institute. Assisted in the development of packaging materials and battery separators.",
+          "Assisted in the research and development of polypropylene films at Sumitomo Chemical's petrochemical research institute. Supported the development of packaging materials and battery separators.",
       },
     },
   ],
   selfProject: [
     {
       title: "BikeHub",
-      desc: `Successor app to bike-nenpi.com. Registers fuel efficiency and displays bike news. Created backend API with Django (DRF) and frontend with React Native Expo.`,
+      desc: `A successor app to バイク燃費.com. It allows users to register fuel efficiency and display bike news. The backend API was created using Django (DRF), and the frontend was built with React Native Expo.`,
       link: "https://expo.io/@yuta322/bikehub-frontend",
       tags: [
-        "Python (Django)",
-        "React Native (EXPO)",
+        "Python(Django)",
+        "React Native(EXPO)",
         "DRF",
         "Expo",
         "BeautifulSoup4",
@@ -316,26 +307,26 @@ export const data = {
       ],
     },
     {
-      title: "BikeHub (Web)",
+      title: "BikeHub(Web)",
       desc: `Link to BikeHub`,
       link: "https://www.bikehub.app",
       tags: [],
     },
     {
-      title: "BikeHub (iOS)",
+      title: "BikeHub(iOS)",
       desc: `Link to Apple Store`,
       link: "https://apps.apple.com/jp/app/bike-hub/id1531692067",
       tags: [],
     },
     {
-      title: "BikeHub (Android)",
+      title: "BikeHub(Android)",
       desc: `Link to Google Play Store`,
       link: "https://play.google.com/store/apps/details?id=app.bikehub",
       tags: [],
     },
     {
-      title: "bike-nenpi.com (Service Ended)",
-      desc: `Registers and records bike fuel efficiency. Created with Java JSP/Servlet. Used BeautifulSoup4 for scraping.`,
+      title: "バイク燃費.com(Service Ended)",
+      desc: `A website to register and record bike fuel efficiency. Developed using Java, JSP/Servlet, and scraped data with BeautifulSoup4.`,
       link: "https://bike-nenpi.com",
       tags: [
         "Java",
@@ -347,74 +338,158 @@ export const data = {
       ],
     },
     {
-      title: "SAVE EAT (Service Ended)",
-      desc: `Support site for restaurants during the COVID-19 pandemic. Created in one week and deployed with Docker-compose.`,
+      title: "SAVE EAT(Service Ended)",
+      desc: `A support site for restaurants during the COVID-19 pandemic. Created in one week and deployed using Docker-compose.`,
       link: "https://save-eat.me",
-      tags: ["Python (Django)", "BeautifulSoup4", "GitHub", "CentOS8", "nginx"],
+      tags: ["Python(Django)", "BeautifulSoup4", "GitHub", "CentOS8", "nginx"],
     },
     {
-      title: "Voice-to-Text Site (Service Ended)",
-      desc: `Voice-to-text site using JavaScript API.`,
+      title: "Voice Transcription Site (Service Ended)",
+      desc: `A transcription site using JavaScript API.`,
       link: "https://voice-to-text.web-tool.tokyo/",
       tags: ["JavaScript", "Bootstrap4", "CentOS8"],
     },
     {
       title: "docker-compose for Django with Gunicorn",
-      desc: `Template for the fastest launch of a Django project. Also creating an Nginx-Unit version.`,
+      desc: `A template for the fastest setup of a Django project. An Nginx-Unit version is also under development.`,
       link: "https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn",
       tags: ["docker-compose", "django"],
     },
     {
       title: "docker-compose for Django with nginx-unit",
-      desc: `Template for the fastest launch of a Django project.`,
+      desc: `A template for the fastest setup of a Django project.`,
       link: "https://github.com/yuta-hidaka/Docker-Django-MariaDB-NginxUnit",
       tags: ["docker-compose", "django", "nginx-unit"],
     },
   ],
   education: [
     {
-      degree: "Chemistry, Second Division",
+      degree: "Department of Chemistry, Second Division",
       institution: "Tokyo University of Science",
       startDate: "2014-04-01",
       endDate: "2018-03-01",
-      description: `Attended university to advance my career while working at Sumitomo Chemical. Studied organic chemistry and obtained a bachelor's degree while working at Sumitomo Chemical and attending university six days a week.`,
+      description: `Attended university to advance my career while working at Sumitomo Chemical. Attended classes six days a week while working at Sumitomo Chemical, studying organic chemistry and earning a bachelor's degree.`,
     },
   ],
   motivation: [
     {
       title: "Thoughts on Programming",
-      desc: `I want to eliminate unnecessary work and pain through programming, and increase time for family, friends, and hobbies. I want to improve the quality of life with unique services.`,
+      desc: `Through programming, I want to eliminate waste and pain in work and increase time for family, friends, and hobbies. I want to improve the quality of life in Japan with unique services. For example, when I was working at KiteRa, we released Japan's first electronic application feature for the 36 Agreement, and I received positive feedback from labor consultants using this SaaS, saying that it saved a lot of time and allowed them to focus more on customer-facing work.`,
     },
     {
-      title: "Curiosity",
-      desc: `I immediately look up things I'm curious about, constantly challenging new things and seeking solutions to problems.`,
-    },
-    {
-      title: "Curiosity",
-      desc: `I accept new things and technologies without resistance or prejudice, always embracing change.`,
+      title: "Curiosity and Inquisitiveness",
+      desc: `I do not resist or hold prejudices against new things or technologies and always embrace change. I watch GitHub repositories I am interested in, learn new technologies, and keep up with new technologies from Twitter, Udemy, etc. I don't just chase new things; I also value the basics and learn foundational concepts from books.`,
     },
     {
       title: "Future Career",
-      desc: `I want to be involved in work that solves social problems through programming (IT).`,
+      desc: `I want to be involved in work that solves social issues through programming (IT). I would be happy to be involved in services that are close to the customers. When I worked at Monstarlab or KiteRa, the happiest moments were when customers told us that their work had been significantly simplified after automation.`,
     },
   ],
   job: {
-    title: "From Consulting to Development, I Can Help",
+    title: "Assisting from consulting to development",
     desc: `Software Engineer`,
   },
-  skills: [
-    "Golang",
-    "Astro",
-    "Terraform",
-    "Python",
-    "Svelte",
-    "React",
-    "React Native EXPO",
-    "Linux",
-    "AWS",
-    "Docker",
-    "NextJS",
-  ],
+  skills: {
+    LanguageSkills: [
+      {
+        name: "Japanese",
+        description: "Native",
+        year: -1,
+      },
+      {
+        name: "English",
+        description: "Conversational",
+        year: -1,
+      },
+    ],
+    ProgrammingSkills: [
+      {
+        name: "Golang",
+        description: "Ent, sqlc, gin, JSON-RPC",
+        year: 4,
+      },
+      {
+        name: "AWS",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "Linux",
+        description: "Ubuntu18,20 CentOS8",
+        year: 5,
+      },
+      {
+        name: "Docker",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "Terraform",
+        description: "AWS",
+        year: 1,
+      },
+      {
+        name: "MySQL",
+        description: "",
+        year: 5,
+      },
+      {
+        name: "PostggreSQL",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "MongoDB",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "DynamoDB",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "JavaScript / TypeScript",
+        description: "",
+        year: 4,
+      },
+      {
+        name: "Astro",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Svelte",
+        description: "",
+        year: 2,
+      },
+      {
+        name: "React",
+        description: "",
+        year: 2,
+      },
+      {
+        name: "SolidJS",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Python",
+        description: "Django, DRF, BeautifulSoup4, Mecab, Selenium",
+        year: 4,
+      },
+      {
+        name: "PHP",
+        description: "CakePHP, Laravel",
+        year: 1,
+      },
+      {
+        name: "NextJS",
+        description: "",
+        year: 2,
+      },
+    ],
+  },
 };
 
 export interface Data {
