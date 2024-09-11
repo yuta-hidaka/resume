@@ -410,8 +410,13 @@ export const data = {
       },
       {
         name: "AWS",
-        description: "",
+        description: "Lambda, CloudFront, DynamoDB",
         year: 4,
+      },
+      {
+        name: "Pulumi",
+        description: "IaC",
+        year: 1,
       },
       {
         name: "Linux",
