@@ -18,7 +18,7 @@ export const data = {
     {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
-      startDate: "2022-04-01",
+      startDate: "2024-04-01",
       endDate: "",
       projects: {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
@@ -30,7 +30,7 @@ export const data = {
       },
     },
     {
-      jobTitle: "FullStack Engineer",
+      jobTitle: "Full-Stack Engineer",
       company: "Monstarlab",
       startDate: "2022-09-01",
       endDate: "2023-10-30",
@@ -44,7 +44,7 @@ export const data = {
       },
     },
     {
-      jobTitle: "FullStack Engineer",
+      jobTitle: "Full-Stack Engineer",
       company: "KiteRa",
       startDate: "2021-05-01",
       endDate: "2022-07-31",
@@ -53,7 +53,7 @@ export const data = {
         job: "Regulation Management SaaS Development",
         jobDescription:
           "Developed the backend in Golang and communicated with the frontend via JSON-RPC. A fast-paced development environment. Led the implementation of Japan's first electronic application system for the 36 Agreement via e-Gov.",
-        experience: ["Development environment using the latest languages"],
+        experience: [""],
         team: 5,
       },
     },
@@ -223,7 +223,8 @@ export const data = {
       },
     },
     {
-      jobTitle: "Web Application Development - Budget Management Software Creation",
+      jobTitle:
+        "Web Application Development - Budget Management Software Creation",
       company: "SysNavi",
       startDate: "2018-12-01",
       endDate: "2019-02-28",

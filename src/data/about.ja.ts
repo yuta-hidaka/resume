@@ -27,7 +27,7 @@ export const data = {
     {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
-      startDate: "2022-04-01",
+      startDate: "2024-04-01",
       endDate: "",
       projects: {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
@@ -39,7 +39,7 @@ export const data = {
       },
     },
     {
-      jobTitle: "FullStack Engineer",
+      jobTitle: "Full-Stack Engineer",
       company: "Monstarlab",
       startDate: "2022-09-01",
       endDate: "2023-10-30",
@@ -53,7 +53,7 @@ export const data = {
       },
     },
     {
-      jobTitle: "FullStack Engineer",
+      jobTitle: "Full-Stack Engineer",
       company: "KiteRa",
       startDate: "2021-05-01",
       endDate: "2022-07-31",
