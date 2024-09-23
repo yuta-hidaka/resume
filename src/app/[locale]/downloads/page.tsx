@@ -34,10 +34,10 @@ export default function Home(props: Props) {
         <div className="flex flex-col items-center">
           <div className="w-full">
             <h2 className="text-3xl my-2 text-green-600"># {lang === "en" ? "CV(Japanese)" : "職務経歴書"}</h2>
-            <embed src={`https://docs.google.com/document/d/1Qk9NxQyp3wOvilZmFEBsTnAADgGP35r9-78SL9qUrVE/edit?usp=sharing`} width="100%" height="500px" />
+            <embed src={`https://docs.google.com/document/d/1Qk9NxQyp3wOvilZmFEBsTnAADgGP35r9-78SL9qUrVE/preview?pli=1`} width="100%" height="500px" />
             
             <h2 className="text-3xl my-2 text-green-600"># {lang === "en" ? "Resume(Japanese)" : "履歴書"}</h2>
-            <embed src={`https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/edit?usp=sharing`} width="100%" height="500px" />
+            <embed src={`https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/preview?pli=1`} width="100%" height="500px" />
           </div>
         </div>
       </main>
