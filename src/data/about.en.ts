@@ -16,6 +16,20 @@ export const data = {
   ],
   experience: [
     {
+      "jobTitle": "Tech Lead",
+      "company": "Monstarlab",
+      "startDate": "2024-04-01",
+      "endDate": "",
+      "projects": {
+        "tags": ["Golang", "NextJS", "GCP"],
+        "job": "Contract Development",
+        "jobDescription":
+          "Developed a service that allows users to exchange points for stock rights as part of the Furusato Tax Donation system. Designed for high traffic, handling over 1000 RPS at peak access.",
+        "experience": [""],
+        "team": 30
+      }
+    },
+    {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
       startDate: "2024-04-01",

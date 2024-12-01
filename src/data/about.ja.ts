@@ -30,6 +30,20 @@ export const data = {
       startDate: "2024-04-01",
       endDate: "",
       projects: {
+        tags: ["Golang", "NextJS", "GCP"],
+        job: "受託開発",
+        jobDescription:
+          "ふるさと納税をすると、ポイントの代わりに株に交換できる権利ができるサービスの開発、最大1000RPSを超えるアクセスがあり、高トラフィックを想定した開発",
+        experience: [""],
+        team: 30,
+      },
+    },
+    {
+      jobTitle: "Tech Lead",
+      company: "Monstarlab",
+      startDate: "2024-04-01",
+      endDate: "2024-11-15",
+      projects: {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
         job: "受託開発",
         jobDescription:
