@@ -32,7 +32,7 @@ export default function Home(props: Props) {
       <main className="w-full h-full p-5 md:p-20">
         <div className="flex flex-col items-center">
           <div className="w-full">
-            <h2 className="my-2 text-3xl text-green-600"># {lang === "en" ? "CV(Japanese)" : "職務経歴書"}</h2>
+            <h2 className="my-2 text-3xl text-green-600"># {lang === "en" ? "CV" : "職務経歴書"}</h2>
             <embed src={lang === "en" ? "/yuta-hidaka-resume-english.pdf": "/yuta-hidaka-resume-japanese.pdf"} width="100%" height="750px" />
             
             <h2 className="my-2 text-3xl text-green-600"># {lang === "en" ? "Resume(Japanese)" : "履歴書"}</h2>
