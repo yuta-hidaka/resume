@@ -18,3 +18,4 @@ bun run build
 ```
 
 The generated static site will be in the `dist` directory and can be deployed to Netlify.
+If you are using Netlify, set the `BUN_VERSION` environment variable so Bun is installed during the build.
