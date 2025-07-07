@@ -1,0 +1,60 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getData } from '../../../data/about.ja';
+const { locale } = Astro.params;
+const data = getData(locale);
+export async function getStaticPaths() {
+  return [
+    { params: { locale: 'en' } },
+    { params: { locale: 'ja' } }
+  ];
+}
+---
+<Layout locale={locale}>
+  <h1 class="text-2xl h-full w-full px-10 mt-5">About</h1>
+  <main class="h-full w-full p-3">
+    <section class="p-10 md:p-5 m-10 rounded-lg border-green-600 border">
+      <h2 class="text-3xl mb-2 text-green-600"># education</h2>
+      {data.education && data.education.map((v, i) => (
+        <div key={i} class="mb-3">
+          <p>{v.startDate} - {v.endDate}</p>
+          <p class="text-xl mb-2 text-green-500">{v.institution} - {v.degree}</p>
+          <p>{v.description}</p>
+        </div>
+      ))}
+    </section>
+    <section class="p-10 md:p-5 m-10 rounded-lg border-green-600 border">
+      <h2 class="text-3xl mb-2 text-green-600"># motivation</h2>
+      {data.motivation && data.motivation.map((v, i) => (
+        <div key={i} class="mb-3">
+          <p class="text-xl text-green-500">{v.title}</p>
+          <p>{v.desc}</p>
+        </div>
+      ))}
+    </section>
+    <section class="p-10 md:p-5 m-10 rounded-lg border-green-600 border">
+      <h2 class="text-3xl mb-2 text-green-600"># my projects</h2>
+      {data.selfProject && data.selfProject.map((v, i) => (
+        <div key={i} class="mb-3">
+          <p class="text-xl text-green-500">{v.title}</p>
+          <p>{v.desc}</p>
+          <p class="text-green-400"><a href={v.link}>{v.link}</a></p>
+        </div>
+      ))}
+    </section>
+    <section class="p-10 md:p-5 m-10 my-14 rounded-lg border-green-600 border">
+      <h2 class="text-3xl mb-2 text-green-600"># Languages</h2>
+      {data.skills && data.skills.LanguageSkills.map((v, i) => (
+        <span key={i} class="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block">{v.name} - {v.description}</span>
+      ))}
+    </section>
+    <section class="p-10 md:p-5 m-10 my-14 rounded-lg border-green-600 border">
+      <h2 class="text-3xl mb-2 text-green-600"># skills</h2>
+      {data.skills && data.skills.ProgrammingSkills.map((v, i) => (
+        <span key={i} class="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block">
+          {v.description === '' ? `${v.name} / +${v.year} years` : `${v.name} / ${v.description} / +${v.year} years`}
+        </span>
+      ))}
+    </section>
+  </main>
+</Layout>

@@ -1,0 +1,15 @@
+---
+const { locale } = Astro.props;
+const otherLocale = locale === 'ja' ? 'en' : 'ja';
+const path = Astro.url.pathname;
+const switcherPath = path.replace(/^\/(en|ja)/, '/' + otherLocale);
+---
+<header class="border-b border-green-700">
+  <ul class="flex m-5 justify-center">
+    <li class="mr-3 md:mr-6 text-sm md:text-base"><a class="text-green-600 hover:text-green-700" href={`/${locale}/`}>{locale !== 'ja' ? 'Home' : 'ホーム'}</a></li>
+    <li class="mr-3 md:mr-6 text-sm md:text-base"><a class="text-green-600 hover:text-green-700" href={`/${locale}/career`}>{locale !== 'ja' ? 'Career' : 'キャリア'}</a></li>
+    <li class="mr-3 md:mr-6 text-sm md:text-base"><a class="text-green-600 hover:text-green-700" href={`/${locale}/about`}>{locale !== 'ja' ? 'About' : 'アバウト'}</a></li>
+    <li class="mr-3 md:mr-6 text-sm md:text-base"><a class="text-green-600 hover:text-green-700" href={`/${locale}/downloads`}>{locale !== 'ja' ? 'CV download' : '履歴書 ダウンロード'}</a></li>
+    <li class="mr-3 md:mr-6 text-sm md:text-base"><a class="text-green-600 hover:text-green-700" href={switcherPath}>{locale === 'ja' ? 'English' : '日本語'}</a></li>
+  </ul>
+</header>

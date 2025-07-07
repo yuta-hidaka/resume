@@ -1,0 +1,26 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getData } from '../../../data/about.ja';
+const { locale } = Astro.params;
+const data = getData(locale);
+export async function getStaticPaths() {
+  return [
+    { params: { locale: 'en' } },
+    { params: { locale: 'ja' } }
+  ];
+}
+---
+<Layout locale={locale}>
+  <h1 class="text-2xl h-full w-full px-10 mt-5">Career</h1>
+  <main class="h-full w-full md:p-20 p-5">
+    {data.experience && data.experience.map((v, i) => (
+      <div key={i} class="border-green-600 border rounded-md mb-5 p-5">
+        <div class="font-extrabold mb-2 text-green-600">{v.company}</div>
+        <div class="text-sm font-bold mb-2">{v.startDate} - {v.endDate}</div>
+        <div class="mb-2">{v.jobTitle}</div>
+        <div class="mb-2">{v.projects.job}</div>
+        <div class="mb-2">{v.projects.jobDescription}</div>
+      </div>
+    ))}
+  </main>
+</Layout>

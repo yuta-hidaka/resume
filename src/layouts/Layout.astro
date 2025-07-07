@@ -1,0 +1,13 @@
+---
+import Header from '../components/Header.astro';
+import '../styles/globals.css';
+const { locale } = Astro.props;
+---
+<html lang={locale}>
+  <body>
+    <Header locale={locale} />
+    <div class="max-w-5xl m-auto">
+      <slot />
+    </div>
+  </body>
+</html>
