@@ -3,6 +3,7 @@
   publish = "dist"
 [build.environment]
   BUN_VERSION = "1.2.18"
+  NODE_VERSION = "20"
 
 [[headers]]
   for = "/assets/*"
