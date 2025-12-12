@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AboutClient from '@/components/AboutClient';
+import { getData } from '@/data/about.ja';
+
+const locale = 'en';
+const data = getData(locale);
+---
+
+<Layout locale={locale}>
+  <main class="h-full w-full p-3">
+    <h1 class="text-2xl h-full w-full px-10 mt-5">About</h1>
+    <AboutClient client:load data={data} />
+  </main>
+</Layout>

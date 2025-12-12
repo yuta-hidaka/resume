@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
+import type { FC } from "react";
 
-export default function TypingEffect({
-  text,
-  delay,
-  typingSpeed,
-  deleteCursorOnEnd,
-  className,
-  prefix,
-  link,
-  skip,
-}: {
+interface TypingEffectProps {
   text: string;
   delay: number;
   typingSpeed: number;
@@ -19,7 +11,18 @@ export default function TypingEffect({
   suffix?: string;
   link?: boolean;
   skip?: boolean;
-}) {
+}
+
+const TypingEffect: FC<TypingEffectProps> = ({
+  text,
+  delay,
+  typingSpeed,
+  deleteCursorOnEnd,
+  className,
+  prefix,
+  link,
+  skip,
+}) => {
   const [_text, _setText] = useState("");
   const [showCursor, setShowCursor] = useState(false);
   const [showPrefix, setShowPrefix] = useState(false);
@@ -78,13 +81,8 @@ export default function TypingEffect({
           )}
         </p>
       )}
-      {/* <span className={_text !== "" ? className : ""}>
-        {showPrefix && prefix && <span>{prefix}</span>}
-        {link ? <a href={_text}>{_text}</a> : _text}
-        {showCursor && (
-          <span className="align-middle border-l-2 h-1 animate-ping"></span>
-        )}
-      </span> */}
     </>
   );
-}
+};
+
+export default TypingEffect;

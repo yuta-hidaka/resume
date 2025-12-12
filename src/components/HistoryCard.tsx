@@ -1,9 +1,10 @@
-import { Experience } from "@/types/history";
+import type { Experience } from "@/types/history";
 import dayjs from "dayjs";
+import "dayjs/locale/en";
+import "dayjs/locale/ja";
 import { useEffect, useRef, useState } from "react";
+import type { FC } from "react";
 import HistoryLine from "./HistoryLine";
-require("dayjs/locale/en");
-require("dayjs/locale/ja");
 
 type HistoryCardType = {
   v: Experience;
@@ -13,13 +14,13 @@ type HistoryCardType = {
   onCurrentIndexChange: (value: number) => void;
 };
 
-export default function HistoryCard({
+const HistoryCard: FC<HistoryCardType> = ({
   v,
   index,
   currentIndex,
   locale,
   onCurrentIndexChange,
-}: HistoryCardType) {
+}) => {
   const ref = useRef<HTMLInputElement>(null);
   const [expand, setExpand] = useState(false);
 
@@ -74,4 +75,6 @@ export default function HistoryCard({
       </div>
     </div>
   );
-}
+};
+
+export default HistoryCard;

@@ -1,5 +1,3 @@
-"use client";
-
 import { data as dataEN } from "./about.en";
 
 export const getData = (locale: string | undefined): Data => {
