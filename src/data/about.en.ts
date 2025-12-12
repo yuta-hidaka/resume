@@ -16,32 +16,32 @@ export const data = {
   ],
   experience: [
     {
-      "jobTitle": "Senior Full Stack Engineer",
-      "company": "Astroni",
-      "startDate": "2024-12-01",
-      "endDate": "",
-      "projects": {
-        "tags": ["Astro", "TypeScript", "React", "Node.js", "AWS"],
-        "job": "Web Development",
-        "jobDescription":
+      jobTitle: "Senior Full Stack Engineer",
+      company: "Astroni",
+      startDate: "2024-12-01",
+      endDate: "",
+      projects: {
+        tags: ["Astro", "TypeScript", "React", "Node.js", "AWS"],
+        job: "Web Development",
+        jobDescription:
           "Leading development of high-performance web applications using Astro framework. Focused on building fast, content-rich websites with optimal SEO and minimal JavaScript bundle sizes. Implementing modern web architecture patterns including Islands Architecture and server-side rendering.",
-        "experience": ["Astro framework expertise", "Performance optimization", "SEO-focused development"],
-        "team": 8
-      }
+        experience: ["Astro framework expertise", "Performance optimization", "SEO-focused development"],
+        team: 8,
+      },
     },
     {
-      "jobTitle": "Tech Lead",
-      "company": "Monstarlab",
-      "startDate": "2024-04-01",
-      "endDate": "",
-      "projects": {
-        "tags": ["Golang", "NextJS", "GCP"],
-        "job": "Contract Development",
-        "jobDescription":
+      jobTitle: "Tech Lead",
+      company: "Monstarlab",
+      startDate: "2024-04-01",
+      endDate: "",
+      projects: {
+        tags: ["Golang", "NextJS", "GCP"],
+        job: "Contract Development",
+        jobDescription:
           "Developed a service that allows users to exchange points for stock rights as part of the Furusato Tax Donation system. Designed for high traffic, handling over 1000 RPS at peak access.",
-        "experience": [""],
-        "team": 30
-      }
+        experience: [""],
+        team: 30,
+      },
     },
     {
       jobTitle: "Tech Lead",
