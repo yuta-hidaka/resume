@@ -1,0 +1,56 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import TypingEffect from '@/components/TypingEffect';
+import { getData } from '@/data';
+
+const locale = 'en';
+const data = getData(locale);
+---
+
+<Layout locale={locale}>
+  <h1 class="text-2xl h-full w-full px-10 mt-5">Home</h1>
+  <main class="h-full w-full md:flex flex-none p-5 md:p-10">
+    <div class="md:m-0 m-auto md:w-1/3 w-full transition hover:scale-105 hover:ease-in rounded-lg">
+      <img
+        class="rounded-lg hue-rotate-15 m-auto md:m-0"
+        src="/me.jpeg"
+        alt="Picture of the author"
+        width={300}
+        height={300}
+      />
+    </div>
+    <div class="ml-0 mt-5 md:mt-0 md:ml-5 md:w-2/3 w-full p-3 transition hover:scale-105 hover:ease-in rounded-lg border-green-600 border">
+      {data && (
+        <>
+          <TypingEffect
+            client:load
+            deleteCursorOnEnd={true}
+            text={`${data.family_name} ${data.given_name}`}
+            delay={0}
+            typingSpeed={100}
+            prefix="$ yuta-hidaka > "
+            className="block"
+          />
+          <TypingEffect
+            client:load
+            deleteCursorOnEnd={true}
+            text={data.profession}
+            delay={1000}
+            typingSpeed={50}
+            prefix="$ yuta-hidaka > "
+            className="block"
+          />
+          <TypingEffect
+            client:load
+            deleteCursorOnEnd={false}
+            text={data.bio}
+            delay={3000}
+            typingSpeed={50}
+            prefix="$ yuta-hidaka > "
+            className="block"
+          />
+        </>
+      )}
+    </div>
+  </main>
+</Layout>

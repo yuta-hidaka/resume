@@ -1,0 +1,48 @@
+---
+import Header from '@/components/Header';
+import '@/styles/globals.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  locale: string;
+}
+
+const { 
+  title = '日髙悠太 - Yuta Hidaka - Portfolio',
+  description = 'Software Engineer - 日髙悠太のポートフォリオサイトです',
+  locale 
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Yuta Hidaka" />
+    <meta name="keywords" content="resume software engineer" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@yuta-hidaka" />
+    <meta name="twitter:creator" content="@yuta-hidaka" />
+    <meta name="twitter:image" content="https://yuta.dev" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yuta.dev" />
+    
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header locale={locale} client:load />
+    <div class="max-w-5xl m-auto">
+      <slot />
+    </div>
+  </body>
+</html>

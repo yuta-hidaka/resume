@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CareerClient from '@/components/CareerClient';
+import { getData } from '@/data';
+
+const locale = 'en';
+const data = getData(locale);
+---
+
+<Layout locale={locale}>
+  <h1 class="text-2xl h-full w-full px-10 mt-5">Career</h1>
+  <main class="h-full w-full md:p-20 p-5">
+    <CareerClient client:load data={data} locale={locale} />
+  </main>
+</Layout>

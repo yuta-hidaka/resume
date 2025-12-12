@@ -1,10 +1,12 @@
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { FC } from "react";
 
-export const Header = ({ locale }: { locale: string }) => {
+const Header: FC<{ locale: string }> = ({ locale }) => {
+  const [currentPath, setCurrentPath] = useState("");
+
+  useEffect(() => {
+    setCurrentPath(window.location.pathname);
+  }, []);
   const [links, setLinks] = useState([
     {
       label: locale !== "ja" ? "Home" : "ホーム",
@@ -38,13 +40,12 @@ export const Header = ({ locale }: { locale: string }) => {
     },
   ]);
 
-  const r = usePathname();
   useEffect(() => {
     setLinks(
       links.map((v) => {
         v.locale = locale;
         if (v.isI18nSwitcher) {
-          const p = r.slice(1).split("/");
+          const p = currentPath.slice(1).split("/");
           p[0] = locale === "ja" ? "en" : "ja";
           v.locale = locale === "ja" ? "en" : "ja";
           v.path = "/" + p.join("/");
@@ -52,7 +53,7 @@ export const Header = ({ locale }: { locale: string }) => {
         return v;
       })
     );
-  }, [r]);
+  }, [currentPath, locale]);
 
   return (
     <header className="border-b border-green-700">
@@ -60,13 +61,12 @@ export const Header = ({ locale }: { locale: string }) => {
         {links.map((v, i) => {
           return (
             <li className="mr-3 md:mr-6 text-sm md:text-base" key={i}>
-              <Link
-                href={v.isI18nSwitcher ? v.path : locale + v.path}
+              <a
+                href={v.isI18nSwitcher ? v.path : `/${locale}${v.path}`}
                 className="text-green-600 hover:text-green-700"
-                locale={v.locale}
               >
                 {v.label}
-              </Link>
+              </a>
             </li>
           );
         })}
@@ -74,3 +74,5 @@ export const Header = ({ locale }: { locale: string }) => {
     </header>
   );
 };
+
+export default Header;

@@ -1,5 +1,3 @@
-"use client";
-
 export const data = {
   family_name: "Hidaka",
   given_name: "Yuta",
