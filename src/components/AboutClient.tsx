@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FC } from "react";
-import type { Data } from "@/data/about.ja";
+import type { Data } from "@/data";
 import TypingEffect from "@/components/TypingEffect";
 
 interface AboutClientProps {

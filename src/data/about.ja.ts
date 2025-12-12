@@ -1,12 +1,3 @@
-import { data as dataEN } from "./about.en";
-
-export const getData = (locale: string | undefined): Data => {
-  if (locale === "ja") {
-    return data;
-  }
-  return dataEN;
-};
-
 export const data = {
   family_name: "日髙",
   given_name: "悠太",
