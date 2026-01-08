@@ -4,17 +4,18 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Skip Next.js plugin - this is now an Astro project
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
-# Redirects for SPA-like behavior with i18n
+# Astro adapter handles this, but as fallback
 [[redirects]]
   from = "/"
   to = "/ja/"
   status = 302
   force = false
 
-# Handle 404s
-[[redirects]]
-  from = "/*"
-  to = "/ja/index.html"
-  status = 404
-
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
