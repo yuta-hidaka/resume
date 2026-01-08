@@ -1,0 +1,21 @@
+---
+interface Props {
+  index: number;
+}
+
+const { index } = Astro.props;
+---
+
+<div class="history-line flex flex-col items-center" data-index={index}>
+  <div class="dot w-3 h-3 rounded-full bg-green-600 transition-colors duration-300"></div>
+  <div class="line w-0.5 h-full min-h-[100px] bg-gray-600 transition-colors duration-300"></div>
+</div>
+
+<style>
+  .history-line.active .dot {
+    background-color: rgb(74 222 128);
+  }
+  .history-line.active .line {
+    background-color: rgb(74 222 128);
+  }
+</style>

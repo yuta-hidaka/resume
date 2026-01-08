@@ -1,0 +1,102 @@
+---
+import HistoryLine from './HistoryLine.astro';
+
+interface Props {
+  company: string;
+  startDate: string;
+  endDate: string;
+  jobTitle: string;
+  job: string;
+  jobDescription: string;
+  index: number;
+  locale: string;
+}
+
+const { company, startDate, endDate, jobTitle, job, jobDescription, index, locale } = Astro.props;
+
+function formatDate(dateStr: string, locale: string): string {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  if (locale === 'en') {
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+  return date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+const formattedStartDate = formatDate(startDate, locale);
+const formattedEndDate = formatDate(endDate, locale);
+---
+
+<div class="history-card flex" data-index={index}>
+  <div class="flex flex-col items-center">
+    <HistoryLine index={index} />
+  </div>
+  <div class="break-all whitespace-pre-wrap tracking-wide leading-5 transition hover:scale-105 hover:ease-in flex w-full flex-col border hover:border-green-600 md:mx-10 mx-3 my-5 p-3 md:my-5 md:p-5 rounded-md ease-in-out duration-200 cursor-pointer">
+    <div class="font-extrabold break-all ml-5 mb-5 text-green-600">
+      {company}
+    </div>
+    <div class="text-sm font-bold break-all ml-5 mb-5">
+      {formattedStartDate} - {formattedEndDate}
+    </div>
+    <div class="break-all ml-5 mb-5">{jobTitle}</div>
+    <div class="break-all ml-5 mb-3 line-clamp-2">{job}</div>
+    <div class="job-description ml-5 mb-5 line-clamp-2 transition-all duration-300">
+      {jobDescription}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.history-card').forEach((card) => {
+    const description = card.querySelector('.job-description');
+    let expanded = false;
+    
+    card.addEventListener('click', () => {
+      expanded = !expanded;
+      if (description) {
+        if (expanded) {
+          description.classList.remove('line-clamp-2');
+          description.classList.add('whitespace-break-spaces');
+        } else {
+          description.classList.add('line-clamp-2');
+          description.classList.remove('whitespace-break-spaces');
+        }
+      }
+    });
+  });
+  
+  // Scroll tracking for timeline
+  let currentIndex = 0;
+  const cards = document.querySelectorAll('.history-card');
+  const lines = document.querySelectorAll('.history-line');
+  
+  function updateActiveStates() {
+    lines.forEach((line, i) => {
+      if (i <= currentIndex) {
+        line.classList.add('active');
+      } else {
+        line.classList.remove('active');
+      }
+    });
+  }
+  
+  function handleScroll() {
+    cards.forEach((card, index) => {
+      const rect = card.getBoundingClientRect();
+      const offsetTop = rect.top + window.scrollY;
+      const pageYOffset = window.scrollY + 100;
+      
+      if (pageYOffset > offsetTop && index >= currentIndex) {
+        currentIndex = index;
+        updateActiveStates();
+      } else if (pageYOffset < offsetTop && index === currentIndex && currentIndex > 0) {
+        currentIndex = index - 1;
+        updateActiveStates();
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', handleScroll);
+  updateActiveStates();
+</script>
+

@@ -1,0 +1,41 @@
+---
+import { getLangFromUrl, getRouteFromUrl, useTranslations, getLocalizedPath, languages, type Lang } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const route = getRouteFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const links = [
+  { label: t('nav.home'), path: '/' },
+  { label: t('nav.career'), path: '/career' },
+  { label: t('nav.about'), path: '/about' },
+  { label: t('nav.downloads'), path: '/downloads' },
+];
+
+const otherLang: Lang = lang === 'ja' ? 'en' : 'ja';
+const langSwitchPath = `/${otherLang}${route ? '/' + route : ''}`;
+---
+
+<header class="border-b border-green-700">
+  <ul class="flex m-5 justify-center">
+    {links.map((link) => (
+      <li class="mr-3 md:mr-6 text-sm md:text-base">
+        <a 
+          href={getLocalizedPath(lang, link.path)} 
+          class="text-green-600 hover:text-green-700"
+        >
+          {link.label}
+        </a>
+      </li>
+    ))}
+    <li class="mr-3 md:mr-6 text-sm md:text-base">
+      <a 
+        href={langSwitchPath} 
+        class="text-green-600 hover:text-green-700"
+      >
+        {languages[otherLang]}
+      </a>
+    </li>
+  </ul>
+</header>
+

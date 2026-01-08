@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HistoryCard from '../../components/HistoryCard.astro';
+import { getData } from '../../data/about.ja';
+
+const data = getData('en');
+---
+
+<Layout title="Career - Yuta Hidaka">
+  <h1 class="text-2xl h-full w-full px-10 mt-5">Career</h1>
+  <main class="h-full w-full md:p-20 p-5">
+    {data.experience && data.experience.map((v, i) => (
+      <HistoryCard
+        company={v.company}
+        startDate={v.startDate}
+        endDate={v.endDate}
+        jobTitle={v.jobTitle}
+        job={v.projects.job}
+        jobDescription={v.projects.jobDescription}
+        index={i}
+        locale="en"
+      />
+    ))}
+  </main>
+</Layout>
+

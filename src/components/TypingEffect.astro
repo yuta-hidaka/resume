@@ -1,0 +1,134 @@
+---
+interface Props {
+  text: string;
+  delay?: number;
+  typingSpeed?: number;
+  deleteCursorOnEnd?: boolean;
+  class?: string;
+  prefix?: string;
+  link?: boolean;
+  id?: string;
+}
+
+const { 
+  text, 
+  delay = 0, 
+  typingSpeed = 50, 
+  deleteCursorOnEnd = false, 
+  class: className = '', 
+  prefix = '',
+  link = false,
+  id = `typing-${Math.random().toString(36).substr(2, 9)}`
+} = Astro.props;
+---
+
+<p 
+  id={id}
+  class:list={[className, 'break-all whitespace-pre-wrap tracking-wide leading-7']}
+  data-text={text}
+  data-delay={delay}
+  data-typing-speed={typingSpeed}
+  data-delete-cursor-on-end={deleteCursorOnEnd}
+  data-prefix={prefix}
+  data-link={link}
+>
+</p>
+
+<script>
+  interface TypingElement extends HTMLParagraphElement {
+    dataset: {
+      text: string;
+      delay: string;
+      typingSpeed: string;
+      deleteCursorOnEnd: string;
+      prefix: string;
+      link: string;
+    }
+  }
+
+  function initTypingEffect(element: TypingElement) {
+    const text = element.dataset.text || '';
+    const delay = parseInt(element.dataset.delay || '0');
+    const typingSpeed = parseInt(element.dataset.typingSpeed || '50');
+    const deleteCursorOnEnd = element.dataset.deleteCursorOnEnd === 'true';
+    const prefix = element.dataset.prefix || '';
+    const isLink = element.dataset.link === 'true';
+    
+    let currentIndex = 0;
+    let showPrefix = false;
+    let cursorElement: HTMLSpanElement | null = null;
+    
+    function createCursor(): HTMLSpanElement {
+      const cursor = document.createElement('span');
+      cursor.className = 'align-middle border-l-2 h-1 animate-ping';
+      return cursor;
+    }
+    
+    function render() {
+      element.innerHTML = '';
+      
+      if (showPrefix && prefix) {
+        const prefixSpan = document.createElement('span');
+        prefixSpan.textContent = prefix;
+        element.appendChild(prefixSpan);
+      }
+      
+      const currentText = text.substring(0, currentIndex);
+      if (isLink && currentText) {
+        const linkEl = document.createElement('a');
+        linkEl.href = currentText;
+        linkEl.textContent = currentText;
+        linkEl.className = 'text-green-400';
+        element.appendChild(linkEl);
+      } else if (currentText) {
+        element.appendChild(document.createTextNode(currentText));
+      }
+      
+      if (cursorElement) {
+        element.appendChild(cursorElement);
+      }
+    }
+    
+    function type() {
+      if (currentIndex < text.length) {
+        currentIndex++;
+        render();
+        setTimeout(type, typingSpeed);
+      } else {
+        if (deleteCursorOnEnd && cursorElement) {
+          cursorElement.remove();
+          cursorElement = null;
+          render();
+        }
+      }
+    }
+    
+    function start() {
+      showPrefix = true;
+      cursorElement = createCursor();
+      render();
+      setTimeout(type, 100);
+    }
+    
+    setTimeout(start, delay);
+  }
+  
+  // Initialize all typing effects on page load
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<TypingElement>('[data-text]').forEach((el) => {
+      if (!el.dataset.initialized) {
+        el.dataset.initialized = 'true';
+        initTypingEffect(el);
+      }
+    });
+  });
+  
+  // Also run on initial load
+  document.querySelectorAll<TypingElement>('[data-text]').forEach((el) => {
+    if (!el.dataset.initialized) {
+      el.dataset.initialized = 'true';
+      initTypingEffect(el);
+    }
+  });
+</script>
+

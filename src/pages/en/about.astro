@@ -1,0 +1,161 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TypingEffect from '../../components/TypingEffect.astro';
+import { getData } from '../../data/about.ja';
+
+const data = getData('en');
+---
+
+<Layout title="About - Yuta Hidaka">
+  <main class="h-full w-full p-3">
+    <h1 class="text-2xl h-full w-full px-10 mt-5">About</h1>
+    
+    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border cursor-pointer">
+      <h2 class="text-3xl mb-2 text-green-600"># education</h2>
+      {data.education && data.education.map((v, i) => (
+        <div>
+          <TypingEffect
+            text={`${v.startDate} - ${v.endDate}`}
+            delay={0}
+            typingSpeed={20}
+            deleteCursorOnEnd={true}
+            class="block"
+          />
+          <div class="mb-3" />
+          <TypingEffect
+            text={`${v.institution} - ${v.degree}`}
+            delay={2000}
+            typingSpeed={20}
+            deleteCursorOnEnd={true}
+            class="text-xl block mb-2 text-green-500"
+            prefix="## "
+          />
+          <TypingEffect
+            text={v.description}
+            delay={5000}
+            typingSpeed={10}
+            deleteCursorOnEnd={true}
+            class="block"
+          />
+          <div class="mb-2" />
+        </div>
+      ))}
+    </div>
+
+    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border cursor-pointer">
+      <h2 class="text-3xl mb-2 text-green-600"># motivation</h2>
+      {data.motivation && data.motivation.map((v, i) => (
+        <div>
+          <TypingEffect
+            text={v.title}
+            delay={12000 * (i === 0 ? i + 1 : (i + 1) * 0.8)}
+            typingSpeed={10}
+            deleteCursorOnEnd={true}
+            class="text-xl block text-green-500"
+            prefix="## "
+          />
+          <div class="mb-1" />
+          <TypingEffect
+            text={v.desc}
+            delay={14000 * (i === 0 ? i + 1 : (i + 1) * 0.75)}
+            typingSpeed={10}
+            deleteCursorOnEnd={true}
+            class="block"
+          />
+          <div class="mb-3" />
+        </div>
+      ))}
+    </div>
+
+    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border cursor-pointer">
+      <h2 class="text-3xl mb-2 text-green-600"># my projects</h2>
+      {data.selfProject && data.selfProject.map((v, i) => (
+        <div>
+          <TypingEffect
+            text={v.title}
+            delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
+            typingSpeed={20}
+            deleteCursorOnEnd={true}
+            class="block text-xl mb-2 text-green-500"
+            prefix="## "
+          />
+          <TypingEffect
+            text={v.desc}
+            delay={51000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
+            typingSpeed={20}
+            deleteCursorOnEnd={true}
+            class="block mb-1"
+          />
+          <TypingEffect
+            text={v.link}
+            delay={52000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
+            typingSpeed={20}
+            deleteCursorOnEnd={true}
+            class="block mb-5 text-green-400"
+            link={true}
+          />
+        </div>
+      ))}
+    </div>
+
+    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 my-14 rounded-lg border-green-600 border cursor-pointer">
+      <h2 class="text-3xl mb-2 text-green-600"># Languages</h2>
+      {data.skills && data.skills.LanguageSkills.map((v, i) => (
+        <TypingEffect
+          text={`${v.name} - ${v.description}`}
+          delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
+          typingSpeed={10}
+          deleteCursorOnEnd={true}
+          class="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block"
+        />
+      ))}
+    </div>
+
+    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 my-14 rounded-lg border-green-600 border cursor-pointer">
+      <h2 class="text-3xl mb-2 text-green-600"># skills</h2>
+      {data.skills && data.skills.ProgrammingSkills.map((v, i) => (
+        <TypingEffect
+          text={v.description === ''
+            ? [v.name, `+${v.year} years`].join(' / ')
+            : [v.name, v.description, `+${v.year} years`].join(' / ')}
+          delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
+          typingSpeed={10}
+          deleteCursorOnEnd={true}
+          class="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block"
+        />
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<script>
+  // Click to skip typing animation
+  document.querySelectorAll('.section-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      card.querySelectorAll('[data-text]').forEach((el: Element) => {
+        const element = el as HTMLElement;
+        const text = element.dataset.text || '';
+        const prefix = element.dataset.prefix || '';
+        const isLink = element.dataset.link === 'true';
+        
+        element.innerHTML = '';
+        if (prefix) {
+          const prefixSpan = document.createElement('span');
+          prefixSpan.textContent = prefix;
+          element.appendChild(prefixSpan);
+        }
+        
+        if (isLink) {
+          const linkEl = document.createElement('a');
+          linkEl.href = text;
+          linkEl.textContent = text;
+          linkEl.className = 'text-green-400';
+          element.appendChild(linkEl);
+        } else {
+          element.appendChild(document.createTextNode(text));
+        }
+      });
+    });
+  });
+</script>
+

@@ -1,15 +1,17 @@
-"use client";
+import type { Data } from '../types/data';
+import { data as dataEN } from './about.en';
 
-import { data as dataEN } from "./about.en";
+export type { Data };
+export * from '../types/data';
 
 export const getData = (locale: string | undefined): Data => {
-  if (locale === "ja") {
+  if (locale === 'ja') {
     return data;
   }
   return dataEN;
 };
 
-export const data = {
+export const data: Data = {
   family_name: "日髙",
   given_name: "悠太",
   profession: "Full Stack Developer / Tech lead",
@@ -519,56 +521,3 @@ export const data = {
     ],
   },
 };
-
-export interface Data {
-  family_name: string;
-  given_name: string;
-  profession: string;
-  bio: string;
-  address: string;
-  social?: SocialEntity[] | null;
-  experience?: ExperienceEntity[] | null;
-  selfProject?: SelfProjectEntity[] | null;
-  education?: EducationEntity[] | null;
-  motivation?: MotivationEntityOrJob[] | null;
-  job: MotivationEntityOrJob;
-  skills?: {
-    LanguageSkills: { name: string; description: string; year: number }[];
-    ProgrammingSkills: { name: string; description: string; year: number }[];
-  } | null;
-}
-export interface SocialEntity {
-  name: string;
-  url: string;
-}
-export interface ExperienceEntity {
-  jobTitle: string;
-  company: string;
-  startDate: string;
-  endDate: string;
-  projects: Projects;
-}
-export interface Projects {
-  tags?: string[] | null;
-  job: string;
-  jobDescription: string;
-  experience?: string[] | null;
-  team?: number | null;
-}
-export interface SelfProjectEntity {
-  title: string;
-  desc: string;
-  link: string;
-  tags?: (string | null)[] | null;
-}
-export interface EducationEntity {
-  degree: string;
-  institution: string;
-  startDate: string;
-  endDate: string;
-  description: string;
-}
-export interface MotivationEntityOrJob {
-  title: string;
-  desc: string;
-}

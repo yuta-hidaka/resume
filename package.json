@@ -1,31 +1,18 @@
 {
   "name": "portfolio",
-  "version": "0.1.0",
+  "type": "module",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "@netlify/next": "^1.4.6",
-    "@types/node": "20.2.3",
-    "@types/react": "18.2.6",
-    "@types/react-dom": "18.2.4",
-    "accept-language": "^3.0.18",
-    "autoprefixer": "10.4.14",
-    "dayjs": "^1.11.11",
-    "eslint": "8.41.0",
-    "eslint-config-next": "13.4.3",
-    "install": "^0.13.0",
-    "next": "13.4.4",
-    "next-intl": "2.15.0-beta.5",
-    "particles.js": "^2.0.0",
-    "postcss": "8.4.23",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2",
-    "typescript": "5.0.4"
+    "@astrojs/netlify": "^6.6.3",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.6",
+    "tailwindcss": "^4.1.18"
   }
 }

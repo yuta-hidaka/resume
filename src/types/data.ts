@@ -1,30 +1,34 @@
-"use client";
-
 export interface Data {
   family_name: string;
   given_name: string;
   profession: string;
   bio: string;
   address: string;
-  social?: Social[] | null;
-  experience?: Experience[] | null;
-  selfProject?: SelfProject[] | null;
-  education?: Education[] | null;
-  motivation?: MotivationOrJob[] | null;
-  job: MotivationOrJob;
-  skills?: string[] | null;
+  social?: SocialEntity[] | null;
+  experience?: ExperienceEntity[] | null;
+  selfProject?: SelfProjectEntity[] | null;
+  education?: EducationEntity[] | null;
+  motivation?: MotivationEntityOrJob[] | null;
+  job: MotivationEntityOrJob;
+  skills?: {
+    LanguageSkills: SkillEntity[];
+    ProgrammingSkills: SkillEntity[];
+  } | null;
 }
-export interface Social {
+
+export interface SocialEntity {
   name: string;
   url: string;
 }
-export interface Experience {
+
+export interface ExperienceEntity {
   jobTitle: string;
   company: string;
   startDate: string;
   endDate: string;
   projects: Projects;
 }
+
 export interface Projects {
   tags?: string[] | null;
   job: string;
@@ -32,20 +36,30 @@ export interface Projects {
   experience?: string[] | null;
   team?: number | null;
 }
-export interface SelfProject {
+
+export interface SelfProjectEntity {
   title: string;
   desc: string;
   link: string;
   tags?: (string | null)[] | null;
 }
-export interface Education {
+
+export interface EducationEntity {
   degree: string;
   institution: string;
   startDate: string;
   endDate: string;
   description: string;
 }
-export interface MotivationOrJob {
+
+export interface MotivationEntityOrJob {
   title: string;
   desc: string;
 }
+
+export interface SkillEntity {
+  name: string;
+  description: string;
+  year: number;
+}
+
