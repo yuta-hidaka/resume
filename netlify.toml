@@ -1,18 +1,21 @@
 [build]
-  command = "npm install && npm run build"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-  # Skip Next.js plugin - this is now an Astro project
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
-# Astro adapter handles this, but as fallback
+# Redirects
 [[redirects]]
   from = "/"
   to = "/ja/"
   status = 302
-  force = false
+
+[[redirects]]
+  from = "/*"
+  to = "/ja/index.html"
+  status = 404
 
 [[headers]]
   for = "/*"
