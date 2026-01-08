@@ -1,161 +1,115 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import TypingEffect from '../../components/TypingEffect.astro';
 import { getData } from '../../data/about.ja';
 
 const data = getData('ja');
 ---
 
 <Layout title="アバウト - 日髙悠太">
-  <main class="h-full w-full p-3">
-    <h1 class="text-2xl h-full w-full px-10 mt-5">About</h1>
+  <div class="space-y-8">
+    <!-- Page Header -->
+    <header class="glass-card p-8 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2">
+        About
+      </h1>
+      <p class="text-[var(--text-muted)]">
+        スキル・学歴・モチベーション
+      </p>
+    </header>
     
-    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border cursor-pointer">
-      <h2 class="text-3xl mb-2 text-green-600"># education</h2>
-      {data.education && data.education.map((v, i) => (
-        <div>
-          <TypingEffect
-            text={`${v.startDate} - ${v.endDate}`}
-            delay={0}
-            typingSpeed={20}
-            deleteCursorOnEnd={true}
-            class="block"
-          />
-          <div class="mb-3" />
-          <TypingEffect
-            text={`${v.institution} - ${v.degree}`}
-            delay={2000}
-            typingSpeed={20}
-            deleteCursorOnEnd={true}
-            class="text-xl block mb-2 text-green-500"
-            prefix="## "
-          />
-          <TypingEffect
-            text={v.description}
-            delay={5000}
-            typingSpeed={10}
-            deleteCursorOnEnd={true}
-            class="block"
-          />
-          <div class="mb-2" />
+    <!-- Education -->
+    <section class="glass-card p-6 md:p-8 animate-fade-in">
+      <h2 class="section-title">Education</h2>
+      {data.education && data.education.map((edu) => (
+        <div class="border-l-2 border-[var(--accent)] pl-6 py-4">
+          <div class="flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)] font-mono mb-2">
+            <span>{edu.startDate}</span>
+            <span>→</span>
+            <span>{edu.endDate}</span>
+          </div>
+          <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-1">
+            {edu.institution}
+          </h3>
+          <p class="text-[var(--accent)] mb-3">{edu.degree}</p>
+          <p class="text-[var(--text-secondary)] leading-relaxed">
+            {edu.description}
+          </p>
         </div>
       ))}
-    </div>
-
-    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border cursor-pointer">
-      <h2 class="text-3xl mb-2 text-green-600"># motivation</h2>
-      {data.motivation && data.motivation.map((v, i) => (
-        <div>
-          <TypingEffect
-            text={v.title}
-            delay={12000 * (i === 0 ? i + 1 : (i + 1) * 0.8)}
-            typingSpeed={10}
-            deleteCursorOnEnd={true}
-            class="text-xl block text-green-500"
-            prefix="## "
-          />
-          <div class="mb-1" />
-          <TypingEffect
-            text={v.desc}
-            delay={14000 * (i === 0 ? i + 1 : (i + 1) * 0.75)}
-            typingSpeed={10}
-            deleteCursorOnEnd={true}
-            class="block"
-          />
-          <div class="mb-3" />
-        </div>
-      ))}
-    </div>
-
-    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 rounded-lg border-green-600 border cursor-pointer">
-      <h2 class="text-3xl mb-2 text-green-600"># my projects</h2>
-      {data.selfProject && data.selfProject.map((v, i) => (
-        <div>
-          <TypingEffect
-            text={v.title}
-            delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
-            typingSpeed={20}
-            deleteCursorOnEnd={true}
-            class="block text-xl mb-2 text-green-500"
-            prefix="## "
-          />
-          <TypingEffect
-            text={v.desc}
-            delay={51000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
-            typingSpeed={20}
-            deleteCursorOnEnd={true}
-            class="block mb-1"
-          />
-          <TypingEffect
-            text={v.link}
-            delay={52000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
-            typingSpeed={20}
-            deleteCursorOnEnd={true}
-            class="block mb-5 text-green-400"
-            link={true}
-          />
-        </div>
-      ))}
-    </div>
-
-    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 my-14 rounded-lg border-green-600 border cursor-pointer">
-      <h2 class="text-3xl mb-2 text-green-600"># Languages</h2>
-      {data.skills && data.skills.LanguageSkills.map((v, i) => (
-        <TypingEffect
-          text={`${v.name} - ${v.description}`}
-          delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
-          typingSpeed={10}
-          deleteCursorOnEnd={true}
-          class="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block"
-        />
-      ))}
-    </div>
-
-    <div class="section-card p-10 transition hover:scale-105 hover:ease-in md:p-5 m-10 my-14 rounded-lg border-green-600 border cursor-pointer">
-      <h2 class="text-3xl mb-2 text-green-600"># skills</h2>
-      {data.skills && data.skills.ProgrammingSkills.map((v, i) => (
-        <TypingEffect
-          text={v.description === ''
-            ? [v.name, `+${v.year} years`].join(' / ')
-            : [v.name, v.description, `+${v.year} years`].join(' / ')}
-          delay={50000 * (i === 0 ? i + 1 : (i + 1) * (0.7 / i))}
-          typingSpeed={10}
-          deleteCursorOnEnd={true}
-          class="bg-green-800 text-green-100 rounded-full px-4 py-1 m-1 inline-block"
-        />
-      ))}
-    </div>
-  </main>
+    </section>
+    
+    <!-- Motivation -->
+    <section class="glass-card p-6 md:p-8 animate-fade-in delay-100">
+      <h2 class="section-title">Motivation</h2>
+      <div class="grid gap-6">
+        {data.motivation && data.motivation.map((item, i) => (
+          <div class="group p-4 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:border-[var(--accent)] transition-all duration-300">
+            <h3 class="text-lg font-semibold text-[var(--accent)] mb-2 flex items-center gap-2">
+              <span class="text-[var(--text-muted)]">0{i + 1}.</span>
+              {item.title}
+            </h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              {item.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+    
+    <!-- Projects -->
+    <section class="glass-card p-6 md:p-8 animate-fade-in delay-200">
+      <h2 class="section-title">Personal Projects</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        {data.selfProject && data.selfProject.map((project) => (
+          <a 
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group p-4 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:border-[var(--accent)] transition-all duration-300 block"
+          >
+            <h3 class="text-lg font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-2 flex items-center gap-2">
+              {project.title}
+              <span class="text-xs opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+            </h3>
+            <p class="text-sm text-[var(--text-muted)] line-clamp-2">
+              {project.desc}
+            </p>
+          </a>
+        ))}
+      </div>
+    </section>
+    
+    <!-- Language Skills -->
+    <section class="glass-card p-6 md:p-8 animate-fade-in delay-300">
+      <h2 class="section-title">Languages</h2>
+      <div class="flex flex-wrap gap-3">
+        {data.skills?.LanguageSkills.map((skill) => (
+          <div class="tag">
+            <span class="font-medium">{skill.name}</span>
+            <span class="mx-2 text-[var(--glass-border)]">|</span>
+            <span class="text-[var(--text-muted)]">{skill.description}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+    
+    <!-- Programming Skills -->
+    <section class="glass-card p-6 md:p-8 animate-fade-in delay-400">
+      <h2 class="section-title">Technical Skills</h2>
+      <div class="flex flex-wrap gap-2">
+        {data.skills?.ProgrammingSkills.map((skill) => (
+          <div class="tag group cursor-default">
+            <span class="font-medium text-[var(--text-primary)]">{skill.name}</span>
+            {skill.description && (
+              <>
+                <span class="mx-1.5 text-[var(--glass-border)]">·</span>
+                <span class="text-[var(--text-muted)] text-xs">{skill.description}</span>
+              </>
+            )}
+            <span class="ml-2 text-xs text-[var(--accent)]">+{skill.year}y</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
 </Layout>
-
-<script>
-  // Click to skip typing animation
-  document.querySelectorAll('.section-card').forEach((card) => {
-    card.addEventListener('click', () => {
-      card.querySelectorAll('[data-text]').forEach((el: Element) => {
-        const element = el as HTMLElement;
-        const text = element.dataset.text || '';
-        const prefix = element.dataset.prefix || '';
-        const isLink = element.dataset.link === 'true';
-        
-        element.innerHTML = '';
-        if (prefix) {
-          const prefixSpan = document.createElement('span');
-          prefixSpan.textContent = prefix;
-          element.appendChild(prefixSpan);
-        }
-        
-        if (isLink) {
-          const linkEl = document.createElement('a');
-          linkEl.href = text;
-          linkEl.textContent = text;
-          linkEl.className = 'text-green-400';
-          element.appendChild(linkEl);
-        } else {
-          element.appendChild(document.createTextNode(text));
-        }
-      });
-    });
-  });
-</script>
-

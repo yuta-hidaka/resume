@@ -3,26 +3,59 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="履歴書ダウンロード - 日髙悠太">
-  <h1 class="w-full h-full px-10 mt-5 text-2xl">Download</h1>
-  <main class="w-full h-full p-5 md:p-20">
-    <div class="flex flex-col items-center">
-      <div class="w-full">
-        <h2 class="my-2 text-3xl text-green-600"># 職務経歴書</h2>
-        <embed src="/yuta-hidaka-resume-japanese.pdf" width="100%" height="750px" />
-        
-        <h2 class="my-2 text-3xl text-green-600"># 履歴書</h2>
-        <h3 class="my-2 text-2xl text-green-300 underline">
-          <a href="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf">
-            download
-          </a>
-        </h3>
+  <div class="space-y-8">
+    <!-- Page Header -->
+    <header class="glass-card p-8 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2">
+        Downloads
+      </h1>
+      <p class="text-[var(--text-muted)]">
+        履歴書・職務経歴書のダウンロード
+      </p>
+    </header>
+    
+    <!-- CV Section -->
+    <section class="glass-card p-6 md:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h2 class="section-title mb-0">職務経歴書</h2>
+        <a 
+          href="/yuta-hidaka-resume-japanese.pdf"
+          download
+          class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--bg-primary)] rounded-lg font-medium hover:opacity-90 transition-opacity"
+        >
+          <span>↓</span>
+          <span>Download PDF</span>
+        </a>
+      </div>
+      <div class="rounded-lg overflow-hidden border border-[var(--glass-border)]">
         <embed 
-          src="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/preview?pli=1" 
-          width="100%" 
-          height="750px" 
+          src="/yuta-hidaka-resume-japanese.pdf" 
+          type="application/pdf"
+          class="w-full h-[600px] md:h-[750px]"
         />
       </div>
-    </div>
-  </main>
+    </section>
+    
+    <!-- Resume Section -->
+    <section class="glass-card p-6 md:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h2 class="section-title mb-0">履歴書</h2>
+        <a 
+          href="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
+          download
+          class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--bg-primary)] rounded-lg font-medium hover:opacity-90 transition-opacity"
+        >
+          <span>↓</span>
+          <span>Download PDF</span>
+        </a>
+      </div>
+      <div class="rounded-lg overflow-hidden border border-[var(--glass-border)]">
+        <embed 
+          src="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/preview?pli=1"
+          type="application/pdf"
+          class="w-full h-[600px] md:h-[750px]"
+        />
+      </div>
+    </section>
+  </div>
 </Layout>
-

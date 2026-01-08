@@ -6,36 +6,72 @@ const route = getRouteFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const links = [
-  { label: t('nav.home'), path: '/' },
-  { label: t('nav.career'), path: '/career' },
-  { label: t('nav.about'), path: '/about' },
-  { label: t('nav.downloads'), path: '/downloads' },
+  { label: t('nav.home'), path: '/', icon: '⌂' },
+  { label: t('nav.career'), path: '/career', icon: '◈' },
+  { label: t('nav.about'), path: '/about', icon: '◉' },
+  { label: t('nav.downloads'), path: '/downloads', icon: '↓' },
 ];
 
 const otherLang: Lang = lang === 'ja' ? 'en' : 'ja';
 const langSwitchPath = `/${otherLang}${route ? '/' + route : ''}`;
+
+const currentPath = Astro.url.pathname;
 ---
 
-<header class="border-b border-green-700">
-  <ul class="flex m-5 justify-center">
-    {links.map((link) => (
-      <li class="mr-3 md:mr-6 text-sm md:text-base">
+<header class="glass-nav sticky top-0 z-50">
+  <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <ul class="flex items-center justify-center gap-1 sm:gap-2 py-4 flex-wrap">
+      {links.map((link) => {
+        const href = getLocalizedPath(lang, link.path);
+        const isActive = currentPath === href || currentPath === href + '/';
+        return (
+          <li>
+            <a 
+              href={href}
+              class:list={[
+                'nav-link group flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300',
+                isActive 
+                  ? 'bg-[var(--accent)] text-[var(--bg-primary)] shadow-lg shadow-[var(--glow-color)]' 
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg)]'
+              ]}
+            >
+              <span class:list={['text-xs opacity-60 group-hover:opacity-100 transition-opacity', isActive && 'opacity-100']}>
+                {link.icon}
+              </span>
+              <span class="hidden sm:inline">{link.label}</span>
+            </a>
+          </li>
+        );
+      })}
+      
+      <!-- Language Switcher -->
+      <li class="ml-2 sm:ml-4">
         <a 
-          href={getLocalizedPath(lang, link.path)} 
-          class="text-green-600 hover:text-green-700"
+          href={langSwitchPath}
+          class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border border-[var(--glass-border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all duration-300"
         >
-          {link.label}
+          <span class="text-xs">🌐</span>
+          <span>{languages[otherLang]}</span>
         </a>
       </li>
-    ))}
-    <li class="mr-3 md:mr-6 text-sm md:text-base">
-      <a 
-        href={langSwitchPath} 
-        class="text-green-600 hover:text-green-700"
-      >
-        {languages[otherLang]}
-      </a>
-    </li>
-  </ul>
+    </ul>
+  </nav>
 </header>
 
+<style>
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+  
+  .nav-link:hover::after {
+    width: 80%;
+  }
+</style>

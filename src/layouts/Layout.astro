@@ -19,7 +19,7 @@ const lang = getLangFromUrl(Astro.url);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="author" content="Yuta Hidaka" />
-    <meta name="keywords" content="resume software engineer" />
+    <meta name="keywords" content="resume software engineer portfolio" />
     
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />
@@ -33,11 +33,22 @@ const lang = getLangFromUrl(Astro.url);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
   </head>
-  <body>
+  <body class="min-h-screen">
+    <!-- Background Glow Effects -->
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    
     <Header />
-    <div class="max-w-5xl m-auto">
+    
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
       <slot />
-    </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="glass-nav mt-auto py-6">
+      <div class="max-w-5xl mx-auto px-4 text-center text-sm text-[var(--text-muted)]">
+        <p>&copy; {new Date().getFullYear()} Yuta Hidaka. All rights reserved.</p>
+      </div>
+    </footer>
   </body>
 </html>
-

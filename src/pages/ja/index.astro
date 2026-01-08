@@ -1,50 +1,90 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import TypingEffect from '../../components/TypingEffect.astro';
 import { getData } from '../../data/about.ja';
 
 const data = getData('ja');
 ---
 
 <Layout>
-  <h1 class="text-2xl h-full w-full px-10 mt-5">Home</h1>
-  <main class="h-full w-full md:flex flex-none p-5 md:p-10">
-    <div class="md:m-0 m-auto md:w-1/3 w-full transition hover:scale-105 hover:ease-in rounded-lg">
-      <img
-        class="rounded-lg hue-rotate-15 m-auto md:m-0"
-        src="/me.jpeg"
-        alt="Picture of the author"
-        width="300"
-        height="300"
-        loading="eager"
-      />
-    </div>
-    <div class="ml-0 mt-5 md:mt-0 md:ml-5 md:w-2/3 w-full p-3 transition hover:scale-105 hover:ease-in rounded-lg border-green-600 border">
-      <TypingEffect
-        text={`${data.family_name} ${data.given_name}`}
-        delay={0}
-        typingSpeed={100}
-        deleteCursorOnEnd={true}
-        prefix="$ yuta-hidaka > "
-        class="block"
-      />
-      <TypingEffect
-        text={data.profession}
-        delay={1000}
-        typingSpeed={50}
-        deleteCursorOnEnd={true}
-        prefix="$ yuta-hidaka > "
-        class="block"
-      />
-      <TypingEffect
-        text={data.bio}
-        delay={3000}
-        typingSpeed={50}
-        deleteCursorOnEnd={false}
-        prefix="$ yuta-hidaka > "
-        class="block"
-      />
-    </div>
-  </main>
+  <div class="min-h-[80vh] flex flex-col justify-center">
+    <!-- Hero Section -->
+    <section class="grid md:grid-cols-2 gap-8 items-center">
+      <!-- Profile Image -->
+      <div class="flex justify-center md:justify-end order-1 md:order-none">
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+          <img
+            class="relative rounded-2xl w-64 h-64 md:w-80 md:h-80 object-cover border-2 border-[var(--glass-border)] group-hover:border-[var(--accent)] transition-all duration-500"
+            src="/me.jpeg"
+            alt={`${data.family_name} ${data.given_name}`}
+            width="320"
+            height="320"
+            loading="eager"
+          />
+        </div>
+      </div>
+      
+      <!-- Profile Info -->
+      <div class="glass-card p-8 space-y-6">
+        <div class="space-y-2">
+          <p class="text-[var(--text-muted)] text-sm font-mono">$ whoami</p>
+          <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-primary)] glow-text">
+            {data.family_name} {data.given_name}
+          </h1>
+        </div>
+        
+        <div class="space-y-2">
+          <p class="text-[var(--text-muted)] text-sm font-mono">$ profession</p>
+          <p class="text-xl md:text-2xl text-[var(--accent)] font-semibold">
+            {data.profession}
+          </p>
+        </div>
+        
+        <div class="space-y-2">
+          <p class="text-[var(--text-muted)] text-sm font-mono">$ cat bio.txt</p>
+          <p class="text-[var(--text-secondary)] leading-relaxed">
+            {data.bio}
+          </p>
+        </div>
+        
+        <!-- Social Links -->
+        {data.social && (
+          <div class="pt-4 border-t border-[var(--glass-border)]">
+            <div class="flex flex-wrap gap-3">
+              {data.social.map((social) => (
+                <a 
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="tag hover:scale-105"
+                >
+                  {social.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+    
+    <!-- Quick Stats -->
+    <section class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass-card p-6 text-center animate-fade-in delay-100">
+        <p class="text-3xl font-bold text-[var(--accent)]">6+</p>
+        <p class="text-sm text-[var(--text-muted)] mt-1">Years Experience</p>
+      </div>
+      <div class="glass-card p-6 text-center animate-fade-in delay-200">
+        <p class="text-3xl font-bold text-[var(--accent)]">15+</p>
+        <p class="text-sm text-[var(--text-muted)] mt-1">Projects</p>
+      </div>
+      <div class="glass-card p-6 text-center animate-fade-in delay-300">
+        <p class="text-3xl font-bold text-[var(--accent)]">10+</p>
+        <p class="text-sm text-[var(--text-muted)] mt-1">Technologies</p>
+      </div>
+      <div class="glass-card p-6 text-center animate-fade-in delay-400">
+        <p class="text-3xl font-bold text-[var(--accent)]">2</p>
+        <p class="text-sm text-[var(--text-muted)] mt-1">Languages</p>
+      </div>
+    </section>
+  </div>
 </Layout>
-
