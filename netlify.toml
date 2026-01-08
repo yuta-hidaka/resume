@@ -1,0 +1,20 @@
+[build]
+  command = "bun run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Redirects for SPA-like behavior with i18n
+[[redirects]]
+  from = "/"
+  to = "/ja/"
+  status = 302
+  force = false
+
+# Handle 404s
+[[redirects]]
+  from = "/*"
+  to = "/ja/index.html"
+  status = 404
+
