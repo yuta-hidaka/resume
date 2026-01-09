@@ -27,6 +27,20 @@ export const data: Data = {
   ],
   experience: [
     {
+      jobTitle: "シニアフルスタックエンジニア",
+      company: "Astroni",
+      startDate: "2024-12-01",
+      endDate: "",
+      projects: {
+        tags: ["Astro", "TypeScript", "React", "Node.js", "AWS"],
+        job: "Web開発",
+        jobDescription:
+          "Astroフレームワークを使用した高性能Webアプリケーションの開発をリード。SEOに最適化され、JavaScriptバンドルサイズを最小限に抑えた、高速でコンテンツリッチなWebサイトの構築に注力。Islands Architectureやサーバーサイドレンダリングなど、最新のWebアーキテクチャパターンを実装。",
+        experience: ["Astroフレームワークの専門知識", "パフォーマンス最適化", "SEO重視の開発"],
+        team: 8,
+      },
+    },
+    {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
       startDate: "2024-04-01",
