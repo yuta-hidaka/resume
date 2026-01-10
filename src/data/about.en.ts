@@ -16,6 +16,34 @@ export const data: Data = {
   ],
   experience: [
     {
+      jobTitle: "Backend Engineer",
+      company: "SUPER STUDIO",
+      startDate: "2025-07-01",
+      endDate: "",
+      projects: {
+        tags: ["Golang", "NextJS", "ScyllaDB", "k9s", "ArgoCD", "Kafka", "Spark", "Scrum"],
+        job: "Big Data Group / Backend Team → xfunction Team",
+        jobDescription:
+          "Working as a backend engineer in the Big Data Group, initially in the backend team, then moved to the xfunction team. Developing and maintaining systems using Golang, NextJS, ScyllaDB, k9s, ArgoCD, Kafka, and Spark for e-commerce platform infrastructure. Working in a Scrum development environment.",
+        experience: ["Big data infrastructure", "Event-driven architecture with Kafka", "Kubernetes orchestration", "CI/CD with ArgoCD", "Scrum development"],
+        team: 0,
+      },
+    },
+    {
+      jobTitle: "Tech Lead",
+      company: "Monstarlab",
+      startDate: "2025-01-01",
+      endDate: "2025-06-30",
+      projects: {
+        tags: ["Golang", "AWS", "Serverless", "Lambda", "CloudFront", "Data Analytics", "Devin", "Terraform", "IaC", "Redis", "RDS", "PayloadCMS", "SSTv3", "NextJS", "REST API", "Microservices"],
+        job: "Contract Development",
+        jobDescription:
+          "Led development of an app and backend infrastructure for an Okinawa theme park business. Managed a team of 16 Vietnamese developers. Implemented using PayloadCMS, SSTv3, and NextJS with REST API architecture. Designed a microservices-oriented architecture with service separation to distribute traffic spikes and handle over 3000 RPS at peak traffic. Implemented an illustrated map feature that splits images and aligns them with coordinates. Faced tight deadlines and, as a tech lead, actively engaged with customers not only on technical aspects but also on business matters, providing proactive communication. When requirements expanded significantly beyond the initial scope, proposed AI integration to the customer as an alternative to team expansion, which became the company's first AI integration initiative using Devin. Built data analytics infrastructure and reduced infrastructure costs by 30% through AWS serverless architecture, Savings Plans consultation with AWS, and Redis implementation to reduce RDS and Lambda cold start times. Built infrastructure as code (IaC) to create an AI-friendly environment from the start.",
+        experience: ["High-traffic system architecture", "Microservices architecture", "Data analytics infrastructure", "Cost optimization with serverless (30% reduction)", "AI integration leadership", "IaC for AI-friendly infrastructure", "AWS Savings Plans optimization", "Redis for performance optimization", "Customer-facing technical leadership", "Image processing and coordinate mapping"],
+        team: 16,
+      },
+    },
+    {
       "jobTitle": "Tech Lead",
       "company": "Monstarlab",
       "startDate": "2024-04-01",

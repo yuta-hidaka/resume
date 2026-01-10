@@ -31,14 +31,14 @@ const currentPath = Astro.url.pathname;
               class:list={[
                 'nav-link group flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300',
                 isActive 
-                  ? 'bg-[var(--accent)] text-[var(--bg-primary)] shadow-lg shadow-[var(--glow-color)]' 
+                  ? 'active-nav-link' 
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg)]'
               ]}
             >
-              <span class:list={['text-xs opacity-60 group-hover:opacity-100 transition-opacity', isActive && 'opacity-100']}>
+              <span class:list={['text-xs transition-opacity', isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-100']}>
                 {link.icon}
               </span>
-              <span class="hidden sm:inline">{link.label}</span>
+              <span>{link.label}</span>
             </a>
           </li>
         );
@@ -54,12 +54,86 @@ const currentPath = Astro.url.pathname;
           <span>{languages[otherLang]}</span>
         </a>
       </li>
+      
+      <!-- Theme Toggle -->
+      <li class="ml-1 sm:ml-2">
+        <button 
+          id="theme-toggle"
+          class="flex items-center justify-center w-10 h-10 rounded-lg border border-[var(--glass-border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all duration-300"
+          aria-label="Toggle theme"
+        >
+          <span id="theme-icon-dark" class="hidden dark:block">☀️</span>
+          <span id="theme-icon-light" class="block dark:hidden">🌙</span>
+        </button>
+      </li>
     </ul>
   </nav>
 </header>
 
+<script is:inline>
+  // Theme toggle functionality
+  (function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    
+    const updateIcons = (theme) => {
+      const darkIcon = document.getElementById('theme-icon-dark');
+      const lightIcon = document.getElementById('theme-icon-light');
+      if (darkIcon && lightIcon) {
+        if (theme === 'dark') {
+          darkIcon.style.display = 'block';
+          lightIcon.style.display = 'none';
+        } else {
+          darkIcon.style.display = 'none';
+          lightIcon.style.display = 'block';
+        }
+      }
+    };
+    
+    const setTheme = (theme) => {
+      if (theme === 'light') {
+        html.classList.add('light');
+        html.classList.remove('dark');
+      } else {
+        html.classList.add('dark');
+        html.classList.remove('light');
+      }
+      localStorage.setItem('theme', theme);
+      updateIcons(theme);
+    };
+    
+    // Initialize icons based on current theme
+    const currentTheme = html.classList.contains('light') ? 'light' : 'dark';
+    updateIcons(currentTheme);
+    
+    // Toggle theme on button click
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const current = html.classList.contains('light') ? 'light' : 'dark';
+        setTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    }
+  })();
+</script>
+
 <style>
-  .nav-link::after {
+  .active-nav-link {
+    background: var(--accent);
+    color: #000 !important;
+    font-weight: 600;
+    box-shadow: 0 0 20px var(--glow-color);
+  }
+  
+  .active-nav-link span {
+    color: #000 !important;
+    opacity: 1 !important;
+  }
+  
+  .nav-link {
+    position: relative;
+  }
+  
+  .nav-link:not(.active-nav-link)::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -71,7 +145,7 @@ const currentPath = Astro.url.pathname;
     transform: translateX(-50%);
   }
   
-  .nav-link:hover::after {
+  .nav-link:not(.active-nav-link):hover::after {
     width: 80%;
   }
 </style>

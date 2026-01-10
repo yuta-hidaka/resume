@@ -27,6 +27,34 @@ export const data: Data = {
   ],
   experience: [
     {
+      jobTitle: "Backend Engineer",
+      company: "SUPER STUDIO",
+      startDate: "2025-07-01",
+      endDate: "",
+      projects: {
+        tags: ["Golang", "NextJS", "ScyllaDB", "k9s", "ArgoCD", "Kafka", "Spark", "Scrum"],
+        job: "ビックデータグループ / バックエンドチーム → xfunctionチーム",
+        jobDescription:
+          "ECプラットフォームのビックデータグループでバックエンドエンジニアとして従事。最初はバックエンドチームに所属し、その後xfunctionチームに異動。Golang、NextJS、ScyllaDB、k9s、ArgoCD、Kafka、Sparkなどを利用してシステムの開発・保守を担当。スクラム開発で開発を進めている。",
+        experience: ["ビッグデータインフラ", "Kafkaによるイベント駆動アーキテクチャ", "Kubernetesオーケストレーション", "ArgoCDによるCI/CD", "スクラム開発"],
+        team: 0,
+      },
+    },
+    {
+      jobTitle: "Tech Lead",
+      company: "Monstarlab",
+      startDate: "2025-01-01",
+      endDate: "2025-06-30",
+      projects: {
+        tags: ["Golang", "AWS", "Serverless", "Lambda", "CloudFront", "Data Analytics", "Devin", "Terraform", "IaC", "Redis", "RDS", "PayloadCMS", "SSTv3", "NextJS", "REST API", "Microservices"],
+        job: "受託開発",
+        jobDescription:
+          "沖縄のテーマパーク事業のアプリ開発とバックエンド、インフラ、Web開発をリード。VNチーム16名をマネジメント。PayloadCMS、SSTv3、NextJSでREST APIを実装。マイクロサービス指向の構成で、サービス毎に分離を行いトラフィックのスパイクなどを分散させる構成で、最大3000RPSを超えるトラフィックの処理を担当。イラストマップの実装も行い、画像を座標と合わせて分割し、座標に合わせる方法を実現。短納期という制約の中、テックリードとして技術アドバイスだけでなく、ビジネス面にも入り込み積極的に顧客とコミュニケーションを取った。当初要件から大きく要望が増えた際、人員の増強の代わりにAIを導入することを顧客にも提案し、それが社内で初めてのAI導入（Devin）となった。データ分析基盤の構築や、インフラコストを30%削減（AWSサーバーレスアーキテクチャ、AWSと相談してSavingsPlan活用、RedisによるRDSやLambda起動時間の削減など）。インフラもIaCで記述することで、AIフレンドリーな環境をあらかじめ構築。",
+        experience: ["高トラフィックシステムアーキテクチャ", "マイクロサービスアーキテクチャ", "データ分析基盤構築", "サーバーレスによるコスト最適化（30%削減）", "AI導入リーダーシップ", "IaCによるAIフレンドリーなインフラ構築", "AWS SavingsPlan最適化", "Redisによるパフォーマンス最適化", "顧客対応型テックリーダーシップ", "画像処理と座標マッピング"],
+        team: 16,
+      },
+    },
+    {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
       startDate: "2024-04-01",

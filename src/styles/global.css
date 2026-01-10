@@ -3,22 +3,66 @@
 
 @import "tailwindcss";
 
+/* Dark Mode (Default) - Deep Forest Emerald */
 :root {
-  /* Colors */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a2e;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(74, 222, 128, 0.15);
-  --glass-border-hover: rgba(74, 222, 128, 0.4);
-  --accent: #4ade80;
-  --accent-dim: #22c55e;
-  --text-primary: #f0fdf4;
-  --text-secondary: #86efac;
-  --text-muted: rgba(240, 253, 244, 0.6);
-  
-  /* Effects */
-  --glow-color: rgba(74, 222, 128, 0.15);
+  --bg-primary: #020a07;
+  --bg-secondary: #041f17;
+  --bg-tertiary: #052e23;
+  --glass-bg: rgba(4, 120, 87, 0.06);
+  --glass-border: rgba(4, 120, 87, 0.18);
+  --glass-border-hover: rgba(4, 120, 87, 0.45);
+  --accent: #047857;
+  --accent-dim: #065f46;
+  --accent-light: #059669;
+  --text-primary: #ecfdf5;
+  --text-secondary: #a7f3d0;
+  --text-muted: rgba(236, 253, 245, 0.45);
+  --glow-color: rgba(4, 120, 87, 0.3);
+  --blur-amount: 16px;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+/* Light Mode */
+:root.light {
+  --bg-primary: #f0fdf4;
+  --bg-secondary: #dcfce7;
+  --bg-tertiary: #bbf7d0;
+  --glass-bg: rgba(4, 120, 87, 0.08);
+  --glass-border: rgba(4, 120, 87, 0.2);
+  --glass-border-hover: rgba(4, 120, 87, 0.5);
+  --accent: #047857;
+  --accent-dim: #065f46;
+  --accent-light: #059669;
+  --text-primary: #022c22;
+  --text-secondary: #064e3b;
+  --text-muted: rgba(2, 44, 34, 0.6);
+  --glow-color: rgba(4, 120, 87, 0.15);
   --blur-amount: 12px;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+}
+
+/* System preference detection */
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --bg-primary: #f0fdf4;
+    --bg-secondary: #dcfce7;
+    --bg-tertiary: #bbf7d0;
+    --glass-bg: rgba(4, 120, 87, 0.08);
+    --glass-border: rgba(4, 120, 87, 0.2);
+    --glass-border-hover: rgba(4, 120, 87, 0.5);
+    --accent: #047857;
+    --accent-dim: #065f46;
+    --accent-light: #059669;
+    --text-primary: #022c22;
+    --text-secondary: #064e3b;
+    --text-muted: rgba(2, 44, 34, 0.6);
+    --glow-color: rgba(4, 120, 87, 0.15);
+    --blur-amount: 12px;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    color-scheme: light;
+  }
 }
 
 * {
@@ -92,7 +136,7 @@ body {
 .glow-orb-1 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(74, 222, 128, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
   top: -100px;
   right: -100px;
   animation: float 20s ease-in-out infinite;
@@ -101,7 +145,7 @@ body {
 .glow-orb-2 {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
   bottom: -50px;
   left: -50px;
   animation: float 25s ease-in-out infinite reverse;
@@ -149,8 +193,8 @@ body {
 .tag {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.2);
+  background: rgba(5, 150, 105, 0.1);
+  border: 1px solid rgba(5, 150, 105, 0.25);
   border-radius: 9999px;
   font-size: 0.875rem;
   color: var(--text-secondary);
@@ -158,8 +202,8 @@ body {
 }
 
 .tag:hover {
-  background: rgba(74, 222, 128, 0.2);
-  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(5, 150, 105, 0.2);
+  border-color: rgba(5, 150, 105, 0.5);
 }
 
 /* Section Title */

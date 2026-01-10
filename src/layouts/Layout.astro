@@ -32,6 +32,15 @@ const lang = getLangFromUrl(Astro.url);
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    
+    <!-- Prevent flash of wrong theme -->
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('theme') || 
+          (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
   </head>
   <body class="min-h-screen">
     <!-- Background Glow Effects -->
