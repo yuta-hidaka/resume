@@ -37,12 +37,7 @@ const isOngoing = !endDate;
   
   <!-- Timeline Dot -->
   <div 
-    class:list={[
-      'timeline-dot absolute left-0 top-3 w-4 h-4 rounded-full -translate-x-1/2 border-2 transition-all duration-500 shadow-lg',
-      isOngoing 
-        ? 'bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_12px_var(--glow-color)]' 
-        : 'bg-[var(--bg-primary)] border-[var(--glass-border)] group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:shadow-[0_0_12px_var(--glow-color)]'
-    ]}
+    class="timeline-dot absolute left-0 top-3 w-4 h-4 rounded-full -translate-x-1/2 border-2 transition-all duration-500 shadow-lg bg-[var(--bg-primary)] border-[var(--glass-border)] group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:shadow-[0_0_12px_var(--glow-color)]"
     data-card-index={index}
   >
     <div class="timeline-dot-inner absolute inset-0 rounded-full bg-[var(--accent)] opacity-0"></div>
@@ -116,10 +111,13 @@ const isOngoing = !endDate;
 
     function updateActiveTimelineDot() {
       const cards = document.querySelectorAll('.career-card');
+      if (cards.length === 0) return;
+
       const viewportCenter = window.innerHeight / 2;
       let closestCard: Element | null = null;
       let closestDistance = Infinity;
 
+      // Find the card closest to viewport center
       cards.forEach((card) => {
         const rect = card.getBoundingClientRect();
         const cardCenter = rect.top + rect.height / 2;
@@ -131,7 +129,7 @@ const isOngoing = !endDate;
         }
       });
 
-      // Remove active class from all dots
+      // First, remove active class from ALL dots to ensure only one is active
       document.querySelectorAll('.timeline-dot').forEach((dot) => {
         dot.classList.remove('active');
         const inner = dot.querySelector('.timeline-dot-inner') as HTMLElement;
@@ -139,18 +137,24 @@ const isOngoing = !endDate;
           inner.classList.remove('animate-ping');
           inner.style.opacity = '0';
         }
+        // Reset dot appearance
+        (dot as HTMLElement).style.borderColor = '';
+        (dot as HTMLElement).style.backgroundColor = '';
+        (dot as HTMLElement).style.boxShadow = '';
       });
 
-      // Add active class to closest card's dot
+      // Then, add active class to ONLY the closest card's dot
       if (closestCard) {
         const cardIndex = closestCard.getAttribute('data-card-index');
-        const activeDot = document.querySelector(`.timeline-dot[data-card-index="${cardIndex}"]`);
-        if (activeDot) {
-          activeDot.classList.add('active');
-          const inner = activeDot.querySelector('.timeline-dot-inner') as HTMLElement;
-          if (inner) {
-            inner.style.opacity = '0.75';
-            inner.classList.add('animate-ping');
+        if (cardIndex !== null) {
+          const activeDot = document.querySelector(`.timeline-dot[data-card-index="${cardIndex}"]`);
+          if (activeDot) {
+            activeDot.classList.add('active');
+            const inner = activeDot.querySelector('.timeline-dot-inner') as HTMLElement;
+            if (inner) {
+              inner.style.opacity = '0.75';
+              inner.classList.add('animate-ping');
+            }
           }
         }
       }

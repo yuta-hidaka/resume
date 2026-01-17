@@ -326,16 +326,27 @@ body::after {
 .delay-500 { animation-delay: 500ms; }
 .delay-600 { animation-delay: 600ms; }
 
-/* Timeline dot active state */
+/* Timeline dot active state - only one should be active at a time */
+.timeline-dot {
+  border-color: var(--glass-border);
+  background: var(--bg-primary);
+  box-shadow: none;
+}
+
 .timeline-dot.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--glow-color);
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  box-shadow: 0 0 12px var(--glow-color) !important;
+}
+
+.timeline-dot:not(.active) .timeline-dot-inner {
+  opacity: 0 !important;
+  animation: none !important;
 }
 
 .timeline-dot.active .timeline-dot-inner {
-  opacity: 0.75;
-  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.75 !important;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite !important;
 }
 
 @keyframes ping {
