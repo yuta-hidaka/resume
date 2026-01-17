@@ -1,0 +1,71 @@
+---
+const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js' } = Astro.props;
+---
+
+<script is:inline>
+  (() => {
+    if (window.__docPdfInit) return;
+    window.__docPdfInit = true;
+
+    const loadHtml2Pdf = () => new Promise((resolve, reject) => {
+      if (window.html2pdf) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = {JSON.stringify(cdnUrl)};
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load html2pdf.js'));
+      document.head.appendChild(script);
+    });
+
+    const handleDownload = async (event) => {
+      const button = event.target.closest('[data-doc-download]');
+      if (!button) return;
+      event.preventDefault();
+
+      const docId = button.getAttribute('data-doc-id');
+      const filename = button.getAttribute('data-doc-filename') || 'document.pdf';
+      const target = docId ? document.getElementById(docId) : null;
+
+      if (!target) return;
+
+      const previousStyles = target
+        ? {
+            maxHeight: target.style.maxHeight,
+            overflow: target.style.overflow,
+            height: target.style.height,
+          }
+        : null;
+
+      try {
+        if (target) {
+          target.style.maxHeight = 'none';
+          target.style.overflow = 'visible';
+          target.style.height = 'auto';
+        }
+        await loadHtml2Pdf();
+        const options = {
+          margin: [10, 10, 10, 10],
+          filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'] },
+        };
+        window.html2pdf().set(options).from(target).save();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (target && previousStyles) {
+          target.style.maxHeight = previousStyles.maxHeight;
+          target.style.overflow = previousStyles.overflow;
+          target.style.height = previousStyles.height;
+        }
+      }
+    };
+
+    document.addEventListener('click', handleDownload);
+  })();
+</script>

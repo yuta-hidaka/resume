@@ -1,5 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import DocumentSection from '../../components/DocumentSection.astro';
+import DocumentDownloadScripts from '../../components/DocumentDownloadScripts.astro';
 ---
 
 <Layout title="履歴書ダウンロード - 日髙悠太">
@@ -14,48 +16,27 @@ import Layout from '../../layouts/Layout.astro';
       </p>
     </header>
     
-    <!-- CV Section -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-100">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-        <h2 class="section-title mb-0">職務経歴書</h2>
-        <a 
-          href="/yuta-hidaka-resume-japanese.pdf"
-          download
-          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
-        >
-          <span>↓</span>
-          <span>Download PDF</span>
-        </a>
-      </div>
-      <div class="rounded-xl overflow-hidden border-2 border-[var(--glass-border)] shadow-lg">
-        <embed 
-          src="/yuta-hidaka-resume-japanese.pdf" 
-          type="application/pdf"
-          class="w-full h-[600px] md:h-[750px]"
-        />
-      </div>
-    </section>
+    <DocumentSection
+      id="jp-cv"
+      title="職務経歴書"
+      description="HTMLから動的に生成"
+      sourcePath="docs/職務経歴書/_.html"
+      assetBase="/docs/職務経歴書/"
+      downloadFileName="yuta-hidaka-cv-ja.pdf"
+      previewHeight="750px"
+      fallbackPdfUrl="/yuta-hidaka-resume-japanese.pdf"
+    />
     
-    <!-- Resume Section -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-200">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-        <h2 class="section-title mb-0">履歴書</h2>
-        <a 
-          href="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
-          download
-          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
-        >
-          <span>↓</span>
-          <span>Download PDF</span>
-        </a>
-      </div>
-      <div class="rounded-xl overflow-hidden border-2 border-[var(--glass-border)] shadow-lg">
-        <embed 
-          src="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/preview?pli=1"
-          type="application/pdf"
-          class="w-full h-[600px] md:h-[750px]"
-        />
-      </div>
-    </section>
+    <DocumentSection
+      id="jp-resume"
+      title="履歴書"
+      description="HTMLから動的に生成"
+      sourcePath="docs/履歴書/_.html"
+      assetBase="/docs/履歴書/"
+      downloadFileName="yuta-hidaka-resume-ja.pdf"
+      previewHeight="750px"
+      fallbackPdfUrl="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
+    />
   </div>
+  <DocumentDownloadScripts />
 </Layout>

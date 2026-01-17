@@ -1,0 +1,157 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+const {
+  id,
+  title,
+  description,
+  sourcePath,
+  assetBase,
+  downloadFileName,
+  previewHeight = '750px',
+  fallbackPdfUrl,
+} = Astro.props;
+
+const docId = id ?? `doc-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') ?? 'document'}`;
+
+const resolveDocPath = (docPath) => {
+  if (!docPath) return null;
+  return path.resolve(docPath);
+};
+
+const scopeSelector = (selector, scope) => {
+  if (!selector) return '';
+  if (selector.startsWith('@')) return selector;
+  if (selector.startsWith('html')) return selector.replace(/^html/, scope);
+  if (selector.startsWith('body')) return selector.replace(/^body/, scope);
+  return `${scope} ${selector}`;
+};
+
+const scopeCss = (css, scope) => {
+  if (!css) return '';
+  const importRules = [];
+  const cleaned = css.replace(/@import[^;]+;/g, (match) => {
+    importRules.push(match.trim());
+    return '';
+  });
+  const scoped = cleaned.replace(/(^|})\s*([^{@}][^{]*)\{/g, (match, sep, selectors) => {
+    const scopedSelectors = selectors
+      .split(',')
+      .map((selector) => scopeSelector(selector.trim(), scope))
+      .filter(Boolean)
+      .join(', ');
+    return `${sep} ${scopedSelectors}{`;
+  });
+  return [...importRules, scoped].join('\n').trim();
+};
+
+let rawHtml = '';
+let bodyHtml = '';
+let bodyClass = '';
+let css = '';
+let missing = false;
+
+const resolvedPath = resolveDocPath(sourcePath);
+
+if (!resolvedPath) {
+  missing = true;
+} else {
+  try {
+    rawHtml = fs.readFileSync(resolvedPath, 'utf8');
+  } catch (error) {
+    missing = true;
+  }
+}
+
+if (!missing && rawHtml) {
+  const styleMatch = rawHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  if (styleMatch) {
+    css = styleMatch[1].trim();
+  }
+
+  const bodyMatch = rawHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  bodyHtml = bodyMatch ? bodyMatch[1].trim() : rawHtml;
+
+  const bodyClassMatch = rawHtml.match(/<body[^>]*class=["']([^"']+)["'][^>]*>/i);
+  bodyClass = bodyClassMatch ? bodyClassMatch[1] : '';
+
+  if (assetBase) {
+    bodyHtml = bodyHtml.replace(/src=(["'])images\//g, `src=$1${assetBase}images/`);
+  }
+}
+
+const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
+---
+
+<section class="glass-card p-8 md:p-10 animate-fade-in">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div>
+      <h2 class="section-title mb-1">{title}</h2>
+      {description && <p class="text-[var(--text-muted)] text-sm">{description}</p>}
+    </div>
+    {!missing && (
+      <button
+        type="button"
+        data-doc-download
+        data-doc-id={docId}
+        data-doc-filename={downloadFileName}
+        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
+        style="color: #ffffff;"
+      >
+        <span>↓</span>
+        <span>Download PDF</span>
+      </button>
+    )}
+    {missing && fallbackPdfUrl && (
+      <a
+        href={fallbackPdfUrl}
+        download
+        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
+        style="color: #ffffff;"
+      >
+        <span>↓</span>
+        <span>Download PDF</span>
+      </a>
+    )}
+  </div>
+
+  {!missing ? (
+    <>
+      {scopedCss && <style is:inline>{scopedCss}</style>}
+      <div
+        id={docId}
+        class={`doc-viewer ${bodyClass}`.trim()}
+        style={`max-height: ${previewHeight};`}
+        set:html={bodyHtml}
+      />
+    </>
+  ) : fallbackPdfUrl ? (
+    <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
+      <embed
+        src={fallbackPdfUrl}
+        type="application/pdf"
+        class="w-full h-[600px] md:h-[750px]"
+      />
+    </div>
+  ) : (
+    <div class="rounded-xl border border-[var(--glass-border)] p-6 text-[var(--text-muted)]">
+      <p>HTML source not found. Add the file at <code>{sourcePath}</code> to enable dynamic rendering.</p>
+    </div>
+  )}
+</section>
+
+<style>
+  .doc-viewer {
+    background: #ffffff;
+    color: #000000;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    overflow: auto;
+  }
+
+  .doc-viewer img {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
