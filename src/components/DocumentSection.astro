@@ -13,7 +13,7 @@ const {
   fallbackPdfUrl,
 } = Astro.props;
 
-const docId = id ?? `doc-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') ?? 'document'}`;
+const docId = id ?? `doc-${(title?.toLowerCase() ?? 'document').replace(/[^a-z0-9]/g, '-')}`;
 
 const resolveDocPath = (docPath) => {
   if (!docPath) return null;
@@ -77,7 +77,9 @@ if (!missing && rawHtml) {
   bodyClass = bodyClassMatch ? bodyClassMatch[1] : '';
 
   if (assetBase) {
-    bodyHtml = bodyHtml.replace(/src=(["'])images\//g, `src=$1${assetBase}images/`);
+    bodyHtml = bodyHtml.replace(/src=(["'])images\//g, (match, quote) => {
+      return `src=${quote}${assetBase}images/`;
+    });
   }
 }
 
@@ -96,8 +98,7 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
         data-doc-download
         data-doc-id={docId}
         data-doc-filename={downloadFileName}
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
-        style="color: #ffffff;"
+        class="doc-download-btn"
       >
         <span>↓</span>
         <span>Download PDF</span>
@@ -107,8 +108,7 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
       <a
         href={fallbackPdfUrl}
         download
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
-        style="color: #ffffff;"
+        class="doc-download-btn"
       >
         <span>↓</span>
         <span>Download PDF</span>
@@ -119,12 +119,10 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
   {!missing ? (
     <>
       {scopedCss && <style is:inline>{scopedCss}</style>}
-      <div
-        id={docId}
-        class={`doc-viewer ${bodyClass}`.trim()}
-        style={`max-height: ${previewHeight};`}
-        set:html={bodyHtml}
-      />
+      <div id={docId} class="doc-viewer" style={`max-height: ${previewHeight}`}></div>
+      <script is:inline>
+        {`document.getElementById('${docId}').innerHTML = ${JSON.stringify(bodyHtml)};`}
+      </script>
     </>
   ) : fallbackPdfUrl ? (
     <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
@@ -154,4 +152,23 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     max-width: 100%;
     height: auto;
   }
+
+  .doc-download-btn {
+    color: #ffffff !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(to right, var(--accent), var(--accent-dim));
+    border-radius: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 10px 15px -3px var(--glow-color);
+    transition: all 0.3s;
+  }
+
+  .doc-download-btn:hover {
+    box-shadow: 0 20px 25px -5px var(--glow-color);
+    transform: scale(1.05);
+  }
 </style>
+
