@@ -21,7 +21,7 @@ const data = getData('ja');
     <!-- Timeline -->
     <section class="relative">
       {data.experience && data.experience.map((exp, i) => (
-        <div class="animate-fade-in opacity-0" style={`animation-delay: ${(i + 1) * 100}ms;`}>
+        <div class="animate-fade-in opacity-0 mb-8 last:mb-0 group" style={`animation-delay: ${(i + 1) * 100}ms;`}>
           <HistoryCard
             company={exp.company}
             startDate={exp.startDate}
@@ -32,6 +32,7 @@ const data = getData('ja');
             tags={exp.projects.tags || []}
             index={i}
             locale="ja"
+            isLast={i === data.experience.length - 1}
           />
         </div>
       ))}

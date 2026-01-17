@@ -9,9 +9,10 @@ interface Props {
   tags?: string[];
   index: number;
   locale: string;
+  isLast?: boolean;
 }
 
-const { company, startDate, endDate, jobTitle, job, jobDescription, tags, index, locale } = Astro.props;
+const { company, startDate, endDate, jobTitle, job, jobDescription, tags, index, locale, isLast = false } = Astro.props;
 
 function formatDate(dateStr: string, locale: string): string {
   if (!dateStr) return locale === 'ja' ? '現在' : 'Present';
@@ -27,9 +28,12 @@ const formattedEndDate = formatDate(endDate, locale);
 const isOngoing = !endDate;
 ---
 
-<article class="career-card group relative pl-10 pb-10 mb-8 last:mb-0 last:pb-0">
+<article class="career-card group relative pl-10">
   <!-- Timeline Line -->
-  <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--glass-border)] via-[var(--glass-border)] to-transparent group-last:to-transparent"></div>
+  <div class:list={[
+    'absolute left-0 top-0 w-0.5 bg-[var(--glass-border)]',
+    isLast ? 'bottom-0' : 'bottom-[-2rem]'
+  ]}></div>
   
   <!-- Timeline Dot -->
   <div class:list={[
