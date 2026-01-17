@@ -501,53 +501,14 @@ const currentPath = Astro.url.pathname;
   }
   
   .mobile-nav-item-active {
-    color: white;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    color: var(--accent);
+    background: transparent;
     font-weight: 600;
-    box-shadow: 
-      0 4px 16px rgba(0, 217, 165, 0.35),
-      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
-      0 1px 2px rgba(0, 0, 0, 0.1) inset;
-    position: relative;
-  }
-  
-  .mobile-nav-item-active::before {
-    opacity: 0;
-  }
-  
-  .mobile-nav-item-active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
-    pointer-events: none;
   }
   
   .mobile-nav-item-active:hover {
-    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
-    color: white;
-    box-shadow: 
-      0 6px 20px rgba(0, 217, 165, 0.45),
-      0 0 0 0.5px rgba(255, 255, 255, 0.25) inset,
-      0 1px 2px rgba(0, 0, 0, 0.1) inset;
-  }
-  
-  :global(.light) .mobile-nav-item-active,
-  :global(.light) .mobile-nav-item-active:hover {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-    color: white;
-    box-shadow: 
-      0 4px 16px rgba(0, 184, 148, 0.3),
-      0 0 0 0.5px rgba(255, 255, 255, 0.3) inset,
-      0 1px 2px rgba(0, 0, 0, 0.05) inset;
+    color: var(--accent-light);
+    background: transparent;
   }
   
   .mobile-nav-icon {
@@ -587,56 +548,17 @@ const currentPath = Astro.url.pathname;
     z-index: 1;
   }
   
-  /* Active state with enhanced gradient background */
+  /* Active state - no background, only color */
   .nav-item-active {
-    color: white;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    color: var(--accent);
+    background: transparent;
     font-weight: 600;
-    box-shadow: 
-      0 4px 16px rgba(0, 217, 165, 0.35),
-      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
-      0 1px 2px rgba(0, 0, 0, 0.1) inset;
-    position: relative;
-  }
-  
-  .nav-item-active::before {
-    opacity: 0;
-  }
-  
-  .nav-item-active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
-    pointer-events: none;
   }
   
   .nav-item-active:hover {
-    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
-    color: white;
+    color: var(--accent-light);
+    background: transparent;
     transform: translateY(-1px);
-    box-shadow: 
-      0 6px 20px rgba(0, 217, 165, 0.45),
-      0 0 0 0.5px rgba(255, 255, 255, 0.25) inset,
-      0 1px 2px rgba(0, 0, 0, 0.1) inset;
-  }
-  
-  :global(.light) .nav-item-active,
-  :global(.light) .nav-item-active:hover {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-    color: white;
-    box-shadow: 
-      0 4px 16px rgba(0, 184, 148, 0.3),
-      0 0 0 0.5px rgba(255, 255, 255, 0.3) inset,
-      0 1px 2px rgba(0, 0, 0, 0.05) inset;
   }
   
   /* Action Buttons - Enhanced Glass Design */
