@@ -14,14 +14,14 @@
   --glass-border-hover: rgba(255, 255, 255, 0.25);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
-  --accent: #2d5a4f;
-  --accent-dim: #1f4a3f;
-  --accent-light: #3d6b5f;
-  --accent-dark: #1a3a2f;
+  --accent: #4a9b8e;
+  --accent-dim: #3a8b7e;
+  --accent-light: #5aab9e;
+  --accent-dark: #2a7b6e;
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.8);
   --text-muted: rgba(255, 255, 255, 0.55);
-  --glow-color: rgba(45, 90, 79, 0.15);
+  --glow-color: rgba(74, 155, 142, 0.15);
   --blur-amount: 80px;
   --saturate-amount: 180%;
   --shadow-color: rgba(0, 0, 0, 0.5);
@@ -39,14 +39,14 @@
   --glass-border-hover: rgba(0, 0, 0, 0.15);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
   --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.1);
-  --accent: #1a4a3f;
-  --accent-dim: #0f3a2f;
-  --accent-light: #2d5a4f;
-  --accent-dark: #0a2a1f;
+  --accent: #3a7a6b;
+  --accent-dim: #2a6a5b;
+  --accent-light: #4a8a7b;
+  --accent-dark: #1a5a4b;
   --text-primary: rgba(0, 0, 0, 0.9);
   --text-secondary: rgba(0, 0, 0, 0.7);
   --text-muted: rgba(0, 0, 0, 0.5);
-  --glow-color: rgba(26, 74, 63, 0.12);
+  --glow-color: rgba(58, 122, 107, 0.12);
   --blur-amount: 80px;
   --saturate-amount: 180%;
   --shadow-color: rgba(0, 0, 0, 0.1);
@@ -65,13 +65,13 @@
     --glass-border-hover: rgba(0, 0, 0, 0.12);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.12);
-    --accent: #1a4a3f;
-    --accent-dim: #0f3a2f;
-    --accent-light: #2d5a4f;
+    --accent: #3a7a6b;
+    --accent-dim: #2a6a5b;
+    --accent-light: #4a8a7b;
     --text-primary: rgba(0, 0, 0, 0.9);
     --text-secondary: rgba(0, 0, 0, 0.70);
     --text-muted: rgba(0, 0, 0, 0.50);
-    --glow-color: rgba(26, 74, 63, 0.12);
+    --glow-color: rgba(58, 122, 107, 0.12);
     --blur-amount: 20px;
     --saturate-amount: 180%;
     --shadow-color: rgba(0, 0, 0, 0.1);
@@ -109,7 +109,7 @@ body::before {
   background: 
     radial-gradient(ellipse 100% 60% at 10% -10%, var(--glow-color) 0%, transparent 60%),
     radial-gradient(ellipse 80% 50% at 90% 110%, var(--glow-color) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(45, 90, 79, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(74, 155, 142, 0.08) 0%, transparent 70%),
     linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
   z-index: -2;
   pointer-events: none;
@@ -119,7 +119,7 @@ body::before {
   background: 
     radial-gradient(ellipse 100% 60% at 10% -10%, var(--glow-color) 0%, transparent 60%),
     radial-gradient(ellipse 80% 50% at 90% 110%, var(--glow-color) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(26, 74, 63, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(58, 122, 107, 0.06) 0%, transparent 70%),
     linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
 }
 
@@ -350,7 +350,7 @@ body::after {
   color: white;
   border-color: var(--accent);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(45, 90, 79, 0.25);
+  box-shadow: 0 4px 16px rgba(74, 155, 142, 0.25);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -408,7 +408,7 @@ a:hover {
 
 /* Selection */
 ::selection {
-  background: rgba(45, 90, 79, 0.2);
+  background: rgba(74, 155, 142, 0.2);
   color: var(--text-primary);
 }
 
