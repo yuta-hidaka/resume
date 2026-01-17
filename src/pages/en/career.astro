@@ -9,7 +9,7 @@ const data = getData('en');
 <Layout title="Career - Yuta Hidaka">
   <div class="space-y-8">
     <!-- Page Header -->
-    <header class="glass-card p-8 text-center">
+    <header class="glass-card p-8 text-center animate-fade-in opacity-0">
       <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2">
         Career
       </h1>
@@ -21,17 +21,19 @@ const data = getData('en');
     <!-- Timeline -->
     <section class="relative">
       {data.experience && data.experience.map((exp, i) => (
-        <HistoryCard
-          company={exp.company}
-          startDate={exp.startDate}
-          endDate={exp.endDate}
-          jobTitle={exp.jobTitle}
-          job={exp.projects.job}
-          jobDescription={exp.projects.jobDescription}
-          tags={exp.projects.tags || []}
-          index={i}
-          locale="en"
-        />
+        <div class="animate-fade-in opacity-0" style={`animation-delay: ${(i + 1) * 100}ms;`}>
+          <HistoryCard
+            company={exp.company}
+            startDate={exp.startDate}
+            endDate={exp.endDate}
+            jobTitle={exp.jobTitle}
+            job={exp.projects.job}
+            jobDescription={exp.projects.jobDescription}
+            tags={exp.projects.tags || []}
+            index={i}
+            locale="en"
+          />
+        </div>
       ))}
     </section>
   </div>

@@ -9,7 +9,7 @@ const data = getData('ja');
 <Layout title="キャリア - 日髙悠太">
   <div class="space-y-10">
     <!-- Page Header -->
-    <header class="glass-card p-10 text-center animate-fade-in">
+    <header class="glass-card p-10 text-center animate-fade-in opacity-0">
       <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">
         Career
       </h1>
@@ -21,7 +21,7 @@ const data = getData('ja');
     <!-- Timeline -->
     <section class="relative">
       {data.experience && data.experience.map((exp, i) => (
-        <div class="animate-fade-in" style={`animation-delay: ${(i + 1) * 100}ms;`}>
+        <div class="animate-fade-in opacity-0" style={`animation-delay: ${(i + 1) * 100}ms;`}>
           <HistoryCard
             company={exp.company}
             startDate={exp.startDate}
