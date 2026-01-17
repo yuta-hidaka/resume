@@ -47,7 +47,7 @@ export const data: Data = {
       "jobTitle": "Tech Lead",
       "company": "Monstarlab",
       "startDate": "2024-04-01",
-      "endDate": "",
+      "endDate": "2024-12-31",
       "projects": {
         "tags": ["Golang", "NextJS", "GCP"],
         "job": "Contract Development",
@@ -61,7 +61,7 @@ export const data: Data = {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
       startDate: "2024-04-01",
-      endDate: "",
+      endDate: "2024-11-15",
       projects: {
         tags: ["Golang", "Astro", "AWS", "Terraform", "MySQL", "SST", "CMS"],
         job: "Contract Development",

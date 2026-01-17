@@ -58,7 +58,7 @@ export const data: Data = {
       jobTitle: "Tech Lead",
       company: "Monstarlab",
       startDate: "2024-04-01",
-      endDate: "",
+      endDate: "2024-12-31",
       projects: {
         tags: ["Golang", "NextJS", "GCP"],
         job: "受託開発",

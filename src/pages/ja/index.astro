@@ -6,57 +6,61 @@ const data = getData('ja');
 ---
 
 <Layout>
-  <div class="min-h-[80vh] flex flex-col justify-center">
+  <div class="min-h-[85vh] flex flex-col justify-center py-12">
     <!-- Hero Section -->
-    <section class="grid md:grid-cols-2 gap-8 items-center">
+    <section class="grid md:grid-cols-2 gap-12 items-center mb-20">
       <!-- Profile Image -->
-      <div class="flex justify-center md:justify-end order-1 md:order-none">
+      <div class="flex justify-center md:justify-end order-1 md:order-none animate-fade-in">
         <div class="relative group">
-          <div class="absolute -inset-1 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+          <div class="absolute -inset-2 bg-gradient-to-r from-[var(--accent)] via-[var(--accent-light)] to-[var(--accent-dim)] rounded-3xl blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
+          <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <img
-            class="relative rounded-2xl w-64 h-64 md:w-80 md:h-80 object-cover border-2 border-[var(--glass-border)] group-hover:border-[var(--accent)] transition-all duration-500"
+            class="relative rounded-3xl w-72 h-72 md:w-96 md:h-96 object-cover border-2 border-[var(--glass-border)] group-hover:border-[var(--accent)] transition-all duration-500 shadow-2xl"
             src="/me.jpeg"
             alt={`${data.family_name} ${data.given_name}`}
-            width="320"
-            height="320"
+            width="384"
+            height="384"
             loading="eager"
           />
         </div>
       </div>
       
       <!-- Profile Info -->
-      <div class="glass-card p-8 space-y-6">
-        <div class="space-y-2">
-          <p class="text-[var(--text-muted)] text-sm font-mono">$ whoami</p>
-          <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-primary)] glow-text">
-            {data.family_name} {data.given_name}
+      <div class="glass-card p-10 space-y-8 animate-fade-in delay-100">
+        <div class="space-y-3">
+          <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase">$ whoami</p>
+          <h1 class="text-5xl md:text-6xl font-extrabold text-[var(--text-primary)] leading-tight tracking-tight">
+            {data.family_name} <span class="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">
+              {data.given_name}
+            </span>
           </h1>
         </div>
         
-        <div class="space-y-2">
-          <p class="text-[var(--text-muted)] text-sm font-mono">$ profession</p>
-          <p class="text-xl md:text-2xl text-[var(--accent)] font-semibold">
+        <div class="space-y-3">
+          <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase">$ profession</p>
+          <p class="text-2xl md:text-3xl text-[var(--accent)] font-bold">
             {data.profession}
           </p>
         </div>
         
-        <div class="space-y-2">
-          <p class="text-[var(--text-muted)] text-sm font-mono">$ cat bio.txt</p>
-          <p class="text-[var(--text-secondary)] leading-relaxed">
+        <div class="space-y-3">
+          <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase">$ cat bio.txt</p>
+          <p class="text-[var(--text-secondary)] leading-relaxed text-lg">
             {data.bio}
           </p>
         </div>
         
         <!-- Social Links -->
         {data.social && (
-          <div class="pt-4 border-t border-[var(--glass-border)]">
+          <div class="pt-6 border-t border-[var(--glass-border)]">
+            <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase mb-4">$ connect</p>
             <div class="flex flex-wrap gap-3">
               {data.social.map((social) => (
                 <a 
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="tag hover:scale-105"
+                  class="tag"
                 >
                   {social.name}
                 </a>
@@ -68,22 +72,22 @@ const data = getData('ja');
     </section>
     
     <!-- Quick Stats -->
-    <section class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="glass-card p-6 text-center animate-fade-in delay-100">
-        <p class="text-3xl font-bold text-[var(--accent)]">6+</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Years Experience</p>
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="glass-card p-8 text-center group animate-fade-in delay-200 hover:scale-105 transition-transform duration-300">
+        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">6+</p>
+        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Years Experience</p>
       </div>
-      <div class="glass-card p-6 text-center animate-fade-in delay-200">
-        <p class="text-3xl font-bold text-[var(--accent)]">15+</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Projects</p>
+      <div class="glass-card p-8 text-center group animate-fade-in delay-300 hover:scale-105 transition-transform duration-300">
+        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">15+</p>
+        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Projects</p>
       </div>
-      <div class="glass-card p-6 text-center animate-fade-in delay-300">
-        <p class="text-3xl font-bold text-[var(--accent)]">10+</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Technologies</p>
+      <div class="glass-card p-8 text-center group animate-fade-in delay-400 hover:scale-105 transition-transform duration-300">
+        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">10+</p>
+        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Technologies</p>
       </div>
-      <div class="glass-card p-6 text-center animate-fade-in delay-400">
-        <p class="text-3xl font-bold text-[var(--accent)]">2</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Languages</p>
+      <div class="glass-card p-8 text-center group animate-fade-in delay-500 hover:scale-105 transition-transform duration-300">
+        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">2</p>
+        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Languages</p>
       </div>
     </section>
   </div>

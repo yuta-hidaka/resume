@@ -1,5 +1,25 @@
 ---
-// This page is required for Astro i18n redirectToDefaultLocale
-// Astro will automatically redirect to /ja/ based on the i18n config
+import '../styles/global.css';
 ---
-
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="0;url=/ja/" />
+    <title>Redirecting...</title>
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('theme') || 
+          (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen flex items-center justify-center">
+    <div class="glass-card p-8 text-center">
+      <p class="text-[var(--text-secondary)]">リダイレクト中...</p>
+      <a href="/ja/" class="text-[var(--accent)] hover:underline">日本語ページへ</a>
+    </div>
+  </body>
+</html>

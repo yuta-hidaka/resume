@@ -3,31 +3,31 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="履歴書ダウンロード - 日髙悠太">
-  <div class="space-y-8">
+  <div class="space-y-10">
     <!-- Page Header -->
-    <header class="glass-card p-8 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2">
+    <header class="glass-card p-10 text-center animate-fade-in">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">
         Downloads
       </h1>
-      <p class="text-[var(--text-muted)]">
+      <p class="text-[var(--text-muted)] text-lg">
         履歴書・職務経歴書のダウンロード
       </p>
     </header>
     
     <!-- CV Section -->
-    <section class="glass-card p-6 md:p-8">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <section class="glass-card p-8 md:p-10 animate-fade-in delay-100">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <h2 class="section-title mb-0">職務経歴書</h2>
         <a 
           href="/yuta-hidaka-resume-japanese.pdf"
           download
-          class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--bg-primary)] rounded-lg font-medium hover:opacity-90 transition-opacity"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
         >
           <span>↓</span>
           <span>Download PDF</span>
         </a>
       </div>
-      <div class="rounded-lg overflow-hidden border border-[var(--glass-border)]">
+      <div class="rounded-xl overflow-hidden border-2 border-[var(--glass-border)] shadow-lg">
         <embed 
           src="/yuta-hidaka-resume-japanese.pdf" 
           type="application/pdf"
@@ -37,19 +37,19 @@ import Layout from '../../layouts/Layout.astro';
     </section>
     
     <!-- Resume Section -->
-    <section class="glass-card p-6 md:p-8">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <section class="glass-card p-8 md:p-10 animate-fade-in delay-200">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <h2 class="section-title mb-0">履歴書</h2>
         <a 
           href="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
           download
-          class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--bg-primary)] rounded-lg font-medium hover:opacity-90 transition-opacity"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-[var(--glow-color)] transition-all duration-300 hover:scale-105"
         >
           <span>↓</span>
           <span>Download PDF</span>
         </a>
       </div>
-      <div class="rounded-lg overflow-hidden border border-[var(--glass-border)]">
+      <div class="rounded-xl overflow-hidden border-2 border-[var(--glass-border)] shadow-lg">
         <embed 
           src="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/preview?pli=1"
           type="application/pdf"
