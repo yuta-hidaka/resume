@@ -15,7 +15,7 @@ export const data: Data = {
   family_name: "日髙",
   given_name: "悠太",
   profession: "Full Stack Developer / Tech lead",
-  bio: `高校卒業後、総合化学メーカーで6年間製品開発に従事。働きながら東京の大学に週6日通学し、有機化学を学び学士号を取得。2018年10月にプログラマーに転職。SES会社で2年勤務後、フリーランスや受託開発会社、スタートアップを経て、現在はMonstarlabで働いています。`,
+  bio: `高校卒業後、総合化学メーカーで6年間製品開発に従事。働きながら東京の大学に週6日通学し、有機化学を学び学士号を取得。2018年10月にプログラマーに転職。SES会社で2年勤務後、フリーランスや受託開発会社、スタートアップを経て、現在はSUPER STUDIOでバックエンドエンジニアとして従事しています。`,
   address: "Shinjuku Tokyo",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },

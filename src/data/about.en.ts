@@ -4,7 +4,7 @@ export const data: Data = {
   family_name: "Hidaka",
   given_name: "Yuta",
   profession: "Full Stack Developer / Tech Lead",
-  bio: `After graduating from high school, I worked for six years in product development at a comprehensive chemical manufacturer. While working, I attended university in Tokyo six days a week to study organic chemistry and earned a bachelor's degree. In October 2018, I transitioned to a career as a programmer. After working for two years at an SES company, I became a freelancer, worked at a contract development company, and at a startup, and I am currently working at Monstarlab.`,
+  bio: `After graduating from high school, I worked for six years in product development at a comprehensive chemical manufacturer. While working, I attended university in Tokyo six days a week to study organic chemistry and earned a bachelor's degree. In October 2018, I transitioned to a career as a programmer. After working for two years at an SES company, I became a freelancer, worked at a contract development company, and at a startup, and I am currently working as a backend engineer at SUPER STUDIO.`,
   address: "Shinjuku, Tokyo",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },
