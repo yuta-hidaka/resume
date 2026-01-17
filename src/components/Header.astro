@@ -27,8 +27,8 @@ const currentPath = Astro.url.pathname;
         <span class="logo-text hidden sm:block">Yuta Hidaka</span>
       </a>
       
-      <!-- Navigation Links -->
-      <ul class="nav-list">
+      <!-- Desktop Navigation Links -->
+      <ul class="nav-list nav-list-desktop">
         {links.map((link) => {
           const href = getLocalizedPath(lang, link.path);
           const isActive = currentPath === href || currentPath === href + '/';
@@ -76,7 +76,49 @@ const currentPath = Astro.url.pathname;
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button 
+          id="mobile-menu-toggle"
+          class="action-btn mobile-menu-btn"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <svg id="menu-icon" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <svg id="close-icon" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
+    </div>
+    
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+      <ul class="mobile-nav-list">
+        {links.map((link) => {
+          const href = getLocalizedPath(lang, link.path);
+          const isActive = currentPath === href || currentPath === href + '/';
+          return (
+            <li>
+              <a 
+                href={href}
+                class:list={[
+                  'mobile-nav-item',
+                  isActive && 'mobile-nav-item-active'
+                ]}
+              >
+                <span class="mobile-nav-icon">{link.icon}</span>
+                <span class="mobile-nav-text">{link.label}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   </nav>
 </header>
@@ -125,23 +167,116 @@ const currentPath = Astro.url.pathname;
       });
     }
   })();
+  
+  // Mobile menu toggle functionality
+  (function() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    if (menuToggle && mobileMenu && menuIcon && closeIcon) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.contains('mobile-menu-open');
+        
+        if (isOpen) {
+          mobileMenu.classList.remove('mobile-menu-open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          menuIcon.style.display = 'block';
+          closeIcon.style.display = 'none';
+        } else {
+          mobileMenu.classList.add('mobile-menu-open');
+          menuToggle.setAttribute('aria-expanded', 'true');
+          menuIcon.style.display = 'none';
+          closeIcon.style.display = 'block';
+        }
+      });
+      
+      // Close menu when clicking on a link
+      const mobileNavLinks = mobileMenu.querySelectorAll('.mobile-nav-item');
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('mobile-menu-open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          menuIcon.style.display = 'block';
+          closeIcon.style.display = 'none';
+        });
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+          if (mobileMenu.classList.contains('mobile-menu-open')) {
+            mobileMenu.classList.remove('mobile-menu-open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuIcon.style.display = 'block';
+            closeIcon.style.display = 'none';
+          }
+        }
+      });
+    }
+  })();
 </script>
 
 <style>
-  /* Premium Glass Header - True Apple Frosted Glass Design */
+  /* Premium Glass Header - Enhanced Apple Frosted Glass Design */
   .header-glass {
-    background: var(--glass-bg-solid);
-    backdrop-filter: blur(var(--blur-amount)) saturate(var(--saturate-amount));
-    -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--saturate-amount));
-    border-bottom: 0.5px solid var(--glass-border);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.10) 100%
+    );
+    backdrop-filter: blur(120px) saturate(200%);
+    -webkit-backdrop-filter: blur(120px) saturate(200%);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+      0 1px 0 rgba(255, 255, 255, 0.1) inset,
+      0 4px 24px rgba(0, 0, 0, 0.15),
+      0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
     isolation: isolate;
+    position: relative;
+  }
+  
+  .header-glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
   }
   
   :global(.light) .header-glass {
-    background: var(--glass-bg-solid);
-    border-bottom-color: var(--glass-border);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.75) 50%,
+      rgba(255, 255, 255, 0.70) 100%
+    );
+    backdrop-filter: blur(120px) saturate(200%);
+    -webkit-backdrop-filter: blur(120px) saturate(200%);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 4px 24px rgba(0, 0, 0, 0.08),
+      0 0 0 0.5px rgba(255, 255, 255, 0.9) inset;
+  }
+  
+  :global(.light) .header-glass::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.05) 50%,
+      transparent 100%
+    );
   }
   
   /* Logo */
@@ -164,14 +299,38 @@ const currentPath = Astro.url.pathname;
     color: white;
     font-weight: 800;
     font-size: 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 12px rgba(0, 217, 165, 0.3);
+    box-shadow: 
+      0 4px 16px rgba(0, 217, 165, 0.35),
+      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
+      0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .logo-icon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
   }
   
   .logo-link:hover .logo-icon {
     transform: scale(1.08) rotate(5deg);
-    box-shadow: 0 8px 24px rgba(0, 217, 165, 0.5);
+    box-shadow: 
+      0 8px 28px rgba(0, 217, 165, 0.5),
+      0 0 0 0.5px rgba(255, 255, 255, 0.3) inset,
+      0 1px 2px rgba(0, 0, 0, 0.1) inset;
   }
   
   .logo-text {
@@ -181,26 +340,254 @@ const currentPath = Astro.url.pathname;
     letter-spacing: -0.03em;
   }
   
-  /* Navigation List */
+  /* Navigation List - Enhanced Glass Design */
   .nav-list {
     display: flex;
     align-items: center;
     gap: 2px;
     padding: 4px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-    -webkit-backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-    border-radius: 12px;
-    border: 0.5px solid var(--glass-border);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.10) 100%
+    );
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border-radius: 14px;
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.1),
+      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
     isolation: isolate;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
   }
   
   :global(.light) .nav-list {
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 0 0 0.5px rgba(255, 255, 255, 0.8) inset;
   }
   
-  /* Navigation Items */
+  :global(.light) .nav-list::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.05) 50%,
+      transparent 100%
+    );
+  }
+  
+  /* Mobile Menu Button */
+  .mobile-menu-btn {
+    display: none;
+  }
+  
+  /* Mobile Menu */
+  .mobile-menu {
+    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  
+  .mobile-menu-open {
+    display: block;
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 8px;
+    padding-bottom: 8px;
+  }
+  
+  .mobile-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.10) 100%
+    );
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border-radius: 14px;
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.15),
+      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
+    isolation: isolate;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mobile-nav-list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  
+  :global(.light) .mobile-nav-list {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      0 0 0 0.5px rgba(255, 255, 255, 0.8) inset;
+  }
+  
+  :global(.light) .mobile-nav-list::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.05) 50%,
+      transparent 100%
+    );
+  }
+  
+  .mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mobile-nav-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 10px;
+  }
+  
+  .mobile-nav-item:hover {
+    color: var(--text-primary);
+  }
+  
+  .mobile-nav-item:hover::before {
+    opacity: 1;
+  }
+  
+  :global(.light) .mobile-nav-item::before {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.03) 100%
+    );
+  }
+  
+  .mobile-nav-item-active {
+    color: white;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    font-weight: 600;
+    box-shadow: 
+      0 4px 16px rgba(0, 217, 165, 0.35),
+      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
+      0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    position: relative;
+  }
+  
+  .mobile-nav-item-active::before {
+    opacity: 0;
+  }
+  
+  .mobile-nav-item-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  
+  .mobile-nav-item-active:hover {
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+    color: white;
+    box-shadow: 
+      0 6px 20px rgba(0, 217, 165, 0.45),
+      0 0 0 0.5px rgba(255, 255, 255, 0.25) inset,
+      0 1px 2px rgba(0, 0, 0, 0.1) inset;
+  }
+  
+  :global(.light) .mobile-nav-item-active,
+  :global(.light) .mobile-nav-item-active:hover {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    color: white;
+    box-shadow: 
+      0 4px 16px rgba(0, 184, 148, 0.3),
+      0 0 0 0.5px rgba(255, 255, 255, 0.3) inset,
+      0 1px 2px rgba(0, 0, 0, 0.05) inset;
+  }
+  
+  .mobile-nav-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+  
+  .mobile-nav-text {
+    flex: 1;
+  }
+  
+  /* Navigation Items - Enhanced Glass Design */
   .nav-item {
     position: relative;
     display: inline-flex;
@@ -212,18 +599,40 @@ const currentPath = Astro.url.pathname;
     color: var(--text-secondary);
     text-decoration: none;
     border-radius: 10px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     letter-spacing: -0.01em;
+    overflow: hidden;
+  }
+  
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 10px;
   }
   
   .nav-item:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
   }
   
-  :global(.light) .nav-item:hover {
-    background: rgba(0, 0, 0, 0.06);
+  .nav-item:hover::before {
+    opacity: 1;
+  }
+  
+  :global(.light) .nav-item::before {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.03) 100%
+    );
   }
   
   .nav-item-text {
@@ -231,28 +640,59 @@ const currentPath = Astro.url.pathname;
     z-index: 1;
   }
   
-  /* Active state with gradient background */
+  /* Active state with enhanced gradient background */
   .nav-item-active {
     color: white;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0, 217, 165, 0.3);
+    box-shadow: 
+      0 4px 16px rgba(0, 217, 165, 0.35),
+      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
+      0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    position: relative;
+  }
+  
+  .nav-item-active::before {
+    opacity: 0;
+  }
+  
+  .nav-item-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
   }
   
   .nav-item-active:hover {
     background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
     color: white;
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(0, 217, 165, 0.4);
+    box-shadow: 
+      0 6px 20px rgba(0, 217, 165, 0.45),
+      0 0 0 0.5px rgba(255, 255, 255, 0.25) inset,
+      0 1px 2px rgba(0, 0, 0, 0.1) inset;
   }
   
   :global(.light) .nav-item-active,
   :global(.light) .nav-item-active:hover {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
     color: white;
+    box-shadow: 
+      0 4px 16px rgba(0, 184, 148, 0.3),
+      0 0 0 0.5px rgba(255, 255, 255, 0.3) inset,
+      0 1px 2px rgba(0, 0, 0, 0.05) inset;
   }
   
-  /* Action Buttons */
+  /* Action Buttons - Enhanced Glass Design */
   .action-btn {
     display: flex;
     align-items: center;
@@ -261,32 +701,60 @@ const currentPath = Astro.url.pathname;
     height: 40px;
     border-radius: 12px;
     background: transparent;
-    border: 1px solid transparent;
+    border: 0.5px solid transparent;
     cursor: pointer;
     color: var(--text-secondary);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .action-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.08) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 12px;
   }
   
   .action-btn:hover {
     color: var(--text-primary);
-    background: var(--glass-bg);
-    backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-    -webkit-backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-    border-color: var(--glass-border);
+    border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.12),
+      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
+  }
+  
+  .action-btn:hover::before {
+    opacity: 1;
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+  }
+  
+  :global(.light) .action-btn::before {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
   }
   
   :global(.light) .action-btn:hover {
-    background: var(--glass-bg);
-    backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-    -webkit-backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-    border-color: var(--glass-border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      0 0 0 0.5px rgba(255, 255, 255, 0.9) inset;
   }
   
   .action-btn:active {
-    transform: translateY(0) scale(0.96);
+    transform: translateY(0) scale(0.95);
   }
   
   .action-icon {
@@ -296,10 +764,13 @@ const currentPath = Astro.url.pathname;
   }
   
   /* Responsive */
-  @media (max-width: 640px) {
-    .nav-item {
-      padding: 6px 12px;
-      font-size: 13px;
+  @media (max-width: 768px) {
+    .nav-list-desktop {
+      display: none;
+    }
+    
+    .mobile-menu-btn {
+      display: flex;
     }
     
     .logo-text {
@@ -309,6 +780,17 @@ const currentPath = Astro.url.pathname;
     .action-btn {
       width: 36px;
       height: 36px;
+    }
+    
+    .action-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-menu {
+      display: none !important;
     }
   }
 </style>
