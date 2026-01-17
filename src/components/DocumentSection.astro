@@ -118,11 +118,10 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
 
   {!missing ? (
     <>
-      {scopedCss && <style is:inline>{scopedCss}</style>}
-      <div id={docId} class="doc-viewer" style={`max-height: ${previewHeight}`}></div>
-      <script is:inline>
-        {`document.getElementById('${docId}').innerHTML = ${JSON.stringify(bodyHtml)};`}
-      </script>
+      {scopedCss && (
+        <style set:html={scopedCss}></style>
+      )}
+      <div id={docId} class="doc-viewer" style={`max-height: ${previewHeight}`} set:html={bodyHtml}></div>
     </>
   ) : fallbackPdfUrl ? (
     <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
