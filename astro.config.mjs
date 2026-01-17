@@ -8,7 +8,13 @@ export default defineConfig({
   output: 'static',
   
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    server: {
+      watch: {
+        // docsディレクトリの変更も監視して常に最新のドキュメントを反映
+        ignored: ['!**/docs/**']
+      }
+    }
   },
 
   i18n: {
