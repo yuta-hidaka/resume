@@ -28,7 +28,7 @@ const formattedEndDate = formatDate(endDate, locale);
 const isOngoing = !endDate;
 ---
 
-<article class="career-card group relative pl-10">
+<article class="career-card group relative pl-10" data-card-index={index}>
   <!-- Timeline Line -->
   <div class:list={[
     'absolute left-0 top-0 w-0.5 bg-[var(--glass-border)]',
@@ -36,15 +36,16 @@ const isOngoing = !endDate;
   ]}></div>
   
   <!-- Timeline Dot -->
-  <div class:list={[
-    'absolute left-0 top-3 w-4 h-4 rounded-full -translate-x-1/2 border-2 transition-all duration-500 shadow-lg',
-    isOngoing 
-      ? 'bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_12px_var(--glow-color)] animate-pulse' 
-      : 'bg-[var(--bg-primary)] border-[var(--glass-border)] group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:shadow-[0_0_12px_var(--glow-color)]'
-  ]}>
-    {isOngoing && (
-      <div class="absolute inset-0 rounded-full bg-[var(--accent)] animate-ping opacity-75"></div>
-    )}
+  <div 
+    class:list={[
+      'timeline-dot absolute left-0 top-3 w-4 h-4 rounded-full -translate-x-1/2 border-2 transition-all duration-500 shadow-lg',
+      isOngoing 
+        ? 'bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_12px_var(--glow-color)]' 
+        : 'bg-[var(--bg-primary)] border-[var(--glass-border)] group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:shadow-[0_0_12px_var(--glow-color)]'
+    ]}
+    data-card-index={index}
+  >
+    <div class="timeline-dot-inner absolute inset-0 rounded-full bg-[var(--accent)] opacity-0"></div>
   </div>
   
   <!-- Card Content -->
@@ -85,6 +86,7 @@ const isOngoing = !endDate;
 </article>
 
 <script>
+  // Card expand/collapse functionality
   document.querySelectorAll('[data-expandable]').forEach((card) => {
     let expanded = false;
     const description = card.querySelector('.job-description');
@@ -106,4 +108,68 @@ const isOngoing = !endDate;
       }
     });
   });
+
+  // Timeline dot active state based on scroll position
+  // Only initialize once globally
+  if (!(window as any).timelineScrollHandlerInitialized) {
+    (window as any).timelineScrollHandlerInitialized = true;
+
+    function updateActiveTimelineDot() {
+      const cards = document.querySelectorAll('.career-card');
+      const viewportCenter = window.innerHeight / 2;
+      let closestCard: Element | null = null;
+      let closestDistance = Infinity;
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(viewportCenter - cardCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestCard = card;
+        }
+      });
+
+      // Remove active class from all dots
+      document.querySelectorAll('.timeline-dot').forEach((dot) => {
+        dot.classList.remove('active');
+        const inner = dot.querySelector('.timeline-dot-inner') as HTMLElement;
+        if (inner) {
+          inner.classList.remove('animate-ping');
+          inner.style.opacity = '0';
+        }
+      });
+
+      // Add active class to closest card's dot
+      if (closestCard) {
+        const cardIndex = closestCard.getAttribute('data-card-index');
+        const activeDot = document.querySelector(`.timeline-dot[data-card-index="${cardIndex}"]`);
+        if (activeDot) {
+          activeDot.classList.add('active');
+          const inner = activeDot.querySelector('.timeline-dot-inner') as HTMLElement;
+          if (inner) {
+            inner.style.opacity = '0.75';
+            inner.classList.add('animate-ping');
+          }
+        }
+      }
+    }
+
+    // Throttle scroll events for performance
+    let scrollTimeout: number | null = null;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout !== null) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = window.setTimeout(() => {
+        updateActiveTimelineDot();
+      }, 50);
+    });
+
+    // Initial update after a short delay to ensure DOM is ready
+    setTimeout(() => {
+      updateActiveTimelineDot();
+    }, 100);
+  }
 </script>

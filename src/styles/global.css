@@ -326,6 +326,25 @@ body::after {
 .delay-500 { animation-delay: 500ms; }
 .delay-600 { animation-delay: 600ms; }
 
+/* Timeline dot active state */
+.timeline-dot.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--glow-color);
+}
+
+.timeline-dot.active .timeline-dot-inner {
+  opacity: 0.75;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 /* Tag/Badge style - True Apple Frosted Glass Style */
 .tag {
   display: inline-flex;
