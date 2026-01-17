@@ -340,64 +340,15 @@ const currentPath = Astro.url.pathname;
     letter-spacing: -0.03em;
   }
   
-  /* Navigation List - Enhanced Glass Design */
+  /* Navigation List - No Background */
   .nav-list {
     display: flex;
     align-items: center;
     gap: 2px;
     padding: 4px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.10) 100%
-    );
-    backdrop-filter: blur(60px) saturate(200%);
-    -webkit-backdrop-filter: blur(60px) saturate(200%);
-    border-radius: 14px;
-    border: 0.5px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 
-      0 2px 8px rgba(0, 0, 0, 0.1),
-      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
-    isolation: isolate;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .nav-list::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-  
-  :global(.light) .nav-list {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.7) 0%,
-      rgba(255, 255, 255, 0.6) 100%
-    );
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 
-      0 2px 8px rgba(0, 0, 0, 0.06),
-      0 0 0 0.5px rgba(255, 255, 255, 0.8) inset;
-  }
-  
-  :global(.light) .nav-list::before {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0, 0, 0, 0.05) 50%,
-      transparent 100%
-    );
+    background: transparent;
+    border: none;
+    box-shadow: none;
   }
   
   /* Mobile Menu Button */
