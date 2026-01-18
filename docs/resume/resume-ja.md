@@ -4,12 +4,11 @@
 
 - **氏名**: 日髙 悠太
 - **職種**: Full Stack Developer / Tech Lead
-- **所在地**: Shinjuku, Tokyo
+- **所在地**: 渋谷
 - **生年月日**: 1994年3月22日
 - **SNS**:
-  - Twitter: https://twitter.com/amateur_prog
   - GitHub: https://github.com/yuta-hidaka
-  - LinkedIn: https://www.linkedin.com/in/%E6%82%A0%E5%A4%AA-%E6%97%A5%E9%AB%98-2823a8195/
+  - LinkedIn: https://www.linkedin.com/in/悠太-日髙-2823a8195/
 
 ### 概要
 
