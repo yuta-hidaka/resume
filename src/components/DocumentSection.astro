@@ -144,12 +144,54 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     color: #000000;
     border-radius: 16px;
     border: 1px solid var(--glass-border);
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+  }
+
+  .doc-viewer * {
+    max-width: 100%;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .doc-viewer img {
     max-width: 100%;
     height: auto;
+    display: block;
+  }
+
+  .doc-viewer table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .doc-viewer table td,
+  .doc-viewer table th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .doc-viewer {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .doc-viewer table {
+      font-size: 0.75rem;
+    }
   }
 
   .doc-download-btn {

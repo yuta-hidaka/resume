@@ -2,7 +2,7 @@
 const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js' } = Astro.props;
 ---
 
-<script is:inline>
+<script is:inline define:vars={{ cdnUrl }}>
   (() => {
     if (window.__docPdfInit) return;
     window.__docPdfInit = true;
@@ -13,7 +13,7 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
         return;
       }
       const script = document.createElement('script');
-      script.src = {JSON.stringify(cdnUrl)};
+      script.src = cdnUrl;
       script.async = true;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load html2pdf.js'));
@@ -24,12 +24,16 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
       const button = event.target.closest('[data-doc-download]');
       if (!button) return;
       event.preventDefault();
+      event.stopPropagation();
 
       const docId = button.getAttribute('data-doc-id');
       const filename = button.getAttribute('data-doc-filename') || 'document.pdf';
       const target = docId ? document.getElementById(docId) : null;
 
-      if (!target) return;
+      if (!target) {
+        console.error('Target element not found:', docId);
+        return;
+      }
 
       const previousStyles = target
         ? {
@@ -46,6 +50,10 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
           target.style.height = 'auto';
         }
         await loadHtml2Pdf();
+        if (!window.html2pdf) {
+          console.error('html2pdf is not loaded');
+          return;
+        }
         const options = {
           margin: [10, 10, 10, 10],
           filename,
@@ -54,7 +62,7 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
           pagebreak: { mode: ['css', 'legacy'] },
         };
-        window.html2pdf().set(options).from(target).save();
+        await window.html2pdf().set(options).from(target).save();
       } catch (error) {
         console.error(error);
       } finally {
