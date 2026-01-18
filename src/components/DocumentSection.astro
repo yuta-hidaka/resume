@@ -86,7 +86,7 @@ if (!missing && rawHtml) {
 const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
 ---
 
-<section class="glass-card p-8 md:p-10 animate-fade-in">
+<section class="glass-card p-8 md:p-10 animate-fade-in" style="width: 100%; max-width: 100%;">
   <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
     <div>
       <h2 class="section-title mb-1">{title}</h2>
@@ -160,20 +160,35 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
   }
 
   .doc-viewer * {
-    max-width: 100%;
+    max-width: 100% !important;
     box-sizing: border-box;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
 
   /* インラインスタイルで指定された幅を上書き */
-  .doc-viewer [style*="width"] {
+  .doc-viewer [style*="width"],
+  .doc-viewer [style*="max-width"] {
+    max-width: 100% !important;
+    width: auto !important;
+  }
+
+  /* bodyやhtml要素の幅も上書き */
+  .doc-viewer body,
+  .doc-viewer html {
+    width: 100% !important;
     max-width: 100% !important;
   }
 
   .doc-viewer p,
   .doc-viewer div {
     width: auto;
+    max-width: 100% !important;
+  }
+
+  /* すべての要素の幅を制限 */
+  .doc-viewer *:not(table):not(td):not(th) {
+    max-width: 100% !important;
   }
 
   .doc-viewer img {
