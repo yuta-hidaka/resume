@@ -150,6 +150,13 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     max-width: 100%;
     box-sizing: border-box;
     padding: 1rem;
+    margin: 0 auto;
+  }
+
+  /* 固定幅を上書きして右側の余白をなくす */
+  .doc-viewer > * {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .doc-viewer * {
@@ -157,6 +164,16 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     box-sizing: border-box;
     word-wrap: break-word;
     overflow-wrap: break-word;
+  }
+
+  /* インラインスタイルで指定された幅を上書き */
+  .doc-viewer [style*="width"] {
+    max-width: 100% !important;
+  }
+
+  .doc-viewer p,
+  .doc-viewer div {
+    width: auto;
   }
 
   .doc-viewer img {
@@ -171,9 +188,8 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     table-layout: auto;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    display: table;
+    margin: 0;
   }
 
   .doc-viewer table td,
@@ -191,6 +207,9 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
 
     .doc-viewer table {
       font-size: 0.75rem;
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
   }
 
