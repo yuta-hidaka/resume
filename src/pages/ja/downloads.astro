@@ -17,6 +17,15 @@ import DocumentDownloadScripts from '../../components/DocumentDownloadScripts.as
     </header>
     
     <DocumentSection
+      id="jp-resume-md"
+      title="Resume (English)"
+      sourcePath="docs/resume/resume.md"
+      downloadFileName="yuta-hidaka-resume-en.pdf"
+      previewHeight="750px"
+      isMarkdown={true}
+    />
+
+    <DocumentSection
       id="jp-cv"
       title="職務経歴書"
       sourcePath="docs/職務経歴書/_.html"
@@ -34,15 +43,6 @@ import DocumentDownloadScripts from '../../components/DocumentDownloadScripts.as
       downloadFileName="yuta-hidaka-resume-ja.pdf"
       previewHeight="750px"
       fallbackPdfUrl="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
-    />
-    
-    <DocumentSection
-      id="jp-resume-md"
-      title="Resume (English)"
-      sourcePath="docs/resume/resume.md"
-      downloadFileName="yuta-hidaka-resume-en.pdf"
-      previewHeight="750px"
-      isMarkdown={true}
     />
   </div>
   <DocumentDownloadScripts />
