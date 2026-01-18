@@ -22,7 +22,7 @@ After graduating from high school, I worked for six years in product development
 - Building and maintaining systems with Golang, NextJS, Kafka, Spark, ArgoCD, and k9s
 - Big data infrastructure, event-driven architecture, Kubernetes, Scrum
 
-#### Monstarlab / Tech Lead / Full-Stack Engineer (2022-09 - 2025-06)
+#### Monstarlab / Tech Lead / Full-Stack Engineer (2021-09 - 2025-06)
 
 - **Okinawa theme park app (2025-01 - 2025-06)**
   - Led as tech lead through English communication with an overseas team; owned app/backend/infrastructure
