@@ -17,9 +17,17 @@ import DocumentDownloadScripts from '../../components/DocumentDownloadScripts.as
     </header>
     
     <DocumentSection
+      id="en-resume"
+      title="Resume (English)"
+      sourcePath="docs/resume/resume.md"
+      downloadFileName="yuta-hidaka-resume-en.pdf"
+      previewHeight="750px"
+      isMarkdown={true}
+    />
+    
+    <DocumentSection
       id="en-cv"
       title="CV (English)"
-      description="Generated from HTML"
       sourcePath="docs/resume/en-cv.html"
       assetBase="/docs/resume/en-cv/"
       downloadFileName="yuta-hidaka-cv-en.pdf"
@@ -30,7 +38,6 @@ import DocumentDownloadScripts from '../../components/DocumentDownloadScripts.as
     <DocumentSection
       id="en-resume-ja"
       title="Resume (Japanese)"
-      description="Generated from HTML"
       sourcePath="docs/履歴書/_.html"
       assetBase="/docs/履歴書/"
       downloadFileName="yuta-hidaka-resume-ja.pdf"

@@ -1,6 +1,7 @@
 ---
 import fs from 'node:fs';
 import path from 'node:path';
+import { marked } from 'marked';
 
 const {
   id,
@@ -11,6 +12,7 @@ const {
   downloadFileName,
   previewHeight = '750px',
   fallbackPdfUrl,
+  isMarkdown = false,
 } = Astro.props;
 
 const docId = id ?? `doc-${(title?.toLowerCase() ?? 'document').replace(/[^a-z0-9]/g, '-')}`;
@@ -65,21 +67,28 @@ if (!resolvedPath) {
 }
 
 if (!missing && rawHtml) {
-  const styleMatch = rawHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-  if (styleMatch) {
-    css = styleMatch[1].trim();
-  }
+  if (isMarkdown || sourcePath?.endsWith('.md')) {
+    // マークダウンファイルの場合
+    bodyHtml = marked.parse(rawHtml);
+    css = '';
+  } else {
+    // HTMLファイルの場合
+    const styleMatch = rawHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+    if (styleMatch) {
+      css = styleMatch[1].trim();
+    }
 
-  const bodyMatch = rawHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-  bodyHtml = bodyMatch ? bodyMatch[1].trim() : rawHtml;
+    const bodyMatch = rawHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    bodyHtml = bodyMatch ? bodyMatch[1].trim() : rawHtml;
 
-  const bodyClassMatch = rawHtml.match(/<body[^>]*class=["']([^"']+)["'][^>]*>/i);
-  bodyClass = bodyClassMatch ? bodyClassMatch[1] : '';
+    const bodyClassMatch = rawHtml.match(/<body[^>]*class=["']([^"']+)["'][^>]*>/i);
+    bodyClass = bodyClassMatch ? bodyClassMatch[1] : '';
 
-  if (assetBase) {
-    bodyHtml = bodyHtml.replace(/src=(["'])images\//g, (match, quote) => {
-      return `src=${quote}${assetBase}images/`;
-    });
+    if (assetBase) {
+      bodyHtml = bodyHtml.replace(/src=(["'])images\//g, (match, quote) => {
+        return `src=${quote}${assetBase}images/`;
+      });
+    }
   }
 }
 
@@ -121,7 +130,91 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
       {scopedCss && (
         <style set:html={scopedCss}></style>
       )}
-      <div id={docId} class="doc-viewer" style={`max-height: ${previewHeight}; width: 100%; max-width: 100%;`} set:html={bodyHtml}></div>
+      {isMarkdown && (
+        <style>
+          .doc-viewer.markdown-content h1,
+          .doc-viewer.markdown-content h2,
+          .doc-viewer.markdown-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+          }
+          .doc-viewer.markdown-content h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+          }
+          .doc-viewer.markdown-content h2 {
+            font-size: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.3rem;
+          }
+          .doc-viewer.markdown-content h3 {
+            font-size: 1.25rem;
+          }
+          .doc-viewer.markdown-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+          }
+          .doc-viewer.markdown-content ul,
+          .doc-viewer.markdown-content ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+          }
+          .doc-viewer.markdown-content li {
+            margin-bottom: 0.5rem;
+          }
+          .doc-viewer.markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+          }
+          .doc-viewer.markdown-content table th,
+          .doc-viewer.markdown-content table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem;
+            text-align: left;
+          }
+          .doc-viewer.markdown-content table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+          }
+          .doc-viewer.markdown-content hr {
+            margin: 2rem 0;
+            border: none;
+            border-top: 1px solid #e5e7eb;
+          }
+          .doc-viewer.markdown-content code {
+            background-color: #f3f4f6;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.9em;
+          }
+          .doc-viewer.markdown-content pre {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+          }
+          .doc-viewer.markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+          }
+          .doc-viewer.markdown-content a {
+            color: #3b82f6;
+            text-decoration: underline;
+          }
+          .doc-viewer.markdown-content a:hover {
+            color: #2563eb;
+          }
+          .doc-viewer.markdown-content strong {
+            font-weight: 600;
+          }
+        </style>
+      )}
+      <div id={docId} class={`doc-viewer ${isMarkdown ? 'markdown-content' : ''}`} style={`max-height: ${previewHeight}; width: 100%; max-width: 100%;`} set:html={bodyHtml}></div>
     </>
   ) : fallbackPdfUrl ? (
     <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
