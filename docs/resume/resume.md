@@ -22,7 +22,7 @@
 #### SUPER STUDIO / Backend Engineer (2025-07 - 現在)
 
 - ビックデータグループ（バックエンドチーム → xfunctionチーム）
-- Golang、NextJS、ScyllaDB、Kafka、Spark、ArgoCD、k9sなどで開発・運用
+- Golang、NextJS、Kafka、Spark、ArgoCD、k9sなどで開発・運用
 - ビッグデータ基盤、イベント駆動アーキテクチャ、Kubernetes、スクラム開発
 
 #### Monstarlab / Tech Lead (2024-04 - 2025-06)
@@ -119,7 +119,7 @@ After graduating from high school, I worked for six years in product development
 #### SUPER STUDIO / Backend Engineer (2025-07 - Present)
 
 - Big Data Group (Backend Team -> xfunction Team)
-- Building and maintaining systems with Golang, NextJS, ScyllaDB, Kafka, Spark, ArgoCD, and k9s
+- Building and maintaining systems with Golang, NextJS, Kafka, Spark, ArgoCD, and k9s
 - Big data infrastructure, event-driven architecture, Kubernetes, Scrum
 
 #### Monstarlab / Tech Lead (2024-04 - 2025-06)
