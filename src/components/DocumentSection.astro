@@ -162,8 +162,21 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
   .doc-viewer * {
     max-width: 100% !important;
     box-sizing: border-box;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+  }
+  
+  /* PDF生成時にテキストが切れないように */
+  .doc-viewer p,
+  .doc-viewer span,
+  .doc-viewer div,
+  .doc-viewer td,
+  .doc-viewer th {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+    hyphens: auto;
   }
 
   /* インラインスタイルで指定された幅を上書き */
