@@ -89,6 +89,30 @@ if (!missing && rawHtml) {
         return `src=${quote}${assetBase}images/`;
       });
     }
+
+    // 日付を最新の日付に更新
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    
+    // HTMLエンティティでエンコード
+    const yearEntity = `&#${'年'.charCodeAt(0)};`;
+    const monthEntity = `&#${'月'.charCodeAt(0)};`;
+    const dayEntity = `&#${'日'.charCodeAt(0)};`;
+    const nowEntity = `&#${'現'.charCodeAt(0)};&#${'在'.charCodeAt(0)};`;
+    
+    // 履歴書のパターン: 2025&#24180; &nbsp;3&#26376; 5&#26085;&#29694;&#22312;
+    const datePattern1 = /\d{4}&#24180;\s*&nbsp;\s*\d{1,2}&#26376;\s*\d{1,2}&#26085;&#29694;&#22312;/g;
+    bodyHtml = bodyHtml.replace(datePattern1, `${year}&#24180; &nbsp;${month}&#26376; ${day}&#26085;&#29694;&#22312;`);
+    
+    // 職務経歴書のパターン: 2024&#24180;8&#26376;24&#26085;&#29694;&#22312;
+    const datePattern2 = /\d{4}&#24180;\d{1,2}&#26376;\d{1,2}&#26085;&#29694;&#22312;/g;
+    bodyHtml = bodyHtml.replace(datePattern2, `${year}&#24180;${month}&#26376;${day}&#26085;&#29694;&#22312;`);
+    
+    // その他のパターン: 数字年 数字月 数字日現在（HTMLエンティティなし）
+    const datePattern3 = /\d{4}年\s*\d{1,2}月\s*\d{1,2}日現在/g;
+    bodyHtml = bodyHtml.replace(datePattern3, `${year}年 ${month}月 ${day}日現在`);
   }
 }
 
