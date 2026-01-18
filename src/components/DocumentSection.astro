@@ -117,6 +117,7 @@ if (!missing && rawHtml) {
 }
 
 const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
+const docBodyClass = bodyClass ? bodyClass.trim() : '';
 ---
 
 <section class="glass-card p-8 md:p-10 animate-fade-in" style="width: 100%; max-width: 100%;">
@@ -238,7 +239,13 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
           }
         </style>
       )}
-      <div id={docId} class={`doc-viewer ${isMarkdown ? 'markdown-content' : ''}`} style={`max-height: ${previewHeight}; width: 100%; max-width: 100%;`} set:html={bodyHtml}></div>
+      <div
+        id={docId}
+        class={`doc-viewer ${isMarkdown ? 'markdown-content' : ''} ${docBodyClass ? 'doc-viewer--embedded' : ''}`}
+        style={`max-height: ${previewHeight}; width: 100%; max-width: 100%;`}
+      >
+        <div class={docBodyClass} set:html={bodyHtml}></div>
+      </div>
     </>
   ) : fallbackPdfUrl ? (
     <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
@@ -268,6 +275,10 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     box-sizing: border-box;
     padding: 1rem;
     margin: 0 auto;
+  }
+
+  .doc-viewer--embedded {
+    padding: 0;
   }
 
   .doc-viewer--pdf {
