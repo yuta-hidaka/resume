@@ -27,16 +27,12 @@
 
 #### Monstarlab / Tech Lead (2024-04 - 2025-06)
 
-- **テーマパーク事業アプリ開発 (2025-01 - 2025-06)**
-  - 16名の海外チームをマネジメントし、アプリ/バックエンド/インフラをリード
+- **沖縄のテーマパーク事業アプリ開発 (2025-01 - 2025-06)**
+  - 海外チームとの英語コミュニケーションを通じてテックリードし、アプリ/バックエンド/インフラを統括
   - マイクロサービス構成で最大3000RPSのトラフィックを処理
-  - データ分析基盤構築・サーバーレス最適化でインフラコスト30%削減
-  - AI導入提案（Devin）とIaC整備でAIフレンドリーな環境を構築
-- **ふるさと納税ポイントの株交換サービス (2024-04 - 2024-12)**
-  - 高トラフィック（1000RPS超）を想定した設計と開発
-- **企業サイトのCMS移行 (2024-04 - 2024-11)**
-  - 月額25万円規模のインフラを、Lambda/CloudFrontで約1万円まで削減
-  - IaC導入とAstroによる高速表示・SEO改善
+  - データ分析基盤構築・サーバーレス最適化でインフラコスト30%削減、AI導入提案（Devin）とIaC整備
+- **ふるさと納税ポイントの株交換サービス (2024-04 - 2024-12)**: 高トラフィック（1000RPS超）を想定した設計と開発
+- **企業サイトのCMS移行 (2024-04 - 2024-11)**: Lambda/CloudFrontで月額25万円規模のインフラを約1万円に削減、IaC導入とAstroによる高速表示・SEO改善
 
 #### Monstarlab / Full-Stack Engineer (2022-09 - 2023-10)
 
@@ -128,16 +124,12 @@ After graduating from high school, I worked for six years in product development
 
 #### Monstarlab / Tech Lead (2024-04 - 2025-06)
 
-- **Theme park business app (2025-01 - 2025-06)**
-  - Led app/backend/infrastructure and managed a 16-member overseas team
-  - Microservices architecture handling over 3000 RPS at peak
-  - Built analytics infrastructure and reduced infra costs by 30% via serverless optimization
-  - Proposed AI integration (Devin) and built AI-friendly IaC-based infrastructure
-- **Furusato tax points -> stock rights service (2024-04 - 2024-12)**
-  - Designed for high traffic (1000+ RPS)
-- **Corporate website CMS migration (2024-04 - 2024-11)**
-  - Reduced infra cost from ~250,000 JPY/month to ~10,000 JPY/month using Lambda/CloudFront
-  - IaC adoption and Astro-based performance/SEO improvements
+- **Okinawa theme park app (2025-01 - 2025-06)**
+  - Led as tech lead through English communication with an overseas team; owned app/backend/infrastructure
+  - Microservices architecture handling 3000 RPS at peak
+  - Built analytics infrastructure, reduced infra costs by 30% via serverless optimization, proposed AI integration (Devin) and IaC
+- **Furusato tax points -> stock rights service (2024-04 - 2024-12)**: Designed for high traffic (1000+ RPS)
+- **Corporate website CMS migration (2024-04 - 2024-11)**: Reduced infra cost from ~250,000 JPY/month to ~10,000 JPY/month with Lambda/CloudFront; IaC adoption and Astro-based performance/SEO improvements
 
 #### Monstarlab / Full-Stack Engineer (2022-09 - 2023-10)
 
