@@ -155,7 +155,7 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
         <style set:html={scopedCss}></style>
       )}
       {isMarkdown && (
-        <style>
+        <style is:global>
           .doc-viewer.markdown-content h1,
           .doc-viewer.markdown-content h2,
           .doc-viewer.markdown-content h3 {
@@ -255,7 +255,7 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
   )}
 </section>
 
-<style>
+<style is:global>
   .doc-viewer {
     background: #ffffff;
     color: #000000;
