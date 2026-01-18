@@ -20,6 +20,28 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
       document.head.appendChild(script);
     });
 
+    const waitForFonts = () => {
+      if (document.fonts && document.fonts.ready) {
+        return document.fonts.ready;
+      }
+      return Promise.resolve();
+    };
+
+    const waitForImages = (root) => {
+      const images = Array.from(root.querySelectorAll('img'));
+      if (!images.length) return Promise.resolve();
+      return Promise.all(
+        images.map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            const done = () => resolve();
+            img.addEventListener('load', done, { once: true });
+            img.addEventListener('error', done, { once: true });
+          });
+        })
+      );
+    };
+
     const handleDownload = async (event) => {
       const button = event.target.closest('[data-doc-download]');
       if (!button) return;
@@ -45,59 +67,45 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
             boxSizing: target.style.boxSizing,
           }
         : null;
-
-      let allElements = [];
-      let elementOriginalStyles = [];
+      const pdfClass = 'doc-viewer--pdf';
+      const hadPdfClass = target.classList.contains(pdfClass);
 
       try {
         if (target) {
           // PDF生成用のスタイルを適用
+          target.classList.add(pdfClass);
           target.style.maxHeight = 'none';
           target.style.overflow = 'visible';
           target.style.height = 'auto';
           target.style.width = '210mm'; // A4幅
-          target.style.padding = '10mm';
+          target.style.padding = '0';
           target.style.boxSizing = 'border-box';
-          
-          // すべての子要素の幅も調整
-          allElements = Array.from(target.querySelectorAll('*'));
-          elementOriginalStyles = allElements.map(el => {
-            const original = {
-              element: el,
-              maxWidth: el.style.maxWidth,
-              wordWrap: el.style.wordWrap,
-              overflowWrap: el.style.overflowWrap,
-            };
-            // テキストが切れないように幅を調整
-            if (el.tagName === 'P' || el.tagName === 'DIV' || el.tagName === 'SPAN' || el.tagName === 'TD' || el.tagName === 'TH') {
-              el.style.maxWidth = '100%';
-              el.style.wordWrap = 'break-word';
-              el.style.overflowWrap = 'break-word';
-            }
-            return original;
-          });
-          
+
+          await Promise.all([waitForFonts(), waitForImages(target)]);
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+
           await loadHtml2Pdf();
           if (!window.html2pdf) {
             console.error('html2pdf is not loaded');
             return;
           }
-          
+
+          const pdfWidth = Math.ceil(target.getBoundingClientRect().width);
           const options = {
-            margin: [5, 5, 5, 5],
+            margin: 0,
             filename,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-              scale: 2, 
-              useCORS: true, 
-              allowTaint: true, 
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
               backgroundColor: '#ffffff',
-              width: 794, // A4幅をピクセルに変換 (210mm * 3.78)
-              windowWidth: 794,
-              logging: false
+              width: pdfWidth,
+              windowWidth: pdfWidth,
+              logging: false,
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'td', 'th'] },
+            pagebreak: { mode: ['css', 'legacy'] },
           };
           
           await window.html2pdf().set(options).from(target).save();
@@ -113,12 +121,9 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
           target.style.padding = previousStyles.padding;
           target.style.boxSizing = previousStyles.boxSizing;
         }
-        // 子要素のスタイルも元に戻す
-        elementOriginalStyles.forEach(({ element, maxWidth, wordWrap, overflowWrap }) => {
-          element.style.maxWidth = maxWidth;
-          element.style.wordWrap = wordWrap;
-          element.style.overflowWrap = overflowWrap;
-        });
+        if (target && !hadPdfClass) {
+          target.classList.remove(pdfClass);
+        }
       }
     };
 

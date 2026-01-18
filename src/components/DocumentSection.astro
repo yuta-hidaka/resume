@@ -270,15 +270,25 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     margin: 0 auto;
   }
 
+  .doc-viewer--pdf {
+    border: none;
+    border-radius: 0;
+    max-height: none;
+    overflow: visible;
+    width: 210mm;
+    max-width: none;
+    padding: 0;
+  }
+
   /* 固定幅を上書きして右側の余白をなくす - 最優先 */
-  .doc-viewer > * {
+  .doc-viewer:not(.doc-viewer--pdf) > * {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
   }
 
   /* すべての要素の幅を強制的に制限 */
-  .doc-viewer * {
+  .doc-viewer:not(.doc-viewer--pdf) * {
     max-width: 100% !important;
     box-sizing: border-box !important;
     word-wrap: break-word !important;
@@ -287,29 +297,29 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
   }
   
   /* インラインスタイルで指定された幅を完全に上書き */
-  .doc-viewer [style*="width"],
-  .doc-viewer [style*="max-width"],
-  .doc-viewer [style*="min-width"] {
+  .doc-viewer:not(.doc-viewer--pdf) [style*="width"],
+  .doc-viewer:not(.doc-viewer--pdf) [style*="max-width"],
+  .doc-viewer:not(.doc-viewer--pdf) [style*="min-width"] {
     max-width: 100% !important;
     min-width: 0 !important;
     width: auto !important;
   }
 
   /* bodyやhtml要素の幅も上書き */
-  .doc-viewer body,
-  .doc-viewer html {
+  .doc-viewer:not(.doc-viewer--pdf) body,
+  .doc-viewer:not(.doc-viewer--pdf) html {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
   }
 
   /* PDF生成時にテキストが切れないように */
-  .doc-viewer p,
-  .doc-viewer span,
-  .doc-viewer div,
-  .doc-viewer td,
-  .doc-viewer th,
-  .doc-viewer li {
+  .doc-viewer:not(.doc-viewer--pdf) p,
+  .doc-viewer:not(.doc-viewer--pdf) span,
+  .doc-viewer:not(.doc-viewer--pdf) div,
+  .doc-viewer:not(.doc-viewer--pdf) td,
+  .doc-viewer:not(.doc-viewer--pdf) th,
+  .doc-viewer:not(.doc-viewer--pdf) li {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     white-space: normal !important;
@@ -319,16 +329,16 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
   }
 
   /* テーブルセルも幅を制限 */
-  .doc-viewer table td,
-  .doc-viewer table th {
+  .doc-viewer:not(.doc-viewer--pdf) table td,
+  .doc-viewer:not(.doc-viewer--pdf) table th {
     max-width: 100% !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
   }
   
   /* 絶対位置指定の要素も調整 */
-  .doc-viewer [style*="position: absolute"],
-  .doc-viewer [style*="position:fixed"] {
+  .doc-viewer:not(.doc-viewer--pdf) [style*="position: absolute"],
+  .doc-viewer:not(.doc-viewer--pdf) [style*="position:fixed"] {
     max-width: 100% !important;
   }
 
@@ -338,7 +348,7 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     display: block;
   }
 
-  .doc-viewer table {
+  .doc-viewer:not(.doc-viewer--pdf) table {
     width: 100% !important;
     max-width: 100% !important;
     table-layout: auto;
@@ -348,8 +358,8 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     margin: 0;
   }
 
-  .doc-viewer table td,
-  .doc-viewer table th {
+  .doc-viewer:not(.doc-viewer--pdf) table td,
+  .doc-viewer:not(.doc-viewer--pdf) table th {
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
@@ -387,4 +397,3 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
     transform: scale(1.05);
   }
 </style>
-
