@@ -265,7 +265,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
               const style = window.getComputedStyle(viewer);
               const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
               const availableWidth = Math.max(0, viewer.clientWidth - paddingX);
-              const contentWidth = body.scrollWidth;
+              const contentWidth = body.offsetWidth || body.scrollWidth;
               const contentHeight = body.scrollHeight;
               if (!availableWidth || !contentWidth || !contentHeight) return;
 
@@ -315,6 +315,8 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     --doc-scale: 1;
     --doc-scaled-width: 100%;
     --doc-scaled-height: auto;
+    --doc-page-width: 210mm;
+    --doc-page-height: 297mm;
     background: #ffffff;
     color: #000000;
     border-radius: 16px;
@@ -345,6 +347,8 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
   }
 
   .doc-viewer--embedded:not(.doc-viewer--pdf) .doc-body {
+    width: var(--doc-page-width);
+    min-height: var(--doc-page-height);
     transform: scale(var(--doc-scale, 1));
     transform-origin: top left;
   }
