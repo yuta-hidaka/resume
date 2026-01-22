@@ -244,8 +244,56 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
         class={`doc-viewer ${isMarkdown ? 'markdown-content' : ''} ${docBodyClass ? 'doc-viewer--embedded' : ''}`}
         style={`max-height: ${previewHeight}; width: 100%; max-width: 100%;`}
       >
-        <div class={docBodyClass} set:html={bodyHtml}></div>
+        <div class="doc-scale-shell">
+          <div class={`doc-body ${docBodyClass}`} set:html={bodyHtml}></div>
+        </div>
       </div>
+      {!isMarkdown && docBodyClass && (
+        <script is:inline define:vars={{ docId }}>
+          (() => {
+            const viewer = document.getElementById(docId);
+            if (!viewer || viewer.dataset.docScaleInit) return;
+            if (!viewer.classList.contains('doc-viewer--embedded')) return;
+            const shell = viewer.querySelector('.doc-scale-shell');
+            const body = viewer.querySelector('.doc-body');
+            if (!shell || !body) return;
+
+            viewer.dataset.docScaleInit = 'true';
+
+            const updateScale = () => {
+              if (viewer.classList.contains('doc-viewer--pdf')) return;
+              const style = window.getComputedStyle(viewer);
+              const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+              const availableWidth = Math.max(0, viewer.clientWidth - paddingX);
+              const contentWidth = body.scrollWidth;
+              const contentHeight = body.scrollHeight;
+              if (!availableWidth || !contentWidth || !contentHeight) return;
+
+              const scale = Math.min(1, availableWidth / contentWidth);
+              viewer.style.setProperty('--doc-scale', scale.toFixed(3));
+              viewer.style.setProperty('--doc-scaled-width', `${Math.ceil(contentWidth * scale)}px`);
+              viewer.style.setProperty('--doc-scaled-height', `${Math.ceil(contentHeight * scale)}px`);
+            };
+
+            const schedule = () => requestAnimationFrame(updateScale);
+
+            schedule();
+            if (document.fonts && document.fonts.ready) {
+              document.fonts.ready.then(schedule).catch(() => {});
+            }
+
+            body.querySelectorAll('img').forEach((img) => {
+              if (img.complete) return;
+              img.addEventListener('load', schedule, { once: true });
+              img.addEventListener('error', schedule, { once: true });
+            });
+
+            const resizeObserver = new ResizeObserver(schedule);
+            resizeObserver.observe(viewer);
+            window.addEventListener('resize', schedule);
+          })();
+        </script>
+      )}
     </>
   ) : fallbackPdfUrl ? (
     <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
@@ -264,6 +312,9 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
 
 <style is:global>
   .doc-viewer {
+    --doc-scale: 1;
+    --doc-scaled-width: 100%;
+    --doc-scaled-height: auto;
     background: #ffffff;
     color: #000000;
     border-radius: 16px;
@@ -282,6 +333,22 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     padding: 0;
   }
 
+  .doc-scale-shell {
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .doc-viewer--embedded:not(.doc-viewer--pdf) .doc-scale-shell {
+    width: var(--doc-scaled-width, 100%);
+    height: var(--doc-scaled-height, auto);
+  }
+
+  .doc-viewer--embedded:not(.doc-viewer--pdf) .doc-body {
+    transform: scale(var(--doc-scale, 1));
+    transform-origin: top left;
+  }
+
   .doc-viewer--pdf {
     border: none;
     border-radius: 0;
@@ -293,14 +360,14 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
   }
 
   /* 固定幅を上書きして右側の余白をなくす - 最優先 */
-  .doc-viewer:not(.doc-viewer--pdf) > * {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) > * {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
   }
 
   /* すべての要素の幅を強制的に制限 */
-  .doc-viewer:not(.doc-viewer--pdf) * {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) * {
     max-width: 100% !important;
     box-sizing: border-box !important;
     word-wrap: break-word !important;
@@ -309,29 +376,29 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
   }
   
   /* インラインスタイルで指定された幅を完全に上書き */
-  .doc-viewer:not(.doc-viewer--pdf) [style*="width"],
-  .doc-viewer:not(.doc-viewer--pdf) [style*="max-width"],
-  .doc-viewer:not(.doc-viewer--pdf) [style*="min-width"] {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) [style*="width"],
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) [style*="max-width"],
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) [style*="min-width"] {
     max-width: 100% !important;
     min-width: 0 !important;
     width: auto !important;
   }
 
   /* bodyやhtml要素の幅も上書き */
-  .doc-viewer:not(.doc-viewer--pdf) body,
-  .doc-viewer:not(.doc-viewer--pdf) html {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) body,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) html {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
   }
 
   /* PDF生成時にテキストが切れないように */
-  .doc-viewer:not(.doc-viewer--pdf) p,
-  .doc-viewer:not(.doc-viewer--pdf) span,
-  .doc-viewer:not(.doc-viewer--pdf) div,
-  .doc-viewer:not(.doc-viewer--pdf) td,
-  .doc-viewer:not(.doc-viewer--pdf) th,
-  .doc-viewer:not(.doc-viewer--pdf) li {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) p,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) span,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) div,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) td,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) th,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) li {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     white-space: normal !important;
@@ -341,16 +408,16 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
   }
 
   /* テーブルセルも幅を制限 */
-  .doc-viewer:not(.doc-viewer--pdf) table td,
-  .doc-viewer:not(.doc-viewer--pdf) table th {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) table td,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) table th {
     max-width: 100% !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
   }
   
   /* 絶対位置指定の要素も調整 */
-  .doc-viewer:not(.doc-viewer--pdf) [style*="position: absolute"],
-  .doc-viewer:not(.doc-viewer--pdf) [style*="position:fixed"] {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) [style*="position: absolute"],
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) [style*="position:fixed"] {
     max-width: 100% !important;
   }
 
@@ -360,7 +427,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     display: block;
   }
 
-  .doc-viewer:not(.doc-viewer--pdf) table {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) table {
     width: 100% !important;
     max-width: 100% !important;
     table-layout: auto;
@@ -370,8 +437,8 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     margin: 0;
   }
 
-  .doc-viewer:not(.doc-viewer--pdf) table td,
-  .doc-viewer:not(.doc-viewer--pdf) table th {
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) table td,
+  .doc-viewer.markdown-content:not(.doc-viewer--pdf) table th {
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
