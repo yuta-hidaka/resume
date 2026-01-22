@@ -269,7 +269,8 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     border-radius: 16px;
     border: 1px solid var(--glass-border);
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -382,7 +383,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       font-size: 0.875rem;
     }
 
-    .doc-viewer table {
+    .doc-viewer.markdown-content table {
       font-size: 0.75rem;
       display: block;
       overflow-x: auto;
