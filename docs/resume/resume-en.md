@@ -21,13 +21,19 @@ After graduating from high school, I worked for six years in product development
 - Big Data Group (Backend Team -> xfunction Team)
 - Building and maintaining systems with Golang, NextJS, Kafka, Spark, ArgoCD, and k9s
 - Big data infrastructure, event-driven architecture, Kubernetes, Scrum
+- Involved in xfunction team launch
+- Scrum event facilitation, promoting psychological safety through remote knowledge sharing and Drucker-style exercises
+- Proactive communication with designers and cross-department/cross-team collaboration, lead role within xfunction team
 
 #### Monstarlab / Tech Lead / Full-Stack Engineer (2021-09 - 2025-06)
 
 - **Okinawa theme park app (2025-01 - 2025-06)**
-  - Led as tech lead through English communication with an overseas team; owned app/backend/infrastructure
-  - Microservices architecture handling 3000 RPS at peak
-  - Built analytics infrastructure, reduced infra costs by 30% via serverless optimization, proposed AI integration (Devin) and IaC
+  - Led as tech lead through English communication with Vietnamese team, including onsite collaboration in Vietnam (business trip and stay); owned app/backend/infrastructure
+  - IaC-based web infrastructure setup and release within 2 weeks of joining project. Caught up with existing tech stack, configured DNS, built dev/stg environments, implemented release and monitoring to handle peak traffic of 1500 RPS
+  - App backend in microservices architecture handling 3000 RPS at origin
+  - Built data analytics platform with Parquet format using Athena, Lambda, Glue, and Quick Suite (AWS), leveraging IaC and AI
+  - Rapidly delivered native app development, backend construction, and admin panel implementation
+  - Reduced infra costs by 30% via serverless optimization, proposed AI integration (Devin) and IaC adoption
 - **Furusato tax points -> stock rights service (2024-04 - 2024-12)**: Frontend design and development for high traffic (1000+ RPS)
 - **Corporate website CMS migration (2024-04 - 2024-11)**: Reduced infra cost from ~250,000 JPY/month to ~10,000 JPY/month with Lambda/CloudFront; IaC adoption and Astro-based performance/SEO improvements
 - **Corporate website update (2022-09 - 2023-10)**: Full-stack scope (backend, frontend, infra) and asynchronous collaboration with an overseas team
