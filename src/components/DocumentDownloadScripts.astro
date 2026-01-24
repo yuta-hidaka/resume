@@ -1,12 +1,16 @@
 ---
-const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js' } = Astro.props;
+const { 
+  cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
+  useServerSide = true 
+} = Astro.props;
 ---
 
-<script is:inline define:vars={{ cdnUrl }}>
+<script is:inline define:vars={{ cdnUrl, useServerSide }}>
   (() => {
     if (window.__docPdfInit) return;
     window.__docPdfInit = true;
 
+    // Fallback: Load html2pdf for client-side generation
     const loadHtml2Pdf = () => new Promise((resolve, reject) => {
       if (window.html2pdf) {
         resolve();
@@ -42,77 +46,116 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
       );
     };
 
-    const handleDownload = async (event) => {
-      const button = event.target.closest('[data-doc-download]');
-      if (!button) return;
-      event.preventDefault();
-      event.stopPropagation();
+    // Server-side PDF generation
+    const handleServerSideDownload = async (button, docId, filename) => {
+      const originalText = button.innerHTML;
+      button.innerHTML = '<span>⏳</span><span>Generating PDF...</span>';
+      button.disabled = true;
 
-      const docId = button.getAttribute('data-doc-id');
-      const filename = button.getAttribute('data-doc-filename') || 'document.pdf';
+      try {
+        // Determine locale from URL
+        const locale = window.location.pathname.split('/')[1] || 'ja';
+
+        const response = await fetch('/api/generate-pdf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            documentId: docId,
+            locale: locale,
+            filename: filename,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        return true;
+      } catch (error) {
+        console.error('Server-side PDF generation failed:', error);
+        return false;
+      } finally {
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    };
+
+    // Client-side PDF generation (fallback)
+    const handleClientSideDownload = async (docId, filename) => {
       const target = docId ? document.getElementById(docId) : null;
 
       if (!target) {
         console.error('Target element not found:', docId);
-        return;
+        return false;
       }
 
-      const previousStyles = target
-        ? {
-            maxHeight: target.style.maxHeight,
-            overflow: target.style.overflow,
-            height: target.style.height,
-            width: target.style.width,
-            padding: target.style.padding,
-            boxSizing: target.style.boxSizing,
-          }
-        : null;
+      const previousStyles = {
+        maxHeight: target.style.maxHeight,
+        overflow: target.style.overflow,
+        height: target.style.height,
+        width: target.style.width,
+        padding: target.style.padding,
+        boxSizing: target.style.boxSizing,
+      };
       const pdfClass = 'doc-viewer--pdf';
       const hadPdfClass = target.classList.contains(pdfClass);
 
       try {
-        if (target) {
-          // PDF生成用のスタイルを適用
-          target.classList.add(pdfClass);
-          target.style.maxHeight = 'none';
-          target.style.overflow = 'visible';
-          target.style.height = 'auto';
-          target.style.width = '210mm'; // A4幅
-          target.style.padding = '0';
-          target.style.boxSizing = 'border-box';
+        // Apply PDF-specific styles
+        target.classList.add(pdfClass);
+        target.style.maxHeight = 'none';
+        target.style.overflow = 'visible';
+        target.style.height = 'auto';
+        target.style.width = '210mm'; // A4 width
+        target.style.padding = '15mm';
+        target.style.boxSizing = 'border-box';
 
-          await Promise.all([waitForFonts(), waitForImages(target)]);
-          await new Promise((resolve) => requestAnimationFrame(resolve));
+        await Promise.all([waitForFonts(), waitForImages(target)]);
+        await new Promise((resolve) => requestAnimationFrame(resolve));
 
-          await loadHtml2Pdf();
-          if (!window.html2pdf) {
-            console.error('html2pdf is not loaded');
-            return;
-          }
-
-          const pdfWidth = Math.ceil(target.getBoundingClientRect().width);
-          const options = {
-            margin: 0,
-            filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-              scale: 2,
-              useCORS: true,
-              allowTaint: true,
-              backgroundColor: '#ffffff',
-              width: pdfWidth,
-              windowWidth: pdfWidth,
-              logging: false,
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['css', 'legacy'] },
-          };
-          
-          await window.html2pdf().set(options).from(target).save();
+        await loadHtml2Pdf();
+        if (!window.html2pdf) {
+          console.error('html2pdf is not loaded');
+          return false;
         }
+
+        const pdfWidth = Math.ceil(target.getBoundingClientRect().width);
+        const options = {
+          margin: 0,
+          filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 3, // Higher scale for better quality
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            width: pdfWidth,
+            windowWidth: pdfWidth,
+            logging: false,
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy', 'avoid-all'] },
+        };
+        
+        await window.html2pdf().set(options).from(target).save();
+        return true;
       } catch (error) {
-        console.error('PDF generation error:', error);
+        console.error('Client-side PDF generation error:', error);
+        return false;
       } finally {
+        // Restore original styles
         if (target && previousStyles) {
           target.style.maxHeight = previousStyles.maxHeight;
           target.style.overflow = previousStyles.overflow;
@@ -123,6 +166,48 @@ const { cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html
         }
         if (target && !hadPdfClass) {
           target.classList.remove(pdfClass);
+        }
+      }
+    };
+
+    // Main download handler
+    const handleDownload = async (event) => {
+      const button = event.target.closest('[data-doc-download]');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      const docId = button.getAttribute('data-doc-id');
+      const filename = button.getAttribute('data-doc-filename') || 'document.pdf';
+
+      if (!docId) {
+        console.error('Document ID not found');
+        return;
+      }
+
+      let success = false;
+
+      // Try server-side generation first if enabled
+      if (useServerSide) {
+        success = await handleServerSideDownload(button, docId, filename);
+      }
+
+      // Fallback to client-side if server-side failed or is disabled
+      if (!success) {
+        console.log('Falling back to client-side PDF generation');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<span>⏳</span><span>Generating PDF...</span>';
+        button.disabled = true;
+
+        try {
+          success = await handleClientSideDownload(docId, filename);
+        } finally {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }
+
+        if (!success) {
+          alert('PDF generation failed. Please try again or use the fallback download link.');
         }
       }
     };

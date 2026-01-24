@@ -15,6 +15,10 @@ const {
   isMarkdown = false,
 } = Astro.props;
 
+// Check if we're in PDF mode
+const url = new URL(Astro.request.url);
+const isPdfMode = url.searchParams.has('pdf');
+
 const docId = id ?? `doc-${(title?.toLowerCase() ?? 'document').replace(/[^a-z0-9]/g, '-')}`;
 
 const resolveDocPath = (docPath) => {
@@ -120,35 +124,37 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
 const docBodyClass = bodyClass ? bodyClass.trim() : '';
 ---
 
-<section class="glass-card p-8 md:p-10 animate-fade-in" style="width: 100%; max-width: 100%;">
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-    <div>
-      <h2 class="section-title mb-1">{title}</h2>
-      {description && <p class="text-[var(--text-muted)] text-sm">{description}</p>}
+<section class={isPdfMode ? '' : 'glass-card p-8 md:p-10 animate-fade-in'} style={isPdfMode ? '' : 'width: 100%; max-width: 100%;'}>
+  {!isPdfMode && (
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div>
+        <h2 class="section-title mb-1">{title}</h2>
+        {description && <p class="text-[var(--text-muted)] text-sm">{description}</p>}
+      </div>
+      {!missing && (
+        <button
+          type="button"
+          data-doc-download
+          data-doc-id={docId}
+          data-doc-filename={downloadFileName}
+          class="doc-download-btn"
+        >
+          <span>↓</span>
+          <span>Download PDF</span>
+        </button>
+      )}
+      {missing && fallbackPdfUrl && (
+        <a
+          href={fallbackPdfUrl}
+          download
+          class="doc-download-btn"
+        >
+          <span>↓</span>
+          <span>Download PDF</span>
+        </a>
+      )}
     </div>
-    {!missing && (
-      <button
-        type="button"
-        data-doc-download
-        data-doc-id={docId}
-        data-doc-filename={downloadFileName}
-        class="doc-download-btn"
-      >
-        <span>↓</span>
-        <span>Download PDF</span>
-      </button>
-    )}
-    {missing && fallbackPdfUrl && (
-      <a
-        href={fallbackPdfUrl}
-        download
-        class="doc-download-btn"
-      >
-        <span>↓</span>
-        <span>Download PDF</span>
-      </a>
-    )}
-  </div>
+  )}
 
   {!missing ? (
     <>
@@ -241,14 +247,14 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       )}
       <div
         id={docId}
-        class={`doc-viewer ${isMarkdown ? 'markdown-content' : ''} ${docBodyClass ? 'doc-viewer--embedded' : ''}`}
-        style={`max-height: ${previewHeight}; width: 100%; max-width: 100%;`}
+        class={`doc-viewer ${isPdfMode ? 'doc-viewer--pdf-mode' : ''} ${isMarkdown ? 'markdown-content' : ''} ${docBodyClass ? 'doc-viewer--embedded' : ''}`}
+        style={isPdfMode ? '' : `max-height: ${previewHeight}; width: 100%; max-width: 100%;`}
       >
         <div class="doc-scale-shell">
           <div class={`doc-body ${docBodyClass}`} set:html={bodyHtml}></div>
         </div>
       </div>
-      {!isMarkdown && docBodyClass && (
+      {!isPdfMode && !isMarkdown && docBodyClass && (
         <script is:inline define:vars={{ docId }}>
           (() => {
             const viewer = document.getElementById(docId);
@@ -478,5 +484,175 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
   .doc-download-btn:hover {
     box-shadow: 0 20px 25px -5px var(--glow-color);
     transform: scale(1.05);
+  }
+
+  /* Print styles for PDF generation */
+  @media print {
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .doc-viewer {
+      width: 210mm !important;
+      max-width: 210mm !important;
+      min-height: 297mm;
+      background: white !important;
+      color: black !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      padding: 15mm !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      page-break-after: auto;
+    }
+
+    .doc-viewer * {
+      box-sizing: border-box;
+    }
+
+    /* Page break rules */
+    .doc-viewer h1,
+    .doc-viewer h2,
+    .doc-viewer h3 {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .doc-viewer table {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .doc-viewer p {
+      widows: 3;
+      orphans: 3;
+    }
+
+    .doc-viewer img {
+      page-break-inside: avoid;
+      break-inside: avoid;
+      max-width: 100%;
+    }
+
+    /* Ensure text doesn't get cut off */
+    .doc-viewer p,
+    .doc-viewer span,
+    .doc-viewer div,
+    .doc-viewer td,
+    .doc-viewer th,
+    .doc-viewer li {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    /* Remove transform scaling for print */
+    .doc-scale-shell {
+      transform: none !important;
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    .doc-body {
+      transform: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Markdown content print styles */
+    .doc-viewer.markdown-content {
+      font-size: 10pt;
+      line-height: 1.5;
+    }
+
+    .doc-viewer.markdown-content h1 {
+      font-size: 18pt;
+      margin-top: 12pt;
+      margin-bottom: 8pt;
+    }
+
+    .doc-viewer.markdown-content h2 {
+      font-size: 14pt;
+      margin-top: 10pt;
+      margin-bottom: 6pt;
+    }
+
+    .doc-viewer.markdown-content h3 {
+      font-size: 12pt;
+      margin-top: 8pt;
+      margin-bottom: 4pt;
+    }
+
+    .doc-viewer.markdown-content p {
+      margin-bottom: 6pt;
+    }
+
+    .doc-viewer.markdown-content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+    }
+
+    .doc-viewer.markdown-content table th,
+    .doc-viewer.markdown-content table td {
+      border: 1pt solid #000;
+      padding: 4pt;
+    }
+
+    /* HTML document print styles */
+    .doc-viewer--embedded {
+      padding: 0 !important;
+    }
+
+    .doc-viewer--embedded .doc-body {
+      width: 210mm !important;
+      padding: 15mm !important;
+    }
+
+    /* Hide UI elements in print */
+    .glass-card,
+    .doc-download-btn,
+    nav,
+    header,
+    footer {
+      display: none !important;
+    }
+
+    /* Only show the document */
+    section:has(.doc-viewer) {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  }
+
+  /* PDF mode class (for puppeteer) */
+  .doc-viewer--pdf-mode {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm;
+    background: white !important;
+    color: black !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 15mm !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+  }
+
+  .doc-viewer--pdf-mode .doc-scale-shell {
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .doc-viewer--pdf-mode .doc-body {
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 </style>

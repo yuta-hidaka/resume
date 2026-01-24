@@ -15,9 +15,11 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@sparticuz/chromium": "^130.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.8",
     "marked": "^17.0.1",
+    "puppeteer-core": "^23.11.1",
     "tailwindcss": "^4.1.18"
   }
 }
