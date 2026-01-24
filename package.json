@@ -3,6 +3,11 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "bun@1.0.28",
+  "engines": {
+    "bun": ">=1.0.28",
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "node scripts/sync-doc-assets.mjs && astro dev",
     "build": "node scripts/sync-doc-assets.mjs && astro build",
