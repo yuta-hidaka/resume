@@ -1,0 +1,71 @@
+# Yuta Hidaka — Curriculum Vitae
+
+Updated: 2025-01-01  
+Location: Tokyo (Remote-friendly)  
+Role: Backend / Full-Stack Engineer, Tech Lead  
+
+## Profile
+- 6+ years as a software engineer after 6 years in chemical R&D.  
+- Lead experience across high-traffic B2C/B2B products, cloud-native platforms, event-driven architectures, and Scrum.  
+- Strong in Go/TypeScript, AWS/Kubernetes, IaC, and cross-team communication (JP/EN).
+
+## Core Skills
+- **Backend**: Go, TypeScript/Node.js, Python (Django/DRF), PHP (Laravel)
+- **Frontend**: Next.js, Astro, React, Svelte
+- **Data / Messaging**: Kafka, Spark, PostgreSQL, MySQL, DynamoDB, Redis
+- **Infra / Ops**: AWS (Lambda/CloudFront/ECS/S3/CloudWatch), Kubernetes, ArgoCD, Terraform, Pulumi, Docker
+- **Practices**: Scrum facilitation, performance tuning, observability設計、セキュリティ/コスト最適化、IaC徹底
+
+## Experience
+
+### SUPER STUDIO — Backend Engineer (2025-07 – Present)
+- Big Data Group (Backend → xfunction)。Go/Next.js/Kafka/Spark/Kubernetesでイベント駆動基盤を開発・運用。  
+- xfunctionチーム立ち上げ、Scrumイベント運営、心理的安全性向上の施策を主導。  
+- デザイナー・他部署と横断調整し、高トラフィック要件に耐える設計・パフォーマンスチューニングを推進。  
+
+### Monstarlab — Tech Lead / Full-Stack (2021-09 – 2025-06)
+- **沖縄テーマパーク向けアプリ (2025-01 – 2025-06)**: 英語でベトナム拠点と連携し、アプリ/バックエンド/インフラをリード。IaCで2週間以内にWeb基盤を構築し、1500+ RPSに対応。  
+- **ふるさと納税ポイント→株交換サービス (2024-11 – 2025-01)**: 2万RPS規模を想定したフロント実装と画像最適化、Cloud Run/Spanner構成のパフォーマンス改善。  
+- **企業サイトCMS移行 (2024-04 – 2024-11)**: カスタムCMSをヘッドレス化し、Lambda/CloudFront+IaCで月額25万円→約1万円にコスト削減、AstroでSEO/表示速度改善。  
+- **在庫管理システム刷新 (2022-09 – 2023-10)**: 海外チームと非同期開発でバックエンド/フロント/インフラを一貫担当。  
+
+### KiteRa — Full-Stack Engineer (2021-05 – 2022-07)
+- 社労士向けSaaSで日本初の36協定電子申請機能をリード。Go/Svelte/PostgreSQL/AWS。  
+- シード〜シリーズA期のプロダクト成長に合わせ、機能追加と安定運用を推進。  
+
+### Fignny — Software Engineer (2020-08 – 2021-04)
+- 利用企業1600社超のCRMに機能追加・バグ修正。DynamoDBクエリ最適化とドキュメント整備で保守性を向上。  
+- BeautifulSoup4+Celeryで大規模スクレイピングを短期実装。  
+
+### Freelance — Software Engineer (2020-07)
+- 法律事務所向け時間・請求管理システムの機能追加（Laravel）。  
+
+### SysNavi — Software Engineer (2018-12 – 2020-06)
+- Alteryx+SQL Serverによるデータ移行・分析、バックオフィスRPA（WinActor）。  
+- Django/DRFで実験データ可視化、ASP.NET C#で予実管理Webアプリを開発。  
+
+### Sumitomo Chemical — R&D (2012-04 – 2018-03)
+- PPフィルム、バッテリーセパレータ、医療グレード材料の研究開発。  
+
+### Independent Business (2018-04 – 2018-09)
+- スペイン産生ハムの輸入販売を企画・交渉・テスト輸入まで実施。  
+
+## Education
+- Tokyo University of Science, Department of Chemistry (Second Division), B.S. (2014-04 – 2018-03)  
+  - 住友化学に勤務しつつ週6日通学し有機化学を専攻。  
+
+## Certifications
+- Class 1 Water Quality Pollution Prevention Manager (2011-10)  
+- Class A Hazardous Materials Handler (2011-08)  
+- Second-Class Electrician (2010-10)  
+- Boiler Operator Type II (2010-07)  
+- Ordinary Driver’s License (2010-06)  
+
+## Selected Achievements
+- 1500+ RPSのピークトラフィックに耐えるアプリ/インフラを短期間で立ち上げ。  
+- Lambda/CloudFront+IaCへの移行で月額コストを約90%削減し、SEO/パフォーマンスを改善。  
+- 日本初の36協定電子申請機能をGo/Svelteで実装し、ドメイン要件をプロダクトに反映。  
+- DynamoDBや画像最適化、CDN設計を含む性能チューニングを複数案件で実施。  
+
+## Languages
+- Japanese (Native), English (Conversational)  
