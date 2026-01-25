@@ -13,11 +13,13 @@ const {
   previewHeight = '750px',
   fallbackPdfUrl,
   isMarkdown = false,
+  isPdfMode: isPdfModeProp = false,
+  staticPdfUrl,
 } = Astro.props;
 
-// Check if we're in PDF mode
+// Check if we're in PDF mode (from props or URL parameter)
 const url = new URL(Astro.request.url);
-const isPdfMode = url.searchParams.has('pdf');
+const isPdfMode = isPdfModeProp || url.searchParams.has('pdf');
 
 const docId = id ?? `doc-${(title?.toLowerCase() ?? 'document').replace(/[^a-z0-9]/g, '-')}`;
 
@@ -131,19 +133,29 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
         <h2 class="section-title mb-1">{title}</h2>
         {description && <p class="text-[var(--text-muted)] text-sm">{description}</p>}
       </div>
-      {!missing && (
-        <button
-          type="button"
-          data-doc-download
-          data-doc-id={docId}
-          data-doc-filename={downloadFileName}
-          class="doc-download-btn"
-        >
-          <span>↓</span>
-          <span>Download PDF</span>
-        </button>
-      )}
-      {missing && fallbackPdfUrl && (
+      {!missing ? (
+        staticPdfUrl ? (
+          <a
+            href={staticPdfUrl}
+            download={downloadFileName ?? undefined}
+            class="doc-download-btn"
+          >
+            <span>↓</span>
+            <span>Download PDF</span>
+          </a>
+        ) : (
+          <button
+            type="button"
+            data-doc-download
+            data-doc-id={docId}
+            data-doc-filename={downloadFileName}
+            class="doc-download-btn"
+          >
+            <span>↓</span>
+            <span>Download PDF</span>
+          </button>
+        )
+      ) : fallbackPdfUrl ? (
         <a
           href={fallbackPdfUrl}
           download
@@ -152,7 +164,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
           <span>↓</span>
           <span>Download PDF</span>
         </a>
-      )}
+      ) : null}
     </div>
   )}
 
