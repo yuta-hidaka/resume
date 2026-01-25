@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CV - Yuta Hidaka</title>
+    <style>
+      :root {
+        --accent: #0f766e;
+        --text: #0f172a;
+        --muted: #334155;
+        --border: #e2e8f0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 18mm 16mm;
+        font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        line-height: 1.6;
+        background: #ffffff;
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 12px;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 24px 0 8px;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 4px;
+      }
+      h3 {
+        font-size: 16px;
+        margin: 18px 0 4px;
+        color: var(--accent);
+      }
+      p {
+        margin: 4px 0;
+      }
+      ul {
+        margin: 4px 0 8px 18px;
+        padding: 0;
+      }
+      li {
+        margin: 2px 0;
+      }
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .section {
+        margin-bottom: 18px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 6px 0 0;
+      }
+      .chip {
+        padding: 2px 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="meta">
+      <div>Yuta Hidaka</div>
+      <div>Updated: 2025-01-01</div>
+    </div>
+
+    <h1>Curriculum Vitae</h1>
+
+    <div class="section">
+      <h2>Summary</h2>
+      <p>
+        Full-stack / backend engineer specializing in Go and TypeScript. Experienced in
+        cloud-native architectures, event-driven systems, and shipping high-traffic
+        consumer and B2B products with Scrum teams.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Experience</h2>
+
+      <h3>SUPER STUDIO — Backend Engineer (2025-07 – Present)</h3>
+      <p>Big Data Group (Backend → xfunction)</p>
+      <ul>
+        <li>Data platform and event-driven services with Go, Next.js, Kafka, Spark, K8s, ArgoCD</li>
+        <li>Launched xfunction team; facilitated Scrum events and remote knowledge sharing</li>
+        <li>Cross-team coordination with designers and adjacent departments</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">Go</span><span class="chip">Next.js</span
+        ><span class="chip">Kafka</span><span class="chip">Spark</span
+        ><span class="chip">Kubernetes</span><span class="chip">ArgoCD</span>
+      </div>
+
+      <h3>Monstarlab — Tech Lead / Full-Stack (2021-09 – 2025-06)</h3>
+      <ul>
+        <li>Okinawa theme park app: led app/backend/infra with a Vietnam team (English), IaC launch in 2 weeks to handle 1500+ RPS</li>
+        <li>Furusato tax points → stock rights: designed & built high-traffic frontend</li>
+        <li>Corporate site CMS migration: Lambda/CloudFront+IaC cut infra cost from ~¥250k to ~¥10k/month; Astro for SEO/perf</li>
+        <li>Corporate site updates: async collaboration with overseas team across backend/frontend/infra</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">TypeScript</span><span class="chip">Next.js</span
+        ><span class="chip">AWS</span><span class="chip">Terraform</span
+        ><span class="chip">Node.js</span><span class="chip">PostgreSQL</span>
+      </div>
+
+      <h3>KiteRa — Full-Stack Engineer (2021-05 – 2022-07)</h3>
+      <ul>
+        <li>Regulation management SaaS features with Go, Svelte, PostgreSQL, AWS</li>
+        <li>Led Japan’s first e-Gov “36 Agreement” electronic submission feature</li>
+      </ul>
+
+      <h3>Fignny — Software Engineer (2020-08 – 2021-04)</h3>
+      <ul>
+        <li>CRM APIs and infra; documentation</li>
+        <li>Large-scale scraping with BeautifulSoup4 + Celery</li>
+      </ul>
+
+      <h3>Freelance (2020-07)</h3>
+      <ul>
+        <li>Feature work on a law firm’s time & billing system (Laravel)</li>
+      </ul>
+
+      <h3>SysNavi — Software Engineer (2018-12 – 2020-06)</h3>
+      <ul>
+        <li>Data migration/analysis with Alteryx + SQL Server; back-office RPA (WinActor)</li>
+        <li>Django/DRF experiment data viz app; ASP.NET C# budget vs actual app</li>
+      </ul>
+
+      <h3>Sumitomo Chemical — R&D (2012-04 – 2018-03)</h3>
+      <ul>
+        <li>R&D for PP film, battery separators, and medical-grade materials</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Skills</h2>
+      <p>
+        Go, TypeScript/JavaScript, Next.js, Astro, Python (Django/DRF), PHP (Laravel),
+        Kafka, Kubernetes, AWS, Terraform/Pulumi, PostgreSQL/MySQL/DynamoDB
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Education</h2>
+      <p>Tokyo University of Science, Department of Chemistry (2014-04 – 2018-03)</p>
+      <p>Studied organic chemistry while working full-time</p>
+    </div>
+  </body>
+</html>
