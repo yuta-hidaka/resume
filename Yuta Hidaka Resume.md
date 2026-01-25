@@ -8,14 +8,14 @@ Role: Backend / Full-Stack Engineer, Tech Lead
 - 6+ years as a software engineer after 6 years in chemical R&D.  
 - Lead experience across high-traffic B2C/B2B products, cloud-native platforms, event-driven architectures, and Scrum.  
 - Strong in Go/TypeScript, AWS/Kubernetes, IaC, and cross-team communication (JP/EN).  
-- Hands-on in performance tuning, observability、コスト最適化、モブプロ/ペアプロ、ドメイン調査から要件定義まで一貫推進。  
+- Hands-on in performance tuning、コスト最適化、モブプロ/ペアプロ、ドメイン調査から要件定義まで一貫推進。  
 
 ## Core Skills
 - **Backend**: Go, TypeScript/Node.js, Python (Django/DRF), PHP (Laravel)
 - **Frontend**: Next.js, Astro, React, Svelte
 - **Data / Messaging**: Kafka, Spark, PostgreSQL, MySQL, DynamoDB, Redis
 - **Infra / Ops**: AWS (Lambda/CloudFront/ECS/S3/CloudWatch), Kubernetes, ArgoCD, Terraform, Pulumi, Docker
-- **Practices**: Scrum facilitation, performance tuning, observability設計、セキュリティ/コスト最適化、IaC徹底、SLO/SLA設計、英語でのリモート協業
+- **Practices**: Scrum facilitation, performance tuning、セキュリティ/コスト最適化、IaC徹底、英語でのリモート協業
 
 ## Experience
 
@@ -23,8 +23,6 @@ Role: Backend / Full-Stack Engineer, Tech Lead
 - Big Data Group (Backend → xfunction)。Go/Next.js/Kafka/Spark/Kubernetesでイベント駆動基盤を開発・運用。  
 - xfunctionチーム立ち上げ、Scrumイベント運営、心理的安全性向上の施策を主導。  
 - デザイナー・他部署と横断調整し、高トラフィック要件に耐える設計・パフォーマンスチューニングを推進。  
-- Kafka＋Sparkのパイプライン監視・アラートを再設計し、データ品質と運用信頼性を改善。  
-- ArgoCD/k9sでのデプロイ標準化、SLO/SLAを踏まえた改善提案と障害レビューを主導。  
 
 ### Monstarlab — Tech Lead / Full-Stack (2021-09 – 2025-06)
 - **沖縄テーマパーク向けアプリ (2025-01 – 2025-06)**: 英語でベトナム拠点と連携し、アプリ/バックエンド/インフラをリード。IaCで2週間以内にWeb基盤を構築し、1500+ RPSに対応。  
@@ -79,7 +77,6 @@ Role: Backend / Full-Stack Engineer, Tech Lead
 - 日本初の36協定電子申請機能をGo/Svelteで実装し、ドメイン要件をプロダクトに反映。  
 - DynamoDBや画像最適化、CDN設計を含む性能チューニングを複数案件で実施。  
 - Cloud Run/Spanner構成で20k RPS規模の要件に備えたキャッシュ・画像最適化を設計。  
-- Kafka+Sparkのデータパイプラインを監視/アラート設計で安定化し、障害復旧時間を短縮。  
 - 海外拠点と英語でスクラムを運営し、モブプロ/ペアプロでナレッジを共有・育成。  
 
 ## Languages
