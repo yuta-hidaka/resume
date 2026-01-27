@@ -28,24 +28,26 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 
 **Tech Stack**: Go, Next.js, Kafka, Spark, Kubernetes, ArgoCD, k9s
 
-#### Monstarlab / Tech Lead / Full-Stack Engineer (2021-09 - 2025-06)
+---
+
+#### Monstarlab / Tech Lead, Full-Stack Engineer (2021-09 - 2025-06)
 
 **Okinawa Theme Park Web App Development (2025-01 - 2025-06) - Tech Lead / 5 members (50+ including PM/PMO)**
 
 - Web app, native app, backend, and admin panel development for a theme park opening in 2025
 - Led team through English communication with Vietnamese team, including onsite collaboration in Vietnam (business trip and stay); owned app/backend/infrastructure
-- Joined with 1.5 weeks until web page release deadline; built IaC-based infrastructure in 2 days after aligning with stakeholders
-- Implemented serverless architecture with SST and Pulumi to handle peak traffic exceeding 10,000 RPS
-- Built backend in microservices architecture handling 3000 RPS at origin
+- Joined with 1.5 weeks until web page release deadline; aligned with stakeholders in first 2 days and built IaC-based serverless infrastructure using SST and Pulumi
+- Configured system to handle peak traffic exceeding 10,000 RPS, contributing to stable operations
+- Built backend in microservices architecture handling 3,000 RPS at origin
 - Constructed data analytics platform with Parquet format using Athena, Lambda, Glue, and Quick Suite (AWS), leveraging IaC and AI
 - Rapidly delivered native app development, backend construction, and admin panel implementation
 - Reduced infrastructure costs by 30% via serverless optimization; proposed AI integration (Devin) and IaC adoption
-- Conducted mob programming sessions despite tight deadlines to share knowledge and experience with team members
+- Conducted mob programming sessions despite tight deadlines to actively share specifications and experience with team members
 
 **Furusato Tax Points → Stock Exchange Service (2024-11 - 2025-01) - Software Engineer / 100 members**
 
 - Assigned as software engineer to web app development for a service converting furusato tax points to stocks
-- Microservices architecture with overall traffic exceeding 20,000 RPS; responsible area handled up to 1500 RPS
+- Microservices architecture with overall traffic exceeding 20,000 RPS; responsible area handled up to 1,500 RPS
 - Implemented with Next.js 15 App Directory and GCP Cloud Run
 - Frontend performance tuning including WebP/AVIF image optimization and lazy loading
 - Caught up quickly in Agile development with PBI creation and release operations
@@ -66,6 +68,8 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 
 **Tech Stack**: TypeScript, Next.js 15, React, Astro, Go, Vue (NUXT3), AWS, GCP, SST, Pulumi, Terraform, Cloud Run, Spanner, MySQL, Data Dog
 
+---
+
 #### KiteRa / Full-Stack Engineer (2021-05 - 2022-07)
 
 **SaaS Development for Labor and Social Security Attorneys - Software Engineer / 5 members**
@@ -75,6 +79,8 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 - Joined during seed/early stage, developed necessary features as company grew from ~10 to 60-70 employees
 
 **Tech Stack**: Go, Svelte, PostgreSQL, AWS, Python, Stripe
+
+---
 
 #### Fignny / Software Engineer (2020-08 - 2021-04)
 
@@ -96,12 +102,16 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 
 **Tech Stack**: Python, Django, DynamoDB, AWS Lambda, Aurora, Celery
 
+---
+
 #### Freelance (2020-07)
 
 **Time Management Software for Legal Professionals - Coder / 4 members**
 
 - Feature additions to time and billing management system (Laravel)
 - Implemented CSV export for aggregated data, new features, and bug fixes
+
+---
 
 #### SysNavi / Software Engineer (2018-12 - 2020-06)
 
@@ -126,6 +136,8 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 
 **Tech Stack**: PHP (Laravel), Alteryx, SQL Server, Python (Django), WinActor, C# .NET
 
+---
+
 #### Independent Business Owner (2018-04 - 2018-09)
 
 **Spanish Cured Ham Import Business**
@@ -134,6 +146,8 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 - Obtained company information from Spanish Embassy, negotiated locally, visited farms, conducted test imports
 - Confirmed customs clearance, bacterial testing, logistics costs; conducted demand research (online reservation sales, crowdfunding, direct sales)
 - Determined reaching break-even point difficult with own capital and planned borrowing; discontinued business
+
+---
 
 #### Sumitomo Chemical / R&D (2012-04 - 2018-03)
 
@@ -154,13 +168,14 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 - R&D support for polypropylene film
 - Support experiments for packaging materials and battery separator development
 
+---
+
 ### Education
 
 **Tokyo University of Science, Department of Chemistry (Second Division) (2014-04 - 2018-03)**
 
 - Earned bachelor's degree in organic chemistry while working full-time at Sumitomo Chemical
 - Attended classes 6 days a week, completed assignments, reports, and experimental reports in parallel
-- Worked 7:00-16:00, commuted 2 hours to university, attended classes 18:00-21:10 for 4 years without repeating a year
 
 ### Certifications
 
