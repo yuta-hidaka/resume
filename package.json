@@ -15,7 +15,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@sparticuz/chromium": "^130.0.0",
+    "@sparticuz/chromium": "^131.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.8",
     "marked": "^17.0.1",

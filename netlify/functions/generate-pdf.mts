@@ -2,6 +2,10 @@ import type { Config, Context } from '@netlify/functions';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 
+// Set Chromium flags for Netlify environment
+chromium.setGraphicsMode = false;
+chromium.setHeadlessMode = true;
+
 export default async (req: Request, context: Context) => {
   try {
     // Parse request body
@@ -21,12 +25,26 @@ export default async (req: Request, context: Context) => {
 
     console.log(`Generating PDF for: ${targetUrl}`);
 
-    // Launch browser
+    // Get Chromium executable path
+    const executablePath = await chromium.executablePath();
+    console.log(`Chromium path: ${executablePath}`);
+
+    // Launch browser with proper configuration for Netlify
     const browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu',
+      ],
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      executablePath,
+      headless: true,
     });
 
     try {

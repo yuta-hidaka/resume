@@ -25,7 +25,7 @@
       h2 {
         font-size: 20px;
         margin: 24px 0 8px;
-        border-bottom: 2px solid var(--border);
+        border-bottom: 2px solid #e2e8f0;
         padding-bottom: 4px;
       }
       h3 {
@@ -67,12 +67,15 @@
         font-size: 12px;
         color: #334155;
       }
+      strong {
+        color: #0f766e;
+      }
     </style>
   </head>
   <body>
     <div class="meta">
       <div>日髙 悠太（Yuta Hidaka）</div>
-      <div>更新日: 2025年 01月 01日現在</div>
+      <div>更新日: 2025年 01月 24日現在</div>
     </div>
 
     <h1>職務経歴書</h1>
@@ -89,69 +92,214 @@
       <h2>職務経歴</h2>
 
       <h3>SUPER STUDIO / Backend Engineer（2025-07 〜 現在）</h3>
-      <p>Big Data Group（Backend → xfunction）</p>
+      <p>Big Data Group（Backend Team → xfunction Team）</p>
       <ul>
-        <li>Golang / Next.js / Kafka / Spark / ArgoCD / Kubernetes / k9s を用いたデータ基盤・イベント駆動開発</li>
-        <li>xfunctionチーム立ち上げに関与し、スクラムイベント運営・心理的安全性の醸成をリード</li>
-        <li>デザイナー・他部署・他チームとの横断調整、リモートでのナレッジシェアを推進</li>
+        <li>Golang / Next.js / Kafka / Spark / ArgoCD / Kubernetes / k9s を用いたシステム構築・保守</li>
+        <li>ビッグデータ基盤、イベント駆動アーキテクチャ、Kubernetes、スクラム開発</li>
+        <li>xfunctionチーム立ち上げに関与</li>
+        <li>スクラムイベントのファシリテーション、リモートでのナレッジシェア・ドラッカー式エクササイズによる心理的安全性の醸成</li>
+        <li>デザイナー・他部署・他チームとの積極的なコミュニケーション、xfunctionチーム内でのリード役</li>
       </ul>
       <div class="chips">
         <span class="chip">Go</span><span class="chip">Next.js</span
         ><span class="chip">Kafka</span><span class="chip">Spark</span
-        ><span class="chip">Kubernetes</span><span class="chip">ArgoCD</span>
+        ><span class="chip">Kubernetes</span><span class="chip">ArgoCD</span
+        ><span class="chip">k9s</span>
       </div>
 
-      <h3>Monstarlab / Tech Lead, Full-Stack（2021-09 〜 2025-06）</h3>
+      <h3>Monstarlab / Tech Lead, Full-Stack Engineer（2021-09 〜 2025-06）</h3>
+      
+      <p><strong>沖縄テーマパーク向けWebアプリ開発（2025-01 〜 2025-06）- テックリード / 5名（全体PM・PMO含め50名）</strong></p>
       <ul>
-        <li>沖縄テーマパーク向けアプリ: ベトナム拠点と英語で連携し、アプリ/バックエンド/インフラをリード。IaCで2週間以内にWeb基盤を構築し、1500RPS超のアクセスに対応</li>
-        <li>ふるさと納税ポイント→株交換サービス: 高トラフィック想定のフロント実装を設計・開発</li>
-        <li>企業サイトCMS移行: Lambda/CloudFront＋IaCで月額コストを約25万円→約1万円へ削減、AstroでSEO/パフォーマンス改善</li>
-        <li>企業サイト更新: 海外チームと非同期開発、バックエンド/フロント/インフラを一貫して担当</li>
+        <li>2025年開業の沖縄テーマパーク向けWebアプリ、ネイティブアプリ、バックエンド、管理画面の構築</li>
+        <li>ベトナムチームとの英語でのコミュニケーション、ベトナム現地での協業（出張・滞在）を含むテックリード、アプリ/バックエンド/インフラのオーナーシップ</li>
+        <li>アサイン後1.5週間でWebページリリースが迫る中、最初の2日で各ステークホルダーと距離を縮め合意を取り、SST・Pulumiを用いてサーバレス構成でインフラを構築</li>
+        <li>瞬間的に10000RPS超のリクエストを捌ける設定を行い、安定稼働に寄与</li>
+        <li>マイクロサービスアーキテクチャで3000RPSのオリジントラフィックを処理するバックエンド構築</li>
+        <li>Athena・Lambda・Glue・Quick Suite (AWS)、IaCとAIを活用したParquet形式のデータ分析基盤構築</li>
+        <li>ネイティブアプリ開発、バックエンド構築、管理画面実装を迅速に提供</li>
+        <li>サーバレス最適化でインフラコストを30%削減、AI統合（Devin）・IaC採用を提案</li>
+        <li>時間が迫る中でもチームメンバーへの経験共有のためモブプロを実施、仕様・経験の積極的な共有</li>
       </ul>
+
+      <p><strong>ふるさと納税ポイント→株式交換サービス（2024-11 〜 2025-01）- ソフトウェアエンジニア / 100名</strong></p>
+      <ul>
+        <li>ふるさと納税ポイントを株式に交換可能なサービスのWebアプリ開発にソフトウェアエンジニアとしてアサイン</li>
+        <li>マイクロサービスアーキテクチャ、全体トラフィック2万RPS超、担当領域は最大1500RPS</li>
+        <li>Next.js 15 App ディレクトリ、GCP Cloud Runで実装</li>
+        <li>WebP・AVIF画像最適化、遅延実行などフロントエンドのパフォーマンスチューニング</li>
+        <li>アジャイル開発でPBI作成、リリース作業など短期間でキャッチアップしながら作業を推進</li>
+      </ul>
+
+      <p><strong>企業ポータルサイトCMS移行（2024-04 〜 2024-11）- テックリード / 3名</strong></p>
+      <ul>
+        <li>企業ポータルサイトのCMS移行プロジェクトにTechリードとして参画</li>
+        <li>提案段階から参入し、顧客のペイン・会社的状況を鑑みてアーキテクチャ・サービスを選定</li>
+        <li>カスタマイズされたCMSのリバースエンジニアリング、ヘッドレスCMSへの移行を全てコードベースで完結</li>
+        <li>インフラもIaCで記述し属人化を排除</li>
+        <li>Lambda + Astro JSでISR的なアーキテクチャを設計、CMS費用を月額20万円→1〜2万円に圧縮</li>
+        <li>SEOパフォーマンスも改善し、顧客のKPIに対してフィット</li>
+      </ul>
+
+      <p><strong>企業サイト更新（2022-09 〜 2023-10）- ソフトウェアエンジニア / 6名</strong></p>
+      <ul>
+        <li>企業のWebアプリ在庫管理システム再構築、DB設計・ディレクション・海外チームとの協業</li>
+        <li>フルスタックエンジニアとしてインフラ、バックエンド、フロントエンド全般を担当</li>
+      </ul>
+      
       <div class="chips">
-        <span class="chip">TypeScript</span><span class="chip">Next.js</span
-        ><span class="chip">AWS</span><span class="chip">Terraform</span
-        ><span class="chip">Node.js</span><span class="chip">PostgreSQL</span>
+        <span class="chip">TypeScript</span><span class="chip">Next.js 15</span
+        ><span class="chip">React</span><span class="chip">Astro</span
+        ><span class="chip">Go</span><span class="chip">Vue (NUXT3)</span
+        ><span class="chip">AWS</span><span class="chip">GCP</span
+        ><span class="chip">SST</span><span class="chip">Pulumi</span
+        ><span class="chip">Terraform</span><span class="chip">Cloud Run</span
+        ><span class="chip">Spanner</span><span class="chip">MySQL</span
+        ><span class="chip">Data Dog</span>
       </div>
 
       <h3>KiteRa / Full-Stack Engineer（2021-05 〜 2022-07）</h3>
+      <p><strong>社労士向けSaaS開発 - ソフトウェアエンジニア / 5名</strong></p>
       <ul>
-        <li>規程管理SaaSの新機能をGolang/Svelte/ PostgreSQL/AWSで開発</li>
-        <li>e-Gov連携の36協定電子申請機能をリード</li>
+        <li>規程管理SaaSの新機能をGolang / Svelte / PostgreSQL / AWSで開発</li>
+        <li>日本初の36協定の電子申請機能の開発主担当、e-Govの仕様理解や業務に沿ったソフトウェア開発</li>
+        <li>シード・アーリーステージから入社、社員10数名から60〜70名と大規模になる環境で必要な機能を開発</li>
       </ul>
+      <div class="chips">
+        <span class="chip">Go</span><span class="chip">Svelte</span
+        ><span class="chip">PostgreSQL</span><span class="chip">AWS</span
+        ><span class="chip">Python</span><span class="chip">Stripe</span>
+      </div>
 
       <h3>Fignny / Software Engineer（2020-08 〜 2021-04）</h3>
+      <p><strong>CRM開発 - コーダー / 25名</strong></p>
       <ul>
-        <li>CRMサービスのAPI/インフラ、ドキュメント整備を担当</li>
-        <li>BeautifulSoup4＋Celeryで大規模スクレイピングを短期間で実装</li>
+        <li>利用企業1600社超のCRMサービスの新規機能追加・バグ修正</li>
+        <li>Lambda上にPythonで記述したAPIを展開、全機能をAPIで提供</li>
+        <li>DynamoDBクエリ改善、バグ対応、新規機能開発</li>
+        <li>環境構築ドキュメント整備により古参エンジニアの工数削減に貢献</li>
+        <li>DynamoDBデータ膨大化（150GB）によるパフォーマンス問題をクエリ見直し・インデックス作成で解決</li>
       </ul>
+      <p><strong>まとめサイトスクレイピング（2020-08 〜 2020-09）- コーダー / 2名</strong></p>
+      <ul>
+        <li>月間20億PVのまとめサイト終了に伴う全記事データ取得プロジェクト</li>
+        <li>HTML構造のリバースエンジニアリング、BeautifulSoup4を用いたスクレイピングプログラム作成</li>
+        <li>AWS EC2/S3/Aurora上でThredPoolExecutor・Celeryで分散処理・キュー処理を組み合わせ高速化</li>
+        <li>2週間でコーディング完了、2週間で150万件近い記事をスクレイピング（DB容量60GB以上、画像2TB以上）</li>
+        <li>2か月予定の作業を2週間で完了</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">Python</span><span class="chip">Django</span
+        ><span class="chip">DynamoDB</span><span class="chip">AWS Lambda</span
+        ><span class="chip">Aurora</span><span class="chip">Celery</span>
+      </div>
 
       <h3>Freelance（2020-07）</h3>
+      <p><strong>士業向け時間管理ソフト開発 - コーダー / 4名</strong></p>
       <ul>
         <li>弁護士法人向け時間・請求管理システム（Laravel）の機能追加</li>
+        <li>集計データのCSV出力機能実装、新規機能開発、バグ修正</li>
       </ul>
 
       <h3>SysNavi / Software Engineer（2018-12 〜 2020-06）</h3>
+      <p><strong>士業向け時間管理ソフト開発（2019-06 〜 2020-06）- コーダー / 4名</strong></p>
       <ul>
-        <li>Alteryx＋SQL Serverによるデータ移行・分析、バックオフィスRPA（WinActor）</li>
-        <li>Django/DRFで実験データ可視化Webアプリ、ASP.NET C#で予実管理Webアプリを開発</li>
+        <li>30人規模の弁護士事務所向け時間管理システム開発</li>
+        <li>仕様策定・DB設計から参画、RedmineとBackLogをGitLabと連携しチケット駆動開発を導入</li>
+        <li>PDF出力機能、Bootstrapモックアップ作成、docker-composeステージング環境構築、要件定義、顧客対応</li>
+        <li>SES中心企業を受託開発企業とする足掛かりとしての環境整備</li>
+      </ul>
+      <p><strong>監査法人DB統合プロジェクト（2019-02 〜 2019-06）- コーダー / 5名</strong></p>
+      <ul>
+        <li>世界4大会計事務所の様々なフォーマットデータを一つのDBで管理</li>
+        <li>AlterxとSQL Serverを用いてデータ移行・分析、データクレンジングロジック作成</li>
+        <li>KPI・予実情報算出、Tableauでのデータ可視化</li>
+      </ul>
+      <p><strong>その他プロジェクト</strong></p>
+      <ul>
+        <li>化学メーカーバックオフィスRPA化（WinActor）、RPAフレームワーク概念提案</li>
+        <li>化学メーカー実験データ可視化Webアプリ（Django、TypeScript、Plotly.js）</li>
+        <li>予定実績管理Webアプリ（C# .NET、Outlook API連携）</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">PHP (Laravel)</span><span class="chip">Alteryx</span
+        ><span class="chip">SQL Server</span><span class="chip">Python (Django)</span
+        ><span class="chip">WinActor</span><span class="chip">C# .NET</span>
+      </div>
+
+      <h3>個人事業主（2018-04 〜 2018-09）</h3>
+      <p><strong>生ハムの輸入販売</strong></p>
+      <ul>
+        <li>スペイン産生ハム輸入ビジネスの検討</li>
+        <li>スペイン大使館より企業情報取得、現地交渉・農場見学、テスト輸入実施</li>
+        <li>通関・細菌検査・物流コスト確認、需要調査（ネット予約販売・クラウドファンディング・飛び込み営業）</li>
+        <li>自己資本と借入金で損益分岐点到達困難と判断し事業中止</li>
       </ul>
 
       <h3>住友化学 / 研究開発（2012-04 〜 2018-03）</h3>
+      <p><strong>医療用PP材料開発（2016-11 〜 2018-03）- グレード2 / 4名</strong></p>
       <ul>
-        <li>PPフィルム・バッテリーセパレータ・医療グレード材料の研究開発</li>
+        <li>医療品グレードのポリプロピレン材料開発</li>
+        <li>コンタクトレンズ用重合型の組成確立、医療用PPボトルの材料開発</li>
+        <li>耐UVグレードの組成を確立</li>
+      </ul>
+      <p><strong>高耐熱PP材開発（2015-06 〜 2016-10）- グレード1 / 30名</strong></p>
+      <ul>
+        <li>バッテリーセパレータ材料開発の基礎研究</li>
+        <li>PPベースのセパレーターフィルム材料模索、構造解析</li>
+        <li>耐熱性・突き刺し強度・微多孔均一性・空孔率などに焦点を当てた材料開発</li>
+      </ul>
+      <p><strong>PPフィルム材料開発補助（2012-04 〜 2015-05）- グレード1 / 30名</strong></p>
+      <ul>
+        <li>ポリプロピレンフィルムの研究開発補助</li>
+        <li>包装材・バッテリーセパレーター開発補助実験</li>
       </ul>
     </div>
 
     <div class="section">
       <h2>スキル</h2>
-      <p>Go, TypeScript/JavaScript, Next.js, Astro, Python (Django/DRF), PHP (Laravel), Kafka, Kubernetes, AWS, Terraform/Pulumi, PostgreSQL/MySQL/DynamoDB</p>
+      <p><strong>言語:</strong> 日本語（ネイティブ）、英語（会話可能）</p>
+      <p><strong>バックエンド:</strong> Golang, Python (Django/DRF), PHP (CakePHP/Laravel)</p>
+      <p><strong>フロントエンド:</strong> JavaScript/TypeScript, Next.js, Svelte, React, SolidJS, Astro</p>
+      <p><strong>インフラ:</strong> AWS (Lambda/CloudFront/DynamoDB), Terraform, Pulumi, Docker, Linux, Kubernetes</p>
+      <p><strong>データベース:</strong> MySQL, PostgreSQL, MongoDB, DynamoDB</p>
+      <p><strong>その他:</strong> Kafka, Spark, ArgoCD, k9s</p>
     </div>
 
     <div class="section">
       <h2>学歴</h2>
-      <p>東京理科大学 第二部 化学科（2014-04 〜 2018-03）</p>
-      <p>住友化学勤務と並行し、有機化学を学び学士号を取得</p>
+      <p><strong>東京理科大学 第二部 化学科（2014-04 〜 2018-03）</strong></p>
+      <p>住友化学フルタイム勤務と並行し有機化学を学び学士号を取得。週6日大学通学、レポート・実験報告書作成を両立。</p>
+    </div>
+
+    <div class="section">
+      <h2>資格</h2>
+      <ul>
+        <li>2011年10月: 公害防止管理者 水質一種</li>
+        <li>2011年8月: 甲種危険物取扱者</li>
+        <li>2010年10月: 第二種電気工事士</li>
+        <li>2010年7月: ボイラー技士Ⅱ種</li>
+        <li>2010年6月: 普通自動車免許</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>自己PR</h2>
+      <p><strong>自発性・継続力</strong></p>
+      <p>
+        住友化学フルタイム勤務中に東京理科大学に4年間通学し学士号取得。7:00-16:00勤務後、2時間通学し18:00-21:10授業、課題・レポート・実験報告書を並行してこなす生活を留年なく遂行。
+        自分のサービス立ち上げのため日々学習を継続、VPS/AWSを活用しサーバー構築・成果物公開（https://yuta.dev）。
+      </p>
+      <p><strong>問題認識力・改善能力</strong></p>
+      <p>
+        前職では年間24件近くの改善提案を提出。慣れた環境に埋もれる問題点を洗い出し、自発的に改善を実施。
+        システム開発においても問題発見から解決策検討を一貫して実施。
+      </p>
+      <p><strong>情報分析能力</strong></p>
+      <p>
+        研究業務で実験データを分析し、予想と照らし合わせながら追加測定・議論を重ね答えを導出。
+        与えられた情報についてチームで議論し、データ・結果の意味を正確に理解する能力を発揮。
+      </p>
     </div>
   </body>
 </html>
