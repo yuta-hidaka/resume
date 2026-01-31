@@ -1,0 +1,96 @@
+---
+import DocumentSection from '../../../components/DocumentSection.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { documentId: 'jp-resume-md' } },
+    { params: { documentId: 'jp-cv' } },
+    { params: { documentId: 'jp-resume' } },
+  ];
+}
+
+const { documentId } = Astro.params;
+
+const documents = {
+  'jp-resume-md': {
+    title: 'レジュメ（テキスト）',
+    sourcePath: 'docs/resume/resume-ja.md',
+    isMarkdown: true,
+  },
+  'jp-cv': {
+    title: '職務経歴書',
+    sourcePath: 'docs/職務経歴書/_.html',
+    assetBase: '/docs/職務経歴書/',
+    isMarkdown: false,
+  },
+  'jp-resume': {
+    title: '履歴書',
+    sourcePath: 'docs/履歴書/_.html',
+    assetBase: '/docs/履歴書/',
+    isMarkdown: false,
+  },
+};
+
+const doc = documents[documentId];
+---
+
+{doc ? (
+  <html lang="ja">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <title>PDF - {doc.title}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          background: white;
+          font-family: 'Inter', 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        }
+
+        @page {
+          size: A4;
+          margin: 0;
+        }
+
+        .pdf-container {
+          width: 210mm;
+          min-height: 297mm;
+          padding: 0;
+          background: white;
+          margin: 0 auto;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="pdf-container">
+        <DocumentSection
+          id={documentId}
+          title={doc.title}
+          sourcePath={doc.sourcePath}
+          assetBase={doc.assetBase}
+          previewHeight="auto"
+          isMarkdown={doc.isMarkdown}
+          isPdfMode={true}
+        />
+      </div>
+    </body>
+  </html>
+) : (
+  <html lang="ja">
+    <head>
+      <meta charset="utf-8" />
+      <title>Not Found</title>
+    </head>
+    <body>Document not found: {documentId}</body>
+  </html>
+)}
+

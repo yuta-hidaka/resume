@@ -21,7 +21,9 @@ export default async (req: Request, context: Context) => {
 
     // Get the site URL from environment or construct it
     const siteUrl = process.env.URL || process.env.DEPLOY_URL || 'http://localhost:4321';
-    const targetUrl = `${siteUrl}/${locale}/downloads?pdf=${documentId}`;
+    // Use dedicated static PDF routes so it works with Astro output: "static".
+    // Query-param SSR pages don't exist in static output.
+    const targetUrl = `${siteUrl}/${locale}/pdf/${documentId}/`;
 
     console.log(`Generating PDF for: ${targetUrl}`);
 

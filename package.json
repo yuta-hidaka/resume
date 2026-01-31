@@ -12,6 +12,7 @@
     "dev": "node scripts/sync-doc-assets.mjs && astro dev",
     "build": "node scripts/sync-doc-assets.mjs && astro build",
     "preview": "astro preview",
+    "generate:pdf": "node scripts/generate-static-pdfs.mjs",
     "astro": "astro"
   },
   "dependencies": {
