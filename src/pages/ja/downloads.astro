@@ -1,134 +1,49 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import DocumentSection from '../../components/DocumentSection.astro';
-import DocumentDownloadScripts from '../../components/DocumentDownloadScripts.astro';
-
-// Check if we're in PDF generation mode (for server-side rendering)
-const url = new URL(Astro.request.url);
-const pdfMode = url.searchParams.get('pdf');
 ---
 
-{!pdfMode && (
-  <Layout title="履歴書ダウンロード - 日髙悠太">
-    <div class="space-y-10">
-      <!-- Page Header -->
-      <header class="glass-card p-10 text-center animate-fade-in">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">
-          Downloads
-        </h1>
-        <p class="text-[var(--text-muted)] text-lg">
-          履歴書・職務経歴書のダウンロード
-        </p>
-      </header>
-      
-      <DocumentSection
-        id="jp-resume-md"
-        title="レジュメ（テキスト）"
-        sourcePath="docs/resume/resume-ja.md"
-        downloadFileName="yuta-hidaka-resume-ja-text.pdf"
-        previewHeight="750px"
-        isMarkdown={true}
-        staticPdfUrl="/pdf/yuta-hidaka-resume-ja-text.pdf"
-      />
+<Layout title="履歴書ダウンロード - 日髙悠太">
+  <div class="space-y-10">
+    <!-- Page Header -->
+    <header class="glass-card p-10 text-center animate-fade-in">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">
+        Downloads
+      </h1>
+      <p class="text-[var(--text-muted)] text-lg">
+        履歴書・職務経歴書のダウンロード
+      </p>
+    </header>
 
-      <DocumentSection
-        id="jp-cv"
-        title="職務経歴書"
-        sourcePath="docs/職務経歴書/_.html"
-        assetBase="/docs/職務経歴書/"
-        downloadFileName="yuta-hidaka-cv-ja.pdf"
-        previewHeight="750px"
-        staticPdfUrl="/pdf/yuta-hidaka-cv-ja.pdf"
-      />
-      
-      <DocumentSection
-        id="jp-resume"
-        title="履歴書"
-        sourcePath="docs/履歴書/_.html"
-        assetBase="/docs/履歴書/"
-        downloadFileName="yuta-hidaka-resume-ja.pdf"
-        previewHeight="750px"
-        fallbackPdfUrl="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
-        staticPdfUrl="/pdf/yuta-hidaka-resume-ja.pdf"
-      />
-    </div>
-    <DocumentDownloadScripts useServerSide={false} />
-  </Layout>
-)}
+    <DocumentSection
+      id="jp-resume-md"
+      title="レジュメ（テキスト）"
+      sourcePath="docs/resume/resume-ja.md"
+      downloadFileName="yuta-hidaka-resume-ja-text.pdf"
+      previewHeight="750px"
+      isMarkdown={true}
+      staticPdfUrl="/pdf/yuta-hidaka-resume-ja-text.pdf"
+    />
 
-{pdfMode && (
-  <!-- PDF generation mode - minimal layout for puppeteer -->
-  <html lang="ja">
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width" />
-      <title>PDF Generation</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap');
-        
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-        
-        body {
-          margin: 0;
-          padding: 0;
-          background: white;
-          font-family: 'Inter', 'Noto Sans JP', sans-serif;
-        }
+    <DocumentSection
+      id="jp-cv"
+      title="職務経歴書"
+      sourcePath="docs/職務経歴書/_.html"
+      assetBase="/docs/職務経歴書/"
+      downloadFileName="yuta-hidaka-cv-ja.pdf"
+      previewHeight="750px"
+      staticPdfUrl="/pdf/yuta-hidaka-cv-ja.pdf"
+    />
 
-        @page {
-          size: A4;
-          margin: 0;
-        }
-
-        .pdf-container {
-          width: 210mm;
-          min-height: 297mm;
-          padding: 15mm;
-          background: white;
-          margin: 0 auto;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="pdf-container">
-        {pdfMode === 'jp-resume-md' && (
-          <DocumentSection
-            id="jp-resume-md"
-            title="レジュメ（テキスト）"
-            sourcePath="docs/resume/resume-ja.md"
-            downloadFileName="yuta-hidaka-resume-ja-text.pdf"
-            previewHeight="auto"
-            isMarkdown={true}
-            isPdfMode={true}
-          />
-        )}
-        {pdfMode === 'jp-cv' && (
-          <DocumentSection
-            id="jp-cv"
-            title="職務経歴書"
-            sourcePath="docs/職務経歴書/_.html"
-            assetBase="/docs/職務経歴書/"
-            downloadFileName="yuta-hidaka-cv-ja.pdf"
-            previewHeight="auto"
-            isPdfMode={true}
-          />
-        )}
-        {pdfMode === 'jp-resume' && (
-          <DocumentSection
-            id="jp-resume"
-            title="履歴書"
-            sourcePath="docs/履歴書/_.html"
-            assetBase="/docs/履歴書/"
-            downloadFileName="yuta-hidaka-resume-ja.pdf"
-            previewHeight="auto"
-            isPdfMode={true}
-          />
-        )}
-      </div>
-    </body>
-  </html>
-)}
+    <DocumentSection
+      id="jp-resume"
+      title="履歴書"
+      sourcePath="docs/履歴書/_.html"
+      assetBase="/docs/履歴書/"
+      downloadFileName="yuta-hidaka-resume-ja.pdf"
+      previewHeight="750px"
+      fallbackPdfUrl="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
+      staticPdfUrl="/pdf/yuta-hidaka-resume-ja.pdf"
+    />
+  </div>
+</Layout>
