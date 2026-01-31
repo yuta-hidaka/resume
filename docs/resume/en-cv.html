@@ -25,7 +25,7 @@
       h2 {
         font-size: 20px;
         margin: 24px 0 8px;
-        border-bottom: 2px solid var(--border);
+        border-bottom: 2px solid #e2e8f0;
         padding-bottom: 4px;
       }
       h3 {
@@ -72,7 +72,7 @@
   <body>
     <div class="meta">
       <div>Yuta Hidaka</div>
-      <div>Updated: 2025-01-01</div>
+      <div>Updated: 2026-01-31</div>
     </div>
 
     <h1>Curriculum Vitae</h1>
@@ -80,97 +80,112 @@
     <div class="section">
       <h2>Summary</h2>
       <p>
-        Full-stack / backend engineer specializing in Go and TypeScript. Hands-on with
-        cloud-native and event-driven systems, high-traffic B2C/B2B products, and Scrum
-        leadership across JP/EN teams. Strong in performance tuning, IaC, and cost
-        optimization.
+        Full-stack / backend engineer specializing in Go and TypeScript. Strong in
+        cloud infrastructure (IaC) and performance tuning for high-traffic services.
+        Experienced in leading small teams, stakeholder coordination, and knowledge
+        sharing through mob/pair programming.
       </p>
     </div>
 
     <div class="section">
       <h2>Experience</h2>
 
-      <h3>SUPER STUDIO — Backend Engineer (2025-07 – Present)</h3>
-      <p>Big Data Group (Backend → xfunction)</p>
+      <h3>Monstarlab — Tech Lead / Software Engineer (2021-09 – Present)</h3>
       <ul>
-        <li>Event-driven data platform with Go, Next.js, Kafka, Spark, Kubernetes, ArgoCD</li>
-        <li>Launched xfunction team; facilitated Scrum events and remote knowledge sharing</li>
-        <li>Cross-team coordination with designers and adjacent departments for high-traffic features</li>
+        <li>
+          Okinawa theme park app (2025-01 – Present): built serverless infrastructure with SST + Pulumi
+          under a 1.5-week deadline; aligned stakeholders early and stabilized operations under
+          traffic spikes over 10,000 RPS
+        </li>
+        <li>
+          Furusato tax points → stock redemption service (2024-11 – 2025-01): developed high-traffic
+          Next.js frontend running on Cloud Run; optimized image formats (WebP/AVIF) and loading to
+          improve performance (target traffic 20,000 RPS; owned area up to ~1,500 RPS)
+        </li>
+        <li>
+          Corporate portal migration (2024-04 – 2024-11): proposed and executed CMS → headless CMS
+          migration; reverse engineered legacy CMS customizations; delivered code-driven migration
+          and IaC to reduce operational dependency; designed an AWS Lambda-based architecture using
+          Astro (ISR-like) and reduced CMS cost from ~JPY 200,000/month to ~JPY 10,000–20,000/month
+          while improving SEO
+        </li>
+        <li>
+          Inventory management system rebuild (2022-09 – 2023-10): supported full-stack delivery
+          including DB design, backend/frontend development, and collaboration with an overseas team
+        </li>
+        <li>
+          Promoted knowledge sharing via mob programming under time constraints; supported team members
+          to gain hands-on infrastructure experience
+        </li>
       </ul>
       <div class="chips">
-        <span class="chip">Go</span><span class="chip">Next.js</span
-        ><span class="chip">Kafka</span><span class="chip">Spark</span
-        ><span class="chip">Kubernetes</span><span class="chip">ArgoCD</span>
+        <span class="chip">Go</span><span class="chip">TypeScript</span
+        ><span class="chip">React</span><span class="chip">Next.js</span
+        ><span class="chip">Astro</span><span class="chip">AWS</span
+        ><span class="chip">GCP (Cloud Run)</span><span class="chip">SST</span
+        ><span class="chip">Pulumi</span><span class="chip">Terraform</span>
       </div>
 
-      <h3>Monstarlab — Tech Lead / Full-Stack (2021-09 – 2025-06)</h3>
+      <h3>KiteRa — Software Engineer / Tech Lead (2021-05 – 2022-07)</h3>
       <ul>
-        <li>Okinawa theme park app: led app/backend/infra with a Vietnam team (English); IaC launch in 2 weeks to handle 1500+ RPS</li>
-        <li>Furusato tax points → stock rights: high-traffic frontend on Cloud Run/Spanner with image/cache tuning (20k RPS target)</li>
-        <li>Corporate site CMS migration: Lambda/CloudFront+IaC; performance/SEO improvements</li>
-        <li>Inventory system refresh: async collaboration with overseas team across backend/frontend/infra</li>
-        <li>Ran Scrum end-to-end (PBI to release), led mob/pair programming to reduce bus factor</li>
-      </ul>
-      <div class="chips">
-        <span class="chip">TypeScript</span><span class="chip">Next.js</span
-        ><span class="chip">AWS</span><span class="chip">Terraform</span
-        ><span class="chip">Node.js</span><span class="chip">PostgreSQL</span>
-      </div>
-
-      <h3>KiteRa — Full-Stack Engineer (2021-05 – 2022-07)</h3>
-      <ul>
-        <li>Regulation management SaaS with Go, Svelte, PostgreSQL, AWS</li>
-        <li>Led Japan’s first e-Gov “36 Agreement” electronic submission feature: domain research → implementation → release</li>
+        <li>Developed a SaaS product for labor and social security attorneys (Go, Svelte, PostgreSQL, AWS)</li>
+        <li>Tech lead for Japan’s first e-Gov electronic submission feature for “36 Agreement” filings</li>
       </ul>
 
       <h3>Fignny — Software Engineer (2020-08 – 2021-04)</h3>
       <ul>
-        <li>CRM APIs and infra; documentation and onboarding flows</li>
-        <li>Large-scale scraping with BeautifulSoup4 + Celery</li>
-        <li>Optimized DynamoDB (150GB+) queries/indexes to stabilize key screens</li>
-        <li>Improved logging/debug processes to cut onboarding time</li>
+        <li>Maintained and extended a CRM service (Python on AWS Lambda); fixed bugs and delivered new features</li>
+        <li>Optimized DynamoDB queries/indexes for large datasets (~150GB) to stabilize target screens</li>
+        <li>Created internal documentation and debugging workflows to reduce onboarding time</li>
+        <li>Scraping project (2020-08 – 2020-09): built a Django + BeautifulSoup4 pipeline with distributed processing (Celery/ThreadPool) and AWS infra (EC2/S3/Aurora)</li>
       </ul>
 
       <h3>Freelance (2020-07)</h3>
       <ul>
-        <li>Feature work on a law firm’s time & billing system (Laravel)</li>
+        <li>Implemented CSV export and feature work for a time tracking system (PHP/Laravel)</li>
       </ul>
 
       <h3>SysNavi — Software Engineer (2018-12 – 2020-06)</h3>
       <ul>
-        <li>Data migration/analysis with Alteryx + SQL Server; back-office RPA (WinActor)</li>
-        <li>Django/DRF experiment data viz app; ASP.NET C# budget vs actual app</li>
-        <li>Designed data ingest/cleansing flows in Alteryx with logging and batch orchestration</li>
-        <li>Outlook API-linked plan/actual app to visualize work patterns</li>
+        <li>Law firm time & billing system (2019-06 – 2020-06): delivered PDF export, staging env (docker-compose), and agile mockups; supported requirements, design, and customer communication</li>
+        <li>Back-office RPA (2019-10 – 2019-12): implemented WinActor automation and built a lightweight management UI/API in PHP</li>
+        <li>Chemical lab data visualization app (2019-07 – 2019-09): built Excel ingest and graph search UI (Django + TypeScript + plotly.js)</li>
+        <li>Audit firm DB integration (2019-02 – 2019-06): built data transformation and batch workflows using Alteryx + SQL Server, including logging and orchestration</li>
+        <li>Plan vs actual app (2018-12 – 2019-01): integrated Outlook Calendar API and developed visualizations (C#/.NET + jQuery)</li>
       </ul>
 
-      <h3>Sumitomo Chemical — R&D (2012-04 – 2018-03)</h3>
+      <h3>Sole Proprietor — Import/Wholesale Business (2018-04 – 2018-09)</h3>
       <ul>
-        <li>R&D for PP film, battery separators, and medical-grade materials</li>
+        <li>Explored an import business for Spanish cured ham: supplier outreach, negotiation, test import, and cost/feasibility evaluation</li>
+      </ul>
+
+      <h3>Sumitomo Chemical — R&D Assistant / Research Support (2012-04 – 2018-03)</h3>
+      <ul>
+        <li>Supported R&D on polypropylene (PP) films and battery separator materials</li>
+        <li>Collected baseline data for heat-resistant PP separator films; assisted experiments and analysis</li>
       </ul>
     </div>
 
     <div class="section">
       <h2>Skills</h2>
       <p>
-        Go, TypeScript/JavaScript, Next.js, Astro, Python (Django/DRF), PHP (Laravel),
-        Kafka, Spark, Kubernetes, AWS, Terraform/Pulumi, PostgreSQL/MySQL/DynamoDB, Redis
+        Go, TypeScript/JavaScript, React, Next.js, Astro, Python (Django), PHP (Laravel),
+        AWS, GCP (Cloud Run), Terraform/Pulumi/SST, PostgreSQL/MySQL/DynamoDB
       </p>
       <p>
-        Practices: performance tuning, IaC, security/cost optimization,
-        Scrum facilitation, mob/pair programming, JP/EN remote collaboration
+        Practices: performance tuning, IaC, cost optimization, stakeholder alignment,
+        mob/pair programming, remote collaboration
       </p>
     </div>
 
     <div class="section">
-      <h2>Selected Achievements</h2>
+      <h2>Certifications</h2>
       <ul>
-        <li>Launched high-traffic app/infra in 2 weeks to handle 1500+ RPS (theme park project)</li>
-        <li>Designed cache/image strategy on Cloud Run/Spanner for high-traffic targets</li>
-        <li>Cut infra cost ~90% via Lambda/CloudFront+IaC while improving SEO/performance</li>
-        <li>Implemented Japan’s first “36 Agreement” e-Gov submission in Go/Svelte</li>
-        <li>Optimized DynamoDB and CDN/image delivery across multiple projects</li>
-        <li>Ran Scrum in JP/EN with overseas teams; led mob/pair programming to reduce bus factor</li>
+        <li>Pollution Control Manager (Water Quality, Class 1) (2011-10)</li>
+        <li>Hazardous Materials Handler (Class A) (2011-08)</li>
+        <li>Second-Class Electrician (2010-10)</li>
+        <li>Boiler Engineer (Class II) (2010-07)</li>
+        <li>Driver’s License (2010-06)</li>
       </ul>
     </div>
 
