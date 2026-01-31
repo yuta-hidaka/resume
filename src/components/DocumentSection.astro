@@ -126,7 +126,10 @@ const scopedCss = css ? scopeCss(css, `#${docId}`) : '';
 const docBodyClass = bodyClass ? bodyClass.trim() : '';
 ---
 
-<section class={isPdfMode ? '' : 'glass-card p-8 md:p-10 animate-fade-in'} style={isPdfMode ? '' : 'width: 100%; max-width: 100%;'}>
+<section
+  class={`doc-section ${isPdfMode ? '' : 'glass-card p-8 md:p-10 animate-fade-in'}`}
+  style={isPdfMode ? '' : 'width: 100%; max-width: 100%;'}
+>
   {!isPdfMode && (
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <div>
@@ -623,8 +626,8 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       padding: 15mm !important;
     }
 
-    /* Hide UI elements in print */
-    .glass-card,
+    /* Hide UI elements in print (keep the document container) */
+    .glass-card:not(.doc-section),
     .doc-download-btn,
     nav,
     header,
