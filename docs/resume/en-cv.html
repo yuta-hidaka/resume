@@ -33,6 +33,11 @@
         margin: 18px 0 4px;
         color: #0f766e;
       }
+      h4 {
+        font-size: 14px;
+        margin: 10px 0 2px;
+        color: #0f172a;
+      }
       p {
         margin: 4px 0;
       }
@@ -53,6 +58,11 @@
       }
       .section {
         margin-bottom: 18px;
+      }
+      .role-meta {
+        margin: 2px 0 4px;
+        font-size: 13px;
+        color: #334155;
       }
       .chips {
         display: flex;
@@ -91,9 +101,10 @@
       <h2>Experience</h2>
 
       <h3>SUPER STUDIO — Backend Engineer (2025-07 – Present)</h3>
-      <p>Big Data Group (Backend → xfunction)</p>
+      <div class="role-meta">Big Data Group (Backend → xfunction)</div>
+      <h4>Event-Driven Data Platform</h4>
       <ul>
-        <li>Event-driven data platform with Go, Next.js, Kafka, Spark, Kubernetes, ArgoCD</li>
+        <li>Developed and operated an event-driven platform with Go, Next.js, Kafka, Spark, Kubernetes, ArgoCD</li>
         <li>Launched xfunction team; facilitated Scrum events and remote knowledge sharing</li>
         <li>Cross-team coordination for high-traffic features and performance tuning</li>
       </ul>
@@ -104,32 +115,30 @@
       </div>
 
       <h3>Monstarlab — Tech Lead / Software Engineer (2021-09 – 2025-06)</h3>
+      <h4>Okinawa Theme Park App (2025-01 – 2025-06)</h4>
       <ul>
-        <li>
-          Okinawa theme park app (2025-01 – 2025-06): built serverless infrastructure with SST + Pulumi
-          under a 1.5-week deadline; aligned stakeholders early and stabilized operations under traffic
-          spikes over 10,000 RPS
-        </li>
-        <li>
-          Furusato tax points → stock redemption service (2024-11 – 2025-01): developed high-traffic
-          Next.js frontend running on Cloud Run; optimized image formats (WebP/AVIF) and loading to
-          improve performance (target traffic 20,000 RPS; owned area up to ~1,500 RPS)
-        </li>
-        <li>
-          Corporate portal migration (2024-04 – 2024-11): proposed and executed CMS → headless CMS
-          migration; reverse engineered legacy CMS customizations; delivered code-driven migration
-          and IaC to reduce operational dependency; designed an AWS Lambda-based architecture using
-          Astro (ISR-like) and reduced CMS cost from ~JPY 200,000/month to ~JPY 10,000–20,000/month
-          while improving SEO
-        </li>
-        <li>
-          Inventory management system rebuild (2022-09 – 2023-10): supported full-stack delivery
-          including DB design, backend/frontend development, and collaboration with an overseas team
-        </li>
-        <li>
-          Promoted knowledge sharing via mob programming under time constraints; supported team members
-          to gain hands-on infrastructure experience
-        </li>
+        <li>Built serverless infrastructure with SST + Pulumi under a 1.5-week release deadline</li>
+        <li>Aligned stakeholders early and stabilized operations under traffic spikes over 10,000 RPS</li>
+        <li>Ran mob programming under time constraints to share context and upskill teammates</li>
+      </ul>
+
+      <h4>Furusato Tax Points → Stock Redemption Service (2024-11 – 2025-01)</h4>
+      <ul>
+        <li>Developed a high-traffic Next.js frontend on Cloud Run</li>
+        <li>Optimized WebP/AVIF and loading strategy; owned area up to ~1,500 RPS (target 20,000 RPS)</li>
+      </ul>
+
+      <h4>Corporate Portal Site Migration (2024-04 – 2024-11)</h4>
+      <ul>
+        <li>Proposed and executed CMS → headless CMS migration; reverse engineered legacy customizations</li>
+        <li>Delivered code-driven migration and IaC to reduce operational dependency</li>
+        <li>Designed a Lambda-based architecture with Astro (ISR-like) and improved SEO</li>
+        <li>Reduced CMS cost from ~JPY 200,000/month to ~JPY 10,000–20,000/month</li>
+      </ul>
+
+      <h4>Inventory Management System Rebuild (2022-09 – 2023-10)</h4>
+      <ul>
+        <li>Supported full-stack delivery including DB design, backend/frontend development, and overseas collaboration</li>
       </ul>
       <div class="chips">
         <span class="chip">Go</span><span class="chip">TypeScript</span
@@ -140,17 +149,26 @@
       </div>
 
       <h3>KiteRa — Software Engineer / Tech Lead (2021-05 – 2022-07)</h3>
+      <h4>Labor SaaS Development</h4>
       <ul>
         <li>Developed a SaaS product for labor and social security attorneys (Go, Svelte, PostgreSQL, AWS)</li>
-        <li>Tech lead for Japan’s first e-Gov electronic submission feature for “36 Agreement” filings</li>
+      </ul>
+      <h4>e-Gov “36 Agreement” Electronic Submission</h4>
+      <ul>
+        <li>Tech lead for Japan’s first electronic submission feature for “36 Agreement” filings</li>
       </ul>
 
       <h3>Fignny — Software Engineer (2020-08 – 2021-04)</h3>
+      <h4>CRM Development (SES)</h4>
       <ul>
         <li>Maintained and extended a CRM service (Python on AWS Lambda); fixed bugs and delivered new features</li>
         <li>Optimized DynamoDB queries/indexes for large datasets (~150GB) to stabilize target screens</li>
         <li>Created internal documentation and debugging workflows to reduce onboarding time</li>
-        <li>Scraping project (2020-08 – 2020-09): built a Django + BeautifulSoup4 pipeline with distributed processing (Celery/ThreadPool) and AWS infra (EC2/S3/Aurora)</li>
+      </ul>
+      <h4>Scraping Project (2020-08 – 2020-09)</h4>
+      <ul>
+        <li>Built a Django + BeautifulSoup4 pipeline with distributed processing (Celery/ThreadPool)</li>
+        <li>Built AWS infra (EC2/S3/Aurora) and optimized DB/performance for large volumes</li>
       </ul>
 
       <h3>Freelance (2020-07)</h3>
@@ -159,12 +177,26 @@
       </ul>
 
       <h3>SysNavi — Software Engineer (2018-12 – 2020-06)</h3>
+      <h4>Law Firm Time & Billing System (2019-06 – 2020-06)</h4>
       <ul>
-        <li>Law firm time & billing system (2019-06 – 2020-06): delivered PDF export, staging env (docker-compose), and agile mockups; supported requirements, design, and customer communication</li>
-        <li>Back-office RPA (2019-10 – 2019-12): implemented WinActor automation and built a lightweight management UI/API in PHP</li>
-        <li>Chemical lab data visualization app (2019-07 – 2019-09): built Excel ingest and graph search UI (Django + TypeScript + plotly.js)</li>
-        <li>Audit firm DB integration (2019-02 – 2019-06): built data transformation and batch workflows using Alteryx + SQL Server, including logging and orchestration</li>
-        <li>Plan vs actual app (2018-12 – 2019-01): integrated Outlook Calendar API and developed visualizations (C#/.NET + jQuery)</li>
+        <li>Delivered PDF export, staging environment (docker-compose), and agile mockups</li>
+        <li>Supported requirements, design, and customer communication</li>
+      </ul>
+      <h4>Back-Office RPA (2019-10 – 2019-12)</h4>
+      <ul>
+        <li>Implemented WinActor automation and built a lightweight management UI/API in PHP</li>
+      </ul>
+      <h4>Chemical Lab Data Visualization App (2019-07 – 2019-09)</h4>
+      <ul>
+        <li>Built Excel ingest and graph search UI (Django + TypeScript + plotly.js)</li>
+      </ul>
+      <h4>Audit Firm DB Integration (2019-02 – 2019-06)</h4>
+      <ul>
+        <li>Built data transformation and batch workflows using Alteryx + SQL Server (logging/orchestration included)</li>
+      </ul>
+      <h4>Plan vs Actual App (2018-12 – 2019-01)</h4>
+      <ul>
+        <li>Integrated Outlook Calendar API and developed visualizations (C#/.NET + jQuery)</li>
       </ul>
 
       <h3>Sole Proprietor — Import/Wholesale Business (2018-04 – 2018-09)</h3>
