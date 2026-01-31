@@ -28,7 +28,6 @@ const pdfMode = url.searchParams.get('pdf');
         downloadFileName="yuta-hidaka-resume-ja-text.pdf"
         previewHeight="750px"
         isMarkdown={true}
-        staticPdfUrl="/yuta-hidaka-resume-japanese.pdf"
       />
 
       <DocumentSection
@@ -38,8 +37,6 @@ const pdfMode = url.searchParams.get('pdf');
         assetBase="/docs/職務経歴書/"
         downloadFileName="yuta-hidaka-cv-ja.pdf"
         previewHeight="750px"
-        fallbackPdfUrl="/yuta-hidaka-resume-japanese.pdf"
-        staticPdfUrl="/yuta-hidaka-resume-japanese.pdf"
       />
       
       <DocumentSection
@@ -50,10 +47,9 @@ const pdfMode = url.searchParams.get('pdf');
         downloadFileName="yuta-hidaka-resume-ja.pdf"
         previewHeight="750px"
         fallbackPdfUrl="https://docs.google.com/document/d/1syLxkqWg5PJAJl21CdE5k-zd2JPFG2VxusASk-WgPog/export?format=pdf"
-        staticPdfUrl="/yuta-hidaka-resume-japanese.pdf"
       />
     </div>
-    <DocumentDownloadScripts useServerSide={false} />
+    <DocumentDownloadScripts useServerSide={true} />
   </Layout>
 )}
 

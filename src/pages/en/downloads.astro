@@ -28,7 +28,6 @@ const pdfMode = url.searchParams.get('pdf');
         downloadFileName="yuta-hidaka-resume-en.pdf"
         previewHeight="750px"
         isMarkdown={true}
-        staticPdfUrl="/yuta-hidaka-resume-english.pdf"
       />
       
       <DocumentSection
@@ -38,12 +37,10 @@ const pdfMode = url.searchParams.get('pdf');
         assetBase="/docs/resume/en-cv/"
         downloadFileName="yuta-hidaka-cv-en.pdf"
         previewHeight="750px"
-        fallbackPdfUrl="/yuta-hidaka-resume-english.pdf"
-        staticPdfUrl="/yuta-hidaka-resume-english.pdf"
       />
       
     </div>
-    <DocumentDownloadScripts useServerSide={false} />
+    <DocumentDownloadScripts useServerSide={true} />
   </Layout>
 )}
 
