@@ -15,7 +15,7 @@ export const data: Data = {
   family_name: "日髙",
   given_name: "悠太",
   profession: "Full Stack Developer / Tech lead",
-  bio: `高校卒業後、総合化学メーカーで6年間製品開発に従事。働きながら東京の大学に週6日通学し、有機化学を学び学士号を取得。2018年10月にプログラマーに転職。SES会社で2年勤務後、フリーランスや受託開発会社、スタートアップを経て、現在はSUPER STUDIOでバックエンドエンジニアとして従事しています。`,
+  bio: `Go・TypeScriptを軸としたバックエンド/フルスタックエンジニア。高トラフィックシステムの設計・運用（数千RPS）、AWS/GCPでのクラウドインフラ構築、Kafka・Sparkを用いたイベント駆動アーキテクチャを得意とする。テックリードとしてベトナム16名のチームマネジメント、新規チーム立ち上げ、サーバーレス最適化によるインフラコスト30%削減など技術とビジネスの両面で貢献。化学メーカーでの研究開発を経て2018年にエンジニアへ転身、現在はSUPER STUDIOにてバックエンドエンジニアとして従事。`,
   address: "Shinjuku Tokyo",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },

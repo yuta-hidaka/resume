@@ -12,7 +12,7 @@
 
 ### Summary
 
-Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cloud/container infrastructure, event-driven architecture, and Scrum team development. Supporting high-traffic products in both BtoC and BtoB domains. After graduating from high school, I worked for six years in R&D at a chemical manufacturer while attending university part-time to earn a bachelor's degree in organic chemistry. In October 2018, I transitioned to a programming career.
+Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in designing and operating high-traffic systems (thousands of RPS), building cloud infrastructure on AWS/GCP, and implementing event-driven architectures with Kafka and Spark. As a tech lead, managed a 16-member overseas team, launched a new cross-functional team, and reduced infrastructure costs by 30% through serverless optimization — contributing on both technical and business fronts. Transitioned to software engineering in 2018 after six years of R&D at a chemical manufacturer; currently working as a backend engineer at SUPER STUDIO.
 
 ### Experience
 
