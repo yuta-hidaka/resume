@@ -22,8 +22,9 @@ Full-stack/Backend engineer specializing in Go and TypeScript. Experienced in cl
 
 - Building and maintaining systems with Golang, Next.js, Kafka, Spark, ArgoCD, Kubernetes, and k9s
 - Big data infrastructure, event-driven architecture, Kubernetes operations, Scrum development
-- Involved in xfunction team launch
-- Scrum event facilitation, promoting psychological safety through remote knowledge sharing and Drucker-style exercises
+- Played a central role as a founding member of the xfunction team
+- Previously, FE/BE communication and cross-department coordination was fragmented — a project scheduled for June release was delayed until October due to communication losses
+- Prioritized psychological safety in the new team: conducted Drucker-style exercises, fostered proactive inter-member communication, and aligned expectations with PdM and stakeholders, eliminating unintended project delays to zero
 - Proactive communication with designers, cross-department/cross-team collaboration, lead role within xfunction team
 
 **Tech Stack**: Go, Next.js, Kafka, Spark, Kubernetes, ArgoCD, k9s
