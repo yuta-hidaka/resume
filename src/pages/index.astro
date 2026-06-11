@@ -7,19 +7,21 @@ import '../styles/global.css';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="refresh" content="0;url=/ja/" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="https://yuta.dev/ja/" />
     <title>Redirecting...</title>
     <script is:inline>
       (function() {
-        const theme = localStorage.getItem('theme') || 
+        const theme = localStorage.getItem('theme') ||
           (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
         document.documentElement.classList.add(theme);
       })();
     </script>
   </head>
   <body class="min-h-screen flex items-center justify-center">
-    <div class="glass-card p-8 text-center">
-      <p class="text-[var(--text-secondary)]">リダイレクト中...</p>
-      <a href="/ja/" class="text-[var(--accent)] hover:underline">日本語ページへ</a>
+    <div class="text-center">
+      <p class="text-[var(--ink-secondary)]">リダイレクト中...</p>
+      <a href="/ja/" class="text-link text-sm">日本語ページへ</a>
     </div>
   </body>
 </html>

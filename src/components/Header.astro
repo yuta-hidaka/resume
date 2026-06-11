@@ -1,165 +1,87 @@
 ---
-import { getLangFromUrl, getRouteFromUrl, useTranslations, getLocalizedPath, languages, type Lang } from '../i18n/utils';
+import { getLangFromUrl, getRouteFromUrl, useTranslations, getLocalizedPath, type Lang } from '../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const route = getRouteFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const links = [
-  { label: t('nav.home'), path: '/', icon: '⌂' },
-  { label: t('nav.career'), path: '/career', icon: '◈' },
-  { label: t('nav.about'), path: '/about', icon: '◉' },
-  { label: t('nav.downloads'), path: '/downloads', icon: '↓' },
+  { label: t('nav.home'), path: '/' },
+  { label: t('nav.career'), path: '/career' },
+  { label: t('nav.about'), path: '/about' },
+  { label: t('nav.downloads'), path: '/downloads' },
 ];
 
 const otherLang: Lang = lang === 'ja' ? 'en' : 'ja';
 const langSwitchPath = `/${otherLang}${route ? '/' + route : ''}`;
+const langSwitchLabel = lang === 'ja' ? 'EN' : '日本語';
+const siteName = lang === 'ja' ? '日髙 悠太' : 'Yuta Hidaka';
 
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="header-glass fixed top-0 left-0 right-0 z-50">
-  <nav class="max-w-4xl mx-auto px-4 sm:px-6">
-    <div class="flex items-center justify-between h-14">
-      <!-- Logo / Name -->
-      <a href={getLocalizedPath(lang, '/')} class="logo-link flex items-center gap-2">
-        <span class="logo-icon">Y</span>
-        <span class="logo-text hidden sm:block">Yuta Hidaka</span>
-      </a>
-      
-      <!-- Desktop Navigation Links -->
-      <ul class="nav-list nav-list-desktop">
+<header class="site-header">
+  <div class="max-w-3xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-center gap-x-8 gap-y-3">
+    <a href={getLocalizedPath(lang, '/')} class="site-name font-display">{siteName}</a>
+
+    <nav class="order-3 w-full md:order-2 md:w-auto md:ml-2" aria-label="Main">
+      <ul class="flex items-center gap-x-6 gap-y-1 flex-wrap">
         {links.map((link) => {
           const href = getLocalizedPath(lang, link.path);
           const isActive = currentPath === href || currentPath === href + '/';
           return (
             <li>
-              <a 
-                href={href}
-                class:list={[
-                  'nav-item',
-                  isActive && 'nav-item-active'
-                ]}
-              >
-                <span class="nav-item-text">{link.label}</span>
+              <a href={href} class:list={['nav-item', isActive && 'nav-item-active']} aria-current={isActive ? 'page' : undefined}>
+                {link.label}
               </a>
             </li>
           );
         })}
       </ul>
-      
-      <!-- Actions -->
-      <div class="flex items-center gap-2">
-        <!-- Language Switcher -->
-        <a 
-          href={langSwitchPath}
-          class="action-btn"
-          title={languages[otherLang]}
-        >
-          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-        </a>
-        
-        <!-- Theme Toggle -->
-        <button 
-          id="theme-toggle"
-          class="action-btn"
-          aria-label="Toggle theme"
-        >
-          <svg id="theme-icon-sun" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-          </svg>
-          <svg id="theme-icon-moon" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display: none;">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-        
-        <!-- Mobile Menu Toggle -->
-        <button 
-          id="mobile-menu-toggle"
-          class="action-btn mobile-menu-btn"
-          aria-label="Toggle menu"
-          aria-expanded="false"
-        >
-          <svg id="menu-icon" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-          <svg id="close-icon" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
+    </nav>
+
+    <div class="order-2 ml-auto flex items-center gap-5 md:order-3">
+      <a href={langSwitchPath} class="lang-switch" lang={otherLang} hreflang={otherLang}>{langSwitchLabel}</a>
+      <button id="theme-toggle" class="theme-btn" aria-label={lang === 'ja' ? 'テーマ切り替え' : 'Toggle theme'}>
+        <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+        </svg>
+        <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display: none;">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
     </div>
-    
-    <!-- Mobile Navigation Menu -->
-    <div id="mobile-menu" class="mobile-menu">
-      <ul class="mobile-nav-list">
-        {links.map((link) => {
-          const href = getLocalizedPath(lang, link.path);
-          const isActive = currentPath === href || currentPath === href + '/';
-          return (
-            <li>
-              <a 
-                href={href}
-                class:list={[
-                  'mobile-nav-item',
-                  isActive && 'mobile-nav-item-active'
-                ]}
-              >
-                <span class="mobile-nav-icon">{link.icon}</span>
-                <span class="mobile-nav-text">{link.label}</span>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  </nav>
+  </div>
 </header>
 
 <script is:inline>
-  // Theme toggle functionality
+  // Theme toggle
   (function() {
     const themeToggle = document.getElementById('theme-toggle');
     const html = document.documentElement;
-    
+
     const updateIcons = (theme) => {
       const sunIcon = document.getElementById('theme-icon-sun');
       const moonIcon = document.getElementById('theme-icon-moon');
       if (sunIcon && moonIcon) {
-        if (theme === 'dark') {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        } else {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        }
+        sunIcon.style.display = theme === 'dark' ? 'block' : 'none';
+        moonIcon.style.display = theme === 'dark' ? 'none' : 'block';
       }
     };
-    
+
     const setTheme = (theme) => {
-      if (theme === 'light') {
-        html.classList.add('light');
-        html.classList.remove('dark');
-      } else {
-        html.classList.add('dark');
-        html.classList.remove('light');
-      }
+      html.classList.toggle('light', theme === 'light');
+      html.classList.toggle('dark', theme === 'dark');
       localStorage.setItem('theme', theme);
       updateIcons(theme);
+      if (themeToggle) themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
     };
-    
-    // Initialize icons based on current theme
-    const currentTheme = html.classList.contains('light') ? 'light' : 'dark';
-    updateIcons(currentTheme);
-    
-    // Toggle theme on button click
+
+    const initialTheme = html.classList.contains('light') ? 'light' : 'dark';
+    updateIcons(initialTheme);
+    if (themeToggle) themeToggle.setAttribute('aria-pressed', String(initialTheme === 'dark'));
+
     if (themeToggle) {
       themeToggle.addEventListener('click', () => {
         const current = html.classList.contains('light') ? 'light' : 'dark';
@@ -167,412 +89,71 @@ const currentPath = Astro.url.pathname;
       });
     }
   })();
-  
-  // Mobile menu toggle functionality
-  (function() {
-    const menuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const closeIcon = document.getElementById('close-icon');
-    
-    if (menuToggle && mobileMenu && menuIcon && closeIcon) {
-      menuToggle.addEventListener('click', () => {
-        const isOpen = mobileMenu.classList.contains('mobile-menu-open');
-        
-        if (isOpen) {
-          mobileMenu.classList.remove('mobile-menu-open');
-          menuToggle.setAttribute('aria-expanded', 'false');
-          menuIcon.style.display = 'block';
-          closeIcon.style.display = 'none';
-        } else {
-          mobileMenu.classList.add('mobile-menu-open');
-          menuToggle.setAttribute('aria-expanded', 'true');
-          menuIcon.style.display = 'none';
-          closeIcon.style.display = 'block';
-        }
-      });
-      
-      // Close menu when clicking on a link
-      const mobileNavLinks = mobileMenu.querySelectorAll('.mobile-nav-item');
-      mobileNavLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.remove('mobile-menu-open');
-          menuToggle.setAttribute('aria-expanded', 'false');
-          menuIcon.style.display = 'block';
-          closeIcon.style.display = 'none';
-        });
-      });
-      
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-          if (mobileMenu.classList.contains('mobile-menu-open')) {
-            mobileMenu.classList.remove('mobile-menu-open');
-            menuToggle.setAttribute('aria-expanded', 'false');
-            menuIcon.style.display = 'block';
-            closeIcon.style.display = 'none';
-          }
-        }
-      });
-    }
-  })();
 </script>
 
 <style>
-  /* Premium Glass Header - Transparent Frosted Glass Design */
-  .header-glass {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
-    isolation: isolate;
+  .site-header {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--line);
   }
-  
-  :global(.light) .header-glass {
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-bottom-color: rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-  }
-  
-  /* Logo */
-  .logo-link {
-    text-decoration: none;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .logo-link:hover {
-    transform: translateY(-1px);
-  }
-  
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-    color: white;
-    font-weight: 800;
-    font-size: 16px;
-    border-radius: 12px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 
-      0 4px 16px rgba(74, 155, 142, 0.25),
-      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
-      0 1px 2px rgba(0, 0, 0, 0.1) inset;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .logo-icon::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-  
-  .logo-link:hover .logo-icon {
-    transform: scale(1.08) rotate(5deg);
-      box-shadow: 
-      0 8px 28px rgba(74, 155, 142, 0.35),
-      0 0 0 0.5px rgba(255, 255, 255, 0.3) inset,
-      0 1px 2px rgba(0, 0, 0, 0.1) inset;
-  }
-  
-  .logo-text {
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--text-primary);
-    letter-spacing: -0.03em;
-  }
-  
-  /* Navigation List - No Background */
-  .nav-list {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 4px;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
-  
-  /* Mobile Menu Button */
-  .mobile-menu-btn {
-    display: none;
-  }
-  
-  /* Mobile Menu */
-  .mobile-menu {
-    display: none;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-    opacity: 0;
-  }
-  
-  .mobile-menu-open {
-    display: block;
-    max-height: 500px;
-    opacity: 1;
-    margin-top: 8px;
-    padding-bottom: 8px;
-  }
-  
-  .mobile-nav-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.10) 100%
-    );
-    backdrop-filter: blur(60px) saturate(200%);
-    -webkit-backdrop-filter: blur(60px) saturate(200%);
-    border-radius: 14px;
-    border: 0.5px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 
-      0 4px 16px rgba(0, 0, 0, 0.15),
-      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
-    isolation: isolate;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .mobile-nav-list::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-  
-  :global(.light) .mobile-nav-list {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.7) 0%,
-      rgba(255, 255, 255, 0.6) 100%
-    );
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 
-      0 4px 16px rgba(0, 0, 0, 0.08),
-      0 0 0 0.5px rgba(255, 255, 255, 0.8) inset;
-  }
-  
-  :global(.light) .mobile-nav-list::before {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0, 0, 0, 0.05) 50%,
-      transparent 100%
-    );
-  }
-  
-  .mobile-nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    border-radius: 10px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    letter-spacing: -0.01em;
-    background: transparent;
-  }
-  
-  .mobile-nav-item:hover {
-    color: var(--text-primary);
-  }
-  
-  .mobile-nav-item-active {
-    color: var(--accent);
-    background: transparent;
+
+  .site-name {
+    font-size: 1.1rem;
     font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink);
   }
-  
-  .mobile-nav-item-active:hover {
-    color: var(--accent-light);
-    background: transparent;
-  }
-  
-  .mobile-nav-icon {
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-  }
-  
-  .mobile-nav-text {
-    flex: 1;
-  }
-  
-  /* Navigation Items - No Background */
+
   .nav-item {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    border-radius: 10px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    letter-spacing: -0.01em;
-    background: transparent;
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    transition: color 0.15s ease;
   }
-  
+
   .nav-item:hover {
-    color: var(--text-primary);
-    transform: translateY(-1px);
+    color: var(--ink);
   }
-  
-  .nav-item-text {
-    position: relative;
-    z-index: 1;
-  }
-  
-  /* Active state - no background, only color */
+
   .nav-item-active {
-    color: var(--accent);
-    background: transparent;
-    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.45em;
+    text-decoration-color: var(--accent);
   }
-  
-  .nav-item-active:hover {
-    color: var(--accent-light);
-    background: transparent;
-    transform: translateY(-1px);
+
+  .lang-switch {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    transition: color 0.15s ease;
   }
-  
-  /* Action Buttons - Enhanced Glass Design */
-  .action-btn {
+
+  .lang-switch:hover {
+    color: var(--ink);
+  }
+
+  .theme-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: transparent;
-    border: 0.5px solid transparent;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: none;
+    border: none;
     cursor: pointer;
-    color: var(--text-secondary);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
+    color: var(--ink-muted);
+    transition: color 0.15s ease;
   }
-  
-  .action-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.08) 100%
-    );
-    opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    border-radius: 12px;
+
+  .theme-btn:hover {
+    color: var(--ink);
   }
-  
-  .action-btn:hover {
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.12),
-      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset;
-  }
-  
-  .action-btn:hover::before {
-    opacity: 1;
-    backdrop-filter: blur(60px) saturate(200%);
-    -webkit-backdrop-filter: blur(60px) saturate(200%);
-  }
-  
-  :global(.light) .action-btn::before {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.6) 100%
-    );
-  }
-  
-  :global(.light) .action-btn:hover {
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.08),
-      0 0 0 0.5px rgba(255, 255, 255, 0.9) inset;
-  }
-  
-  .action-btn:active {
-    transform: translateY(0) scale(0.95);
-  }
-  
-  .action-icon {
-    width: 20px;
-    height: 20px;
-    stroke-width: 2;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .nav-list-desktop {
-      display: none;
-    }
-    
-    .mobile-menu-btn {
-      display: flex;
-    }
-    
-    .logo-text {
-      display: none;
-    }
-    
-    .action-btn {
-      width: 36px;
-      height: 36px;
-    }
-    
-    .action-icon {
-      width: 18px;
-      height: 18px;
-    }
-  }
-  
-  @media (min-width: 769px) {
-    .mobile-menu {
-      display: none !important;
-    }
+
+  .theme-btn svg {
+    width: 17px;
+    height: 17px;
   }
 </style>

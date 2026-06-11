@@ -1,81 +1,50 @@
 /* Fonts - must be first */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap');
 
 @import "tailwindcss";
 
-/* Dark Mode (Default) - True Apple Frosted Glass Design */
+/*
+ * Editorial design system — print-inspired.
+ * Warm paper, ink text, serif display type, hairline rules,
+ * a single vermilion accent used sparingly.
+ */
 :root {
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
-  --bg-tertiary: #111111;
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-bg-solid: rgba(255, 255, 255, 0.12);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-border-hover: rgba(255, 255, 255, 0.25);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
-  --accent: #4a9b8e;
-  --accent-dim: #3a8b7e;
-  --accent-light: #5aab9e;
-  --accent-dark: #2a7b6e;
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-secondary: rgba(255, 255, 255, 0.8);
-  --text-muted: rgba(255, 255, 255, 0.55);
-  --glow-color: rgba(74, 155, 142, 0.15);
-  --blur-amount: 80px;
-  --saturate-amount: 180%;
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  color-scheme: dark;
-}
-
-/* Light Mode - True Apple Frosted Glass Design */
-:root.light {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f7;
-  --bg-tertiary: #e8e8ed;
-  --glass-bg: rgba(255, 255, 255, 0.5);
-  --glass-bg-solid: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --glass-border-hover: rgba(0, 0, 0, 0.15);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.1);
-  --accent: #3a7a6b;
-  --accent-dim: #2a6a5b;
-  --accent-light: #4a8a7b;
-  --accent-dark: #1a5a4b;
-  --text-primary: rgba(0, 0, 0, 0.9);
-  --text-secondary: rgba(0, 0, 0, 0.7);
-  --text-muted: rgba(0, 0, 0, 0.5);
-  --glow-color: rgba(58, 122, 107, 0.12);
-  --blur-amount: 80px;
-  --saturate-amount: 180%;
-  --shadow-color: rgba(0, 0, 0, 0.1);
+  --paper: #f7f5f0;
+  --paper-raised: #fdfcf9;
+  --ink: #211d18;
+  --ink-secondary: #534c42;
+  --ink-muted: #766e5f;
+  --line: #ddd5c7;
+  --line-strong: #a89e8b;
+  --accent: #9c3d26;
+  --font-display: 'Newsreader', 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
   color-scheme: light;
 }
 
-/* System preference detection */
-@media (prefers-color-scheme: light) {
-  :root:not(.dark) {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f0fdf4;
-    --bg-tertiary: #ecfdf5;
-    --glass-bg: rgba(255, 255, 255, 0.65);
-    --glass-bg-solid: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(0, 0, 0, 0.06);
-    --glass-border-hover: rgba(0, 0, 0, 0.12);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.12);
-    --accent: #3a7a6b;
-    --accent-dim: #2a6a5b;
-    --accent-light: #4a8a7b;
-    --text-primary: rgba(0, 0, 0, 0.9);
-    --text-secondary: rgba(0, 0, 0, 0.70);
-    --text-muted: rgba(0, 0, 0, 0.50);
-    --glow-color: rgba(58, 122, 107, 0.12);
-    --blur-amount: 20px;
-    --saturate-amount: 180%;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    color-scheme: light;
+:root.dark {
+  --paper: #1a1714;
+  --paper-raised: #211e1a;
+  --ink: #e9e4da;
+  --ink-secondary: #b8af9f;
+  --ink-muted: #8d8474;
+  --line: #353027;
+  --line-strong: #5e574a;
+  --accent: #cf7257;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --paper: #1a1714;
+    --paper-raised: #211e1a;
+    --ink: #e9e4da;
+    --ink-secondary: #b8af9f;
+    --ink-muted: #8d8474;
+    --line: #353027;
+    --line-strong: #5e574a;
+    --accent: #cf7257;
+    color-scheme: dark;
   }
 }
 
@@ -88,368 +57,134 @@ html {
 }
 
 body {
-  font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  color: var(--text-primary);
-  background: var(--bg-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
   font-size: 16px;
-  line-height: 1.7;
-  letter-spacing: -0.01em;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Premium mesh gradient background - Apple Style with visible patterns */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: 
-    radial-gradient(ellipse 100% 60% at 10% -10%, var(--glow-color) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 50% at 90% 110%, var(--glow-color) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(74, 155, 142, 0.08) 0%, transparent 70%),
-    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
-  z-index: -2;
-  pointer-events: none;
+/* ——— Typography ——— */
+
+.font-display {
+  font-family: var(--font-display);
 }
 
-:global(.light) body::before {
-  background: 
-    radial-gradient(ellipse 100% 60% at 10% -10%, var(--glow-color) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 50% at 90% 110%, var(--glow-color) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(58, 122, 107, 0.06) 0%, transparent 70%),
-    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 6vw, 3rem);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
 }
 
-/* Additional background pattern for better glass effect visibility */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.02) 2px, rgba(255, 255, 255, 0.02) 4px),
-    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.02) 2px, rgba(255, 255, 255, 0.02) 4px);
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.3;
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
 }
 
-:global(.light) body::after {
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px),
-    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px);
+/* Used by DocumentSection headings */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
 }
 
-@keyframes backgroundShift {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.95;
-  }
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
 
-/* Glassmorphism Card - True Apple Frosted Glass Style */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--blur-amount)) saturate(var(--saturate-amount));
-  -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--saturate-amount));
-  border: 0.5px solid var(--glass-border);
-  border-radius: 20px;
-  box-shadow: var(--glass-shadow);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
+/* ——— Links ——— */
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/* Apple-style inner highlight - more visible */
-.glass-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  padding: 0.5px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.1) 30%,
-    transparent 70%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.8;
-  z-index: 1;
+.text-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--line-strong);
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
-:global(.light) .glass-card::before {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.6) 30%,
-    transparent 70%
-  );
-  opacity: 1;
-}
-
-.glass-card:hover {
-  border-color: var(--glass-border-hover);
-  box-shadow: var(--glass-shadow-hover);
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.12);
-}
-
-:global(.light) .glass-card:hover {
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.glass-card:hover::before {
-  opacity: 1;
-}
-
-/* Glass Navigation - True Apple Frosted Glass Style */
-.glass-nav {
-  background: var(--glass-bg-solid);
-  backdrop-filter: blur(var(--blur-amount)) saturate(var(--saturate-amount));
-  -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(var(--saturate-amount));
-  border-bottom: 0.5px solid var(--glass-border);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-  isolation: isolate;
-}
-
-:global(.light) .glass-nav {
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
-}
-
-/* Accent Text */
-.text-accent {
+.text-link:hover {
   color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
-.text-accent-dim {
-  color: var(--accent-dim);
+/* ——— Elements ——— */
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
-/* Glow Effect */
-.glow {
-  box-shadow: 0 0 20px var(--glow-color);
-}
-
-.glow-text {
-  text-shadow: 0 0 20px var(--glow-color);
-}
-
-/* Background Glow Orbs */
-.glow-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.glow-orb-1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-  top: -100px;
-  right: -100px;
-  animation: float 20s ease-in-out infinite;
-}
-
-.glow-orb-2 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-  bottom: -50px;
-  left: -50px;
-  animation: float 25s ease-in-out infinite reverse;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(30px, -30px) scale(1.1);
-  }
-  50% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
-  75% {
-    transform: translate(20px, 10px) scale(1.05);
-  }
-}
-
-/* Page transition */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-in {
-  animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Staggered animation delays */
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-
-/* Timeline dot active state - only one should be active at a time */
-.timeline-dot {
-  border-color: var(--glass-border);
-  background: var(--bg-primary);
-  box-shadow: none;
-}
-
-.timeline-dot.active {
-  border-color: var(--accent) !important;
-  background: var(--accent) !important;
-  box-shadow: 0 0 12px var(--glow-color) !important;
-}
-
-.timeline-dot:not(.active) .timeline-dot-inner {
-  opacity: 0 !important;
-  animation: none !important;
-}
-
-.timeline-dot.active .timeline-dot-inner {
-  opacity: 0.75 !important;
-  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite !important;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-/* Tag/Badge style - True Apple Frosted Glass Style */
-.tag {
+.btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-  background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-  -webkit-backdrop-filter: blur(40px) saturate(var(--saturate-amount));
-  border: 0.5px solid var(--glass-border);
-  border-radius: 10px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-  isolation: isolate;
-}
-
-.tag:hover {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-  color: white;
-  border-color: var(--accent);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(74, 155, 142, 0.25);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-/* Section Title */
-.section-title {
-  font-family: 'Inter', 'Noto Sans JP', sans-serif;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  letter-spacing: -0.02em;
-}
-
-.section-title::before {
-  content: '';
-  width: 4px;
-  height: 1.5rem;
-  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dim) 100%);
+  gap: 0.5rem;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--ink);
   border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Link styles */
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: all 0.2s ease;
+.btn:hover {
+  background: var(--ink);
+  color: var(--paper);
 }
 
-a:hover {
-  color: var(--text-secondary);
-  text-shadow: 0 0 10px var(--glow-color);
+/* Date column + content rows (career, education) */
+.entry-grid {
+  display: grid;
+  gap: 0.35rem 2.5rem;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+@media (min-width: 768px) {
+  .entry-grid {
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+.entry-dates {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  padding-top: 0.45rem;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--glass-border);
-  border-radius: 4px;
+/* Dotted leader between a label and its value, print-index style */
+.leader {
+  flex: 1 1 1.5rem;
+  min-width: 1.5rem;
+  border-bottom: 1px dotted var(--line-strong);
+  margin: 0 0.6em;
+  transform: translateY(-0.35em);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
-}
+/* ——— Details ——— */
 
-/* Selection */
 ::selection {
-  background: rgba(74, 155, 142, 0.2);
-  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Focus styles for accessibility */
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 4px;
 }

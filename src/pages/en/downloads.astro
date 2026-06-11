@@ -4,36 +4,28 @@ import DocumentSection from '../../components/DocumentSection.astro';
 ---
 
 <Layout title="CV Download - Yuta Hidaka">
-  <div class="space-y-8">
-    <!-- Page Header -->
-    <header class="glass-card p-8 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-2">
-        Downloads
-      </h1>
-      <p class="text-[var(--text-muted)]">
-        Download CV & Resume
-      </p>
-    </header>
+  <header class="pt-14 md:pt-20 pb-10">
+    <p class="section-label">Downloads</p>
+    <h1 class="page-title mt-3">CV &amp; Resume</h1>
+  </header>
 
-    <DocumentSection
-      id="en-resume"
-      title="Resume (English)"
-      sourcePath="docs/resume/resume-en.md"
-      downloadFileName="yuta-hidaka-resume-en.pdf"
-      previewHeight="750px"
-      isMarkdown={true}
-      staticPdfUrl="/pdf/yuta-hidaka-resume-en.pdf"
-    />
+  <DocumentSection
+    id="en-resume"
+    title="Resume (English)"
+    sourcePath="docs/resume/resume-en.md"
+    downloadFileName="yuta-hidaka-resume-en.pdf"
+    previewHeight="750px"
+    isMarkdown={true}
+    staticPdfUrl="/pdf/yuta-hidaka-resume-en.pdf"
+  />
 
-    <DocumentSection
-      id="en-cv"
-      title="CV (English)"
-      sourcePath="docs/resume/en-cv.html"
-      assetBase="/docs/resume/en-cv/"
-      downloadFileName="yuta-hidaka-cv-en.pdf"
-      previewHeight="750px"
-      staticPdfUrl="/pdf/yuta-hidaka-cv-en.pdf"
-    />
-
-  </div>
+  <DocumentSection
+    id="en-cv"
+    title="CV (English)"
+    sourcePath="docs/resume/en-cv.html"
+    assetBase="/docs/resume/en-cv/"
+    downloadFileName="yuta-hidaka-cv-en.pdf"
+    previewHeight="750px"
+    staticPdfUrl="/pdf/yuta-hidaka-cv-en.pdf"
+  />
 </Layout>

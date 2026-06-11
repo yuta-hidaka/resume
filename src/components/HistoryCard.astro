@@ -9,171 +9,138 @@ interface Props {
   tags?: string[];
   index: number;
   locale: string;
-  isLast?: boolean;
 }
 
-const { company, startDate, endDate, jobTitle, job, jobDescription, tags, index, locale, isLast = false } = Astro.props;
+const { company, startDate, endDate, jobTitle, job, jobDescription, tags, index, locale } = Astro.props;
 
 function formatDate(dateStr: string, locale: string): string {
   if (!dateStr) return locale === 'ja' ? '現在' : 'Present';
   const date = new Date(dateStr);
-  if (locale === 'en') {
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-  }
-  return date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' });
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}.${month}`;
 }
 
 const formattedStartDate = formatDate(startDate, locale);
 const formattedEndDate = formatDate(endDate, locale);
-const isOngoing = !endDate;
+const labelMore = locale === 'ja' ? '続きを読む' : 'Read more';
+const labelLess = locale === 'ja' ? '閉じる' : 'Show less';
+const descId = `career-desc-${locale}-${index}`;
 ---
 
-<article class="career-card group relative pl-10" data-card-index={index}>
-  <!-- Timeline Line -->
-  <div class:list={[
-    'absolute left-0 top-0 w-0.5 bg-[var(--glass-border)]',
-    isLast ? 'bottom-0' : 'bottom-[-2rem]'
-  ]}></div>
-  
-  <!-- Timeline Dot -->
-  <div 
-    class="timeline-dot absolute left-0 top-3 w-4 h-4 rounded-full -translate-x-1/2 border-2 transition-all duration-500 shadow-lg bg-[var(--bg-primary)] border-[var(--glass-border)] group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:shadow-[0_0_12px_var(--glow-color)]"
-    data-card-index={index}
-  >
-    <div class="timeline-dot-inner absolute inset-0 rounded-full bg-[var(--accent)] opacity-0"></div>
-  </div>
-  
-  <!-- Card Content -->
-  <div class="glass-card p-8 ml-6 cursor-pointer group/card" data-expandable>
-    <!-- Header -->
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 mb-6">
-      <div class="flex-1 min-w-0">
-        <h3 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)] group-hover/card:text-[var(--accent)] transition-colors duration-300 mb-2">
-          {company}
-        </h3>
-        <p class="text-[var(--accent)] font-semibold text-base sm:text-lg">{jobTitle}</p>
-      </div>
-      <div class="flex items-center gap-2 text-xs sm:text-sm text-[var(--text-muted)] font-mono px-2.5 py-1.5 sm:px-3 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)]">
-        <span>{formattedStartDate}</span>
-        <span class="text-[var(--accent)]">→</span>
-        <span class:list={[isOngoing && 'text-[var(--accent)] font-semibold']}>{formattedEndDate}</span>
-      </div>
-    </div>
-    
-    <!-- Job Type -->
-    <div class="mb-5">
-      <span class="inline-block px-3 py-1.5 text-sm font-semibold text-[var(--accent)] bg-[var(--glass-bg)] border border-[var(--accent)]/30 rounded-lg">
-        {job}
-      </span>
-    </div>
-    
-    <!-- Description -->
-    <div class="job-description text-[var(--text-secondary)] text-base leading-relaxed tracking-tight line-clamp-3 transition-all duration-500">
-      {jobDescription}
-    </div>
-    
-    <!-- Expand Indicator -->
-    <div class="expand-indicator mt-5 text-sm text-[var(--accent)] opacity-0 group-hover/card:opacity-100 transition-all duration-300 flex items-center gap-2 font-medium">
-      <span>Click to expand</span>
-      <span class="expand-arrow transition-transform duration-300 text-lg">↓</span>
-    </div>
+<article class="entry-grid border-t border-[var(--line)] py-9">
+  <p class="entry-dates tnum">
+    {formattedStartDate} — {formattedEndDate}
+  </p>
+
+  <div class="min-w-0">
+    <h2 class="entry-company font-display">{company}</h2>
+    <p class="entry-role">
+      <span class="font-medium text-[var(--ink-secondary)]">{jobTitle}</span>
+      <span class="text-[var(--ink-muted)]"> · {job}</span>
+    </p>
+
+    <p class="entry-desc is-clamped" id={descId} data-career-desc>{jobDescription}</p>
+    <button
+      type="button"
+      class="read-more"
+      data-read-more
+      data-label-more={labelMore}
+      data-label-less={labelLess}
+      aria-expanded="false"
+      aria-controls={descId}
+      hidden
+    >{labelMore}</button>
+
+    {tags && tags.length > 0 && (
+      <p class="entry-tags">{tags.join(' · ')}</p>
+    )}
   </div>
 </article>
 
 <script>
-  // Card expand/collapse functionality
-  document.querySelectorAll('[data-expandable]').forEach((card) => {
-    let expanded = false;
-    const description = card.querySelector('.job-description');
-    const arrow = card.querySelector('.expand-arrow') as HTMLElement | null;
-    const indicator = card.querySelector('.expand-indicator span:first-child') as HTMLElement | null;
-    
-    card.addEventListener('click', () => {
-      expanded = !expanded;
-      if (description) {
-        if (expanded) {
-          description.classList.remove('line-clamp-3');
-          if (arrow) arrow.style.transform = 'rotate(180deg)';
-          if (indicator) indicator.textContent = 'Click to collapse';
-        } else {
-          description.classList.add('line-clamp-3');
-          if (arrow) arrow.style.transform = 'rotate(0deg)';
-          if (indicator) indicator.textContent = 'Click to expand';
-        }
-      }
+  const entries: Array<{ desc: HTMLElement; button: HTMLButtonElement }> = [];
+
+  document.querySelectorAll<HTMLElement>('[data-career-desc]').forEach((desc) => {
+    const button = desc.parentElement?.querySelector<HTMLButtonElement>('[data-read-more]');
+    if (!button) return;
+    entries.push({ desc, button });
+
+    button.addEventListener('click', () => {
+      const clamped = desc.classList.toggle('is-clamped');
+      button.setAttribute('aria-expanded', String(!clamped));
+      button.textContent = clamped
+        ? button.dataset.labelMore ?? ''
+        : button.dataset.labelLess ?? '';
     });
   });
 
-  // Timeline dot active state based on scroll position
-  // Only initialize once globally
-  if (!(window as any).timelineScrollHandlerInitialized) {
-    (window as any).timelineScrollHandlerInitialized = true;
-
-    function updateActiveTimelineDot() {
-      const cards = document.querySelectorAll('.career-card');
-      if (cards.length === 0) return;
-
-      const viewportCenter = window.innerHeight / 2;
-      let closestCard: Element | null = null;
-      let closestDistance = Infinity;
-
-      // Find the card closest to viewport center
-      cards.forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.top + rect.height / 2;
-        const distance = Math.abs(viewportCenter - cardCenter);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestCard = card;
-        }
-      });
-
-      // First, remove active class from ALL dots to ensure only one is active
-      document.querySelectorAll('.timeline-dot').forEach((dot) => {
-        dot.classList.remove('active');
-        const inner = dot.querySelector('.timeline-dot-inner') as HTMLElement;
-        if (inner) {
-          inner.classList.remove('animate-ping');
-          inner.style.opacity = '0';
-        }
-        // Reset dot appearance
-        (dot as HTMLElement).style.borderColor = '';
-        (dot as HTMLElement).style.backgroundColor = '';
-        (dot as HTMLElement).style.boxShadow = '';
-      });
-
-      // Then, add active class to ONLY the closest card's dot
-      if (closestCard) {
-        const cardIndex = closestCard.getAttribute('data-card-index');
-        if (cardIndex !== null) {
-          const activeDot = document.querySelector(`.timeline-dot[data-card-index="${cardIndex}"]`);
-          if (activeDot) {
-            activeDot.classList.add('active');
-            const inner = activeDot.querySelector('.timeline-dot-inner') as HTMLElement;
-            if (inner) {
-              inner.style.opacity = '0.75';
-              inner.classList.add('animate-ping');
-            }
-          }
-        }
-      }
-    }
-
-    // Throttle scroll events for performance
-    let scrollTimeout: number | null = null;
-    window.addEventListener('scroll', () => {
-      if (scrollTimeout !== null) {
-        clearTimeout(scrollTimeout);
-      }
-      scrollTimeout = window.setTimeout(() => {
-        updateActiveTimelineDot();
-      }, 50);
+  // Show the toggle only while the clamped text actually overflows.
+  const measureAll = () => {
+    entries.forEach(({ desc, button }) => {
+      if (!desc.classList.contains('is-clamped')) return;
+      button.hidden = desc.scrollHeight <= desc.clientHeight + 1;
     });
+  };
 
-    // Initial update after a short delay to ensure DOM is ready
-    setTimeout(() => {
-      updateActiveTimelineDot();
-    }, 100);
+  measureAll();
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(measureAll).catch(() => {});
   }
+
+  let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measureAll, 150);
+  });
 </script>
+
+<style>
+  .entry-company {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+
+  .entry-role {
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  .entry-desc {
+    margin-top: 1rem;
+    color: var(--ink-secondary);
+  }
+
+  .entry-desc.is-clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .read-more {
+    margin-top: 0.6rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 0.85rem;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+  }
+
+  .read-more:hover {
+    text-decoration-thickness: 1.5px;
+  }
+
+  .entry-tags {
+    margin-top: 1.1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+  }
+</style>

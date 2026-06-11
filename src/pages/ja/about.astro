@@ -3,116 +3,128 @@ import Layout from '../../layouts/Layout.astro';
 import { getData } from '../../data/about.ja';
 
 const data = getData('ja');
+
+function formatDate(dateStr: string): string {
+  if (!dateStr) return '現在';
+  const [year, month] = dateStr.split('-');
+  return month ? `${year}.${month}` : year;
+}
 ---
 
 <Layout title="アバウト - 日髙悠太">
-  <div class="space-y-10">
-    <!-- Page Header -->
-    <header class="glass-card p-10 text-center animate-fade-in">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">
-        About
-      </h1>
-      <p class="text-[var(--text-muted)] text-lg">
-        スキル・学歴・モチベーション
-      </p>
-    </header>
-    
-    <!-- Education -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-100">
-      <h2 class="section-title">Education</h2>
-      <div class="space-y-6">
-        {data.education && data.education.map((edu) => (
-          <div class="relative pl-8 py-5 border-l-2 border-[var(--accent)] group">
-            <div class="absolute left-0 top-6 w-3 h-3 rounded-full bg-[var(--accent)] -translate-x-1/2 shadow-lg shadow-[var(--glow-color)]"></div>
-            <div class="flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)] font-mono mb-3 px-3 py-1.5 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] w-fit">
-              <span>{edu.startDate}</span>
-              <span class="text-[var(--accent)]">→</span>
-              <span>{edu.endDate}</span>
-            </div>
-            <h3 class="text-2xl font-bold text-[var(--text-primary)] mb-2">
-              {edu.institution}
-            </h3>
-            <p class="text-[var(--accent)] text-lg font-semibold mb-4">{edu.degree}</p>
-            <p class="text-[var(--text-secondary)] leading-relaxed text-base">
-              {edu.description}
-            </p>
+  <header class="pt-14 md:pt-20 pb-10">
+    <p class="section-label">Profile</p>
+    <h1 class="page-title mt-3">アバウト</h1>
+  </header>
+
+  <!-- Education -->
+  <section class="about-section">
+    <h2 class="section-label">Education</h2>
+    <div class="mt-7 space-y-8">
+      {data.education && data.education.map((edu) => (
+        <div class="entry-grid">
+          <p class="entry-dates tnum">{formatDate(edu.startDate)} — {formatDate(edu.endDate)}</p>
+          <div class="min-w-0">
+            <h3 class="font-display text-xl font-semibold text-[var(--ink)]">{edu.institution}</h3>
+            <p class="text-sm text-[var(--ink-muted)] mt-1">{edu.degree}</p>
+            <p class="text-[var(--ink-secondary)] mt-3">{edu.description}</p>
           </div>
-        ))}
-      </div>
-    </section>
-    
-    <!-- Motivation -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-200">
-      <h2 class="section-title">Motivation</h2>
-      <div class="grid gap-6">
-        {data.motivation && data.motivation.map((item, i) => (
-          <div class="group p-6 rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:border-[var(--accent)] transition-all duration-300 hover:shadow-lg hover:shadow-[var(--glow-color)]">
-            <h3 class="text-xl font-bold text-[var(--accent)] mb-3 flex items-center gap-3">
-              <span class="text-[var(--text-muted)] font-mono text-lg">0{i + 1}.</span>
-              {item.title}
-            </h3>
-            <p class="text-[var(--text-secondary)] leading-relaxed text-base">
-              {item.desc}
-            </p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Motivation -->
+  <section class="about-section">
+    <h2 class="section-label">Motivation</h2>
+    <ol class="mt-7 space-y-8">
+      {data.motivation && data.motivation.map((item, i) => (
+        <li class="motivation-item">
+          <span class="motivation-num font-display tnum">{i + 1}.</span>
+          <div class="min-w-0">
+            <h3 class="font-medium text-[var(--ink)]">{item.title}</h3>
+            <p class="text-[var(--ink-secondary)] mt-2">{item.desc}</p>
           </div>
-        ))}
-      </div>
-    </section>
-    
-    <!-- Projects -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-300">
-      <h2 class="section-title">Personal Projects</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        {data.selfProject && data.selfProject.map((project) => (
-          <a 
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group p-6 rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:border-[var(--accent)] transition-all duration-300 block hover:shadow-lg hover:shadow-[var(--glow-color)]"
-          >
-            <h3 class="text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-3 flex items-center gap-2">
-              {project.title}
-              <span class="text-sm opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">↗</span>
-            </h3>
-            <p class="text-sm text-[var(--text-muted)] line-clamp-2 leading-relaxed">
-              {project.desc}
-            </p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- Personal Projects -->
+  <section class="about-section">
+    <h2 class="section-label">Personal Projects</h2>
+    <ul class="mt-7 space-y-7">
+      {data.selfProject && data.selfProject.map((project) => (
+        <li>
+          <a href={project.link} target="_blank" rel="noopener noreferrer" class="text-link font-medium">
+            {project.title} ↗
           </a>
-        ))}
-      </div>
-    </section>
-    
-    <!-- Language Skills -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-400">
-      <h2 class="section-title">Languages</h2>
-      <div class="flex flex-wrap gap-3">
-        {data.skills?.LanguageSkills.map((skill) => (
-          <div class="tag">
-            <span class="font-semibold">{skill.name}</span>
-            <span class="mx-2 text-[var(--glass-border)]">|</span>
-            <span class="text-[var(--text-muted)]">{skill.description}</span>
-          </div>
-        ))}
-      </div>
-    </section>
-    
-    <!-- Programming Skills -->
-    <section class="glass-card p-8 md:p-10 animate-fade-in delay-500">
-      <h2 class="section-title">Technical Skills</h2>
-      <div class="flex flex-wrap gap-3">
-        {data.skills?.ProgrammingSkills.map((skill) => (
-          <div class="tag group cursor-default">
-            <span class="font-semibold text-[var(--text-primary)]">{skill.name}</span>
-            {skill.description && (
-              <>
-                <span class="mx-1.5 text-[var(--glass-border)]">·</span>
-                <span class="text-[var(--text-muted)] text-xs">{skill.description}</span>
-              </>
-            )}
-            <span class="ml-2 text-xs text-[var(--accent)] font-semibold">+{skill.year}y</span>
-          </div>
-        ))}
-      </div>
-    </section>
-  </div>
+          <p class="text-sm text-[var(--ink-muted)] mt-1.5">{project.desc}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Languages -->
+  <section class="about-section">
+    <h2 class="section-label">Languages</h2>
+    <ul class="mt-7 space-y-2">
+      {data.skills?.LanguageSkills.map((skill) => (
+        <li class="skill-row">
+          <span class="text-[var(--ink)] font-medium">{skill.name}</span>
+          <span class="leader" aria-hidden="true"></span>
+          <span class="text-sm text-[var(--ink-muted)]">{skill.description}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Technical Skills -->
+  <section class="about-section">
+    <h2 class="section-label">Technical Skills</h2>
+    <ul class="mt-7 md:columns-2 md:gap-x-12">
+      {data.skills?.ProgrammingSkills.map((skill) => (
+        <li class="skill-item">
+          <span class="skill-row">
+            <span class="text-[var(--ink)] font-medium">{skill.name}</span>
+            <span class="leader" aria-hidden="true"></span>
+            <span class="text-sm text-[var(--ink-muted)] tnum whitespace-nowrap">{skill.year}y</span>
+          </span>
+          {skill.description && (
+            <span class="block text-xs text-[var(--ink-muted)]">{skill.description}</span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
 </Layout>
+
+<style>
+  .about-section {
+    border-top: 1px solid var(--line);
+    padding: 2.5rem 0 3rem;
+  }
+
+  .motivation-item {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 0 0.5rem;
+  }
+
+  .motivation-num {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+
+  .skill-row {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .skill-item {
+    break-inside: avoid;
+    padding: 0.2rem 0;
+  }
+</style>

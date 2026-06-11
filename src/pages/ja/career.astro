@@ -7,35 +7,24 @@ const data = getData('ja');
 ---
 
 <Layout title="キャリア - 日髙悠太">
-  <div class="space-y-10">
-    <!-- Page Header -->
-    <header class="glass-card p-10 text-center animate-fade-in opacity-0">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">
-        Career
-      </h1>
-      <p class="text-[var(--text-muted)] text-lg">
-        キャリアの歩み・職務経歴
-      </p>
-    </header>
-    
-    <!-- Timeline -->
-    <section class="relative">
-      {data.experience && data.experience.map((exp, i) => (
-        <div class="animate-fade-in opacity-0 mb-8 last:mb-0 group" style={`animation-delay: ${(i + 1) * 100}ms;`}>
-          <HistoryCard
-            company={exp.company}
-            startDate={exp.startDate}
-            endDate={exp.endDate}
-            jobTitle={exp.jobTitle}
-            job={exp.projects.job}
-            jobDescription={exp.projects.jobDescription}
-            tags={exp.projects.tags || []}
-            index={i}
-            locale="ja"
-            isLast={i === data.experience.length - 1}
-          />
-        </div>
-      ))}
-    </section>
-  </div>
+  <header class="pt-14 md:pt-20 pb-10">
+    <p class="section-label">Career</p>
+    <h1 class="page-title mt-3">職務経歴</h1>
+  </header>
+
+  <section>
+    {data.experience && data.experience.map((exp, i) => (
+      <HistoryCard
+        company={exp.company}
+        startDate={exp.startDate}
+        endDate={exp.endDate}
+        jobTitle={exp.jobTitle}
+        job={exp.projects.job}
+        jobDescription={exp.projects.jobDescription}
+        tags={exp.projects.tags || []}
+        index={i}
+        locale="ja"
+      />
+    ))}
+  </section>
 </Layout>

@@ -3,88 +3,78 @@ import Layout from '../../layouts/Layout.astro';
 import { getData } from '../../data/about.ja';
 
 const data = getData('en');
+const current = data.experience?.[0];
 ---
 
 <Layout>
-  <div class="min-h-[80vh] flex flex-col justify-center">
-    <!-- Hero Section -->
-    <section class="grid md:grid-cols-2 gap-8 items-center">
-      <!-- Profile Image -->
-      <div class="flex justify-center md:justify-end order-1 md:order-none">
-        <div class="relative group">
-          <div class="absolute -inset-1 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dim)] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
-          <img
-            class="relative rounded-2xl w-64 h-64 md:w-80 md:h-80 object-cover border-2 border-[var(--glass-border)] group-hover:border-[var(--accent)] transition-all duration-500"
-            src="/me.jpeg"
-            alt={`${data.family_name} ${data.given_name}`}
-            width="320"
-            height="320"
-            loading="eager"
-          />
-        </div>
-      </div>
-      
-      <!-- Profile Info -->
-      <div class="glass-card p-8 space-y-6">
-        <div class="space-y-2">
-          <p class="text-[var(--text-muted)] text-sm font-mono">$ whoami</p>
-          <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-primary)] glow-text">
-            {data.given_name} {data.family_name}
-          </h1>
-        </div>
-        
-        <div class="space-y-2">
-          <p class="text-[var(--text-muted)] text-sm font-mono">$ profession</p>
-          <p class="text-xl md:text-2xl text-[var(--accent)] font-semibold">
-            {data.profession}
-          </p>
-        </div>
-        
-        <div class="space-y-2">
-          <p class="text-[var(--text-muted)] text-sm font-mono">$ cat bio.txt</p>
-          <p class="text-[var(--text-secondary)] leading-relaxed">
-            {data.bio}
-          </p>
-        </div>
-        
-        <!-- Social Links -->
-        {data.social && (
-          <div class="pt-4 border-t border-[var(--glass-border)]">
-            <div class="flex flex-wrap gap-3">
-              {data.social.map((social) => (
-                <a 
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="tag hover:scale-105"
-                >
-                  {social.name}
-                </a>
-              ))}
-            </div>
-          </div>
+  <section class="pt-14 md:pt-20 pb-10 md:pb-14">
+    <p class="section-label">Software Engineer — Tokyo</p>
+    <h1 class="name-display font-display mt-4">{data.given_name} {data.family_name}</h1>
+    <p class="font-display text-lg text-[var(--ink-muted)] mt-2" lang="ja">日髙 悠太</p>
+    <p class="text-[var(--ink-secondary)] mt-6">{data.profession}</p>
+  </section>
+
+  <hr class="rule" />
+
+  <section class="py-10 md:py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_200px] md:gap-16 items-start">
+    <figure class="portrait md:order-2">
+      <img
+        src="/me.jpeg"
+        alt={`${data.given_name} ${data.family_name}`}
+        width="384"
+        height="480"
+        loading="eager"
+      />
+    </figure>
+
+    <div class="md:order-1">
+      <p class="text-[var(--ink-secondary)] leading-loose">{data.bio}</p>
+
+      <dl class="mt-10 grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm">
+        {current && (
+          <>
+            <dt class="text-[var(--ink-muted)]">Currently</dt>
+            <dd>{current.company} — {current.jobTitle}</dd>
+          </>
         )}
-      </div>
-    </section>
-    
-    <!-- Quick Stats -->
-    <section class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="glass-card p-6 text-center animate-fade-in delay-100">
-        <p class="text-3xl font-bold text-[var(--accent)]">6+</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Years Experience</p>
-      </div>
-      <div class="glass-card p-6 text-center animate-fade-in delay-200">
-        <p class="text-3xl font-bold text-[var(--accent)]">15+</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Projects</p>
-      </div>
-      <div class="glass-card p-6 text-center animate-fade-in delay-300">
-        <p class="text-3xl font-bold text-[var(--accent)]">10+</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Technologies</p>
-      </div>
-      <div class="glass-card p-6 text-center animate-fade-in delay-400">
-        <p class="text-3xl font-bold text-[var(--accent)]">2</p>
-        <p class="text-sm text-[var(--text-muted)] mt-1">Languages</p>
-      </div>
-    </section>
-  </div>
+        <dt class="text-[var(--ink-muted)]">Based in</dt>
+        <dd>{data.address}</dd>
+      </dl>
+
+      {data.social && (
+        <ul class="mt-10 flex flex-wrap gap-x-7 gap-y-2 text-sm">
+          {data.social.map((social) => (
+            <li>
+              <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-link">
+                {social.name} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .name-display {
+    font-size: clamp(2.75rem, 9vw, 4.25rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  .portrait {
+    width: 200px;
+    padding: 0.4rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+  }
+
+  .portrait img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+</style>

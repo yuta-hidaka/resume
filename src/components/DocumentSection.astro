@@ -127,21 +127,21 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
 ---
 
 <section
-  class={`doc-section ${isPdfMode ? '' : 'glass-card p-8 md:p-10 animate-fade-in'}`}
+  class={`doc-section ${isPdfMode ? '' : 'doc-section--page'}`}
   style={isPdfMode ? '' : 'width: 100%; max-width: 100%;'}
 >
   {!isPdfMode && (
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <div>
         <h2 class="section-title mb-1">{title}</h2>
-        {description && <p class="text-[var(--text-muted)] text-sm">{description}</p>}
+        {description && <p class="text-[var(--ink-muted)] text-sm">{description}</p>}
       </div>
       {!missing ? (
         staticPdfUrl ? (
           <a
             href={staticPdfUrl}
             download={downloadFileName ?? undefined}
-            class="doc-download-btn"
+            class="btn doc-download-btn"
           >
             <span>↓</span>
             <span>Download PDF</span>
@@ -152,7 +152,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
             data-doc-download
             data-doc-id={docId}
             data-doc-filename={downloadFileName}
-            class="doc-download-btn"
+            class="btn doc-download-btn"
           >
             <span>↓</span>
             <span>Download PDF</span>
@@ -162,7 +162,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
         <a
           href={fallbackPdfUrl}
           download
-          class="doc-download-btn"
+          class="btn doc-download-btn"
         >
           <span>↓</span>
           <span>Download PDF</span>
@@ -178,6 +178,9 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       )}
       {isMarkdown && (
         <style is:global>
+          .doc-viewer.markdown-content {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          }
           .doc-viewer.markdown-content h1,
           .doc-viewer.markdown-content h2,
           .doc-viewer.markdown-content h3 {
@@ -249,11 +252,11 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
             padding: 0;
           }
           .doc-viewer.markdown-content a {
-            color: #3b82f6;
+            color: #1d4ed8;
             text-decoration: underline;
           }
           .doc-viewer.markdown-content a:hover {
-            color: #2563eb;
+            color: #1e40af;
           }
           .doc-viewer.markdown-content strong {
             font-weight: 600;
@@ -317,7 +320,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       )}
     </>
   ) : fallbackPdfUrl ? (
-    <div class="rounded-xl overflow-hidden border border-[var(--glass-border)]">
+    <div class="overflow-hidden border border-[var(--line)]">
       <embed
         src={fallbackPdfUrl}
         type="application/pdf"
@@ -325,13 +328,18 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       />
     </div>
   ) : (
-    <div class="rounded-xl border border-[var(--glass-border)] p-6 text-[var(--text-muted)]">
+    <div class="border border-[var(--line)] p-6 text-[var(--ink-muted)]">
       <p>HTML source not found. Add the file at <code>{sourcePath}</code> to enable dynamic rendering.</p>
     </div>
   )}
 </section>
 
 <style is:global>
+  .doc-section--page {
+    border-top: 1px solid var(--line);
+    padding: 2.5rem 0 3rem;
+  }
+
   .doc-viewer {
     --doc-scale: 1;
     --doc-scaled-width: 100%;
@@ -340,8 +348,8 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     --doc-page-height: 297mm;
     background: #ffffff;
     color: #000000;
-    border-radius: 16px;
-    border: 1px solid var(--glass-border);
+    border-radius: 3px;
+    border: 1px solid var(--line, #e5e7eb);
     overflow-y: auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -483,24 +491,6 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     }
   }
 
-  .doc-download-btn {
-    color: #ffffff !important;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(to right, var(--accent), var(--accent-dim));
-    border-radius: 0.75rem;
-    font-weight: 600;
-    box-shadow: 0 10px 15px -3px var(--glow-color);
-    transition: all 0.3s;
-  }
-
-  .doc-download-btn:hover {
-    box-shadow: 0 20px 25px -5px var(--glow-color);
-    transform: scale(1.05);
-  }
-
   /* Print styles for PDF generation */
   @media print {
     body {
@@ -512,6 +502,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       width: 210mm !important;
       max-width: 210mm !important;
       min-height: 297mm;
+      max-height: none !important;
       background: white !important;
       color: black !important;
       border: none !important;
@@ -627,7 +618,6 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
     }
 
     /* Hide UI elements in print (keep the document container) */
-    .glass-card:not(.doc-section),
     .doc-download-btn,
     nav,
     header,

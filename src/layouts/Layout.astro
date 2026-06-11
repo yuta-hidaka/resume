@@ -20,7 +20,7 @@ const lang = getLangFromUrl(Astro.url);
     <meta name="description" content={description} />
     <meta name="author" content="Yuta Hidaka" />
     <meta name="keywords" content="resume software engineer portfolio" />
-    
+
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -29,35 +29,37 @@ const lang = getLangFromUrl(Astro.url);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@yuta-hidaka" />
     <meta name="twitter:creator" content="@yuta-hidaka" />
-    
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    
+
     <!-- Prevent flash of wrong theme -->
     <script is:inline>
       (function() {
-        const theme = localStorage.getItem('theme') || 
+        const theme = localStorage.getItem('theme') ||
           (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
         document.documentElement.classList.add(theme);
       })();
     </script>
   </head>
-  <body class="min-h-screen">
-    <!-- Background Glow Effects -->
-    <div class="glow-orb glow-orb-1"></div>
-    <div class="glow-orb glow-orb-2"></div>
-    
+  <body class="min-h-screen flex flex-col">
     <Header />
-    
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8 animate-fade-in">
+
+    <main class="w-full max-w-3xl mx-auto px-5 sm:px-8 flex-1 pb-24">
       <slot />
     </main>
-    
-    <!-- Footer -->
-    <footer class="glass-nav mt-auto py-6">
-      <div class="max-w-5xl mx-auto px-4 text-center text-sm text-[var(--text-muted)]">
-        <p>&copy; {new Date().getFullYear()} Yuta Hidaka. All rights reserved.</p>
+
+    <footer class="site-footer">
+      <div class="max-w-3xl mx-auto px-5 sm:px-8 py-7 flex flex-wrap items-baseline justify-between gap-2 text-sm text-[var(--ink-muted)]">
+        <p>&copy; {new Date().getFullYear()} Yuta Hidaka</p>
+        <p>Tokyo, Japan</p>
       </div>
     </footer>
   </body>
 </html>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+  }
+</style>

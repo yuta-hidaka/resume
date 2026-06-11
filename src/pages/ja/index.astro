@@ -3,92 +3,78 @@ import Layout from '../../layouts/Layout.astro';
 import { getData } from '../../data/about.ja';
 
 const data = getData('ja');
+const current = data.experience?.[0];
 ---
 
 <Layout>
-  <div class="min-h-[85vh] flex flex-col justify-center py-12">
-    <!-- Hero Section -->
-    <section class="grid md:grid-cols-2 gap-12 items-center mb-20">
-      <!-- Profile Image -->
-      <div class="flex justify-center md:justify-end order-1 md:order-none animate-fade-in">
-        <div class="relative group">
-          <div class="absolute -inset-2 bg-gradient-to-r from-[var(--accent)] via-[var(--accent-light)] to-[var(--accent-dim)] rounded-3xl blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
-          <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <img
-            class="relative rounded-3xl w-72 h-72 md:w-96 md:h-96 object-cover border-2 border-[var(--glass-border)] group-hover:border-[var(--accent)] transition-all duration-500 shadow-2xl"
-            src="/me.jpeg"
-            alt={`${data.family_name} ${data.given_name}`}
-            width="384"
-            height="384"
-            loading="eager"
-          />
-        </div>
-      </div>
-      
-      <!-- Profile Info -->
-      <div class="glass-card p-10 space-y-8 animate-fade-in delay-100">
-        <div class="space-y-3">
-          <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase">$ whoami</p>
-          <h1 class="text-5xl md:text-6xl font-extrabold text-[var(--text-primary)] leading-tight tracking-tight">
-            {data.family_name} <span class="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">
-              {data.given_name}
-            </span>
-          </h1>
-        </div>
-        
-        <div class="space-y-3">
-          <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase">$ profession</p>
-          <p class="text-2xl md:text-3xl text-[var(--accent)] font-bold">
-            {data.profession}
-          </p>
-        </div>
-        
-        <div class="space-y-3">
-          <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase">$ cat bio.txt</p>
-          <p class="text-[var(--text-secondary)] leading-relaxed text-lg">
-            {data.bio}
-          </p>
-        </div>
-        
-        <!-- Social Links -->
-        {data.social && (
-          <div class="pt-6 border-t border-[var(--glass-border)]">
-            <p class="text-[var(--text-muted)] text-xs font-mono tracking-wider uppercase mb-4">$ connect</p>
-            <div class="flex flex-wrap gap-3">
-              {data.social.map((social) => (
-                <a 
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="tag"
-                >
-                  {social.name}
-                </a>
-              ))}
-            </div>
-          </div>
+  <section class="pt-14 md:pt-20 pb-10 md:pb-14">
+    <p class="section-label">Software Engineer — Tokyo</p>
+    <h1 class="name-display font-display mt-4">{data.family_name} {data.given_name}</h1>
+    <p class="font-display italic text-lg text-[var(--ink-muted)] mt-2" lang="en">Yuta Hidaka</p>
+    <p class="text-[var(--ink-secondary)] mt-6">{data.profession}</p>
+  </section>
+
+  <hr class="rule" />
+
+  <section class="py-10 md:py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_200px] md:gap-16 items-start">
+    <figure class="portrait md:order-2">
+      <img
+        src="/me.jpeg"
+        alt={`${data.family_name} ${data.given_name}`}
+        width="384"
+        height="480"
+        loading="eager"
+      />
+    </figure>
+
+    <div class="md:order-1">
+      <p class="text-[var(--ink-secondary)] leading-loose">{data.bio}</p>
+
+      <dl class="mt-10 grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm">
+        {current && (
+          <>
+            <dt class="text-[var(--ink-muted)]">現在</dt>
+            <dd>{current.company} — {current.jobTitle}</dd>
+          </>
         )}
-      </div>
-    </section>
-    
-    <!-- Quick Stats -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      <div class="glass-card p-8 text-center group animate-fade-in delay-200 hover:scale-105 transition-transform duration-300">
-        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">6+</p>
-        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Years Experience</p>
-      </div>
-      <div class="glass-card p-8 text-center group animate-fade-in delay-300 hover:scale-105 transition-transform duration-300">
-        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">15+</p>
-        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Projects</p>
-      </div>
-      <div class="glass-card p-8 text-center group animate-fade-in delay-400 hover:scale-105 transition-transform duration-300">
-        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">10+</p>
-        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Technologies</p>
-      </div>
-      <div class="glass-card p-8 text-center group animate-fade-in delay-500 hover:scale-105 transition-transform duration-300">
-        <p class="text-5xl font-extrabold text-[var(--accent)] mb-2 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">2</p>
-        <p class="text-sm text-[var(--text-muted)] font-medium uppercase tracking-wider">Languages</p>
-      </div>
-    </section>
-  </div>
+        <dt class="text-[var(--ink-muted)]">拠点</dt>
+        <dd>{data.address}</dd>
+      </dl>
+
+      {data.social && (
+        <ul class="mt-10 flex flex-wrap gap-x-7 gap-y-2 text-sm">
+          {data.social.map((social) => (
+            <li>
+              <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-link">
+                {social.name} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .name-display {
+    font-size: clamp(2.75rem, 9vw, 4.25rem);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+  }
+
+  .portrait {
+    width: 200px;
+    padding: 0.4rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+  }
+
+  .portrait img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+</style>
