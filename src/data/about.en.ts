@@ -5,7 +5,7 @@ export const data: Data = {
   given_name: "Yuta",
   profession: "Full Stack Developer / Tech Lead",
   bio: `Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in designing and operating high-traffic systems (thousands of RPS), building cloud infrastructure on AWS/GCP, and implementing event-driven architectures with Kafka and Spark. As a tech lead, managed a 16-member overseas team, launched a new cross-functional team, and reduced infrastructure costs by 30% through serverless optimization — contributing on both technical and business fronts. Transitioned to software engineering in 2018 after six years of R&D at a chemical manufacturer; currently working as a backend engineer at SUPER STUDIO.`,
-  address: "Shinjuku, Tokyo",
+  address: "Shibuya, Tokyo",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },
     { name: "GitHub", url: "https://github.com/yuta-hidaka" },

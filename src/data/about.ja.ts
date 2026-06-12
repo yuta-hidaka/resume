@@ -16,7 +16,7 @@ export const data: Data = {
   given_name: "悠太",
   profession: "Full Stack Developer / Tech lead",
   bio: `Go・TypeScriptを軸としたバックエンド/フルスタックエンジニア。高トラフィックシステムの設計・運用（数千RPS）、AWS/GCPでのクラウドインフラ構築、Kafka・Sparkを用いたイベント駆動アーキテクチャを得意とする。テックリードとしてベトナム16名のチームマネジメント、新規チーム立ち上げ、サーバーレス最適化によるインフラコスト30%削減など技術とビジネスの両面で貢献。化学メーカーでの研究開発を経て2018年にエンジニアへ転身、現在はSUPER STUDIOにてバックエンドエンジニアとして従事。`,
-  address: "Shinjuku Tokyo",
+  address: "東京・渋谷",
   social: [
     { name: "Twitter", url: "https://twitter.com/amateur_prog" },
     { name: "GitHub", url: "https://github.com/yuta-hidaka" },
