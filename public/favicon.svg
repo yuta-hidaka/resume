@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <!-- Hanko-style seal mark: vermilion ground, paper-white serif initial -->
-  <rect width="128" height="128" rx="14" fill="#9c3d26"/>
+  <!-- Seal-style monogram: deep-green ground, paper-white serif initial -->
+  <rect width="128" height="128" rx="14" fill="#2e5e41"/>
   <text x="64" y="94" font-family="Georgia, 'Times New Roman', 'Noto Serif JP', serif" font-size="84" font-weight="500" fill="#f7f5f0" text-anchor="middle">Y</text>
 </svg>
