@@ -21,11 +21,11 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">
-  <div class="max-w-3xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-center gap-x-8 gap-y-3">
+  <div class="max-w-3xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-baseline gap-x-8 gap-y-3">
     <a href={getLocalizedPath(lang, '/')} class="site-name font-display">{siteName}</a>
 
     <nav class="order-3 w-full md:order-2 md:w-auto md:ml-2" aria-label="Main">
-      <ul class="flex items-center gap-x-6 gap-y-1 flex-wrap">
+      <ul class="flex items-baseline gap-x-6 gap-y-1 flex-wrap">
         {links.map((link) => {
           const href = getLocalizedPath(lang, link.path);
           const isActive = currentPath === href || currentPath === href + '/';
@@ -40,7 +40,7 @@ const currentPath = Astro.url.pathname;
       </ul>
     </nav>
 
-    <div class="order-2 ml-auto flex items-center gap-5 md:order-3">
+    <div class="order-2 ml-auto flex items-baseline gap-5 md:order-3">
       <a href={langSwitchPath} class="lang-switch" lang={otherLang} hreflang={otherLang}>{langSwitchLabel}</a>
       <button id="theme-toggle" class="theme-btn" aria-label={lang === 'ja' ? 'テーマ切り替え' : 'Toggle theme'}>
         <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -93,8 +93,14 @@ const currentPath = Astro.url.pathname;
 
 <style>
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
     border-top: 3px solid var(--ink);
     border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--paper) 78%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
   }
 
   .site-name {
@@ -138,6 +144,7 @@ const currentPath = Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
     width: 28px;
     height: 28px;
     padding: 0;

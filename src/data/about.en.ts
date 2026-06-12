@@ -453,7 +453,7 @@ export const data: Data = {
       },
       {
         name: "AWS",
-        description: "Lambda, CloudFront, DynamoDB",
+        description: "Lambda, CloudFront",
         year: 4,
       },
       {
@@ -473,7 +473,7 @@ export const data: Data = {
       },
       {
         name: "Terraform",
-        description: "AWS",
+        description: "IaC, AWS",
         year: 1,
       },
       {
@@ -482,7 +482,7 @@ export const data: Data = {
         year: 5,
       },
       {
-        name: "PostggreSQL",
+        name: "PostgreSQL",
         description: "",
         year: 4,
       },
