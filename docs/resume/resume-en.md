@@ -211,6 +211,5 @@ Analyzed experimental data in R&D work, compared with predictions, conducted add
 
 ### Personal Projects (Selected)
 
-- BikeHub (Django/DRF + React Native) https://www.bikehub.app
-- docker-compose for Django with Gunicorn https://github.com/yuta-hidaka/Docker-Django-MariaDB-Gunicorn
-- docker-compose for Django with nginx-unit https://github.com/yuta-hidaka/Docker-Django-MariaDB-NginxUnit
+- BikeHub — Motorcycle fuel-log app; rebuilt its Java/JSP predecessor (バイク燃費.com) with Django/DRF + React Native (Expo) and shipped on both the App Store and Google Play (service has ended)
+- SAVE EAT — Restaurant-support site during COVID-19, built and launched within one week (service has ended)

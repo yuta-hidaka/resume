@@ -56,9 +56,13 @@ function formatDate(dateStr: string): string {
     <ul class="mt-7 space-y-7">
       {data.selfProject && data.selfProject.map((project) => (
         <li>
-          <a href={project.link} target="_blank" rel="noopener noreferrer" class="text-link font-medium">
-            {project.title} ↗
-          </a>
+          {project.link ? (
+            <a href={project.link} target="_blank" rel="noopener noreferrer" class="text-link font-medium">
+              {project.title} ↗
+            </a>
+          ) : (
+            <span class="font-medium text-[var(--ink)]">{project.title}</span>
+          )}
           <p class="text-sm text-[var(--ink-muted)] mt-1.5">{project.desc}</p>
         </li>
       ))}
