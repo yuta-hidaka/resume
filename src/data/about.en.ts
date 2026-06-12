@@ -453,7 +453,7 @@ export const data: Data = {
       },
       {
         name: "AWS",
-        description: "Lambda, CloudFront",
+        description: "Lambda, CloudFront, RDS",
         year: 4,
       },
       {
@@ -470,6 +470,11 @@ export const data: Data = {
         name: "Docker",
         description: "",
         year: 4,
+      },
+      {
+        name: "Kubernetes",
+        description: "ArgoCD, k9s",
+        year: 1,
       },
       {
         name: "Terraform",
@@ -493,6 +498,11 @@ export const data: Data = {
       },
       {
         name: "DynamoDB",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Redis",
         description: "",
         year: 1,
       },
@@ -535,6 +545,16 @@ export const data: Data = {
         name: "NextJS",
         description: "",
         year: 2,
+      },
+      {
+        name: "Kafka",
+        description: "",
+        year: 1,
+      },
+      {
+        name: "Spark",
+        description: "",
+        year: 1,
       },
     ],
   },

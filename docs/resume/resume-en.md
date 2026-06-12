@@ -191,8 +191,8 @@ Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in de
 - **Languages**: Japanese (Native), English (Conversational)
 - **Backend**: Golang, Python (Django/DRF), PHP (CakePHP/Laravel)
 - **Frontend**: JavaScript/TypeScript, Next.js, Svelte, React, SolidJS, Astro
-- **Infrastructure**: AWS (Lambda/CloudFront/DynamoDB), Terraform, Pulumi, Docker, Linux, Kubernetes
-- **Databases**: MySQL, PostgreSQL, MongoDB, DynamoDB
+- **Infrastructure**: AWS (Lambda/CloudFront/DynamoDB/RDS), Terraform, Pulumi, Docker, Linux, Kubernetes
+- **Databases**: MySQL, PostgreSQL, MongoDB, DynamoDB, Redis
 - **Other**: Kafka, Spark, ArgoCD, k9s
 
 ### Personal Strengths
