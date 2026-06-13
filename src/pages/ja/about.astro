@@ -18,7 +18,7 @@ function formatDate(dateStr: string): string {
   </header>
 
   <!-- Education -->
-  <section class="about-section">
+  <section class="about-section glass">
     <h2 class="section-label">Education</h2>
     <div class="mt-7 space-y-8">
       {data.education && data.education.map((edu) => (
@@ -35,7 +35,7 @@ function formatDate(dateStr: string): string {
   </section>
 
   <!-- Motivation -->
-  <section class="about-section">
+  <section class="about-section glass">
     <h2 class="section-label">Motivation</h2>
     <ol class="mt-7 space-y-8">
       {data.motivation && data.motivation.map((item, i) => (
@@ -51,7 +51,7 @@ function formatDate(dateStr: string): string {
   </section>
 
   <!-- Personal Projects -->
-  <section class="about-section">
+  <section class="about-section glass">
     <h2 class="section-label">Personal Projects</h2>
     <ul class="mt-7 space-y-7">
       {data.selfProject && data.selfProject.map((project) => (
@@ -70,7 +70,7 @@ function formatDate(dateStr: string): string {
   </section>
 
   <!-- Languages -->
-  <section class="about-section">
+  <section class="about-section glass">
     <h2 class="section-label">Languages</h2>
     <ul class="mt-7 space-y-2">
       {data.skills?.LanguageSkills.map((skill) => (
@@ -84,7 +84,7 @@ function formatDate(dateStr: string): string {
   </section>
 
   <!-- Technical Skills -->
-  <section class="about-section">
+  <section class="about-section glass">
     <h2 class="section-label">Technical Skills</h2>
     <ul class="mt-7 md:columns-2 md:gap-x-12">
       {data.skills?.ProgrammingSkills.map((skill) => (
@@ -105,8 +105,14 @@ function formatDate(dateStr: string): string {
 
 <style>
   .about-section {
-    border-top: 1px solid var(--line);
-    padding: 2.5rem 0 3rem;
+    padding: 2rem 1.75rem 2.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-section {
+      padding: 2.25rem 2.25rem 2.6rem;
+    }
   }
 
   .motivation-item {

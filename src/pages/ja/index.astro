@@ -14,9 +14,7 @@ const current = data.experience?.[0];
     <p class="text-[var(--ink-secondary)] mt-6">{data.profession}</p>
   </section>
 
-  <hr class="rule" />
-
-  <section class="py-10 md:py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_200px] md:gap-16 items-start">
+  <section class="glass home-panel grid gap-10 md:grid-cols-[minmax(0,1fr)_200px] md:gap-16 items-start">
     <figure class="portrait md:order-2">
       <img
         src="/me.jpeg"
@@ -64,10 +62,22 @@ const current = data.experience?.[0];
     letter-spacing: 0.06em;
   }
 
+  .home-panel {
+    padding: 2rem 1.75rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (min-width: 768px) {
+    .home-panel {
+      padding: 2.5rem 2.5rem;
+    }
+  }
+
   .portrait {
     width: 200px;
-    padding: 0.4rem;
+    padding: 0.45rem;
     border: 1px solid var(--line);
+    border-radius: 18px;
     background: var(--paper-raised);
   }
 
@@ -76,5 +86,6 @@ const current = data.experience?.[0];
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
+    border-radius: 13px;
   }
 </style>
