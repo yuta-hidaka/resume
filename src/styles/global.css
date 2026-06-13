@@ -98,7 +98,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Rich emerald ground — luminous orbs give the glass something to refract */
+/* Quiet emerald ground — one soft light pool, single hue family, no color mesh */
 body::before {
   content: '';
   position: fixed;
@@ -106,30 +106,24 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(38% 30% at 86% 10%, rgba(38, 158, 102, 0.50) 0%, transparent 68%),
-    radial-gradient(30% 26% at 10% 36%, rgba(92, 190, 138, 0.42) 0%, transparent 70%),
-    radial-gradient(34% 28% at 76% 74%, rgba(24, 120, 78, 0.36) 0%, transparent 70%),
-    radial-gradient(26% 22% at 24% 88%, rgba(190, 158, 96, 0.26) 0%, transparent 72%),
-    linear-gradient(160deg, #dcebdd 0%, #c2dac7 45%, #a4c7b0 100%);
+    radial-gradient(55% 42% at 78% 0%, rgba(255, 255, 255, 0.50) 0%, transparent 70%),
+    radial-gradient(60% 48% at 10% 100%, rgba(38, 92, 64, 0.16) 0%, transparent 72%),
+    linear-gradient(165deg, #dfeae0 0%, #c8dccd 50%, #adcbb8 100%);
 }
 
 :root.dark body::before {
   background:
-    radial-gradient(38% 30% at 86% 10%, rgba(74, 200, 136, 0.34) 0%, transparent 68%),
-    radial-gradient(30% 26% at 10% 36%, rgba(48, 156, 104, 0.30) 0%, transparent 70%),
-    radial-gradient(34% 28% at 76% 74%, rgba(38, 136, 92, 0.26) 0%, transparent 70%),
-    radial-gradient(26% 22% at 24% 88%, rgba(217, 189, 131, 0.12) 0%, transparent 72%),
-    linear-gradient(158deg, #133021 0%, #0c2114 45%, #061308 100%);
+    radial-gradient(55% 42% at 78% 0%, rgba(96, 170, 128, 0.17) 0%, transparent 70%),
+    radial-gradient(60% 48% at 10% 100%, rgba(0, 0, 0, 0.38) 0%, transparent 72%),
+    linear-gradient(165deg, #122c1e 0%, #0c2014 50%, #081609 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) body::before {
     background:
-      radial-gradient(38% 30% at 86% 10%, rgba(74, 200, 136, 0.34) 0%, transparent 68%),
-      radial-gradient(30% 26% at 10% 36%, rgba(48, 156, 104, 0.30) 0%, transparent 70%),
-      radial-gradient(34% 28% at 76% 74%, rgba(38, 136, 92, 0.26) 0%, transparent 70%),
-      radial-gradient(26% 22% at 24% 88%, rgba(217, 189, 131, 0.12) 0%, transparent 72%),
-      linear-gradient(158deg, #133021 0%, #0c2114 45%, #061308 100%);
+      radial-gradient(55% 42% at 78% 0%, rgba(96, 170, 128, 0.17) 0%, transparent 70%),
+      radial-gradient(60% 48% at 10% 100%, rgba(0, 0, 0, 0.38) 0%, transparent 72%),
+      linear-gradient(165deg, #122c1e 0%, #0c2014 50%, #081609 100%);
   }
 }
 
@@ -188,8 +182,8 @@ body::before {
   inset: 0;
   border-radius: inherit;
   background:
-    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.20) 43%, rgba(255, 255, 255, 0.05) 52%, transparent 64%),
-    radial-gradient(130% 90% at 28% -14%, rgba(255, 255, 255, 0.26) 0%, transparent 58%);
+    linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, 0.13) 44%, rgba(255, 255, 255, 0.04) 52%, transparent 62%),
+    radial-gradient(130% 90% at 28% -14%, rgba(255, 255, 255, 0.20) 0%, transparent 58%);
   pointer-events: none;
   z-index: -1;
 }

@@ -16,6 +16,7 @@ const otherLang: Lang = lang === 'ja' ? 'en' : 'ja';
 const langSwitchPath = `/${otherLang}${route ? '/' + route : ''}`;
 const langSwitchLabel = lang === 'ja' ? 'EN' : '日本語';
 const siteName = lang === 'ja' ? '日髙 悠太' : 'Yuta Hidaka';
+const menuLabel = lang === 'ja' ? 'メニュー' : 'Menu';
 
 const currentPath = Astro.url.pathname;
 ---
@@ -24,8 +25,8 @@ const currentPath = Astro.url.pathname;
   <div class="glass site-header-bar max-w-3xl mx-auto px-5 sm:px-7 py-3.5 flex flex-wrap items-baseline gap-x-7 gap-y-2">
     <a href={getLocalizedPath(lang, '/')} class="site-name font-display">{siteName}</a>
 
-    <nav class="order-3 w-full md:order-2 md:w-auto md:ml-2" aria-label="Main">
-      <ul class="flex items-baseline gap-x-4 gap-y-1 flex-wrap justify-center md:justify-start md:gap-x-6">
+    <nav id="site-nav" class="site-nav order-4 w-full md:order-2 md:w-auto md:ml-2" aria-label="Main">
+      <ul class="nav-list">
         {links.map((link) => {
           const href = getLocalizedPath(lang, link.path);
           const isActive = currentPath === href || currentPath === href + '/';
@@ -40,15 +41,32 @@ const currentPath = Astro.url.pathname;
       </ul>
     </nav>
 
-    <div class="order-2 ml-auto flex items-baseline gap-5 md:order-3">
+    <div class="order-2 ml-auto flex items-baseline gap-4 sm:gap-5 md:order-3">
       <a href={langSwitchPath} class="lang-switch" lang={otherLang} hreflang={otherLang}>{langSwitchLabel}</a>
-      <button id="theme-toggle" class="theme-btn" aria-label={lang === 'ja' ? 'テーマ切り替え' : 'Toggle theme'}>
+      <button id="theme-toggle" class="icon-btn" aria-label={lang === 'ja' ? 'テーマ切り替え' : 'Toggle theme'}>
         <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <circle cx="12" cy="12" r="4"/>
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
         </svg>
         <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display: none;">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button
+        id="menu-toggle"
+        class="icon-btn menu-btn"
+        aria-label={menuLabel}
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        <svg id="menu-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+        <svg id="menu-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display: none;">
+          <line x1="6" y1="6" x2="18" y2="18"/>
+          <line x1="18" y1="6" x2="6" y2="18"/>
         </svg>
       </button>
     </div>
@@ -89,6 +107,42 @@ const currentPath = Astro.url.pathname;
       });
     }
   })();
+
+  // Mobile menu toggle — the glass capsule stretches open
+  (function() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const nav = document.getElementById('site-nav');
+    const openIcon = document.getElementById('menu-icon-open');
+    const closeIcon = document.getElementById('menu-icon-close');
+    if (!menuToggle || !nav || !openIcon || !closeIcon) return;
+
+    const setOpen = (open) => {
+      nav.classList.toggle('nav-open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+      openIcon.style.display = open ? 'none' : 'block';
+      closeIcon.style.display = open ? 'block' : 'none';
+    };
+
+    menuToggle.addEventListener('click', () => {
+      setOpen(!nav.classList.contains('nav-open'));
+    });
+
+    nav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!nav.classList.contains('nav-open')) return;
+      if (!nav.contains(e.target) && !menuToggle.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('nav-open')) {
+        setOpen(false);
+        menuToggle.focus();
+      }
+    });
+  })();
 </script>
 
 <style>
@@ -113,16 +167,32 @@ const currentPath = Astro.url.pathname;
     color: var(--ink);
   }
 
-  .nav-item {
-    font-size: 0.8125rem;
-    color: var(--ink-muted);
-    transition: color 0.15s ease;
+  /* Mobile: hidden until the hamburger opens it; desktop: always inline */
+  .site-nav {
+    display: none;
   }
 
-  @media (min-width: 768px) {
-    .nav-item {
-      font-size: 0.875rem;
-    }
+  .site-nav.nav-open {
+    display: block;
+  }
+
+  .nav-list {
+    display: flex;
+    flex-direction: column;
+    padding: 0.4rem 0 0.5rem;
+  }
+
+  .nav-list > li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  .nav-item {
+    display: block;
+    padding: 0.65rem 0.25rem;
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    transition: color 0.15s ease;
+    white-space: nowrap;
   }
 
   .nav-item:hover {
@@ -137,6 +207,46 @@ const currentPath = Astro.url.pathname;
     text-decoration-color: var(--accent);
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    .site-nav.nav-open .nav-list {
+      animation: navReveal 0.22s ease;
+    }
+
+    @keyframes navReveal {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    .site-nav {
+      display: block;
+    }
+
+    .nav-list {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 0 1.5rem;
+      padding: 0;
+    }
+
+    .nav-list > li + li {
+      border-top: none;
+    }
+
+    .nav-item {
+      display: inline-flex;
+      padding: 0;
+      font-size: 0.875rem;
+    }
+  }
+
   .lang-switch {
     font-size: 0.8rem;
     font-weight: 500;
@@ -149,13 +259,13 @@ const currentPath = Astro.url.pathname;
     color: var(--ink);
   }
 
-  .theme-btn {
+  .icon-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     align-self: center;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     padding: 0;
     background: none;
     border: none;
@@ -164,12 +274,18 @@ const currentPath = Astro.url.pathname;
     transition: color 0.15s ease;
   }
 
-  .theme-btn:hover {
+  .icon-btn:hover {
     color: var(--ink);
   }
 
-  .theme-btn svg {
+  .icon-btn svg {
     width: 17px;
     height: 17px;
+  }
+
+  @media (min-width: 768px) {
+    .menu-btn {
+      display: none;
+    }
   }
 </style>
