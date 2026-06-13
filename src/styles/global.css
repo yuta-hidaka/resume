@@ -18,13 +18,14 @@
   --line-strong: rgba(18, 42, 30, 0.34);
   --accent: #17684a;
   --gold: #745d2a;
-  --glass-tint-a: rgba(255, 255, 255, 0.38);
-  --glass-tint-b: rgba(255, 255, 255, 0.12);
+  --glass-tint-a: rgba(255, 255, 255, 0.20);
+  --glass-tint-b: rgba(255, 255, 255, 0.05);
   --glass-edge: rgba(255, 255, 255, 0.95);
-  --glass-edge-end: rgba(18, 46, 32, 0.40);
-  --glass-contact: rgba(18, 46, 32, 0.30);
-  --glass-blur: 28px;
-  --glass-shadow: 0 28px 56px -14px rgba(16, 48, 33, 0.32), 0 6px 18px rgba(16, 48, 33, 0.12);
+  --glass-edge-end: rgba(18, 46, 32, 0.42);
+  --glass-contact: rgba(18, 46, 32, 0.28);
+  --glass-blur: 13px;
+  --glass-saturate: 185%;
+  --glass-shadow: 0 28px 56px -16px rgba(16, 48, 33, 0.30), 0 6px 18px rgba(16, 48, 33, 0.10);
   --font-display: 'Newsreader', 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
   color-scheme: light;
@@ -40,12 +41,13 @@
   --line-strong: rgba(255, 255, 255, 0.36);
   --accent: #5ecb97;
   --gold: #d9bd83;
-  --glass-tint-a: rgba(255, 255, 255, 0.14);
-  --glass-tint-b: rgba(255, 255, 255, 0.04);
-  --glass-edge: rgba(255, 255, 255, 0.65);
-  --glass-edge-end: rgba(255, 255, 255, 0.22);
-  --glass-contact: rgba(0, 0, 0, 0.22);
-  --glass-blur: 30px;
+  --glass-tint-a: rgba(255, 255, 255, 0.085);
+  --glass-tint-b: rgba(255, 255, 255, 0.02);
+  --glass-edge: rgba(255, 255, 255, 0.62);
+  --glass-edge-end: rgba(255, 255, 255, 0.20);
+  --glass-contact: rgba(0, 0, 0, 0.26);
+  --glass-blur: 15px;
+  --glass-saturate: 180%;
   --glass-shadow: 0 28px 56px -14px rgba(0, 0, 0, 0.60), 0 6px 18px rgba(0, 0, 0, 0.28);
   color-scheme: dark;
 }
@@ -61,12 +63,13 @@
     --line-strong: rgba(255, 255, 255, 0.36);
     --accent: #5ecb97;
     --gold: #d9bd83;
-    --glass-tint-a: rgba(255, 255, 255, 0.14);
-    --glass-tint-b: rgba(255, 255, 255, 0.04);
-    --glass-edge: rgba(255, 255, 255, 0.65);
-    --glass-edge-end: rgba(255, 255, 255, 0.22);
-    --glass-contact: rgba(0, 0, 0, 0.22);
-    --glass-blur: 30px;
+    --glass-tint-a: rgba(255, 255, 255, 0.085);
+    --glass-tint-b: rgba(255, 255, 255, 0.02);
+    --glass-edge: rgba(255, 255, 255, 0.62);
+    --glass-edge-end: rgba(255, 255, 255, 0.20);
+    --glass-contact: rgba(0, 0, 0, 0.26);
+    --glass-blur: 15px;
+    --glass-saturate: 180%;
     --glass-shadow: 0 28px 56px -14px rgba(0, 0, 0, 0.60), 0 6px 18px rgba(0, 0, 0, 0.28);
     color-scheme: dark;
   }
@@ -98,7 +101,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Quiet emerald ground — one soft light pool, single hue family, no color mesh */
+/* Quiet emerald ground — single hue, wide light→shade sweep so the
+   clear glass has a gradient to refract without any color mesh */
 body::before {
   content: '';
   position: fixed;
@@ -106,24 +110,24 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(55% 42% at 78% 0%, rgba(255, 255, 255, 0.50) 0%, transparent 70%),
-    radial-gradient(60% 48% at 10% 100%, rgba(38, 92, 64, 0.16) 0%, transparent 72%),
-    linear-gradient(165deg, #dfeae0 0%, #c8dccd 50%, #adcbb8 100%);
+    radial-gradient(70% 55% at 80% -8%, rgba(255, 255, 255, 0.72) 0%, transparent 66%),
+    radial-gradient(75% 60% at 6% 108%, rgba(28, 78, 54, 0.30) 0%, transparent 70%),
+    linear-gradient(162deg, #e6efe7 0%, #c4d9c9 48%, #93b9a3 100%);
 }
 
 :root.dark body::before {
   background:
-    radial-gradient(55% 42% at 78% 0%, rgba(96, 170, 128, 0.17) 0%, transparent 70%),
-    radial-gradient(60% 48% at 10% 100%, rgba(0, 0, 0, 0.38) 0%, transparent 72%),
-    linear-gradient(165deg, #122c1e 0%, #0c2014 50%, #081609 100%);
+    radial-gradient(70% 55% at 80% -8%, rgba(110, 188, 142, 0.24) 0%, transparent 66%),
+    radial-gradient(75% 60% at 6% 108%, rgba(0, 0, 0, 0.55) 0%, transparent 70%),
+    linear-gradient(162deg, #163420 0%, #0c2014 50%, #050f08 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) body::before {
     background:
-      radial-gradient(55% 42% at 78% 0%, rgba(96, 170, 128, 0.17) 0%, transparent 70%),
-      radial-gradient(60% 48% at 10% 100%, rgba(0, 0, 0, 0.38) 0%, transparent 72%),
-      linear-gradient(165deg, #122c1e 0%, #0c2014 50%, #081609 100%);
+      radial-gradient(70% 55% at 80% -8%, rgba(110, 188, 142, 0.24) 0%, transparent 66%),
+      radial-gradient(75% 60% at 6% 108%, rgba(0, 0, 0, 0.55) 0%, transparent 70%),
+      linear-gradient(162deg, #163420 0%, #0c2014 50%, #050f08 100%);
   }
 }
 
@@ -132,8 +136,8 @@ body::before {
 .glass {
   position: relative;
   background: linear-gradient(135deg, var(--glass-tint-a) 0%, var(--glass-tint-b) 100%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%) brightness(1.04);
-  backdrop-filter: blur(var(--glass-blur)) saturate(190%) brightness(1.04);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) contrast(1.06);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) contrast(1.06);
   border-radius: 26px;
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.38),
