@@ -18,13 +18,13 @@
   --line-strong: rgba(18, 42, 30, 0.34);
   --accent: #17684a;
   --gold: #745d2a;
-  --glass-tint-a: rgba(255, 255, 255, 0.44);
-  --glass-tint-b: rgba(255, 255, 255, 0.20);
+  --glass-tint-a: rgba(255, 255, 255, 0.38);
+  --glass-tint-b: rgba(255, 255, 255, 0.12);
   --glass-edge: rgba(255, 255, 255, 0.95);
-  --glass-edge-end: rgba(18, 46, 32, 0.30);
-  --glass-contact: rgba(18, 46, 32, 0.22);
-  --glass-blur: 22px;
-  --glass-shadow: 0 18px 44px rgba(20, 56, 39, 0.20);
+  --glass-edge-end: rgba(18, 46, 32, 0.40);
+  --glass-contact: rgba(18, 46, 32, 0.30);
+  --glass-blur: 28px;
+  --glass-shadow: 0 28px 56px -14px rgba(16, 48, 33, 0.32), 0 6px 18px rgba(16, 48, 33, 0.12);
   --font-display: 'Newsreader', 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
   color-scheme: light;
@@ -40,13 +40,13 @@
   --line-strong: rgba(255, 255, 255, 0.36);
   --accent: #5ecb97;
   --gold: #d9bd83;
-  --glass-tint-a: rgba(255, 255, 255, 0.11);
-  --glass-tint-b: rgba(255, 255, 255, 0.035);
-  --glass-edge: rgba(255, 255, 255, 0.42);
-  --glass-edge-end: rgba(255, 255, 255, 0.30);
-  --glass-contact: rgba(0, 0, 0, 0.12);
-  --glass-blur: 24px;
-  --glass-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+  --glass-tint-a: rgba(255, 255, 255, 0.14);
+  --glass-tint-b: rgba(255, 255, 255, 0.04);
+  --glass-edge: rgba(255, 255, 255, 0.65);
+  --glass-edge-end: rgba(255, 255, 255, 0.22);
+  --glass-contact: rgba(0, 0, 0, 0.22);
+  --glass-blur: 30px;
+  --glass-shadow: 0 28px 56px -14px rgba(0, 0, 0, 0.60), 0 6px 18px rgba(0, 0, 0, 0.28);
   color-scheme: dark;
 }
 
@@ -61,13 +61,13 @@
     --line-strong: rgba(255, 255, 255, 0.36);
     --accent: #5ecb97;
     --gold: #d9bd83;
-    --glass-tint-a: rgba(255, 255, 255, 0.11);
-    --glass-tint-b: rgba(255, 255, 255, 0.035);
-    --glass-edge: rgba(255, 255, 255, 0.42);
-    --glass-edge-end: rgba(255, 255, 255, 0.30);
-    --glass-contact: rgba(0, 0, 0, 0.12);
-    --glass-blur: 24px;
-    --glass-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+    --glass-tint-a: rgba(255, 255, 255, 0.14);
+    --glass-tint-b: rgba(255, 255, 255, 0.04);
+    --glass-edge: rgba(255, 255, 255, 0.65);
+    --glass-edge-end: rgba(255, 255, 255, 0.22);
+    --glass-contact: rgba(0, 0, 0, 0.22);
+    --glass-blur: 30px;
+    --glass-shadow: 0 28px 56px -14px rgba(0, 0, 0, 0.60), 0 6px 18px rgba(0, 0, 0, 0.28);
     color-scheme: dark;
   }
 }
@@ -98,7 +98,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Rich emerald ground — the content the glass refracts */
+/* Rich emerald ground — luminous orbs give the glass something to refract */
 body::before {
   content: '';
   position: fixed;
@@ -106,27 +106,30 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(55% 45% at 88% 6%, rgba(98, 188, 144, 0.30) 0%, transparent 62%),
-    radial-gradient(45% 40% at 6% 90%, rgba(56, 142, 100, 0.28) 0%, transparent 65%),
-    radial-gradient(35% 30% at 16% 12%, rgba(196, 168, 110, 0.12) 0%, transparent 70%),
-    linear-gradient(158deg, #d9e8db 0%, #c9ddcd 38%, #b7d2bf 100%);
+    radial-gradient(38% 30% at 86% 10%, rgba(38, 158, 102, 0.50) 0%, transparent 68%),
+    radial-gradient(30% 26% at 10% 36%, rgba(92, 190, 138, 0.42) 0%, transparent 70%),
+    radial-gradient(34% 28% at 76% 74%, rgba(24, 120, 78, 0.36) 0%, transparent 70%),
+    radial-gradient(26% 22% at 24% 88%, rgba(190, 158, 96, 0.26) 0%, transparent 72%),
+    linear-gradient(160deg, #dcebdd 0%, #c2dac7 45%, #a4c7b0 100%);
 }
 
 :root.dark body::before {
   background:
-    radial-gradient(55% 45% at 88% 6%, rgba(64, 168, 116, 0.22) 0%, transparent 62%),
-    radial-gradient(45% 40% at 6% 90%, rgba(34, 110, 74, 0.26) 0%, transparent 65%),
-    radial-gradient(35% 30% at 16% 12%, rgba(217, 189, 131, 0.07) 0%, transparent 70%),
-    linear-gradient(158deg, #10291c 0%, #0c2114 45%, #07150d 100%);
+    radial-gradient(38% 30% at 86% 10%, rgba(74, 200, 136, 0.34) 0%, transparent 68%),
+    radial-gradient(30% 26% at 10% 36%, rgba(48, 156, 104, 0.30) 0%, transparent 70%),
+    radial-gradient(34% 28% at 76% 74%, rgba(38, 136, 92, 0.26) 0%, transparent 70%),
+    radial-gradient(26% 22% at 24% 88%, rgba(217, 189, 131, 0.12) 0%, transparent 72%),
+    linear-gradient(158deg, #133021 0%, #0c2114 45%, #061308 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) body::before {
     background:
-      radial-gradient(55% 45% at 88% 6%, rgba(64, 168, 116, 0.22) 0%, transparent 62%),
-      radial-gradient(45% 40% at 6% 90%, rgba(34, 110, 74, 0.26) 0%, transparent 65%),
-      radial-gradient(35% 30% at 16% 12%, rgba(217, 189, 131, 0.07) 0%, transparent 70%),
-      linear-gradient(158deg, #10291c 0%, #0c2114 45%, #07150d 100%);
+      radial-gradient(38% 30% at 86% 10%, rgba(74, 200, 136, 0.34) 0%, transparent 68%),
+      radial-gradient(30% 26% at 10% 36%, rgba(48, 156, 104, 0.30) 0%, transparent 70%),
+      radial-gradient(34% 28% at 76% 74%, rgba(38, 136, 92, 0.26) 0%, transparent 70%),
+      radial-gradient(26% 22% at 24% 88%, rgba(217, 189, 131, 0.12) 0%, transparent 72%),
+      linear-gradient(158deg, #133021 0%, #0c2114 45%, #061308 100%);
   }
 }
 
@@ -135,14 +138,25 @@ body::before {
 .glass {
   position: relative;
   background: linear-gradient(135deg, var(--glass-tint-a) 0%, var(--glass-tint-b) 100%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(165%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(165%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%) brightness(1.04);
+  backdrop-filter: blur(var(--glass-blur)) saturate(190%) brightness(1.04);
   border-radius: 26px;
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.30),
-    inset 0 -1px 1px var(--glass-contact),
+    inset 0 1px 1px rgba(255, 255, 255, 0.38),
+    inset 0 -2px 4px var(--glass-contact),
+    inset 2px 0 2px -1px rgba(255, 255, 255, 0.10),
     var(--glass-shadow);
   isolation: isolate;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  main .glass {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+  }
+
+  main .glass:hover {
+    transform: translateY(-3px);
+  }
 }
 
 /* Refraction ring — light bending at the rim */
@@ -167,14 +181,15 @@ body::before {
   z-index: 1;
 }
 
-/* Specular streak across the top face (below the content, above the tint) */
+/* Specular: top-face bloom + a diagonal light band sweeping the glass */
 .glass::after {
   content: '';
   position: absolute;
-  inset: 0 0 auto 0;
-  height: 42%;
+  inset: 0;
   border-radius: inherit;
-  background: radial-gradient(120% 100% at 30% -20%, rgba(255, 255, 255, 0.16) 0%, transparent 60%);
+  background:
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.20) 43%, rgba(255, 255, 255, 0.05) 52%, transparent 64%),
+    radial-gradient(130% 90% at 28% -14%, rgba(255, 255, 255, 0.26) 0%, transparent 58%);
   pointer-events: none;
   z-index: -1;
 }
