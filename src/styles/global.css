@@ -4,20 +4,19 @@
 @import "tailwindcss";
 
 /*
- * Liquid-glass design system — Apple-style refractive glass over a
- * deep emerald ground, with a restrained champagne-gold accent.
- * Serif display type carries the editorial voice.
+ * Liquid-glass design system — Apple-style refractive glass on a
+ * neutral ground (white in light, near-black in dark) with a single
+ * green accent. Serif display type carries the editorial voice.
  */
 :root {
-  --paper: #e8f0e9;
-  --paper-raised: rgba(255, 255, 255, 0.55);
-  --ink: #15241c;
-  --ink-secondary: #35493c;
-  --ink-muted: #53685a;
-  --line: rgba(18, 42, 30, 0.16);
-  --line-strong: rgba(18, 42, 30, 0.34);
+  --paper: #eef0ef;
+  --paper-raised: rgba(255, 255, 255, 0.62);
+  --ink: #181a1b;
+  --ink-secondary: #3d4042;
+  --ink-muted: #646769;
+  --line: rgba(0, 0, 0, 0.12);
+  --line-strong: rgba(0, 0, 0, 0.28);
   --accent: #17684a;
-  --gold: #745d2a;
   --glass-tint-a: rgba(255, 255, 255, 0.20);
   --glass-tint-b: rgba(255, 255, 255, 0.05);
   --glass-edge: rgba(255, 255, 255, 0.95);
@@ -32,15 +31,14 @@
 }
 
 :root.dark {
-  --paper: #0a1c13;
-  --paper-raised: rgba(255, 255, 255, 0.07);
-  --ink: #e9f1ea;
-  --ink-secondary: #c0d0c3;
-  --ink-muted: #92aa9a;
-  --line: rgba(255, 255, 255, 0.14);
-  --line-strong: rgba(255, 255, 255, 0.36);
+  --paper: #050506;
+  --paper-raised: rgba(255, 255, 255, 0.06);
+  --ink: #f1f2f3;
+  --ink-secondary: #c2c4c6;
+  --ink-muted: #8a8d8f;
+  --line: rgba(255, 255, 255, 0.13);
+  --line-strong: rgba(255, 255, 255, 0.34);
   --accent: #5ecb97;
-  --gold: #d9bd83;
   --glass-tint-a: rgba(255, 255, 255, 0.085);
   --glass-tint-b: rgba(255, 255, 255, 0.02);
   --glass-edge: rgba(255, 255, 255, 0.62);
@@ -54,15 +52,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --paper: #0a1c13;
-    --paper-raised: rgba(255, 255, 255, 0.07);
-    --ink: #e9f1ea;
-    --ink-secondary: #c0d0c3;
-    --ink-muted: #92aa9a;
-    --line: rgba(255, 255, 255, 0.14);
-    --line-strong: rgba(255, 255, 255, 0.36);
+    --paper: #050506;
+    --paper-raised: rgba(255, 255, 255, 0.06);
+    --ink: #f1f2f3;
+    --ink-secondary: #c2c4c6;
+    --ink-muted: #8a8d8f;
+    --line: rgba(255, 255, 255, 0.13);
+    --line-strong: rgba(255, 255, 255, 0.34);
     --accent: #5ecb97;
-    --gold: #d9bd83;
     --glass-tint-a: rgba(255, 255, 255, 0.085);
     --glass-tint-b: rgba(255, 255, 255, 0.02);
     --glass-edge: rgba(255, 255, 255, 0.62);
@@ -110,24 +107,24 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(70% 55% at 80% -8%, rgba(255, 255, 255, 0.72) 0%, transparent 66%),
-    radial-gradient(75% 60% at 6% 108%, rgba(28, 78, 54, 0.30) 0%, transparent 70%),
-    linear-gradient(162deg, #e6efe7 0%, #c4d9c9 48%, #93b9a3 100%);
+    radial-gradient(70% 55% at 80% -8%, rgba(255, 255, 255, 0.95) 0%, transparent 66%),
+    radial-gradient(75% 60% at 6% 108%, rgba(0, 0, 0, 0.06) 0%, transparent 70%),
+    linear-gradient(162deg, #fafbfb 0%, #eceeed 50%, #dadedc 100%);
 }
 
 :root.dark body::before {
   background:
-    radial-gradient(70% 55% at 80% -8%, rgba(110, 188, 142, 0.24) 0%, transparent 66%),
-    radial-gradient(75% 60% at 6% 108%, rgba(0, 0, 0, 0.55) 0%, transparent 70%),
-    linear-gradient(162deg, #163420 0%, #0c2014 50%, #050f08 100%);
+    radial-gradient(70% 55% at 80% -8%, rgba(94, 203, 151, 0.10) 0%, transparent 64%),
+    radial-gradient(60% 50% at 82% -6%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+    linear-gradient(162deg, #161719 0%, #0a0a0b 52%, #000000 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) body::before {
     background:
-      radial-gradient(70% 55% at 80% -8%, rgba(110, 188, 142, 0.24) 0%, transparent 66%),
-      radial-gradient(75% 60% at 6% 108%, rgba(0, 0, 0, 0.55) 0%, transparent 70%),
-      linear-gradient(162deg, #163420 0%, #0c2014 50%, #050f08 100%);
+      radial-gradient(70% 55% at 80% -8%, rgba(94, 203, 151, 0.10) 0%, transparent 64%),
+      radial-gradient(60% 50% at 82% -6%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+      linear-gradient(162deg, #161719 0%, #0a0a0b 52%, #000000 100%);
   }
 }
 
@@ -211,7 +208,7 @@ body::before {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--accent);
 }
 
 /* Used by DocumentSection headings */
