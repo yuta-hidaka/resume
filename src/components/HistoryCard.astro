@@ -53,11 +53,7 @@ const descId = `career-desc-${locale}-${index}`;
     >{labelMore}</button>
 
     {tags && tags.length > 0 && (
-      <p class="entry-tags">
-        {tags.map((tag) => (
-          <span class="chip">{tag}</span>
-        ))}
-      </p>
+      <p class="entry-tags">{tags.join('  ·  ')}</p>
     )}
   </div>
 </article>
@@ -154,8 +150,9 @@ const descId = `career-desc-${locale}-${index}`;
 
   .entry-tags {
     margin-top: 1.2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
   }
 </style>
