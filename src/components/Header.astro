@@ -22,10 +22,10 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">
-  <div class="glass site-header-bar max-w-3xl mx-auto px-5 sm:px-7 py-3.5 flex flex-wrap items-baseline gap-x-7 gap-y-2">
+  <div class="glass site-header-bar max-w-3xl mx-auto px-5 sm:px-7 py-3.5 flex flex-wrap items-baseline justify-between gap-x-7 gap-y-2">
     <a href={getLocalizedPath(lang, '/')} class="site-name font-display">{siteName}</a>
 
-    <nav id="site-nav" class="site-nav order-4 w-full md:order-2 md:w-auto md:ml-2" aria-label="Main">
+    <nav id="site-nav" class="site-nav order-4 w-full md:order-2 md:w-auto" aria-label="Main">
       <ul class="nav-list">
         {links.map((link) => {
           const href = getLocalizedPath(lang, link.path);
@@ -41,7 +41,7 @@ const currentPath = Astro.url.pathname;
       </ul>
     </nav>
 
-    <div class="order-2 ml-auto flex items-baseline gap-4 sm:gap-5 md:order-3">
+    <div class="order-2 ml-auto md:ml-0 flex items-baseline gap-4 sm:gap-5 md:order-3">
       <a href={langSwitchPath} class="lang-switch" lang={otherLang} hreflang={otherLang}>{langSwitchLabel}</a>
       <button id="theme-toggle" class="icon-btn" aria-label={lang === 'ja' ? 'テーマ切り替え' : 'Toggle theme'}>
         <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
