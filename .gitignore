@@ -41,3 +41,6 @@ private/
 
 # generated doc assets (copied from docs/** at build time)
 public/docs/
+
+# Local preview launch config (machine-specific paths)
+.claude/launch.json
