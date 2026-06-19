@@ -7,15 +7,15 @@ const current = data.experience?.[0];
 ---
 
 <Layout>
-  <section class="pt-14 md:pt-20 pb-10 md:pb-14">
-    <p class="section-label">Software Engineer — Tokyo</p>
-    <h1 class="name-display font-display mt-4">{data.given_name} {data.family_name}</h1>
-    <p class="font-display text-lg text-[var(--ink-muted)] mt-2" lang="ja">日髙 悠太</p>
-    <p class="text-[var(--ink-secondary)] mt-6">{data.profession}</p>
-  </section>
+  <section class="hero pt-8 md:pt-14 pb-12 md:pb-16">
+    <div class="hero-text">
+      <p class="section-label">Software Engineer — Tokyo</p>
+      <h1 class="name-display font-display mt-4">{data.given_name} {data.family_name}</h1>
+      <p class="font-display text-lg text-[var(--ink-muted)] mt-2" lang="ja">日髙 悠太</p>
+      <p class="text-[var(--ink-secondary)] mt-5">{data.profession}</p>
+    </div>
 
-  <section class="glass home-panel grid gap-10 md:grid-cols-[minmax(0,1fr)_200px] md:gap-16 items-start">
-    <figure class="portrait md:order-2">
+    <figure class="hero-portrait">
       <img
         src="/me.jpeg"
         alt={`${data.given_name} ${data.family_name}`}
@@ -24,37 +24,52 @@ const current = data.experience?.[0];
         loading="eager"
       />
     </figure>
+  </section>
 
-    <div class="md:order-1">
-      <p class="text-[var(--ink-secondary)] leading-loose">{data.bio}</p>
+  <hr class="rule" />
 
-      <dl class="mt-10 grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm">
-        {current && (
-          <>
-            <dt class="text-[var(--ink-muted)]">Currently</dt>
-            <dd>{current.company} — {current.jobTitle}</dd>
-          </>
-        )}
-        <dt class="text-[var(--ink-muted)]">Based in</dt>
-        <dd>{data.address}</dd>
-      </dl>
+  <section class="pt-12 md:pt-14">
+    <p class="bio-text text-[var(--ink-secondary)] leading-loose">{data.bio}</p>
 
-      {data.social && (
-        <ul class="mt-10 flex flex-wrap gap-x-7 gap-y-2 text-sm">
-          {data.social.map((social) => (
-            <li>
-              <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-link">
-                {social.name} ↗
-              </a>
-            </li>
-          ))}
-        </ul>
+    <dl class="mt-10 grid grid-cols-[auto_1fr] gap-x-8 gap-y-2.5 text-sm max-w-xl">
+      {current && (
+        <>
+          <dt class="text-[var(--ink-muted)]">Currently</dt>
+          <dd>{current.company} — {current.jobTitle}</dd>
+        </>
       )}
-    </div>
+      <dt class="text-[var(--ink-muted)]">Based in</dt>
+      <dd>{data.address}</dd>
+    </dl>
+
+    {data.social && (
+      <ul class="mt-9 flex flex-wrap gap-x-7 gap-y-2 text-sm">
+        {data.social.map((social) => (
+          <li>
+            <a href={social.url} target="_blank" rel="noopener noreferrer" class="text-link">
+              {social.name} ↗
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
   </section>
 </Layout>
 
 <style>
+  .hero {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 3.5rem;
+    }
+  }
+
   .name-display {
     font-size: clamp(2.75rem, 9vw, 4.25rem);
     font-weight: 500;
@@ -62,30 +77,28 @@ const current = data.experience?.[0];
     letter-spacing: -0.015em;
   }
 
-  .home-panel {
-    padding: 2rem 1.75rem;
-    margin: 1.5rem 0;
+  .hero-portrait {
+    width: 200px;
+    justify-self: start;
   }
 
   @media (min-width: 768px) {
-    .home-panel {
-      padding: 2.5rem 2.5rem;
+    .hero-portrait {
+      width: 224px;
+      justify-self: end;
     }
   }
 
-  .portrait {
-    width: 200px;
-    padding: 0.45rem;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    background: var(--paper-raised);
-  }
-
-  .portrait img {
+  .hero-portrait img {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: 13px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+
+  .bio-text {
+    max-width: 42rem;
   }
 </style>

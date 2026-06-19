@@ -4,70 +4,48 @@
 @import "tailwindcss";
 
 /*
- * Liquid-glass design system — Apple-style refractive glass on a
- * neutral ground (white in light, near-black in dark) with a single
- * green accent. Serif display type carries the editorial voice.
+ * Flat, minimal design system — neutral ground (near-white / near-black),
+ * quiet surfaces separated by hairlines and whitespace, a single green
+ * accent, and serif display type for the editorial voice. No glass,
+ * no gradients, no shadows beyond a whisper.
  */
 :root {
-  --paper: #eef0ef;
-  --paper-raised: rgba(255, 255, 255, 0.62);
-  --ink: #181a1b;
-  --ink-secondary: #3d4042;
-  --ink-muted: #646769;
-  --line: rgba(0, 0, 0, 0.12);
-  --line-strong: rgba(0, 0, 0, 0.28);
+  --paper: #f3f4f3;
+  --surface: #ffffff;
+  --ink: #16181a;
+  --ink-secondary: #44474a;
+  --ink-muted: #6b6f72;
+  --line: rgba(0, 0, 0, 0.10);
+  --line-strong: rgba(0, 0, 0, 0.20);
   --accent: #17684a;
-  --glass-tint-a: rgba(255, 255, 255, 0.20);
-  --glass-tint-b: rgba(255, 255, 255, 0.05);
-  --glass-edge: rgba(255, 255, 255, 0.95);
-  --glass-edge-end: rgba(18, 46, 32, 0.42);
-  --glass-contact: rgba(18, 46, 32, 0.28);
-  --glass-blur: 13px;
-  --glass-saturate: 185%;
-  --glass-shadow: 0 28px 56px -16px rgba(16, 48, 33, 0.30), 0 6px 18px rgba(16, 48, 33, 0.10);
+  --card-radius: 14px;
   --font-display: 'Newsreader', 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
   color-scheme: light;
 }
 
 :root.dark {
-  --paper: #131417;
-  --paper-raised: rgba(255, 255, 255, 0.06);
-  --ink: #f1f2f3;
-  --ink-secondary: #c2c4c6;
-  --ink-muted: #8a8d8f;
-  --line: rgba(255, 255, 255, 0.13);
-  --line-strong: rgba(255, 255, 255, 0.34);
+  --paper: #0f1012;
+  --surface: #17191c;
+  --ink: #ededee;
+  --ink-secondary: #aeb1b4;
+  --ink-muted: #787c80;
+  --line: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.20);
   --accent: #5ecb97;
-  --glass-tint-a: rgba(255, 255, 255, 0.10);
-  --glass-tint-b: rgba(255, 255, 255, 0.035);
-  --glass-edge: rgba(255, 255, 255, 0.85);
-  --glass-edge-end: rgba(255, 255, 255, 0.10);
-  --glass-contact: rgba(0, 0, 0, 0.30);
-  --glass-blur: 16px;
-  --glass-saturate: 175%;
-  --glass-shadow: 0 22px 48px -18px rgba(0, 0, 0, 0.72), 0 2px 8px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --paper: #131417;
-    --paper-raised: rgba(255, 255, 255, 0.06);
-    --ink: #f1f2f3;
-    --ink-secondary: #c2c4c6;
-    --ink-muted: #8a8d8f;
-    --line: rgba(255, 255, 255, 0.13);
-    --line-strong: rgba(255, 255, 255, 0.34);
+    --paper: #0f1012;
+    --surface: #17191c;
+    --ink: #ededee;
+    --ink-secondary: #aeb1b4;
+    --ink-muted: #787c80;
+    --line: rgba(255, 255, 255, 0.10);
+    --line-strong: rgba(255, 255, 255, 0.20);
     --accent: #5ecb97;
-    --glass-tint-a: rgba(255, 255, 255, 0.10);
-    --glass-tint-b: rgba(255, 255, 255, 0.035);
-    --glass-edge: rgba(255, 255, 255, 0.85);
-    --glass-edge-end: rgba(255, 255, 255, 0.10);
-    --glass-contact: rgba(0, 0, 0, 0.30);
-    --glass-blur: 16px;
-    --glass-saturate: 175%;
-    --glass-shadow: 0 22px 48px -18px rgba(0, 0, 0, 0.72), 0 2px 8px rgba(0, 0, 0, 0.4);
     color-scheme: dark;
   }
 }
@@ -78,12 +56,12 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 11rem;
+  scroll-padding-top: 8rem;
 }
 
 @media (min-width: 768px) {
   html {
-    scroll-padding-top: 7rem;
+    scroll-padding-top: 6rem;
   }
 }
 
@@ -92,98 +70,18 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-size: 16px;
-  line-height: 1.85;
+  line-height: 1.8;
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Neutral ground — soft light→shade sweep so the clear glass has a
-   gradient to refract; no color mesh */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(70% 55% at 80% -8%, rgba(255, 255, 255, 0.95) 0%, transparent 66%),
-    radial-gradient(75% 60% at 6% 108%, rgba(0, 0, 0, 0.06) 0%, transparent 70%),
-    linear-gradient(162deg, #fafbfb 0%, #eceeed 50%, #dadedc 100%);
-}
-
-:root.dark body::before {
-  background:
-    radial-gradient(70% 55% at 80% -8%, rgba(94, 203, 151, 0.10) 0%, transparent 64%),
-    radial-gradient(60% 50% at 82% -6%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
-    linear-gradient(162deg, #1c1e21 0%, #141518 52%, #0d0e10 100%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) body::before {
-    background:
-      radial-gradient(70% 55% at 80% -8%, rgba(94, 203, 151, 0.10) 0%, transparent 64%),
-      radial-gradient(60% 50% at 82% -6%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
-      linear-gradient(162deg, #1c1e21 0%, #141518 52%, #0d0e10 100%);
-  }
-}
-
-/* ——— Liquid glass material ——— */
+/* ——— Surface (flat card) ——— */
 
 .glass {
-  position: relative;
-  background: linear-gradient(135deg, var(--glass-tint-a) 0%, var(--glass-tint-b) 100%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) contrast(1.06);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) contrast(1.06);
-  border-radius: 26px;
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.30),
-    inset 0 -2px 4px var(--glass-contact),
-    var(--glass-shadow);
-  isolation: isolate;
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  main .glass {
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-  }
-
-  main .glass:hover {
-    transform: translateY(-3px);
-  }
-}
-
-/* Refraction ring — light bending at the rim */
-.glass::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    var(--glass-edge) 0%,
-    rgba(255, 255, 255, 0.10) 35%,
-    rgba(255, 255, 255, 0.03) 62%,
-    var(--glass-edge-end) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Specular: a soft bloom along the top face only (no diagonal streak) */
-.glass::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(135% 70% at 32% -18%, rgba(255, 255, 255, 0.12) 0%, transparent 52%);
-  pointer-events: none;
-  z-index: -1;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
 }
 
 /* ——— Typography ——— */
@@ -197,13 +95,14 @@ body::before {
   font-size: clamp(2.25rem, 6vw, 3rem);
   font-weight: 500;
   line-height: 1.2;
+  letter-spacing: 0.01em;
   color: var(--ink);
 }
 
 .section-label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -248,47 +147,27 @@ a {
   border-top: 1px solid var(--line);
 }
 
-/* Capsule glass button */
+/* Flat outline button */
 .btn {
-  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
+  padding: 0.5rem 1.1rem;
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--glass-tint-a) 0%, var(--glass-tint-b) 100%);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.30);
+  border-radius: 8px;
+  background: transparent;
   color: var(--ink);
   font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 
 .btn:hover {
-  border-color: var(--ink-muted);
-  background-color: var(--paper-raised);
-  transform: translateY(-1px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-/* Small glass chip (tags) */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15rem 0.7rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper-raised);
-  font-size: 0.74rem;
-  letter-spacing: 0.02em;
-  color: var(--ink-muted);
-  white-space: nowrap;
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
 /* Date column + content rows (career, education) */
@@ -307,7 +186,7 @@ a {
   font-size: 0.85rem;
   color: var(--ink-muted);
   white-space: nowrap;
-  padding-top: 0.45rem;
+  padding-top: 0.4rem;
 }
 
 /* Dotted leader between a label and its value, print-index style */
@@ -322,19 +201,10 @@ a {
 /* ——— Details ——— */
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .glass,
-  .btn {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background: var(--paper);
-  }
 }

@@ -28,7 +28,7 @@ const labelLess = locale === 'ja' ? '閉じる' : 'Show less';
 const descId = `career-desc-${locale}-${index}`;
 ---
 
-<article class="glass career-entry entry-grid">
+<article class="career-entry entry-grid">
   <p class="entry-dates tnum">
     {formattedStartDate} — {formattedEndDate}
   </p>
@@ -97,14 +97,8 @@ const descId = `career-desc-${locale}-${index}`;
 
 <style>
   .career-entry {
-    padding: 1.9rem 1.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  @media (min-width: 768px) {
-    .career-entry {
-      padding: 2.1rem 2.25rem;
-    }
+    border-top: 1px solid var(--line);
+    padding: 2.25rem 0 2.5rem;
   }
 
   .entry-company {

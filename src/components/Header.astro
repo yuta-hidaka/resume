@@ -22,7 +22,7 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">
-  <div class="glass site-header-bar max-w-3xl mx-auto px-5 sm:px-7 py-3.5 flex flex-wrap items-baseline justify-between gap-x-7 gap-y-2">
+  <div class="site-header-bar max-w-3xl mx-auto px-5 sm:px-8 py-4 flex flex-wrap items-baseline justify-between gap-x-7 gap-y-2">
     <a href={getLocalizedPath(lang, '/')} class="site-name font-display">{siteName}</a>
 
     <nav id="site-nav" class="site-nav order-4 w-full md:order-2 md:w-auto" aria-label="Main">
@@ -152,12 +152,8 @@ const currentPath = Astro.url.pathname;
     left: 0;
     right: 0;
     z-index: 50;
-    padding: 14px 16px 0;
-    pointer-events: none;
-  }
-
-  .site-header-bar {
-    pointer-events: auto;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
   }
 
   .site-name {
