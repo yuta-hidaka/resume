@@ -20,15 +20,15 @@ Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in de
 
 **Big Data Group (Backend Team → xfunction Team)**
 
-- Building and maintaining systems with Golang, Next.js, Kafka, Spark, ArgoCD, Kubernetes, and k9s
+- Building and maintaining systems with Golang, Next.js, Kafka, Spark, Trino, Iceberg, Parquet, ArgoCD, Kubernetes, and k9s
 - Big data infrastructure, event-driven architecture, Kubernetes operations, Scrum development
 - Played a central role as a founding member of the xfunction team
 - Previously, FE/BE communication and cross-department coordination was fragmented — a project scheduled for June release was delayed until October due to communication losses
 - Prioritized psychological safety in the new team: conducted Drucker-style exercises, fostered proactive inter-member communication, and aligned expectations with PdM and stakeholders, eliminating unintended project delays to zero within 5 months of the team's establishment
-- Introduced Spark's `CREATE OR REPLACE TABLE` syntax in data processing, improving processing speed and cost by 30%
+- Data platform on Spark, Trino, and Iceberg (Parquet); introduced Spark's `CREATE OR REPLACE TABLE` syntax in batch processing, improving processing speed and cost by 30%
 - Proactive communication with designers, cross-department/cross-team collaboration, lead role within xfunction team
 
-**Tech Stack**: Go, Next.js, Kafka, Spark, Kubernetes, ArgoCD, k9s
+**Tech Stack**: Go, Next.js, Kafka, Spark, Trino, Iceberg, Parquet, Kubernetes, ArgoCD, k9s
 
 ---
 
