@@ -25,7 +25,7 @@ Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in de
 - Played a central role as a founding member of the xfunction team
 - Previously, FE/BE communication and cross-department coordination was fragmented — a project scheduled for June release was delayed until October due to communication losses
 - Prioritized psychological safety in the new team: conducted Drucker-style exercises, fostered proactive inter-member communication, and aligned expectations with PdM and stakeholders, eliminating unintended project delays to zero within 5 months of the team's establishment
-- Data platform on Iceberg (Parquet storage) with Trino as the analytics query engine; introduced Spark SQL's `CREATE OR REPLACE TABLE` in the data ingestion process, improving processing speed and cost by 30%
+- Data platform on Iceberg (Parquet storage) with Trino as the analytics query engine; leveraged AI to scrutinize the code and introduced Spark SQL's `CREATE OR REPLACE TABLE` in the data ingestion process, improving processing speed and cost by 30%
 - Drove AI adoption by optimizing Claude Code's Agents (subagents) and harness — designed and rolled out a subagent setup that routes tasks to Opus, Sonnet, or Haiku by workload, cutting token usage cost by 50%
 - Proactive communication with designers, cross-department/cross-team collaboration, lead role within xfunction team
 
