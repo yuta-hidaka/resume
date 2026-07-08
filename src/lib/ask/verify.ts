@@ -213,16 +213,38 @@ export function safeFallback(cfg: AskConfig, query: string): string {
   return facts.replace(/\s+/g, ' ').trim();
 }
 
+/** Detect degenerate model output — repetition loops / near-zero diversity that a
+ *  tiny model can fall into (e.g. "先のこと、先のこと、…" hundreds of times). Such
+ *  text carries no false facts, so the verifier would pass it, but it is garbage
+ *  and must never be shown as a "verified" answer. */
+export function looksDegenerate(answer: string): boolean {
+  const s = (answer || '').trim();
+  if (!s) return true;
+  // A short unit (even a single char) repeated back-to-back many times.
+  if (/(.{1,12}?)\1{5,}/s.test(s)) return true;
+  // Near-zero diversity: mostly the same handful of tokens on a loop.
+  const toks = s.toLowerCase().match(/[a-z0-9]+|[぀-ヿ㐀-鿿]/g) ?? [];
+  if (toks.length >= 12) {
+    const counts = new Map<string, number>();
+    for (const t of toks) counts.set(t, (counts.get(t) ?? 0) + 1);
+    const uniqRatio = counts.size / toks.length;
+    const topShare = Math.max(...counts.values()) / toks.length;
+    if (uniqRatio < 0.28 || topShare > 0.42) return true;
+  }
+  return false;
+}
+
 /** The single gate every shown answer passes through. If the model's answer is
- *  empty or contains anything we can't confirm against the résumé, it is dropped
- *  and replaced with real résumé facts. The returned `text` is therefore ALWAYS
- *  facts-only — in any language. This is the function the UI and tests rely on. */
+ *  empty, degenerate (a repetition loop), or contains anything we can't confirm
+ *  against the résumé, it is dropped and replaced with real résumé facts. The
+ *  returned `text` is therefore ALWAYS facts-only — in any language. This is the
+ *  function the UI and tests rely on. */
 export function guardedAnswer(
   cfg: AskConfig,
   query: string,
   rawAnswer: string,
 ): { text: string; verified: boolean } {
   const text = (rawAnswer || '').trim();
-  if (text && verifyAnswer(text, cfg).ok) return { text, verified: true };
+  if (text && !looksDegenerate(text) && verifyAnswer(text, cfg).ok) return { text, verified: true };
   return { text: safeFallback(cfg, query), verified: false };
 }

@@ -75,7 +75,8 @@ async function generate(messages: any[], maxNewTokens: number): Promise<void> {
     ...inputs,
     max_new_tokens: maxNewTokens,
     do_sample: false, // greedy — most factual for a small model
-    repetition_penalty: 1.1, // sweet spot: higher over-constrains JA into generic filler
+    repetition_penalty: 1.3, // small models loop badly; needs a firm hand
+    no_repeat_ngram_size: 3, // hard-block any repeated 3-gram (kills "先のこと、…" loops)
     streamer,
     stopping_criteria: stopper,
     return_dict_in_generate: true,
