@@ -153,7 +153,8 @@ async function main() {
         ? ['--no-sandbox', '--disable-setuid-sandbox']
         : [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
       executablePath,
-      headless: isLocalChrome ? 'new' : true,
+      // puppeteer >=24 removed the 'new' string; `true` is the new headless mode.
+      headless: true,
     });
 
     try {
