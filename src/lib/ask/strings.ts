@@ -6,7 +6,7 @@ export const askStrings = {
     eyebrow: 'ブラウザ内で動くAI',
     pageTitle: 'AIに質問する',
     pageLead:
-      '日髙悠太について、なんでも聞いてください。ブラウザ内で動く小型AIモデルが答えます。モデルは初回だけ読み込み、以降はブラウザにキャッシュされて再ダウンロード不要です。ダウンロードせず経歴から即答する「モデルなし」も選べます。',
+      '日髙悠太について、なんでも聞いてください。ブラウザ内で動く小型AIモデルが答えます。モデルは初回だけ読み込み、以降はブラウザにキャッシュされて再ダウンロード不要です。ダウンロード不要で、LLMを使わず即答する「LLM利用なし」も選べます。',
     placeholder: '日髙について質問する…',
     send: '質問する',
     stop: '停止',
@@ -29,11 +29,11 @@ export const askStrings = {
     sources: '根拠にした経歴データ',
     disclaimer: '小型モデルのため表現は不完全なことがありますが、内容は経歴データと自動照合し、裏づけの取れない記述は表示しません。',
     // Retrieval (no-model) answers
-    retrievalBadge: '経歴データより',
-    retrievalHint: 'これは経歴データからの抜粋です。下の「AIモデル」を読み込むと、より自然な文章で答えます。',
+    retrievalBadge: 'LLM利用なし',
+    retrievalHint: 'LLMを使わず、経歴データの該当箇所をそのまま表示しています。上でモデルを選ぶと、AIが自然な文章で答えます。',
     // Answer-mode picker (always visible)
     modeQuestion: '回答の作り方',
-    modeRetrieval: 'モデルなし（即答）',
+    modeRetrieval: 'LLM利用なし（即答）',
     modeRetrievalNote: '即答・ダウンロード不要',
     modeAi: 'AIモデルで生成',
     modeAiNote: 'ブラウザ内の小型LLM・要DL',
@@ -59,7 +59,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      '軽量な Qwen2.5-0.5B（約0.5GB・既定）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約1.2GB・TAID蒸留）を選べます。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「モデルなし」も選べます。',
+      '軽量な Qwen2.5-0.5B（約0.5GB・既定）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約1.2GB・TAID蒸留）を選べます。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
     howRuntimeLabel: '実行環境',
     howRuntimeName: 'transformers.js · WebGPU',
     howRuntimeDesc:
@@ -74,7 +74,7 @@ export const askStrings = {
     eyebrow: 'AI that runs in your browser',
     pageTitle: 'Ask me anything',
     pageLead:
-      "Ask anything about Yuta Hidaka. A small AI model running inside your browser answers. The model loads once and is then cached in your browser — no re-download afterward. You can also pick a no-download “No model” mode for instant answers straight from the résumé.",
+      "Ask anything about Yuta Hidaka. A small AI model running inside your browser answers. The model loads once and is then cached in your browser — no re-download afterward. You can also pick a no-download “No LLM” mode for instant answers.",
     placeholder: 'Ask about Yuta…',
     send: 'Ask',
     stop: 'Stop',
@@ -99,11 +99,11 @@ export const askStrings = {
     disclaimer:
       "It is a small model, so wording can be rough — but every answer is auto-checked against the résumé data, and unverifiable claims are never shown.",
     // Retrieval (no-model) answers
-    retrievalBadge: 'From the résumé',
-    retrievalHint: 'This is straight from the résumé data. Load a model below for a more naturally-phrased answer.',
+    retrievalBadge: 'No LLM used',
+    retrievalHint: 'Answered without an LLM — straight from the résumé data. Pick a model above for a naturally-phrased answer.',
     // Answer-mode picker (always visible)
     modeQuestion: 'How to answer',
-    modeRetrieval: 'No model (instant)',
+    modeRetrieval: 'No LLM (instant)',
     modeRetrievalNote: 'instant · no download',
     modeAi: 'Generate with AI',
     modeAiNote: 'in-browser LLM · needs download',
@@ -128,7 +128,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      "Choose the light Qwen2.5-0.5B (~0.5 GB, the default) or Sakana AI's Japanese-strong TinySwallow-1.5B (~1.2 GB, TAID-distilled). The model loads once, then is cached; a no-download “No model” mode is also available.",
+      "Choose the light Qwen2.5-0.5B (~0.5 GB, the default) or Sakana AI's Japanese-strong TinySwallow-1.5B (~1.2 GB, TAID-distilled). The model loads once, then is cached; a no-download “No LLM” mode is also available.",
     howRuntimeLabel: 'Runtime',
     howRuntimeName: 'transformers.js · WebGPU',
     howRuntimeDesc:
