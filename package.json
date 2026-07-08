@@ -14,6 +14,7 @@
     "preview": "astro preview",
     "generate:pdf": "node scripts/generate-static-pdfs.mjs",
     "astro": "astro",
+    "test": "bun test src/lib/ask",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
     "test:e2e:report": "playwright show-report"

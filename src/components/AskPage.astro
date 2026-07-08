@@ -1,0 +1,504 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import { askConfig, samplePrompts } from '../lib/ask/profile';
+import { getAskStrings } from '../lib/ask/strings';
+
+const lang = getLangFromUrl(Astro.url);
+const s = getAskStrings(lang);
+const cfg = askConfig(lang);
+const chips = samplePrompts(lang);
+const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
+---
+
+<div id="askpage" data-lang={lang}>
+  <script type="application/json" id="askpage-config" set:html={JSON.stringify(cfg)} is:inline />
+
+  <section class="askp-hero">
+    <p class="askp-eyebrow"><span class="askp-eyebrow-dot" aria-hidden="true"></span>{s.eyebrow}</p>
+    <h1 class="askp-title font-display">{s.pageTitle}</h1>
+    <p class="askp-lead">{s.pageLead}</p>
+
+    <form class="askp-console" id="askp-form">
+      <span class="askp-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2.5 10.5c4-4 7-3.2 9.5 1 2.5-4.2 5.5-5 9.5-1" />
+          <path d="M12 11.5l-1.4 4.4M12 11.5l1.4 4.4" />
+        </svg>
+      </span>
+      <textarea id="askp-input" class="askp-input" rows="1" placeholder={s.placeholder} autocomplete="off" aria-label={s.placeholder}></textarea>
+      <button type="button" class="askp-stop" id="askp-stop" hidden>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" /></svg>
+        <span>{s.stop}</span>
+      </button>
+      <button type="submit" class="askp-send" id="askp-send">
+        <span>{s.send}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
+      </button>
+    </form>
+
+    <div class="askp-underbar">
+      <span class="askp-device" id="askp-device">{s.device('webgpu')}</span>
+      <ul class="askp-chips" id="askp-chips">
+        {chips.map((c) => (
+          <li><button type="button" class="askp-chip" data-prompt={c}>{c}</button></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="askp-load" id="askp-load" hidden>
+      <div class="askp-load-bar"><span id="askp-load-fill"></span></div>
+      <p class="askp-load-text" id="askp-load-text">{s.loadingBrowser}</p>
+    </div>
+
+    <p class="askp-hint" id="askp-hint">{s.startHint}</p>
+  </section>
+
+  <div class="askp-thread" id="askp-thread" aria-live="polite"></div>
+
+  <!-- How it works -->
+  <section class="askp-how">
+    <div class="askp-how-head">
+      <h2 class="askp-how-title font-display">{s.howTitle}</h2>
+      <p class="askp-how-lead">{s.howLead}</p>
+    </div>
+    <div class="askp-how-grid">
+      <article class="askp-card">
+        <span class="askp-card-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1" /><path d="M12 12l-1.6 5M12 12l1.6 5" />
+          </svg>
+        </span>
+        <p class="askp-card-label">{s.howModelLabel}</p>
+        <p class="askp-card-name">{s.howModelName}</p>
+        <p class="askp-card-by"><a href={modelHref} target="_blank" rel="noopener noreferrer" class="text-link">{s.howModelBy} ↗</a></p>
+        <p class="askp-card-desc">{s.howModelDesc}</p>
+      </article>
+
+      <article class="askp-card">
+        <span class="askp-card-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="M3 8.5h18" /><path d="M11 14.5l-2-2 2-2M14 12.5h1.5" />
+          </svg>
+        </span>
+        <p class="askp-card-label">{s.howRuntimeLabel}</p>
+        <p class="askp-card-name">{s.howRuntimeName}</p>
+        <p class="askp-card-by">Hugging Face · ONNX</p>
+        <p class="askp-card-desc">{s.howRuntimeDesc}</p>
+      </article>
+
+      <article class="askp-card">
+        <span class="askp-card-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l7 3v5c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6z" /><path d="M9 12l2 2 4-4" />
+          </svg>
+        </span>
+        <p class="askp-card-label">{s.howGroundLabel}</p>
+        <p class="askp-card-name">{s.howGroundName}</p>
+        <p class="askp-card-by">RAG + verify</p>
+        <p class="askp-card-desc">{s.howGroundDesc}</p>
+      </article>
+    </div>
+    <p class="askp-stacknote">{s.stackNote}</p>
+  </section>
+</div>
+
+<script>
+  import { getEngine } from '../lib/ask/engine';
+  import { buildMessages, retrieve } from '../lib/ask/retrieve';
+  import { guardedAnswer } from '../lib/ask/verify';
+  import { getAskStrings } from '../lib/ask/strings';
+
+  const rootEl = document.getElementById('askpage');
+  if (rootEl) {
+    const lang = (rootEl.getAttribute('data-lang') === 'en' ? 'en' : 'ja') as 'ja' | 'en';
+    const t = getAskStrings(lang);
+    const cfg = JSON.parse(document.getElementById('askpage-config')?.textContent || '{}');
+
+    const form = document.getElementById('askp-form') as HTMLFormElement;
+    const input = document.getElementById('askp-input') as HTMLTextAreaElement;
+    const sendBtn = document.getElementById('askp-send')!;
+    const stopBtn = document.getElementById('askp-stop')!;
+    const thread = document.getElementById('askp-thread')!;
+    const loadWrap = document.getElementById('askp-load')!;
+    const loadFill = document.getElementById('askp-load-fill')!;
+    const loadText = document.getElementById('askp-load-text')!;
+    const deviceLine = document.getElementById('askp-device')!;
+
+    const engine = getEngine();
+    const history: { role: 'user' | 'assistant'; content: string }[] = [];
+    let busy = false;
+    deviceLine.textContent = t.device(engine.caps.device);
+    if (!engine.caps.webgpu) deviceLine.classList.add('is-warn');
+
+    const SVG = {
+      orb: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.2" opacity="0.5"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8"/></svg>',
+      shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-3 7.5-7 9-4-1.5-7-4.6-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+      doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>',
+    };
+
+    const autosize = () => {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 200) + 'px';
+    };
+    input.addEventListener('input', autosize);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit();
+      }
+    });
+    document.querySelectorAll<HTMLButtonElement>('.askp-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        input.value = chip.dataset.prompt || '';
+        autosize();
+        form.requestSubmit();
+      });
+    });
+
+    function el(tag: string, cls?: string, html?: string): HTMLElement {
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (html != null) n.innerHTML = html;
+      return n;
+    }
+
+    function addQA(question: string) {
+      const block = el('article', 'askp-qa');
+      const q = el('p', 'askp-q font-display');
+      q.textContent = question;
+      const a = el('div', 'askp-a is-streaming');
+      const draft = el('div', 'askp-draft');
+      draft.innerHTML = `<span class="askp-orb">${SVG.orb}</span><span class="askp-draft-label">${t.thinking}</span>`;
+      a.appendChild(draft);
+      block.appendChild(q);
+      block.appendChild(a);
+      thread.prepend(block);
+      return { block, a };
+    }
+
+    function buildSources(query: string): HTMLElement | null {
+      const hits = retrieve(query, cfg.chunks, 3);
+      if (!hits.length) return null;
+      const d = el('details', 'askp-sources');
+      const sum = el('summary', 'askp-sources-sum', `${SVG.doc}<span>${t.sources}</span><span class="askp-sources-n">${hits.length}</span>`);
+      const list = el('ul', 'askp-sources-list');
+      hits.forEach((h: any) => {
+        const li = el('li', 'askp-source');
+        li.textContent = h.text;
+        list.appendChild(li);
+      });
+      d.appendChild(sum);
+      d.appendChild(list);
+      return d;
+    }
+
+    function commit(a: HTMLElement, query: string, text: string, verified: boolean) {
+      a.classList.remove('is-streaming');
+      a.innerHTML = '';
+      const body = el('div', 'askp-a-body');
+      body.textContent = text;
+      a.appendChild(body);
+
+      const badge = el(
+        'div',
+        `askp-badge ${verified ? 'is-verified' : 'is-corrected'}`,
+        `${verified ? SVG.check : SVG.shield}<div class="askp-badge-txt"><b>${verified ? t.verified : t.corrected}</b><span>${verified ? t.verifiedHint : t.correctedHint}</span></div>`,
+      );
+      a.appendChild(badge);
+
+      const src = buildSources(query);
+      if (src) a.appendChild(src);
+    }
+
+    function setBusy(on: boolean) {
+      busy = on;
+      sendBtn.hidden = on;
+      stopBtn.hidden = !on;
+    }
+
+    async function ensureModel(): Promise<boolean> {
+      if (engine.ready) return true;
+      loadWrap.hidden = false;
+      loadText.textContent = t.loadingBrowser;
+      document.getElementById('askp-hint')?.style.setProperty('display', 'none');
+      try {
+        await engine.load((p) => {
+          if (typeof p.progress === 'number' && p.status === 'progress') {
+            loadFill.style.width = Math.round(p.progress) + '%';
+            const mb = p.total ? ` · ${(p.loaded! / 1e6).toFixed(0)}/${(p.total / 1e6).toFixed(0)} MB` : '';
+            loadText.textContent = `${t.loading} ${Math.round(p.progress)}%${mb}`;
+          }
+        });
+        loadWrap.hidden = true;
+        return true;
+      } catch {
+        loadWrap.hidden = true;
+        return false;
+      }
+    }
+
+    async function submit(text: string) {
+      if (busy || !text.trim()) return;
+      const q = text.trim();
+      input.value = '';
+      autosize();
+      const { a } = addQA(q);
+
+      setBusy(true);
+      const ok = await ensureModel();
+      if (!ok) {
+        commit(a, q, guardedAnswer(cfg, q, '').text, false);
+        setBusy(false);
+        return;
+      }
+
+      let acc = '';
+      let draftBody: HTMLElement | null = null;
+      engine.ask(buildMessages(cfg, q, history), {
+        onStart: () => {
+          a.innerHTML = '';
+          draftBody = el('div', 'askp-a-body is-draft');
+          const tag = el('span', 'askp-draft-tag', t.generating);
+          a.appendChild(tag);
+          a.appendChild(draftBody);
+        },
+        onToken: (tok) => {
+          acc += tok;
+          if (draftBody) draftBody.textContent = acc;
+        },
+        onDone: (full) => {
+          // The single gate: verified answer, or verified facts. Never a lie.
+          const { text, verified } = guardedAnswer(cfg, q, full || acc);
+          commit(a, q, text, verified);
+          if (verified) history.push({ role: 'user', content: q }, { role: 'assistant', content: text });
+          setBusy(false);
+        },
+        onError: () => {
+          commit(a, q, guardedAnswer(cfg, q, '').text, false);
+          setBusy(false);
+        },
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      submit(input.value);
+    });
+    stopBtn.addEventListener('click', () => engine.stop());
+  }
+</script>
+
+<!-- Global (not scoped): the thread/answer/badge/source nodes are created at
+     runtime via createElement, which Astro's scoped styles don't reach. All
+     selectors are unique .askp-* names, so there is no leakage. -->
+<style is:global>
+  #askpage { --a: var(--accent); }
+
+  /* ——— Hero ——— */
+  .askp-hero { position: relative; padding-top: 1.5rem; }
+  @media (min-width: 768px) { .askp-hero { padding-top: 2.5rem; } }
+
+  .askp-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--a);
+  }
+  .askp-eyebrow-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--a);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--a) 60%, transparent);
+    animation: askpPulse 2.4s ease-out infinite;
+  }
+  @keyframes askpPulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a) 55%, transparent); }
+    70% { box-shadow: 0 0 0 7px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  .askp-title {
+    font-size: clamp(2.4rem, 6.5vw, 3.4rem); font-weight: 500; line-height: 1.12;
+    letter-spacing: 0.005em; color: var(--ink); margin-top: 1rem;
+  }
+  .askp-lead {
+    max-width: 40rem; margin-top: 1.1rem; color: var(--ink-secondary);
+    font-size: 1.02rem; line-height: 1.8;
+  }
+
+  /* ——— Console (input) ——— */
+  .askp-console {
+    position: relative; display: flex; align-items: flex-end; gap: 0.6rem;
+    margin-top: 2rem; padding: 0.85rem 0.85rem 0.85rem 0.9rem;
+    background: var(--surface); border: 1px solid var(--line-strong); border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 18px 40px -28px rgba(0,0,0,0.4);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .askp-console:focus-within {
+    border-color: var(--a);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--a) 12%, transparent), 0 18px 40px -26px color-mix(in srgb, var(--a) 55%, transparent);
+  }
+  .askp-mark {
+    flex: none; display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; margin-bottom: 2px; color: var(--a);
+  }
+  .askp-mark svg { width: 22px; height: 22px; }
+  .askp-input {
+    flex: 1; min-width: 0; resize: none; border: none; background: none; color: var(--ink);
+    font-family: var(--font-body); font-size: 1.02rem; line-height: 1.6; max-height: 200px;
+    padding: 5px 0; outline: none;
+  }
+  .askp-input::placeholder { color: var(--ink-muted); }
+
+  .askp-send, .askp-stop {
+    flex: none; display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 0.95rem; border-radius: 10px; font-size: 0.86rem; font-weight: 500;
+    cursor: pointer; transition: transform 0.12s ease, opacity 0.15s ease, background 0.15s ease;
+  }
+  .askp-send { border: 1px solid var(--a); background: var(--a); color: #fff; }
+  :root.dark .askp-send { color: #0f1012; }
+  .askp-send svg { width: 16px; height: 16px; }
+  .askp-send:hover { transform: translateY(-1px); }
+  .askp-send:active { transform: translateY(0); }
+  .askp-stop { border: 1px solid var(--line-strong); background: transparent; color: var(--ink); }
+  .askp-stop svg { width: 14px; height: 14px; color: var(--a); }
+
+  /* ——— Under-bar: device + chips ——— */
+  .askp-underbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-top: 0.9rem;
+  }
+  .askp-device {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.72rem; color: var(--ink-muted); letter-spacing: 0.02em;
+  }
+  .askp-device::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--a); opacity: 0.8;
+  }
+  .askp-device.is-warn { color: #b4791f; }
+  :root.dark .askp-device.is-warn { color: #d8a24a; }
+  .askp-device.is-warn::before { background: #d8a24a; }
+
+  .askp-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .askp-chip {
+    padding: 0.4rem 0.8rem; font-size: 0.78rem; color: var(--ink-secondary);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  }
+  .askp-chip:hover { border-color: var(--a); color: var(--ink); transform: translateY(-1px); }
+
+  /* ——— Loading ——— */
+  .askp-load { margin-top: 1.2rem; max-width: 32rem; }
+  .askp-load-bar { height: 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .askp-load-bar span {
+    display: block; height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--a) 55%, transparent), var(--a));
+    transition: width 0.25s ease;
+  }
+  .askp-load-text { font-size: 0.74rem; color: var(--ink-muted); margin-top: 0.45rem; }
+  .askp-hint { margin-top: 1rem; max-width: 38rem; font-size: 0.76rem; line-height: 1.6; color: var(--ink-muted); }
+
+  /* ——— Thread ——— */
+  .askp-thread { margin-top: 2.75rem; display: flex; flex-direction: column; gap: 1.75rem; }
+  .askp-qa { border-top: 1px solid var(--line); padding-top: 1.6rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .askp-qa { animation: askpRise 0.3s ease; }
+    @keyframes askpRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+  .askp-q { font-size: 1.18rem; font-weight: 500; line-height: 1.5; color: var(--ink); }
+
+  .askp-a { margin-top: 1rem; }
+  .askp-a-body {
+    font-size: 1rem; line-height: 1.9; color: var(--ink-secondary);
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .askp-a-body.is-draft { color: var(--ink-muted); }
+
+  .askp-draft { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--ink-muted); }
+  .askp-orb { display: inline-flex; width: 22px; height: 22px; color: var(--a); }
+  .askp-orb svg { width: 22px; height: 22px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .askp-orb { animation: askpFloat 1.6s ease-in-out infinite; }
+    .askp-orb svg circle:last-child { transform-origin: center; animation: askpRing 1.6s ease-out infinite; }
+    @keyframes askpFloat { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+    @keyframes askpRing { 0% { transform: scale(0.7); opacity: 0.6; } 100% { transform: scale(1.15); opacity: 0; } }
+  }
+  .askp-draft-label { font-size: 0.9rem; }
+  .askp-draft-tag {
+    display: inline-block; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem;
+  }
+
+  /* ——— Verification badge ——— */
+  .askp-badge {
+    display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 1rem;
+    padding: 0.65rem 0.85rem; border-radius: 11px; border: 1px solid var(--line);
+  }
+  .askp-badge svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+  .askp-badge-txt { display: flex; flex-direction: column; gap: 0.15rem; }
+  .askp-badge-txt b { font-size: 0.82rem; font-weight: 600; }
+  .askp-badge-txt span { font-size: 0.75rem; line-height: 1.55; color: var(--ink-muted); }
+  .askp-badge.is-verified {
+    background: color-mix(in srgb, var(--a) 8%, var(--surface));
+    border-color: color-mix(in srgb, var(--a) 30%, var(--line));
+  }
+  .askp-badge.is-verified svg, .askp-badge.is-verified b { color: var(--a); }
+  .askp-badge.is-corrected {
+    background: color-mix(in srgb, #b4791f 8%, var(--surface));
+    border-color: color-mix(in srgb, #b4791f 28%, var(--line));
+  }
+  .askp-badge.is-corrected svg, .askp-badge.is-corrected b { color: #a06a15; }
+  :root.dark .askp-badge.is-corrected svg, :root.dark .askp-badge.is-corrected b { color: #d8a24a; }
+
+  /* ——— Sources ——— */
+  .askp-sources { margin-top: 0.75rem; }
+  .askp-sources-sum {
+    display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer;
+    font-size: 0.76rem; color: var(--ink-muted); list-style: none; user-select: none;
+    padding: 0.35rem 0; transition: color 0.15s ease;
+  }
+  .askp-sources-sum:hover { color: var(--ink-secondary); }
+  .askp-sources-sum::-webkit-details-marker { display: none; }
+  .askp-sources-sum svg { width: 14px; height: 14px; }
+  .askp-sources-n {
+    font-variant-numeric: tabular-nums; font-size: 0.66rem; padding: 0.05rem 0.4rem;
+    border: 1px solid var(--line); border-radius: 999px;
+  }
+  .askp-sources[open] .askp-sources-sum { color: var(--ink-secondary); }
+  .askp-sources-list {
+    margin-top: 0.4rem; display: flex; flex-direction: column; gap: 0.5rem;
+    border-left: 2px solid color-mix(in srgb, var(--a) 35%, var(--line)); padding-left: 0.9rem;
+  }
+  .askp-source { font-size: 0.8rem; line-height: 1.65; color: var(--ink-muted); }
+
+  /* ——— How it works ——— */
+  .askp-how { margin-top: 4.5rem; padding-top: 2.25rem; border-top: 1px solid var(--line); }
+  .askp-how-title { font-size: 1.5rem; font-weight: 600; color: var(--ink); }
+  .askp-how-lead { margin-top: 0.5rem; color: var(--ink-muted); font-size: 0.9rem; }
+  .askp-how-grid {
+    margin-top: 1.75rem; display: grid; gap: 0.9rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) { .askp-how-grid { grid-template-columns: repeat(3, 1fr); } }
+  .askp-card {
+    padding: 1.25rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .askp-card:hover { border-color: color-mix(in srgb, var(--a) 40%, var(--line)); transform: translateY(-2px); }
+  .askp-card-ico {
+    display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+    border-radius: 11px; color: var(--a);
+    background: color-mix(in srgb, var(--a) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--a) 22%, var(--line));
+  }
+  .askp-card-ico svg { width: 21px; height: 21px; }
+  .askp-card-label {
+    margin-top: 0.9rem; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-muted);
+  }
+  .askp-card-name { margin-top: 0.3rem; font-size: 1.02rem; font-weight: 600; color: var(--ink); }
+  .askp-card-by { margin-top: 0.1rem; font-size: 0.76rem; color: var(--ink-muted); }
+  .askp-card-desc { margin-top: 0.7rem; font-size: 0.86rem; line-height: 1.75; color: var(--ink-secondary); }
+  .askp-stacknote {
+    margin-top: 1.5rem; font-size: 0.74rem; color: var(--ink-muted); text-align: center;
+    letter-spacing: 0.02em;
+  }
+</style>
