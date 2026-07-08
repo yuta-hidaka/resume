@@ -27,6 +27,11 @@ async function ensureLoaded(msg: LoadMsg): Promise<void> {
     tf = await import(/* @vite-ignore */ TRANSFORMERS_URL);
     const { AutoTokenizer, AutoModelForCausalLM, InterruptableStoppingCriteria } = tf;
 
+    // Cache the (large) model files in the browser's Cache Storage so a return
+    // visit reads from disk instead of re-downloading. Paired with the page's
+    // navigator.storage.persist() request, which keeps them from being evicted.
+    if (tf.env) tf.env.useBrowserCache = true;
+
     const progress_callback = (p: any) => post({ type: 'progress', data: p });
 
     tokenizer = await AutoTokenizer.from_pretrained(msg.model, { progress_callback });

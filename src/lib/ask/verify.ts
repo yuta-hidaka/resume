@@ -198,6 +198,14 @@ export function verifyAnswer(answer: string, cfg: AskConfig): Verification {
   return { ok: issues.length === 0, issues };
 }
 
+/** The relevant résumé facts for a query, as separate strings — for the UI to
+ *  render as a clean list. Same source material as {@link safeFallback}. */
+export function fallbackFacts(cfg: AskConfig, query: string): string[] {
+  const hits = retrieve(query, cfg.chunks, 3);
+  const facts = hits.length ? hits.map((h) => h.text) : [cfg.core];
+  return facts.map((f) => f.replace(/\s+/g, ' ').trim()).filter(Boolean);
+}
+
 /** A deterministic, always-true answer assembled only from real résumé facts. */
 export function safeFallback(cfg: AskConfig, query: string): string {
   const hits = retrieve(query, cfg.chunks, 2);

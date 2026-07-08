@@ -41,10 +41,9 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
         <div class="askp-tools">
           <div class="askp-tool" title={s.engineModelLabel}>
             <span class="askp-tool-ico" id="askp-model-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>
             </span>
             <select id="askp-model" class="askp-tool-select" aria-label={s.engineModelLabel}>
-              <option value="retrieval">{s.modeRetrieval}</option>
               {MODELS.map((m) => (
                 <option
                   value={m.id}
@@ -58,11 +57,8 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
                   data-note-en={m.noteEn}
                 >{m.label} · {s.engineSizePrefix}{m.sizes.q4f16}GB</option>
               ))}
+              <option value="retrieval">{s.modeRetrieval}</option>
             </select>
-            <svg class="askp-tool-chev" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-          </div>
-          <div class="askp-tool" id="askp-precision-wrap" hidden title={s.enginePrecisionLabel}>
-            <select id="askp-precision" class="askp-tool-select" aria-label={s.enginePrecisionLabel}></select>
             <svg class="askp-tool-chev" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           </div>
         </div>
@@ -152,7 +148,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 <script>
   import { getEngine } from '../lib/ask/engine';
   import { buildMessages, retrieve } from '../lib/ask/retrieve';
-  import { guardedAnswer, safeFallback } from '../lib/ask/verify';
+  import { guardedAnswer, safeFallback, fallbackFacts } from '../lib/ask/verify';
   import { getAskStrings } from '../lib/ask/strings';
 
   const rootEl = document.getElementById('askpage');
@@ -177,57 +173,86 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     deviceLine.textContent = t.device(engine.caps.device);
     if (!engine.caps.webgpu) deviceLine.classList.add('is-warn');
 
-    // ——— In-composer model picker (default = résumé data, no download) ———
+    // ——— In-composer model picker (default = a small in-browser LLM) ———
+    // Model files are cached by the browser after the first download. We ask for
+    // persistent storage so the browser won't evict the (large) weights, and we
+    // remember — with a TTL — that a model was fetched, so a returning visitor
+    // isn't warned about the size or made to re-download within that window.
+    if ((navigator as any).storage?.persist) (navigator as any).storage.persist().catch(() => {});
+
     const device = engine.caps.device;
     const modelSel = document.getElementById('askp-model') as HTMLSelectElement;
-    const precWrap = document.getElementById('askp-precision-wrap')!;
-    const precSel = document.getElementById('askp-precision') as HTMLSelectElement;
     const modelHint = document.getElementById('askp-model-hint')!;
     const modelIco = document.getElementById('askp-model-ico')!;
-    const DTYPES = device === 'webgpu' ? ['q4f16', 'q8'] : ['q8', 'q4'];
     const SIZE_KEY: Record<string, string> = { q4f16: 'sizeQ4f16', q8: 'sizeQ8', q4: 'sizeQ4' };
     const ICO_DOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>';
     const ICO_AI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>';
 
+    const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // trust the browser cache for 30 days
+    const CACHE_LS_KEY = 'askp:model-cache:v1';
+    const readCache = (): Record<string, number> => {
+      try { return JSON.parse(localStorage.getItem(CACHE_LS_KEY) || '{}'); } catch { return {}; }
+    };
+    const isCachedFresh = (key: string) => {
+      const ts = readCache()[key];
+      return typeof ts === 'number' && Date.now() - ts < CACHE_TTL_MS;
+    };
+    const markCached = (key: string) => {
+      try { const m = readCache(); m[key] = Date.now(); localStorage.setItem(CACHE_LS_KEY, JSON.stringify(m)); } catch {}
+    };
+
+    // Whether the model weights are ACTUALLY still in the browser's Cache Storage.
+    // localStorage only remembers that we downloaded once; the weights live in a
+    // separate bucket the browser can evict on its own. We probe the real cache
+    // before skipping the size confirm, so an evicted cache never triggers a
+    // silent, unconsented re-download (nor a false "loading from cache").
+    const isModelInCacheStorage = async (modelId: string): Promise<boolean> => {
+      try {
+        if (typeof caches === 'undefined') return false;
+        for (const name of await caches.keys()) {
+          const c = await caches.open(name);
+          const reqs = await c.keys();
+          if (reqs.some((r) => r.url.includes(modelId))) return true;
+        }
+        return false;
+      } catch { return false; }
+    };
+
     const isAi = () => modelSel.value !== 'retrieval';
     const curOpt = () => modelSel.selectedOptions[0];
     const chosenModelId = () => (isAi() ? modelSel.value : null);
-    const chosenDtype = () => precSel.value || DTYPES[0];
+    // Best precision for this backend (WebGPU can do fp16; WASM cannot).
+    const chosenDtype = () => (device === 'webgpu' ? curOpt().dataset.webgpu : curOpt().dataset.wasm) || 'q8';
     const sizeOf = (opt: HTMLOptionElement, dt: string) => parseFloat(opt.dataset[SIZE_KEY[dt]] || '0') || 0;
+    const cacheKey = () => `${modelSel.value}|${chosenDtype()}`;
 
-    function updateHint() {
+    async function updateHint() {
       if (!isAi()) {
         modelHint.textContent = '';
         return;
       }
       const note = (lang === 'ja' ? curOpt().dataset.noteJa : curOpt().dataset.noteEn) || '';
+      const sep = lang === 'ja' ? '　' : ' · ';
+      const mb = Math.round(sizeOf(curOpt(), chosenDtype()) * 1000);
+      const dl = lang === 'ja'
+        ? `初回のみ 約${mb.toLocaleString()} MB ダウンロード`
+        : `~${mb.toLocaleString()} MB on first use`;
+      const cachedLabel = `${note}${sep}✓ ${t.cached}`;
+      const dlLabel = `${note}${sep}${dl}`;
       const loaded = engine.ready && engine.loadedModelId === modelSel.value;
-      if (loaded) {
-        modelHint.textContent = `✓ ${t.engineLoaded(curOpt().dataset.label || '')}`;
-      } else {
-        const mb = Math.round(sizeOf(curOpt(), chosenDtype()) * 1000);
-        modelHint.textContent = `${note}　初回のみ 約${mb.toLocaleString()} MB DL`;
+      // Optimistic first paint from the TTL marker, then correct against the real cache.
+      modelHint.textContent = loaded || isCachedFresh(cacheKey()) ? cachedLabel : dlLabel;
+      if (!loaded && isCachedFresh(cacheKey())) {
+        const forId = modelSel.value;
+        const present = await isModelInCacheStorage(forId);
+        if (modelSel.value === forId) modelHint.textContent = present ? cachedLabel : dlLabel;
       }
     }
     function refreshModel() {
-      const ai = isAi();
-      precWrap.hidden = !ai;
-      modelIco.innerHTML = ai ? ICO_AI : ICO_DOC;
-      if (ai) {
-        precSel.innerHTML = '';
-        for (const dt of DTYPES) {
-          const gb = sizeOf(curOpt(), dt);
-          if (!gb) continue;
-          const o = document.createElement('option');
-          o.value = dt;
-          o.textContent = `${dt} · ${t.engineSizePrefix}${gb}GB`;
-          precSel.appendChild(o);
-        }
-      }
+      modelIco.innerHTML = isAi() ? ICO_AI : ICO_DOC;
       updateHint();
     }
     modelSel.addEventListener('change', refreshModel);
-    precSel.addEventListener('change', updateHint);
     refreshModel();
 
     const SVG = {
@@ -293,13 +318,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       return d;
     }
 
-    function commit(a: HTMLElement, query: string, text: string, kind: 'verified' | 'corrected' | 'retrieval') {
-      a.classList.remove('is-streaming');
-      a.innerHTML = '';
-      const body = el('div', 'askp-a-body');
-      body.textContent = text;
-      a.appendChild(body);
-
+    function appendBadgeAndSources(a: HTMLElement, query: string, kind: 'verified' | 'corrected' | 'retrieval') {
       const conf = {
         verified: { cls: 'is-verified', icon: SVG.check, title: t.verified, hint: t.verifiedHint },
         corrected: { cls: 'is-corrected', icon: SVG.shield, title: t.corrected, hint: t.correctedHint },
@@ -314,6 +333,35 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 
       const src = buildSources(query);
       if (src) a.appendChild(src);
+    }
+
+    // Verified LLM prose — shown as a natural paragraph.
+    function commit(a: HTMLElement, query: string, text: string, kind: 'verified' | 'corrected' | 'retrieval') {
+      a.classList.remove('is-streaming');
+      a.innerHTML = '';
+      const body = el('div', 'askp-a-body');
+      body.textContent = text;
+      a.appendChild(body);
+      appendBadgeAndSources(a, query, kind);
+    }
+
+    // Résumé facts (retrieval / corrected) — a short lead + a clean list, so it
+    // reads as an answer instead of a run-on wall of gray text.
+    function commitFacts(a: HTMLElement, query: string, facts: string[], kind: 'corrected' | 'retrieval') {
+      a.classList.remove('is-streaming');
+      a.innerHTML = '';
+      const lead = el('p', 'askp-a-lead');
+      lead.textContent = t.factsLead;
+      a.appendChild(lead);
+      const list = (facts.length ? facts : [safeFallback(cfg, query)]).filter(Boolean);
+      const ul = el('ul', 'askp-a-facts');
+      list.forEach((f) => {
+        const li = el('li');
+        li.textContent = f;
+        ul.appendChild(li);
+      });
+      a.appendChild(ul);
+      appendBadgeAndSources(a, query, kind);
     }
 
     function setBusy(on: boolean) {
@@ -347,11 +395,17 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 
     async function ensureModel(modelId: string, dtype: string): Promise<boolean> {
       if (engine.ready && engine.loadedModelId === modelId) return true;
-      // Warn about the download size and require an explicit OK first.
-      const mb = Math.round(sizeOf(curOpt(), dtype) * 1000);
-      if (!(await confirmDownload(curOpt().dataset.label || '', mb))) return false;
+      const key = `${modelId}|${dtype}`;
+      // Trust the "already downloaded" marker only if the weights are still in
+      // the cache — otherwise fall through and warn about the size as usual.
+      const cached = isCachedFresh(key) && (await isModelInCacheStorage(modelId));
+      // First time (or the cache window expired / weights evicted): warn first.
+      if (!cached) {
+        const mb = Math.round(sizeOf(curOpt(), dtype) * 1000);
+        if (!(await confirmDownload(curOpt().dataset.label || '', mb))) return false;
+      }
       loadWrap.hidden = false;
-      loadText.textContent = t.loadingBrowser;
+      loadText.textContent = cached ? t.loadingCache : t.loadingBrowser;
       try {
         await engine.load({
           modelId,
@@ -364,6 +418,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
             }
           },
         });
+        markCached(key);
         loadWrap.hidden = true;
         return true;
       } catch {
@@ -380,20 +435,20 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       const { a } = addQA(q);
       setBusy(true);
 
-      // Default: retrieval — instant answer from the résumé, no download.
+      // "No model" mode: instant answer from the résumé, no download.
       const modelId = chosenModelId();
       if (!modelId) {
-        commit(a, q, safeFallback(cfg, q), 'retrieval');
+        commitFacts(a, q, fallbackFacts(cfg, q), 'retrieval');
         setBusy(false);
         return;
       }
 
       // Model mode: load (if needed) then generate, gated by the verifier.
-      // If the visitor cancels the download (or it fails), fall back to retrieval.
+      // If the visitor cancels the download (or it fails), fall back to facts.
       const ok = await ensureModel(modelId, chosenDtype());
       updateHint();
       if (!ok) {
-        commit(a, q, safeFallback(cfg, q), 'retrieval');
+        commitFacts(a, q, fallbackFacts(cfg, q), 'retrieval');
         setBusy(false);
         return;
       }
@@ -415,12 +470,16 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
         onDone: (full) => {
           // The single gate: verified answer, or verified facts. Never a lie.
           const { text, verified } = guardedAnswer(cfg, q, full || acc);
-          commit(a, q, text, verified ? 'verified' : 'corrected');
-          if (verified) history.push({ role: 'user', content: q }, { role: 'assistant', content: text });
+          if (verified) {
+            commit(a, q, text, 'verified');
+            history.push({ role: 'user', content: q }, { role: 'assistant', content: text });
+          } else {
+            commitFacts(a, q, fallbackFacts(cfg, q), 'corrected');
+          }
           setBusy(false);
         },
         onError: () => {
-          commit(a, q, safeFallback(cfg, q), 'corrected');
+          commitFacts(a, q, fallbackFacts(cfg, q), 'corrected');
           setBusy(false);
         },
       });
@@ -604,10 +663,22 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 
   .askp-a { margin-top: 1rem; }
   .askp-a-body {
-    font-size: 1rem; line-height: 1.9; color: var(--ink-secondary);
+    font-size: 1rem; line-height: 1.9; color: var(--ink);
     white-space: pre-wrap; word-break: break-word;
   }
   .askp-a-body.is-draft { color: var(--ink-muted); }
+
+  /* Résumé-facts answer: a short lead + a clean list of verified facts. */
+  .askp-a-lead { font-size: 0.9rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+  .askp-a-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+  .askp-a-facts li {
+    position: relative; padding-left: 1.15rem;
+    font-size: 1rem; line-height: 1.75; color: var(--ink); word-break: break-word;
+  }
+  .askp-a-facts li::before {
+    content: ''; position: absolute; left: 0; top: 0.62em;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--a);
+  }
 
   .askp-draft { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--ink-muted); }
   .askp-orb { display: inline-flex; width: 22px; height: 22px; color: var(--a); }

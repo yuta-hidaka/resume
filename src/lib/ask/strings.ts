@@ -6,7 +6,7 @@ export const askStrings = {
     eyebrow: 'ブラウザ内で動くAI',
     pageTitle: 'AIに質問する',
     pageLead:
-      '日髙悠太について、なんでも聞いてください。既定では経歴データから即座に答えます（ダウンロード不要）。必要ならブラウザ内で動く小型AIモデルを読み込んで、より自然な文章にもできます。',
+      '日髙悠太について、なんでも聞いてください。ブラウザ内で動く小型AIモデルが答えます。モデルは初回だけ読み込み、以降はブラウザにキャッシュされて再ダウンロード不要です。ダウンロードせず経歴から即答する「モデルなし」も選べます。',
     placeholder: '日髙について質問する…',
     send: '質問する',
     stop: '停止',
@@ -16,6 +16,9 @@ export const askStrings = {
     startHint: '最初の質問で、モデル（約1GB）をブラウザに読み込みます。以降はキャッシュされ、次回から高速です。',
     loading: 'モデルを読み込み中',
     loadingBrowser: 'ブラウザ内にモデルを読み込んでいます…',
+    loadingCache: 'キャッシュからモデルを読み込んでいます…',
+    cached: 'キャッシュ済み・再DL不要',
+    factsLead: '確実な経歴データからお答えします。',
     device: (d: string) => (d === 'webgpu' ? 'WebGPU で高速動作' : 'CPU (WASM) で動作'),
     // Verification
     verified: '事実確認済み',
@@ -30,7 +33,7 @@ export const askStrings = {
     retrievalHint: 'これは経歴データからの抜粋です。下の「AIモデル」を読み込むと、より自然な文章で答えます。',
     // Answer-mode picker (always visible)
     modeQuestion: '回答の作り方',
-    modeRetrieval: '経歴データ',
+    modeRetrieval: 'モデルなし（即答）',
     modeRetrievalNote: '即答・ダウンロード不要',
     modeAi: 'AIモデルで生成',
     modeAiNote: 'ブラウザ内の小型LLM・要DL',
@@ -56,7 +59,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      '軽量な Qwen2.5-0.5B（約0.5GB）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約1.2GB・TAID蒸留）を選べます。既定は経歴データからの即答でダウンロード不要。',
+      '軽量な Qwen2.5-0.5B（約0.5GB・既定）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約1.2GB・TAID蒸留）を選べます。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「モデルなし」も選べます。',
     howRuntimeLabel: '実行環境',
     howRuntimeName: 'transformers.js · WebGPU',
     howRuntimeDesc:
@@ -71,7 +74,7 @@ export const askStrings = {
     eyebrow: 'AI that runs in your browser',
     pageTitle: 'Ask me anything',
     pageLead:
-      "Ask anything about Yuta Hidaka. By default it answers instantly straight from the résumé data (no download). You can also load a small in-browser AI model to phrase answers more naturally.",
+      "Ask anything about Yuta Hidaka. A small AI model running inside your browser answers. The model loads once and is then cached in your browser — no re-download afterward. You can also pick a no-download “No model” mode for instant answers straight from the résumé.",
     placeholder: 'Ask about Yuta…',
     send: 'Ask',
     stop: 'Stop',
@@ -82,6 +85,9 @@ export const askStrings = {
       'Your first question downloads the model (~1 GB) into the browser. It is cached, so it is fast afterwards.',
     loading: 'Loading the model',
     loadingBrowser: 'Loading the model into your browser…',
+    loadingCache: 'Loading the model from cache…',
+    cached: 'Cached — no re-download',
+    factsLead: 'Here is what the résumé confirms.',
     device: (d: string) => (d === 'webgpu' ? 'Accelerated with WebGPU' : 'Running on CPU (WASM)'),
     verified: 'Fact-checked',
     verifiedHint: 'The answer was checked against the résumé data; only confirmed content is shown.',
@@ -97,7 +103,7 @@ export const askStrings = {
     retrievalHint: 'This is straight from the résumé data. Load a model below for a more naturally-phrased answer.',
     // Answer-mode picker (always visible)
     modeQuestion: 'How to answer',
-    modeRetrieval: 'Résumé data',
+    modeRetrieval: 'No model (instant)',
     modeRetrievalNote: 'instant · no download',
     modeAi: 'Generate with AI',
     modeAiNote: 'in-browser LLM · needs download',
@@ -122,7 +128,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      "Choose the light Qwen2.5-0.5B (~0.5 GB) or Sakana AI's Japanese-strong TinySwallow-1.5B (~1.2 GB, TAID-distilled). The default needs no download at all.",
+      "Choose the light Qwen2.5-0.5B (~0.5 GB, the default) or Sakana AI's Japanese-strong TinySwallow-1.5B (~1.2 GB, TAID-distilled). The model loads once, then is cached; a no-download “No model” mode is also available.",
     howRuntimeLabel: 'Runtime',
     howRuntimeName: 'transformers.js · WebGPU',
     howRuntimeDesc:
