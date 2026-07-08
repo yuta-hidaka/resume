@@ -38,6 +38,11 @@ export const askStrings = {
     engineLoaded: (label: string) => `${label} を読み込み済み`,
     engineSwitch: '変更',
     engineSizePrefix: '約',
+    // Download confirmation
+    confirmTitle: (label: string, mb: number) => `『${label}』を 約${mb.toLocaleString()} MB ダウンロードします`,
+    confirmNote: '通信量にご注意ください（Wi-Fi 推奨）。一度読み込めば以降はキャッシュされ、次回から高速です。',
+    confirmGo: 'ダウンロードする',
+    confirmCancel: 'やめる',
     // How it works
     howTitle: '仕組み',
     howLead: 'サーバーもAPIキーも使いません。すべてあなたのブラウザの中で動きます。',
@@ -94,6 +99,11 @@ export const askStrings = {
     engineLoaded: (label: string) => `${label} loaded`,
     engineSwitch: 'Change',
     engineSizePrefix: '~',
+    // Download confirmation
+    confirmTitle: (label: string, mb: number) => `This will download ~${mb.toLocaleString()} MB for “${label}”`,
+    confirmNote: 'Mind your data usage (Wi-Fi recommended). It downloads once and is cached, so it is fast next time.',
+    confirmGo: 'Download',
+    confirmCancel: 'Cancel',
     howTitle: 'How it works',
     howLead: 'No server, no API key. Everything runs inside your browser.',
     howModelLabel: 'Model (selectable)',

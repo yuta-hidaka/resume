@@ -51,6 +51,20 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       <p class="askp-load-text" id="askp-load-text">{s.loadingBrowser}</p>
     </div>
 
+    <div class="askp-confirm" id="askp-confirm" role="alertdialog" aria-live="assertive" hidden>
+      <span class="askp-confirm-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17.5v.01"/></svg>
+      </span>
+      <div class="askp-confirm-body">
+        <p class="askp-confirm-title" id="askp-confirm-title"></p>
+        <p class="askp-confirm-note">{s.confirmNote}</p>
+        <div class="askp-confirm-actions">
+          <button type="button" class="askp-confirm-cancel" id="askp-confirm-cancel">{s.confirmCancel}</button>
+          <button type="button" class="askp-confirm-go" id="askp-confirm-go">{s.confirmGo}</button>
+        </div>
+      </div>
+    </div>
+
     <details class="askp-engine" id="askp-engine">
       <summary class="askp-engine-sum">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>
@@ -314,8 +328,34 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       stopBtn.hidden = !on;
     }
 
+    // Show a size warning and wait for the visitor to confirm before any download.
+    const confirmBox = document.getElementById('askp-confirm')!;
+    const confirmTitle = document.getElementById('askp-confirm-title')!;
+    const confirmGo = document.getElementById('askp-confirm-go')!;
+    const confirmCancel = document.getElementById('askp-confirm-cancel')!;
+    function confirmDownload(label: string, mb: number): Promise<boolean> {
+      confirmTitle.textContent = t.confirmTitle(label, mb);
+      confirmBox.hidden = false;
+      confirmBox.scrollIntoView({ block: 'nearest' });
+      return new Promise((resolve) => {
+        const done = (ok: boolean) => {
+          confirmBox.hidden = true;
+          confirmGo.removeEventListener('click', onGo);
+          confirmCancel.removeEventListener('click', onCancel);
+          resolve(ok);
+        };
+        const onGo = () => done(true);
+        const onCancel = () => done(false);
+        confirmGo.addEventListener('click', onGo);
+        confirmCancel.addEventListener('click', onCancel);
+      });
+    }
+
     async function ensureModel(modelId: string, dtype: string): Promise<boolean> {
       if (engine.ready && engine.loadedModelId === modelId) return true;
+      // Warn about the download size and require an explicit OK first.
+      const mb = Math.round(sizeOf(curOpt(), dtype) * 1000);
+      if (!(await confirmDownload(curOpt().dataset.label || '', mb))) return false;
       loadWrap.hidden = false;
       loadText.textContent = t.loadingBrowser;
       try {
@@ -355,10 +395,11 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       }
 
       // Model mode: load (if needed) then generate, gated by the verifier.
+      // If the visitor cancels the download (or it fails), fall back to retrieval.
       const ok = await ensureModel(modelId, chosenDtype());
       updateLoadBtn();
       if (!ok) {
-        commit(a, q, safeFallback(cfg, q), 'corrected');
+        commit(a, q, safeFallback(cfg, q), 'retrieval');
         setBusy(false);
         return;
       }
@@ -546,6 +587,30 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     border-color: color-mix(in srgb, var(--a) 22%, var(--line));
   }
   .askp-badge.is-retrieval svg, .askp-badge.is-retrieval b { color: var(--a); }
+
+  /* ——— Download confirmation ——— */
+  .askp-confirm {
+    display: flex; gap: 0.7rem; margin-top: 1.1rem; padding: 0.9rem 1rem;
+    border-radius: 12px; border: 1px solid color-mix(in srgb, #b4791f 40%, var(--line));
+    background: color-mix(in srgb, #b4791f 9%, var(--surface));
+  }
+  @media (prefers-reduced-motion: no-preference) { .askp-confirm:not([hidden]) { animation: askpRise 0.2s ease; } }
+  .askp-confirm-ico { flex: none; color: #a06a15; margin-top: 1px; }
+  :root.dark .askp-confirm-ico { color: #d8a24a; }
+  .askp-confirm-ico svg { width: 20px; height: 20px; }
+  .askp-confirm-body { flex: 1; min-width: 0; }
+  .askp-confirm-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.5; }
+  .askp-confirm-note { margin-top: 0.3rem; font-size: 0.76rem; line-height: 1.6; color: var(--ink-muted); }
+  .askp-confirm-actions { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+  .askp-confirm-go, .askp-confirm-cancel {
+    padding: 0.42rem 1rem; border-radius: 8px; font-size: 0.83rem; font-weight: 500; cursor: pointer;
+    transition: transform 0.12s ease, opacity 0.15s ease, background 0.15s ease;
+  }
+  .askp-confirm-go { border: 1px solid var(--a); background: var(--a); color: #fff; }
+  :root.dark .askp-confirm-go { color: #0f1012; }
+  .askp-confirm-go:hover { transform: translateY(-1px); }
+  .askp-confirm-cancel { border: 1px solid var(--line-strong); background: transparent; color: var(--ink-secondary); }
+  .askp-confirm-cancel:hover { color: var(--ink); }
 
   /* ——— Thread ——— */
   .askp-thread { margin-top: 2.75rem; display: flex; flex-direction: column; gap: 1.75rem; }
