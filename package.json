@@ -18,7 +18,7 @@
   "dependencies": {
     "@sparticuz/chromium": "^131.0.0",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.8",
+    "astro": "^7.0.6",
     "marked": "^17.0.1",
     "puppeteer-core": "^23.11.1",
     "tailwindcss": "^4.1.18"
@@ -27,16 +27,6 @@
     "basic-ftp": "5.3.1",
     "ws": "8.21.0",
     "ip-address": "10.2.0",
-    "follow-redirects": "1.16.0",
-    "rollup": "4.62.2",
-    "svgo": "4.0.1",
-    "postcss": "8.5.16",
-    "js-yaml": "4.3.0",
-    "smol-toml": "1.7.0",
-    "devalue": "5.8.1",
-    "defu": "6.1.7",
-    "h3": "1.15.11",
-    "vite": "6.4.3",
-    "picomatch": "4.0.5"
+    "follow-redirects": "1.16.0"
   }
 }
