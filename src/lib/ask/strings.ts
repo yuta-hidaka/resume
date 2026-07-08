@@ -25,6 +25,8 @@ export const askStrings = {
     verifiedHint: '回答は経歴データと照合し、確認できた内容のみ表示しています。',
     corrected: '確認できた事実のみ表示',
     correctedHint: 'モデルの下書きに裏づけの取れない記述があったため、経歴データから確実な情報だけをお見せしています。',
+    timeoutTitle: '応答に時間がかかりました',
+    timeoutHint: 'モデルの生成が時間内に終わらなかったため、確実な経歴データをお見せします。上で軽い「Qwen2.5 0.5B」を選ぶか「LLM利用なし」にすると速く答えられます。',
     checking: '事実を照合中…',
     sources: '根拠にした経歴データ',
     disclaimer: '小型モデルのため表現は不完全なことがありますが、内容は経歴データと自動照合し、裏づけの取れない記述は表示しません。',
@@ -94,6 +96,9 @@ export const askStrings = {
     corrected: 'Showing only verified facts',
     correctedHint:
       "The model's draft contained claims that couldn't be confirmed, so only verified facts from the résumé are shown.",
+    timeoutTitle: 'The model took too long',
+    timeoutHint:
+      "The model didn't finish in time, so here are verified résumé facts. Pick the lighter “Qwen2.5 0.5B” above, or “No LLM”, for a faster answer.",
     checking: 'Checking the facts…',
     sources: 'Résumé data used',
     disclaimer:

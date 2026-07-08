@@ -318,11 +318,12 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       return d;
     }
 
-    function appendBadgeAndSources(a: HTMLElement, query: string, kind: 'verified' | 'corrected' | 'retrieval') {
+    function appendBadgeAndSources(a: HTMLElement, query: string, kind: 'verified' | 'corrected' | 'retrieval' | 'timeout') {
       const conf = {
         verified: { cls: 'is-verified', icon: SVG.check, title: t.verified, hint: t.verifiedHint },
         corrected: { cls: 'is-corrected', icon: SVG.shield, title: t.corrected, hint: t.correctedHint },
         retrieval: { cls: 'is-retrieval', icon: SVG.doc, title: t.retrievalBadge, hint: t.retrievalHint },
+        timeout: { cls: 'is-corrected', icon: SVG.shield, title: t.timeoutTitle, hint: t.timeoutHint },
       }[kind];
       const badge = el(
         'div',
@@ -347,7 +348,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 
     // Résumé facts (retrieval / corrected) — a short lead + a clean list, so it
     // reads as an answer instead of a run-on wall of gray text.
-    function commitFacts(a: HTMLElement, query: string, facts: string[], kind: 'corrected' | 'retrieval') {
+    function commitFacts(a: HTMLElement, query: string, facts: string[], kind: 'corrected' | 'retrieval' | 'timeout') {
       a.classList.remove('is-streaming');
       a.innerHTML = '';
       const lead = el('p', 'askp-a-lead');
@@ -453,21 +454,51 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
         return;
       }
 
+      // Generation watchdog: a small model on a weak/absent GPU can stall with no
+      // tokens (or mid-stream). Rather than hang on "生成中" forever, time out and
+      // fall back to verified facts. Generous before the first token (WebGPU warm-up
+      // / shader compile), tighter once tokens are actually streaming.
+      const FIRST_TOKEN_MS = 60000;
+      const STALL_MS = 20000;
       let acc = '';
       let draftBody: HTMLElement | null = null;
+      let settled = false;
+      let gotToken = false;
+      let lastTick = Date.now();
+      let watchdog = 0 as unknown as ReturnType<typeof setInterval>;
+      const finish = (render: () => void) => {
+        if (settled) return;
+        settled = true;
+        clearInterval(watchdog);
+        render();
+        setBusy(false);
+      };
+      watchdog = setInterval(() => {
+        if (settled) return;
+        const limit = gotToken ? STALL_MS : FIRST_TOKEN_MS;
+        if (Date.now() - lastTick > limit) {
+          engine.stop(); // interrupt the hung / too-slow generation
+          finish(() => commitFacts(a, q, fallbackFacts(cfg, q), 'timeout'));
+        }
+      }, 2500);
+
       engine.ask(buildMessages(cfg, q, history), {
-        onStart: () => {
-          a.innerHTML = '';
-          draftBody = el('div', 'askp-a-body is-draft');
-          const tag = el('span', 'askp-draft-tag', t.generating);
-          a.appendChild(tag);
-          a.appendChild(draftBody);
-        },
+        onStart: () => { lastTick = Date.now(); },
         onToken: (tok) => {
+          lastTick = Date.now();
           acc += tok;
-          if (draftBody) draftBody.textContent = acc;
+          if (!gotToken) {
+            // First token — swap the animated "考えています…" orb for the stream.
+            gotToken = true;
+            a.innerHTML = '';
+            const tag = el('span', 'askp-draft-tag', t.generating);
+            draftBody = el('div', 'askp-a-body is-draft');
+            a.appendChild(tag);
+            a.appendChild(draftBody);
+          }
+          draftBody!.textContent = acc;
         },
-        onDone: (full) => {
+        onDone: (full) => finish(() => {
           // The single gate: verified answer, or verified facts. Never a lie.
           const { text, verified } = guardedAnswer(cfg, q, full || acc);
           if (verified) {
@@ -476,12 +507,8 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
           } else {
             commitFacts(a, q, fallbackFacts(cfg, q), 'corrected');
           }
-          setBusy(false);
-        },
-        onError: () => {
-          commitFacts(a, q, fallbackFacts(cfg, q), 'corrected');
-          setBusy(false);
-        },
+        }),
+        onError: () => finish(() => commitFacts(a, q, fallbackFacts(cfg, q), 'corrected')),
       });
     }
 
