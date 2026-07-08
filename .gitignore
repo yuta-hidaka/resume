@@ -2,6 +2,12 @@
 dist/
 .next/
 
+# Playwright (keep e2e/**/*-snapshots baselines; ignore run artifacts)
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
 # generated types
 .astro/
 
