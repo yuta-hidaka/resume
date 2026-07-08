@@ -65,40 +65,53 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       </div>
     </div>
 
-    <details class="askp-engine" id="askp-engine">
-      <summary class="askp-engine-sum">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>
-        <span id="askp-engine-status">{s.engineTitle}</span>
-      </summary>
-      <p class="askp-engine-lead">{s.engineLead}</p>
-      <div class="askp-engine-row">
-        <label class="askp-field">
-          <span>{s.engineModelLabel}</span>
-          <select id="askp-model" class="askp-select">
-            <option value="retrieval">{s.engineRetrieval}</option>
-            {MODELS.map((m) => (
-              <option
-                value={m.id}
-                data-webgpu={m.webgpuDtype}
-                data-wasm={m.wasmDtype}
-                data-size-q4f16={m.sizes.q4f16}
-                data-size-q8={m.sizes.q8}
-                data-size-q4={m.sizes.q4}
-                data-label={m.label}
-                data-note-ja={m.noteJa}
-                data-note-en={m.noteEn}
-              >{m.label} · {m.params} · {m.by}</option>
-            ))}
-          </select>
-        </label>
-        <label class="askp-field" id="askp-precision-field" hidden>
-          <span>{s.enginePrecisionLabel}</span>
-          <select id="askp-precision" class="askp-select"></select>
-        </label>
-        <button type="button" class="askp-load-btn" id="askp-loadbtn" hidden></button>
+    <div class="askp-engine" id="askp-engine">
+      <p class="askp-mode-q">{s.modeQuestion}</p>
+      <div class="askp-mode" role="radiogroup" aria-label={s.modeQuestion}>
+        <button type="button" class="askp-mode-opt is-active" data-mode="retrieval" id="askp-mode-retrieval" role="radio" aria-checked="true">
+          <span class="askp-mode-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>
+          </span>
+          <span class="askp-mode-t"><b>{s.modeRetrieval}</b><em>{s.modeRetrievalNote}</em></span>
+        </button>
+        <button type="button" class="askp-mode-opt" data-mode="ai" id="askp-mode-ai" role="radio" aria-checked="false">
+          <span class="askp-mode-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>
+          </span>
+          <span class="askp-mode-t"><b>{s.modeAi}</b><em>{s.modeAiNote}</em></span>
+        </button>
       </div>
-      <p class="askp-engine-note" id="askp-engine-note"></p>
-    </details>
+
+      <div class="askp-ai-controls" id="askp-ai-controls" hidden>
+        <p class="askp-engine-lead">{s.engineLead}</p>
+        <div class="askp-engine-row">
+          <label class="askp-field">
+            <span>{s.engineModelLabel}</span>
+            <select id="askp-model" class="askp-select">
+              {MODELS.map((m) => (
+                <option
+                  value={m.id}
+                  data-webgpu={m.webgpuDtype}
+                  data-wasm={m.wasmDtype}
+                  data-size-q4f16={m.sizes.q4f16}
+                  data-size-q8={m.sizes.q8}
+                  data-size-q4={m.sizes.q4}
+                  data-label={m.label}
+                  data-note-ja={m.noteJa}
+                  data-note-en={m.noteEn}
+                >{m.label} · {m.params} · {m.by}</option>
+              ))}
+            </select>
+          </label>
+          <label class="askp-field">
+            <span>{s.enginePrecisionLabel}</span>
+            <select id="askp-precision" class="askp-select"></select>
+          </label>
+          <button type="button" class="askp-load-btn" id="askp-loadbtn"></button>
+        </div>
+        <p class="askp-engine-note" id="askp-engine-note"></p>
+      </div>
+    </div>
   </section>
 
   <div class="askp-thread" id="askp-thread" aria-live="polite"></div>
@@ -178,40 +191,32 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     deviceLine.textContent = t.device(engine.caps.device);
     if (!engine.caps.webgpu) deviceLine.classList.add('is-warn');
 
-    // ——— Model picker (default = retrieval, no download) ———
+    // ——— Answer mode + model picker (always visible; default = résumé data) ———
     const device = engine.caps.device;
+    let mode: 'retrieval' | 'ai' = 'retrieval';
+    const modeBtns = [...document.querySelectorAll<HTMLButtonElement>('.askp-mode-opt')];
+    const aiControls = document.getElementById('askp-ai-controls')!;
     const modelSel = document.getElementById('askp-model') as HTMLSelectElement;
-    const precField = document.getElementById('askp-precision-field')!;
     const precSel = document.getElementById('askp-precision') as HTMLSelectElement;
     const loadBtn = document.getElementById('askp-loadbtn') as HTMLButtonElement;
     const engineNote = document.getElementById('askp-engine-note')!;
-    const engineStatus = document.getElementById('askp-engine-status')!;
     const DTYPES = device === 'webgpu' ? ['q4f16', 'q8'] : ['q8', 'q4'];
     const SIZE_KEY: Record<string, string> = { q4f16: 'sizeQ4f16', q8: 'sizeQ8', q4: 'sizeQ4' };
 
     const curOpt = () => modelSel.selectedOptions[0];
-    const chosenModelId = () => (modelSel.value === 'retrieval' ? null : modelSel.value);
+    const chosenModelId = () => (mode === 'ai' ? modelSel.value : null);
     const chosenDtype = () => precSel.value || DTYPES[0];
     const sizeOf = (opt: HTMLOptionElement, dt: string) => parseFloat(opt.dataset[SIZE_KEY[dt]] || '0') || 0;
 
     function updateLoadBtn() {
-      const modelId = chosenModelId();
-      if (!modelId) return;
+      const modelId = modelSel.value;
       const gb = sizeOf(curOpt(), chosenDtype());
       const loaded = engine.ready && engine.loadedModelId === modelId;
-      loadBtn.hidden = loaded;
-      loadBtn.textContent = t.engineLoad(gb);
-      engineStatus.textContent = loaded ? t.engineLoaded(curOpt().dataset.label || '') : t.engineTitle;
+      loadBtn.classList.toggle('is-loaded', loaded);
+      loadBtn.disabled = loaded;
+      loadBtn.textContent = loaded ? `✓ ${t.engineLoaded(curOpt().dataset.label || '')}` : t.engineLoad(gb);
     }
-    function refreshEngineUI() {
-      const isModel = modelSel.value !== 'retrieval';
-      precField.hidden = !isModel;
-      loadBtn.hidden = !isModel;
-      if (!isModel) {
-        engineNote.textContent = '';
-        engineStatus.textContent = t.engineTitle;
-        return;
-      }
+    function refreshPrecision() {
       precSel.innerHTML = '';
       for (const dt of DTYPES) {
         const gb = sizeOf(curOpt(), dt);
@@ -224,17 +229,24 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       engineNote.textContent = (lang === 'ja' ? curOpt().dataset.noteJa : curOpt().dataset.noteEn) || '';
       updateLoadBtn();
     }
-    modelSel.addEventListener('change', refreshEngineUI);
+    function setMode(next: 'retrieval' | 'ai') {
+      mode = next;
+      modeBtns.forEach((b) => {
+        const on = b.dataset.mode === next;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-checked', String(on));
+      });
+      aiControls.hidden = next !== 'ai';
+      if (next === 'ai') refreshPrecision();
+    }
+    modeBtns.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode as 'retrieval' | 'ai')));
+    modelSel.addEventListener('change', refreshPrecision);
     precSel.addEventListener('change', updateLoadBtn);
     loadBtn.addEventListener('click', async () => {
-      const modelId = chosenModelId();
-      if (!modelId) return;
       loadBtn.disabled = true;
-      await ensureModel(modelId, chosenDtype());
-      loadBtn.disabled = false;
+      await ensureModel(modelSel.value, chosenDtype());
       updateLoadBtn();
     });
-    refreshEngineUI();
 
     const SVG = {
       orb: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.2" opacity="0.5"/></svg>',
@@ -547,21 +559,38 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
   .askp-load-text { font-size: 0.74rem; color: var(--ink-muted); margin-top: 0.45rem; }
   .askp-hint { margin-top: 1rem; max-width: 38rem; font-size: 0.76rem; line-height: 1.6; color: var(--ink-muted); }
 
-  /* ——— Model picker ——— */
-  .askp-engine {
-    margin-top: 1.25rem; border: 1px solid var(--line); border-radius: 12px;
-    background: var(--surface); padding: 0 0.9rem;
+  /* ——— Answer-mode toggle + model picker ——— */
+  .askp-engine { margin-top: 1.4rem; }
+  .askp-mode-q {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted); margin-bottom: 0.5rem;
   }
-  .askp-engine[open] { padding-bottom: 0.95rem; }
-  .askp-engine-sum {
-    display: flex; align-items: center; gap: 0.5rem; cursor: pointer; list-style: none;
-    padding: 0.7rem 0.1rem; font-size: 0.8rem; color: var(--ink-secondary); user-select: none;
+  .askp-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; max-width: 34rem; }
+  .askp-mode-opt {
+    display: flex; align-items: center; gap: 0.6rem; text-align: left; cursor: pointer;
+    padding: 0.7rem 0.85rem; border-radius: 12px; border: 1px solid var(--line-strong);
+    background: var(--surface); transition: border-color 0.15s ease, background 0.15s ease;
   }
-  .askp-engine-sum::-webkit-details-marker { display: none; }
-  .askp-engine-sum svg { width: 16px; height: 16px; color: var(--a); flex: none; }
-  .askp-engine-sum::after { content: '▾'; margin-left: auto; color: var(--ink-muted); font-size: 0.7rem; transition: transform 0.15s ease; }
-  .askp-engine[open] .askp-engine-sum::after { transform: rotate(180deg); }
-  .askp-engine-lead { font-size: 0.78rem; line-height: 1.65; color: var(--ink-muted); margin: 0.1rem 0 0.85rem; max-width: 44rem; }
+  .askp-mode-opt:hover { border-color: color-mix(in srgb, var(--a) 45%, var(--line-strong)); }
+  .askp-mode-opt.is-active {
+    border-color: var(--a);
+    background: color-mix(in srgb, var(--a) 9%, var(--surface));
+    box-shadow: 0 0 0 1px var(--a) inset;
+  }
+  .askp-mode-ico { flex: none; display: flex; width: 26px; height: 26px; color: var(--ink-muted); }
+  .askp-mode-opt.is-active .askp-mode-ico { color: var(--a); }
+  .askp-mode-ico svg { width: 20px; height: 20px; }
+  .askp-mode-t { display: flex; flex-direction: column; min-width: 0; }
+  .askp-mode-t b { font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .askp-mode-t em { font-style: normal; font-size: 0.7rem; color: var(--ink-muted); margin-top: 0.1rem; }
+  @media (max-width: 480px) { .askp-mode { grid-template-columns: 1fr; } }
+
+  .askp-ai-controls {
+    margin-top: 0.85rem; padding: 0.95rem 1rem; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surface);
+  }
+  @media (prefers-reduced-motion: no-preference) { .askp-ai-controls:not([hidden]) { animation: askpRise 0.2s ease; } }
+  .askp-engine-lead { font-size: 0.78rem; line-height: 1.65; color: var(--ink-muted); margin: 0 0 0.85rem; max-width: 44rem; }
   .askp-engine-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.6rem 0.75rem; }
   .askp-field { display: flex; flex-direction: column; gap: 0.25rem; }
   .askp-field > span { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
@@ -579,7 +608,9 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: background 0.15s ease;
   }
   .askp-load-btn:hover { background: color-mix(in srgb, var(--a) 20%, var(--surface)); }
-  .askp-load-btn:disabled { opacity: 0.55; cursor: default; }
+  .askp-load-btn:disabled { cursor: default; }
+  .askp-load-btn.is-loaded { background: var(--a); color: #fff; opacity: 1; }
+  :root.dark .askp-load-btn.is-loaded { color: #0f1012; }
   .askp-engine-note { margin-top: 0.7rem; font-size: 0.76rem; line-height: 1.6; color: var(--ink-secondary); }
 
   .askp-badge.is-retrieval {

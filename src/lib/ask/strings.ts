@@ -28,9 +28,15 @@ export const askStrings = {
     // Retrieval (no-model) answers
     retrievalBadge: '経歴データより',
     retrievalHint: 'これは経歴データからの抜粋です。下の「AIモデル」を読み込むと、より自然な文章で答えます。',
+    // Answer-mode picker (always visible)
+    modeQuestion: '回答の作り方',
+    modeRetrieval: '経歴データ',
+    modeRetrievalNote: '即答・ダウンロード不要',
+    modeAi: 'AIモデルで生成',
+    modeAiNote: 'ブラウザ内の小型LLM・要DL',
     // Model picker
     engineTitle: 'AIモデル（任意）',
-    engineLead: '既定は経歴データから即答（ダウンロード不要）。より自然な文章にはAIモデルを読み込めます。一度だけDLされ、以降はキャッシュされます。',
+    engineLead: 'AIモデルはブラウザ内で動きます。モデルと精度を選んで読み込むと、以降はキャッシュされます。',
     engineRetrieval: '経歴データ（即時・DL不要）',
     engineModelLabel: 'モデル',
     enginePrecisionLabel: '精度',
@@ -89,9 +95,15 @@ export const askStrings = {
     // Retrieval (no-model) answers
     retrievalBadge: 'From the résumé',
     retrievalHint: 'This is straight from the résumé data. Load a model below for a more naturally-phrased answer.',
+    // Answer-mode picker (always visible)
+    modeQuestion: 'How to answer',
+    modeRetrieval: 'Résumé data',
+    modeRetrievalNote: 'instant · no download',
+    modeAi: 'Generate with AI',
+    modeAiNote: 'in-browser LLM · needs download',
     // Model picker
     engineTitle: 'AI model (optional)',
-    engineLead: 'By default, answers come straight from the résumé (no download). Load an AI model for more natural phrasing — it downloads once and is cached.',
+    engineLead: 'The AI model runs inside your browser. Pick a model and precision, then load it — it is cached afterwards.',
     engineRetrieval: 'Résumé data (instant · no download)',
     engineModelLabel: 'Model',
     enginePrecisionLabel: 'Precision',
