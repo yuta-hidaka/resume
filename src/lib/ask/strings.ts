@@ -66,7 +66,7 @@ export const askStrings = {
     howRuntimeLabel: '実行環境',
     howRuntimeName: 'transformers.js · WebGPU',
     howRuntimeDesc:
-      'ONNX 量子化した重みを Hugging Face から読み込み、WebGPU（非対応時は WASM）で推論。Web Worker 上で動くので UI は固まりません。',
+      'モデルの重みは4bit量子化済み（ONNX）。数GB級のモデルを約0.5〜1.2GBに抑えているので、これ以上の圧縮は効きません。初回だけ Hugging Face から読み込み、以降はブラウザにキャッシュ（再DL不要）。推論は WebGPU（非対応時は WASM）、Web Worker 上なので UI は固まりません。',
     howGroundLabel: 'グラウンディング',
     howGroundName: '検索 + 事実照合',
     howGroundDesc:
@@ -139,7 +139,7 @@ export const askStrings = {
     howRuntimeLabel: 'Runtime',
     howRuntimeName: 'transformers.js · WebGPU',
     howRuntimeDesc:
-      'Quantized ONNX weights are streamed from Hugging Face and run on WebGPU (WASM fallback), inside a Web Worker so the UI stays smooth.',
+      'The weights are 4-bit quantized ONNX — that is how a multi-GB model fits in ~0.5–1.2 GB, and why further compression does not help. They stream from Hugging Face once, then stay cached in your browser (no re-download). Inference runs on WebGPU (WASM fallback) inside a Web Worker, so the UI never freezes.',
     howGroundLabel: 'Grounding',
     howGroundName: 'Retrieval + fact-check',
     howGroundDesc:
