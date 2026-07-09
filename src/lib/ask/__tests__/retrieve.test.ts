@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
 import { askConfig } from '../profile';
-import { detectLanguage, retrieve, buildMessages } from '../retrieve';
+import { detectLanguage, retrieve, retrieveScored, relevantChunks, buildMessages } from '../retrieve';
 
 const ja = askConfig('ja');
 const en = askConfig('en');
@@ -35,6 +35,30 @@ describe('retrieve', () => {
   });
   it('returns nothing for an empty query', () => {
     expect(retrieve('   ', ja.chunks, 3)).toEqual([]);
+  });
+});
+
+describe('relevantChunks — confidence-aware selection', () => {
+  it('a weak/subjective query falls back to the bio+skills overview, not a random old side job', () => {
+    const ids = relevantChunks('この人を雇うべき？', ja.chunks, 3).map((h) => h.id);
+    expect(ids).toContain('bio');
+    expect(ids).toContain('skills');
+    expect(ids[0]).not.toBe('exp14'); // was surfacing 生ハムの輸入販売
+  });
+  it('"what kind of person" also gets the overview', () => {
+    expect(relevantChunks('どんな人？', ja.chunks, 3).map((h) => h.id)).toContain('bio');
+  });
+  it('a strong keyword query still returns the specific relevant chunk', () => {
+    expect(relevantChunks('英語話せる？', ja.chunks, 3).map((h) => h.id)).toContain('langs');
+    const tl = relevantChunks('テックリードとして何をしましたか？', ja.chunks, 3).map((h) => h.id);
+    expect(tl.some((id) => id.startsWith('exp'))).toBe(true);
+  });
+});
+
+describe('retrieveScored — hiragana particles do not inflate score', () => {
+  it('a subjective question stays below the strong-match bar (→ overview)', () => {
+    const top = retrieveScored('この人を雇うべき？', ja.chunks, 1)[0];
+    expect(!top || top.score < 3).toBe(true);
   });
 });
 

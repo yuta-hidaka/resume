@@ -24,27 +24,50 @@ function tokenize(q: string): string[] {
   return [...new Set([...latin, ...cjk, ...bigrams])];
 }
 
-/** Score chunks by keyword overlap and return the top-k relevant ones. */
-export function retrieve(query: string, chunks: FactChunk[], k = 3): FactChunk[] {
+/** Score chunks by keyword overlap and return the top-k with their scores. */
+export function retrieveScored(query: string, chunks: FactChunk[], k = 3): { chunk: FactChunk; score: number }[] {
   const qt = tokenize(query);
   if (!qt.length) return [];
-  const scored = chunks.map((ch) => {
-    const tagset = ch.tags.map((t) => t.toLowerCase());
-    const hay = (ch.text + ' ' + tagset.join(' ')).toLowerCase();
-    let score = 0;
-    for (const t of qt) {
-      // skip 1-char latin noise, but keep single CJK chars (they carry meaning)
-      if (t.length < 2 && !CJK.test(t)) continue;
-      if (tagset.some((tg) => tg === t)) score += 3;
-      else if (hay.includes(t)) score += 1;
-    }
-    return { ch, score };
-  });
-  return scored
+  return chunks
+    .map((ch) => {
+      const tagset = ch.tags.map((t) => t.toLowerCase());
+      const hay = (ch.text + ' ' + tagset.join(' ')).toLowerCase();
+      let score = 0;
+      for (const t of qt) {
+        // skip 1-char latin noise
+        if (t.length < 2 && !CJK.test(t)) continue;
+        // skip single hiragana — particles/inflections (の を に は…) match almost
+        // every chunk and inflate the score of irrelevant ones. Kanji, katakana,
+        // and bigrams (which carry the actual content) are kept.
+        if (t.length === 1 && /[぀-ゟ]/.test(t)) continue;
+        if (tagset.some((tg) => tg === t)) score += 3;
+        else if (hay.includes(t)) score += 1;
+      }
+      return { chunk: ch, score };
+    })
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, k)
-    .map((s) => s.ch);
+    .slice(0, k);
+}
+
+/** Score chunks by keyword overlap and return the top-k relevant ones. */
+export function retrieve(query: string, chunks: FactChunk[], k = 3): FactChunk[] {
+  return retrieveScored(query, chunks, k).map((s) => s.chunk);
+}
+
+/** Confidence-aware selection for grounding + fact answers. A strong keyword/tag
+ *  match returns those chunks; a weak or empty match — open-ended or subjective
+ *  questions ("should I hire him?", "tell me about yourself") — returns a sensible
+ *  overview (bio + skills) instead of low-signal noise like an old side job. */
+export function relevantChunks(query: string, chunks: FactChunk[], k = 3): FactChunk[] {
+  const scored = retrieveScored(query, chunks, k);
+  const STRONG = 3; // one exact tag hit, or ≥3 content-token hits
+  if (scored.length && scored[0].score >= STRONG) return scored.map((s) => s.chunk);
+  const overview = ['bio', 'skills']
+    .map((id) => chunks.find((c) => c.id === id))
+    .filter((c): c is FactChunk => !!c);
+  const extra = scored.map((s) => s.chunk).filter((c) => !overview.includes(c));
+  return [...overview, ...extra].slice(0, Math.max(k, overview.length));
 }
 
 // Small models follow short, numbered, imperative rules better than long prose,
@@ -84,7 +107,7 @@ export function detectLanguage(q: string): { code: string; name: string } {
  *  page's own language the few-shot examples already anchor it, and adding a
  *  directive tends to make the small model loop, so we leave it off. */
 export function buildSystem(cfg: AskConfig, query: string, foreignLang?: string): string {
-  const hits = retrieve(query, cfg.chunks, 3);
+  const hits = relevantChunks(query, cfg.chunks, 3);
   const facts = [cfg.core, ...hits.map((h) => h.text)].join('\n');
   const base = `${INSTRUCTION}\n\nReference facts:\n${facts}`;
   return foreignLang

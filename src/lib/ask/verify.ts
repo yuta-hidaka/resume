@@ -20,7 +20,7 @@
 // ————————————————————————————————————————————————————————————————
 
 import type { AskConfig } from './retrieve';
-import { retrieve } from './retrieve';
+import { retrieve, relevantChunks } from './retrieve';
 
 export type Verification = { ok: boolean; issues: string[] };
 
@@ -201,7 +201,7 @@ export function verifyAnswer(answer: string, cfg: AskConfig): Verification {
 /** The relevant résumé facts for a query, as separate strings — for the UI to
  *  render as a clean list. Same source material as {@link safeFallback}. */
 export function fallbackFacts(cfg: AskConfig, query: string): string[] {
-  const hits = retrieve(query, cfg.chunks, 3);
+  const hits = relevantChunks(query, cfg.chunks, 3);
   const facts = hits.length ? hits.map((h) => h.text) : [cfg.core];
   return facts.map((f) => f.replace(/\s+/g, ' ').trim()).filter(Boolean);
 }
