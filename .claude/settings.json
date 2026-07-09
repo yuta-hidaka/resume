@@ -7,10 +7,11 @@
     ],
     "ask": [
       "Bash(npm run generate:pdf)",
-      "Bash(git push*)",
-      "Bash(*deploy*)",
       "Bash(*migration*)",
-      "Bash(rm -rf*)"
+      "Bash(rm -rf*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard*)"
     ]
   }
 }
