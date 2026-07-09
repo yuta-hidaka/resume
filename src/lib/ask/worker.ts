@@ -6,7 +6,7 @@
 import { TRANSFORMERS_URL, MAX_NEW_TOKENS } from './config';
 
 type LoadMsg = { type: 'load'; model: string; device: string; dtype: string };
-type GenMsg = { type: 'generate'; messages: any[]; options?: { maxNewTokens?: number } };
+type GenMsg = { type: 'generate'; messages: any[]; options?: { maxNewTokens?: number; sample?: boolean } };
 type InterruptMsg = { type: 'interrupt' };
 type InMsg = LoadMsg | GenMsg | InterruptMsg;
 
@@ -51,7 +51,7 @@ async function ensureLoaded(msg: LoadMsg): Promise<void> {
   }
 }
 
-async function generate(messages: any[], maxNewTokens: number): Promise<void> {
+async function generate(messages: any[], opts: { maxNewTokens: number; sample?: boolean }): Promise<void> {
   const { TextStreamer } = tf;
   stopper.reset();
 
@@ -70,17 +70,26 @@ async function generate(messages: any[], maxNewTokens: number): Promise<void> {
     },
   });
 
-  post({ type: 'start' });
-  await model.generate({
+  const genOpts: any = {
     ...inputs,
-    max_new_tokens: maxNewTokens,
-    do_sample: false, // greedy — most factual for a small model
+    max_new_tokens: opts.maxNewTokens,
     repetition_penalty: 1.3, // small models loop badly; needs a firm hand
     no_repeat_ngram_size: 3, // hard-block any repeated 3-gram (kills "先のこと、…" loops)
     streamer,
     stopping_criteria: stopper,
     return_dict_in_generate: true,
-  });
+  };
+  if (opts.sample) {
+    // Retry pass: greedy already failed/degenerated, so sample for a different result.
+    genOpts.do_sample = true;
+    genOpts.temperature = 0.7;
+    genOpts.top_p = 0.9;
+  } else {
+    genOpts.do_sample = false; // first pass: greedy — most factual for a small model
+  }
+
+  post({ type: 'start' });
+  await model.generate(genOpts);
 
   post({ type: 'done', text: full.trim() });
 }
@@ -93,7 +102,10 @@ self.addEventListener('message', async (e: MessageEvent<InMsg>) => {
       post({ type: 'ready' });
     } else if (data.type === 'generate') {
       if (!model) throw new Error('model-not-loaded');
-      await generate(data.messages, data.options?.maxNewTokens ?? MAX_NEW_TOKENS);
+      await generate(data.messages, {
+        maxNewTokens: data.options?.maxNewTokens ?? MAX_NEW_TOKENS,
+        sample: data.options?.sample,
+      });
     } else if (data.type === 'interrupt') {
       stopper?.interrupt();
     }

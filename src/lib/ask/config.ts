@@ -7,7 +7,7 @@
 export const TRANSFORMERS_URL =
   'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
 
-export const MAX_NEW_TOKENS = 384;
+export const MAX_NEW_TOKENS = 200; // short résumé answers; keeps a weak model fast
 
 export type Dtype = 'q4f16' | 'q8' | 'q4';
 

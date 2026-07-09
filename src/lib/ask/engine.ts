@@ -22,6 +22,7 @@ type AskHandlers = {
   onDone?: (text: string) => void;
   onError?: (err: Error) => void;
   maxNewTokens?: number;
+  sample?: boolean;
 };
 
 export class AskEngine {
@@ -109,12 +110,33 @@ export class AskEngine {
       }
     };
     w.addEventListener('message', handler);
-    w.postMessage({ type: 'generate', messages, options: { maxNewTokens: handlers.maxNewTokens } });
+    w.postMessage({
+      type: 'generate',
+      messages,
+      options: { maxNewTokens: handlers.maxNewTokens, sample: handlers.sample },
+    });
   }
 
   /** Interrupt an in-flight generation. */
   stop() {
     this.worker?.postMessage({ type: 'interrupt' });
+  }
+
+  /** Tear down the worker (e.g. after a hung generation) so the next load starts
+   *  clean instead of queueing behind a stuck one. The model re-loads from the
+   *  browser cache, so it's fast — no re-download. */
+  reset() {
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+    this.ready = false;
+    this.loading = false;
+    this.busy = false;
+    this.loadPromise = null;
+    this.loadedKey = null;
+    this.loadingKey = null;
+    this.loadedModelId = null;
   }
 }
 
