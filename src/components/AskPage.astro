@@ -252,7 +252,23 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       modelIco.innerHTML = isAi() ? ICO_AI : ICO_DOC;
       updateHint();
     }
-    modelSel.addEventListener('change', refreshModel);
+    // Warm-load an already-cached model in the background on intent (model pick or
+    // input focus) so the first answer generates immediately — the weight read +
+    // WebGPU warm-up happens while the visitor is still typing, not after they ask.
+    // Cached-only: never triggers a download without the size confirm.
+    const warmTried = new Set<string>();
+    async function maybeWarmLoad() {
+      if (!isAi()) return;
+      const modelId = modelSel.value;
+      const key = cacheKey();
+      if (warmTried.has(key)) return;
+      if (engine.ready && engine.loadedModelId === modelId) return;
+      if (!isCachedFresh(key) || !(await isModelInCacheStorage(modelId))) return;
+      warmTried.add(key);
+      engine.load({ modelId, dtype: chosenDtype() as any }).catch(() => warmTried.delete(key));
+    }
+    modelSel.addEventListener('change', () => { refreshModel(); maybeWarmLoad(); });
+    input.addEventListener('focus', () => { maybeWarmLoad(); });
     refreshModel();
 
     const SVG = {
