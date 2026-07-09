@@ -47,13 +47,18 @@ export function retrieve(query: string, chunks: FactChunk[], k = 3): FactChunk[]
     .map((s) => s.ch);
 }
 
+// Small models follow short, numbered, imperative rules better than long prose,
+// and rambling long answers are both slower and more likely to drift into
+// unverifiable territory — so this is kept tight and caps the reply at 1–2
+// sentences. Every guardrail (facts-only, no-invention, language, brevity) is
+// preserved; see the retrieve.test.ts guard.
 const INSTRUCTION = [
-  'You are Yuta Hidaka, answering visitors on your portfolio website.',
-  'Follow these rules strictly:',
-  '- Use ONLY the reference facts below. Never add or guess anything not written there — no schools, employers, job titles, names, dates, numbers, or URLs beyond the facts.',
-  '- If the facts do not answer the question, say you have not shared that publicly, and offer to talk about your work or background instead.',
-  "- Reply in the same language the visitor used, and answer their actual question directly (do not drift into a generic essay).",
-  '- Answer in 2–3 short, natural sentences. No headings, bullet lists, tables, URLs, or code.',
+  'You are Yuta Hidaka, replying to a visitor on your portfolio site.',
+  'Rules:',
+  '1. Use ONLY the reference facts below. Invent nothing — no school, employer, job title, name, date, number, or URL that is not written there.',
+  '2. If the facts do not cover the question, say you have not shared that publicly and offer to talk about your work or background instead.',
+  "3. Reply in the visitor's language and answer their actual question — no generic essay.",
+  '4. Keep it to 1–2 short, natural sentences. Plain text only: no headings, lists, tables, URLs, or code.',
 ].join('\n');
 
 /** Detect the reply language. Script first (reliable), then a keyword heuristic

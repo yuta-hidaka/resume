@@ -50,6 +50,13 @@ describe('buildMessages', () => {
     expect(last.content).toContain('テックリードとして何をしましたか？');
     expect(last.content).toContain('Reference facts:');
   });
+  it('keeps every core guardrail in the grounded turn (facts-only, no-invention, language, brevity)', () => {
+    const content = buildMessages(ja, 'テックリードとして何をしましたか？', []).at(-1)!.content;
+    expect(content).toContain('ONLY'); // facts-only
+    expect(content.toLowerCase()).toContain('invent nothing'); // no fabrication
+    expect(content).toContain("visitor's language"); // reply language
+    expect(content).toMatch(/1[–-]2/); // brevity cap
+  });
   it('includes few-shot for a same-language first turn', () => {
     const msgs = buildMessages(ja, '自己紹介して', []);
     expect(msgs.some((m) => m.role === 'assistant')).toBe(true);
