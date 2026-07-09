@@ -75,3 +75,15 @@ describe('sourceText & safeFallback', () => {
     expect(verifyAnswer(ans, ja).ok).toBe(true);
   });
 });
+
+describe('verifyAnswer — generic katakana vs fabricated brands', () => {
+  it('passes natural answers that use everyday katakana not in the résumé', () => {
+    expect(verifyAnswer('英語は日常会話レベルです。', ja).ok).toBe(true);
+    expect(verifyAnswer('システムのパフォーマンスを改善しました。', ja).ok).toBe(true);
+  });
+  it('still catches fabricated katakana company/brand names', () => {
+    expect(verifyAnswer('以前グーグルで働いていました。', ja).ok).toBe(false);
+    expect(verifyAnswer('アマゾンでエンジニアをしていました。', ja).ok).toBe(false);
+    expect(verifyAnswer('セールスフォースの認定資格を持っています。', ja).ok).toBe(false);
+  });
+});

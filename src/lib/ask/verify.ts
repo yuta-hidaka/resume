@@ -33,6 +33,22 @@ const COMMON = new Set(
     .split(/\s+/),
 );
 
+// Generic katakana vocabulary a natural answer uses that need not appear in the
+// résumé verbatim (e.g. "英語は日常会話レベルです"). These are common NOUNS, never
+// brand/company/product names — so fabricated katakana entities (グーグル, アマゾン…)
+// are still caught. Allowlisting a word that IS in the source is harmless.
+const KATAKANA_COMMON = new Set(
+  ('レベル データ システム サービス プロジェクト チーム メンバー リーダー マネジメント キャリア スキル ' +
+    'ユーザー エンジニア プログラム プログラミング コード テスト テスト ツール ケース プロセス フロー タスク ' +
+    'スケジュール リリース デプロイ インフラ クラウド サーバー ネットワーク セキュリティ パフォーマンス ' +
+    'アプリ アプリケーション ウェブ ソフトウェア ハードウェア デザイン レビュー サポート ビジネス コスト ' +
+    'リソース コミュニケーション ミーティング プロダクト マーケット バックエンド フロントエンド フルスタック ' +
+    'アーキテクチャ データベース ドキュメント バージョン アップデート ロジック モデル モジュール ライブラリ ' +
+    'フレームワーク パッケージ ブラウザ クライアント リクエスト レスポンス キャッシュ メモリ ストレージ ' +
+    'アカウント パスワード メール メッセージ コンテンツ ページ サイト ボタン フォーム リスト テーブル')
+    .split(/\s+/),
+);
+
 // Latin org/school markers. If a capitalized phrase contains one, we verify the
 // WHOLE phrase (catches "University of Tokyo" reshuffled from the real
 // "Tokyo University of Science").
@@ -181,7 +197,7 @@ export function verifyAnswer(answer: string, cfg: AskConfig): Verification {
   }
   // Latin org/school phrases, katakana, Japanese/Chinese entities, opaque scripts → substring check.
   for (const p of latinEntityPhrases(pre)) flagSub(p);
-  for (const m of pre.matchAll(/[ァ-ヶー]{2,}/g)) flagSub(m[0]);
+  for (const m of pre.matchAll(/[ァ-ヶー]{2,}/g)) if (!KATAKANA_COMMON.has(m[0])) flagSub(m[0]);
   // Well-known brands/schools written bare in Han (which shares glyphs with the
   // Japanese source, so can't be blanket-flagged). A non-exhaustive safety net.
   for (const b of NOT_HIS) if (pre.includes(b)) issues.push(b);
