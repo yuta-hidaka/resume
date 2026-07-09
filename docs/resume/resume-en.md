@@ -33,7 +33,7 @@ Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in de
 
 ---
 
-#### Monstarlab / Tech Lead, Full-Stack Engineer (2021-09 - 2025-06)
+#### Monstarlab / Tech Lead, Full-Stack Engineer (2022-09 - 2025-06)
 
 **Okinawa Theme Park Web App Development (2025-01 - 2025-06) - Tech Lead / 5 members (50+ including PM/PMO)**
 
