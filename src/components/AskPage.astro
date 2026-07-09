@@ -150,7 +150,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
   import { buildMessages, retrieve } from '../lib/ask/retrieve';
   import { guardedAnswer, safeFallback, fallbackFacts } from '../lib/ask/verify';
   import { getAskStrings } from '../lib/ask/strings';
-  import { downloadStatus } from '../lib/ask/format';
+  import { downloadStatus, stripThinking } from '../lib/ask/format';
 
   const rootEl = document.getElementById('askpage');
   if (rootEl) {
@@ -484,20 +484,22 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
         return;
       }
 
-      // Generation is BUFFERED: a tiny model streams garbage more often than a
-      // usable answer, so we never render raw tokens — we keep a clean animated
-      // "生成中" indicator and reveal ONLY the verified result (or facts). A stall
-      // watchdog prevents an endless hang (and resets the worker so it doesn't
-      // poison the next question); one retry — with sampling — gives a degenerate
-      // or unverifiable first attempt a second chance before we fall back.
+      // Stream the model's draft live (clearly a DRAFT — the final answer is the
+      // verified result rendered on 'done'). The verifier still decides what stands:
+      // a verified answer, or a fall back to real résumé facts. A lie is never the
+      // final answer — only ever a draft that then gets replaced. A stall watchdog
+      // prevents an endless hang (and resets the worker so it doesn't poison the next
+      // question); one retry (sampling) gives a degenerate/unverifiable first attempt
+      // a second chance before falling back.
       const FIRST_TOKEN_MS = 60000; // WebGPU warm-up / shader compile can be slow
       const STALL_MS = 20000;       // …but a long gap mid-stream means it stalled
       const MAX_ATTEMPTS = 2;
-      const draftLabel = a.querySelector('.askp-draft-label');
-      const setLabel = (s: string) => { if (draftLabel) draftLabel.textContent = s; };
+      const orbHtml = (label: string) =>
+        `<div class="askp-draft"><span class="askp-orb">${SVG.orb}</span><span class="askp-draft-label">${label}</span></div>`;
 
       const runAttempt = (n: number) => {
         let acc = '';
+        let draftBody: HTMLElement | null = null;
         let settled = false;
         let gotToken = false;
         let lastTick = Date.now();
@@ -516,7 +518,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
           settle();
           if (kind === 'timeout') engine.reset();
           if (kind === 'corrected' && n < MAX_ATTEMPTS) {
-            setLabel(t.retrying);
+            a.innerHTML = orbHtml(t.retrying); // back to a spinner while it re-drafts
             runAttempt(n + 1); // second pass samples for a different result
             return;
           }
@@ -536,10 +538,18 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
           sample: n >= 2, // attempt 1 greedy (fastest, most factual); retry samples
           onStart: () => { lastTick = Date.now(); },
           onToken: (tok) => {
-            // Received (for the watchdog) but NOT rendered — no raw garbage on screen.
             lastTick = Date.now();
             acc += tok;
-            if (!gotToken) { gotToken = true; setLabel(t.generating); }
+            if (!gotToken) {
+              // First token — swap the "考えています…" orb for the live draft.
+              gotToken = true;
+              a.innerHTML = '';
+              const tag = el('span', 'askp-draft-tag', t.generating);
+              draftBody = el('div', 'askp-a-body is-draft');
+              a.appendChild(tag);
+              a.appendChild(draftBody);
+            }
+            draftBody!.textContent = stripThinking(acc);
           },
           onDone: (full) => {
             // The single gate: verified answer, or verified facts. Never a lie.
