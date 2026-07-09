@@ -4,6 +4,7 @@
 // thread, so the UI never freezes during generation.
 
 import { TRANSFORMERS_URL, MAX_NEW_TOKENS } from './config';
+import { stripThinking } from './format';
 
 type LoadMsg = { type: 'load'; model: string; device: string; dtype: string };
 type GenMsg = { type: 'generate'; messages: any[]; options?: { maxNewTokens?: number; sample?: boolean } };
@@ -58,6 +59,7 @@ async function generate(messages: any[], opts: { maxNewTokens: number; sample?: 
   const inputs = tokenizer.apply_chat_template(messages, {
     add_generation_prompt: true,
     return_dict: true,
+    enable_thinking: false, // reasoning models (Qwen3) — answer directly; others ignore it
   });
 
   let full = '';
@@ -91,7 +93,7 @@ async function generate(messages: any[], opts: { maxNewTokens: number; sample?: 
   post({ type: 'start' });
   await model.generate(genOpts);
 
-  post({ type: 'done', text: full.trim() });
+  post({ type: 'done', text: stripThinking(full) });
 }
 
 self.addEventListener('message', async (e: MessageEvent<InMsg>) => {

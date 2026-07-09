@@ -40,6 +40,17 @@ export const MODELS: ModelOption[] = [
     wasmDtype: 'q8',
   },
   {
+    id: 'onnx-community/Qwen3-0.6B-ONNX',
+    label: 'Qwen3 0.6B',
+    by: 'Alibaba',
+    params: '0.6B',
+    noteJa: '新しめ・高品質。思考なしモードで直接回答（実験的）。',
+    noteEn: 'Newer, higher quality; answers directly (thinking off). Experimental.',
+    sizes: { q4f16: 0.57, q8: 0.62, q4: 0.92 },
+    webgpuDtype: 'q4f16',
+    wasmDtype: 'q8',
+  },
+  {
     id: 'onnx-community/TinySwallow-1.5B-Instruct-ONNX',
     label: 'TinySwallow 1.5B',
     by: 'Sakana AI',

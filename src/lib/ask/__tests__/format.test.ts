@@ -1,5 +1,22 @@
 import { describe, it, expect } from 'bun:test';
-import { downloadStatus } from '../format';
+import { downloadStatus, stripThinking } from '../format';
+
+describe('stripThinking', () => {
+  it('removes a full <think>…</think> block', () => {
+    expect(stripThinking('<think>let me reason</think>Yuta is an engineer.')).toBe('Yuta is an engineer.');
+  });
+  it('removes generated reasoning that ends with </think> (opener eaten by the template)', () => {
+    expect(stripThinking('reasoning about the question </think>\n\nHe uses Go and Kafka.')).toBe(
+      'He uses Go and Kafka.',
+    );
+  });
+  it('drops an unclosed / truncated <think> tail', () => {
+    expect(stripThinking('日髙さんはGoエンジニアです。<think>then rambling forever')).toBe('日髙さんはGoエンジニアです。');
+  });
+  it('leaves normal text untouched', () => {
+    expect(stripThinking('日髙さんはGoエンジニアです。')).toBe('日髙さんはGoエンジニアです。');
+  });
+});
 
 describe('downloadStatus', () => {
   it('shows pct, size, and rate (1 decimal below 10 MB/s)', () => {
