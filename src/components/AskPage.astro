@@ -150,6 +150,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
   import { buildMessages, retrieve } from '../lib/ask/retrieve';
   import { guardedAnswer, safeFallback, fallbackFacts } from '../lib/ask/verify';
   import { getAskStrings } from '../lib/ask/strings';
+  import { downloadStatus } from '../lib/ask/format';
 
   const rootEl = document.getElementById('askpage');
   if (rootEl) {
@@ -423,6 +424,9 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       }
       loadWrap.hidden = false;
       loadText.textContent = cached ? t.loadingCache : t.loadingBrowser;
+      // Track transfer rate for a live MB/s readout (EMA-smoothed; reset the
+      // baseline when transformers.js moves to the next file — loaded resets).
+      let prevLoaded = 0, prevMs = Date.now(), rateEma = 0;
       try {
         await engine.load({
           modelId,
@@ -430,8 +434,18 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
           onProgress: (p) => {
             if (typeof p.progress === 'number' && p.status === 'progress') {
               loadFill.style.width = Math.round(p.progress) + '%';
-              const mb = p.total ? ` · ${(p.loaded! / 1e6).toFixed(0)}/${(p.total / 1e6).toFixed(0)} MB` : '';
-              loadText.textContent = `${t.loading} ${Math.round(p.progress)}%${mb}`;
+              const now = Date.now();
+              const loaded = p.loaded ?? 0;
+              const dBytes = loaded - prevLoaded;
+              const dt = (now - prevMs) / 1000;
+              if (dBytes < 0) {
+                prevLoaded = loaded; prevMs = now; // new file
+              } else if (dt >= 0.25 && dBytes > 0) {
+                const inst = dBytes / dt;
+                rateEma = rateEma ? rateEma * 0.6 + inst * 0.4 : inst;
+                prevLoaded = loaded; prevMs = now;
+              }
+              loadText.textContent = downloadStatus(t.loading, p.progress, loaded, p.total, rateEma);
             }
           },
         });
