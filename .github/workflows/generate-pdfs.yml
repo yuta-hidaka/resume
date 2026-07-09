@@ -6,6 +6,11 @@ on:
     paths-ignore:
       - "public/pdf/**"
       - "dist/**"
+      # The résumé PDFs render the resume pages only — the in-browser "/ask"
+      # feature never affects them, so don't burn a PDF run (and a regenerate
+      # commit) on ask-only changes.
+      - "src/lib/ask/**"
+      - "src/components/AskPage.astro"
 
 permissions:
   contents: write
