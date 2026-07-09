@@ -80,6 +80,8 @@ describe('verifyAnswer — generic katakana vs fabricated brands', () => {
   it('passes natural answers that use everyday katakana not in the résumé', () => {
     expect(verifyAnswer('英語は日常会話レベルです。', ja).ok).toBe(true);
     expect(verifyAnswer('システムのパフォーマンスを改善しました。', ja).ok).toBe(true);
+    expect(verifyAnswer('インフラコストを30パーセント削減しました。', ja).ok).toBe(true); // % → パーセント
+    expect(verifyAnswer('マイクロサービスをリアルタイムで処理します。', ja).ok).toBe(true);
   });
   it('still catches fabricated katakana company/brand names', () => {
     expect(verifyAnswer('以前グーグルで働いていました。', ja).ok).toBe(false);
