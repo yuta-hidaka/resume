@@ -289,12 +289,30 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     }
     applyDeviceUi();
 
-    // `'gpu' in navigator` can be a false positive (e.g. hardware acceleration
-    // turned off: the object exists but no adapter is available, and every
-    // WebGPU model load would fail). Verify asynchronously and downgrade to
-    // WASM if the adapter is not real. ?backend=webgpu still forces WebGPU.
+    // `'gpu' in navigator` can be a false positive (the object exists but no
+    // adapter is available, and every WebGPU model load would fail). Verify
+    // asynchronously and downgrade to WASM if the adapter is not real.
+    // IMPORTANT: only probe once the tab is visible — Chromium can refuse
+    // adapters to hidden tabs (e.g. opened via cmd-click in the background),
+    // and probing there would wrongly lock a WebGPU machine to WASM. Nothing
+    // can be interacted with while hidden, so waiting loses nothing.
+    // ?backend=webgpu still forces WebGPU.
     if (device === 'webgpu' && new URLSearchParams(location.search).get('backend') !== 'webgpu') {
-      probeWebGPU().then((ok) => {
+      const probeWhenVisible = async (): Promise<boolean> => {
+        if (document.visibilityState === 'hidden') {
+          await new Promise<void>((resolve) => {
+            const onVisible = () => {
+              if (document.visibilityState !== 'hidden') {
+                document.removeEventListener('visibilitychange', onVisible);
+                resolve();
+              }
+            };
+            document.addEventListener('visibilitychange', onVisible);
+          });
+        }
+        return probeWebGPU();
+      };
+      probeWhenVisible().then((ok) => {
         if (!ok) {
           device = 'wasm';
           engine.setDevice('wasm');
