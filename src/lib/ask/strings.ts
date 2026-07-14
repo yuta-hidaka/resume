@@ -62,11 +62,11 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      '軽量な Qwen2.5-0.5B（約0.5GB・既定）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約1.2GB・TAID蒸留）を選べます。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
+      '軽量な Qwen2.5-0.5B（約0.5GB・既定）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約0.9GB・TAID蒸留）を選べます。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
     howRuntimeLabel: '実行環境',
-    howRuntimeName: 'transformers.js · WebGPU',
+    howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
-      'モデルの重みは4bit量子化済み（ONNX）。数GB級のモデルを約0.5〜1.2GBに抑えているので、これ以上の圧縮は効きません。初回だけ Hugging Face から読み込み、以降はブラウザにキャッシュ（再DL不要）。推論は WebGPU（非対応時は WASM）、Web Worker 上なので UI は固まりません。',
+      'モデルの重みは4bit量子化済み。数GB級のモデルを約0.5〜0.9GBに抑えているので、これ以上の圧縮は効きません。Qwen は transformers.js（ONNX・WebGPU/WASM）、TinySwallow は Sakana 公式デモと同じ WebLLM（MLC・WebGPU専用）で動作。初回だけ Hugging Face から読み込み、以降はブラウザにキャッシュ（再DL不要）。Web Worker 上なので UI は固まりません。',
     howGroundLabel: 'グラウンディング',
     howGroundName: '検索 + 事実照合',
     howGroundDesc:
@@ -135,11 +135,11 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      "Choose the light Qwen2.5-0.5B (~0.5 GB, the default) or Sakana AI's Japanese-strong TinySwallow-1.5B (~1.2 GB, TAID-distilled). The model loads once, then is cached; a no-download “No LLM” mode is also available.",
+      "Choose the light Qwen2.5-0.5B (~0.5 GB, the default) or Sakana AI's Japanese-strong TinySwallow-1.5B (~0.9 GB, TAID-distilled). The model loads once, then is cached; a no-download “No LLM” mode is also available.",
     howRuntimeLabel: 'Runtime',
-    howRuntimeName: 'transformers.js · WebGPU',
+    howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
-      'The weights are 4-bit quantized ONNX — that is how a multi-GB model fits in ~0.5–1.2 GB, and why further compression does not help. They stream from Hugging Face once, then stay cached in your browser (no re-download). Inference runs on WebGPU (WASM fallback) inside a Web Worker, so the UI never freezes.',
+      'The weights are 4-bit quantized — that is how a multi-GB model fits in ~0.5–0.9 GB, and why further compression does not help. Qwen runs on transformers.js (ONNX, WebGPU/WASM); TinySwallow runs on WebLLM (MLC, WebGPU-only) — the same stack as Sakana\'s official demo. Weights stream from Hugging Face once, then stay cached in your browser. Everything runs in a Web Worker, so the UI never freezes.',
     howGroundLabel: 'Grounding',
     howGroundName: 'Retrieval + fact-check',
     howGroundDesc:

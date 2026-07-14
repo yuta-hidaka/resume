@@ -13,7 +13,7 @@ import {
   type Progress,
 } from './config';
 
-export { detectCapabilities } from './config';
+export { detectCapabilities, probeWebGPU } from './config';
 export type { Capabilities, ChatMessage, Progress } from './config';
 
 type AskHandlers = {
@@ -120,6 +120,13 @@ export class AskEngine {
   /** Interrupt an in-flight generation. */
   stop() {
     this.worker?.postMessage({ type: 'interrupt' });
+  }
+
+  /** Downgrade to WASM when the async probe finds the advertised WebGPU
+   *  adapter is actually unusable (see probeWebGPU in config). */
+  setDevice(device: 'webgpu' | 'wasm') {
+    this.caps.device = device;
+    this.caps.webgpu = device === 'webgpu';
   }
 
   /** Tear down the worker (e.g. after a hung generation) so the next load starts

@@ -1,15 +1,24 @@
 // Shared config for the in-browser assistant.
 //
-// The model runs client-side via transformers.js. We load the library from
-// jsDelivr inside the worker so the static Astro/Vite build never has to
-// bundle onnxruntime-web's wasm assets (a well-known bundler headache).
+// Models run client-side on one of two runtimes:
+//  - transformers.js (ONNX): WebGPU or WASM — the default path.
+//  - WebLLM (MLC): compiled WebGPU kernels — much faster, but WebGPU-only.
+// Both libraries are loaded from CDNs inside the worker so the static
+// Astro/Vite build never has to bundle their wasm assets (a well-known
+// bundler headache).
 
 export const TRANSFORMERS_URL =
   'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
 
+// Pinned to the version Sakana AI's own TinySwallow-ChatUI ships with — a
+// proven combo of runtime + prebuilt Qwen2 model lib + MLC weights.
+export const WEBLLM_URL = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.48/+esm';
+
 export const MAX_NEW_TOKENS = 200; // short résumé answers; keeps a weak model fast
 
-export type Dtype = 'q4f16' | 'q8' | 'q4';
+export type Dtype = 'q4f16' | 'q8' | 'q4' | 'q4f32';
+
+export type EngineKind = 'transformers' | 'webllm';
 
 export type ModelOption = {
   id: string;
@@ -23,6 +32,12 @@ export type ModelOption = {
   /** Best dtype per backend (WebGPU can do fp16; WASM cannot). */
   webgpuDtype: Dtype;
   wasmDtype: Dtype;
+  /** Runtime. 'webllm' = MLC weights via WebLLM; id is then the HF MLC repo. */
+  engine?: EngineKind;
+  /** WebLLM only: prebuilt model-lib wasm filename (appended to the lib CDN). */
+  modelLib?: string;
+  /** True for WebLLM models — they have no WASM fallback. */
+  webgpuOnly?: boolean;
 };
 
 // Models are downloaded once, in the browser, and cached. Sizes are the ~total
@@ -51,15 +66,21 @@ export const MODELS: ModelOption[] = [
     wasmDtype: 'q8',
   },
   {
-    id: 'onnx-community/TinySwallow-1.5B-Instruct-ONNX',
+    // Sakana's official MLC build, run on WebLLM — the same combo as their
+    // TinySwallow-ChatUI demo. Faster and smaller than the old ONNX build,
+    // but WebGPU-only (WebLLM has no WASM fallback).
+    id: 'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
     label: 'TinySwallow 1.5B',
     by: 'Sakana AI',
     params: '1.5B',
-    noteJa: '日本語が得意・高品質。ただし重い。',
-    noteEn: 'Strong Japanese, higher quality — but heavier.',
-    sizes: { q4f16: 1.2, q8: 1.56, q4: 1.77 },
-    webgpuDtype: 'q4f16',
-    wasmDtype: 'q8',
+    noteJa: '日本語が得意・高品質。WebLLMで高速動作（WebGPU必須）。',
+    noteEn: 'Strong Japanese, higher quality — fast on WebLLM (needs WebGPU).',
+    sizes: { q4f32: 0.88 },
+    webgpuDtype: 'q4f32',
+    wasmDtype: 'q4f32', // unused — the option is disabled without WebGPU
+    engine: 'webllm',
+    modelLib: 'Qwen2-1.5B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm',
+    webgpuOnly: true,
   },
 ];
 
@@ -114,6 +135,20 @@ export function detectCapabilities(): Capabilities {
     typeof navigator !== 'undefined' && 'gpu' in navigator && !!(navigator as any).gpu;
   const device: Device = forced ?? (hasGpu ? 'webgpu' : 'wasm');
   return { webgpu: device === 'webgpu', device };
+}
+
+/** Whether WebGPU actually works. `'gpu' in navigator` alone is a false
+ *  positive on some setups (e.g. hardware acceleration off, GPU blocklisted):
+ *  the object exists but requestAdapter() returns null and every WebGPU model
+ *  load then fails. Async, so it complements the sync detectCapabilities(). */
+export async function probeWebGPU(): Promise<boolean> {
+  try {
+    const gpu = typeof navigator !== 'undefined' ? (navigator as any).gpu : null;
+    if (!gpu) return false;
+    return !!(await gpu.requestAdapter());
+  } catch {
+    return false;
+  }
 }
 
 export type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string };
