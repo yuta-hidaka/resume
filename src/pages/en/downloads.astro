@@ -4,6 +4,7 @@ import DocumentSection from '../../components/DocumentSection.astro';
 import { renderCareerMarkdown } from '../../lib/docs/career-markdown';
 import { renderCareerHtml } from '../../lib/docs/career-html';
 import { toHtmlDocument } from '../../lib/docs/html';
+import { downloadFileName } from '../../lib/docs/filenames';
 ---
 
 <Layout title="CV Download - Yuta Hidaka">
@@ -16,7 +17,7 @@ import { toHtmlDocument } from '../../lib/docs/html';
     id="en-resume"
     title="Resume (English)"
     sourceMarkdown={renderCareerMarkdown('en')}
-    downloadFileName="yuta-hidaka-resume-en.pdf"
+    downloadFileName={downloadFileName('resume-text', 'en')}
     previewHeight="750px"
     staticPdfUrl="/pdf/yuta-hidaka-resume-en.pdf"
   />
@@ -25,7 +26,7 @@ import { toHtmlDocument } from '../../lib/docs/html';
     id="en-cv"
     title="CV (English)"
     sourceHtml={toHtmlDocument(renderCareerHtml('en'))}
-    downloadFileName="yuta-hidaka-cv-en.pdf"
+    downloadFileName={downloadFileName('cv', 'en')}
     previewHeight="750px"
     staticPdfUrl="/pdf/yuta-hidaka-cv-en.pdf"
   />
