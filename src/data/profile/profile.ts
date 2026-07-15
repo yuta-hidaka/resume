@@ -46,6 +46,7 @@ export const profile: Profile = {
       name: { ja: "住友化学", en: "Sumitomo Chemical" },
       legalName: "住友化学株式会社",
       kind: "employment",
+      role: { ja: "研究開発", en: "R&D" },
       joinDate: "2012-04-01",
       leaveDate: "2018-03-31",
     },
@@ -62,6 +63,25 @@ export const profile: Profile = {
       name: { ja: "シスナビ", en: "SysNavi" },
       legalName: "株式会社シスナビ",
       kind: "employment",
+      role: "Software Engineer",
+      techStack: ["PHP (Laravel)", "Alteryx", "SQL Server", "Python (Django)", "WinActor", "C# .NET"],
+      extraBlocks: [
+        {
+          heading: { ja: "その他プロジェクト", en: "Other Projects" },
+          bullets: {
+            ja: [
+              "化学メーカーバックオフィスRPA化（WinActor）、RPAフレームワーク概念提案",
+              "化学メーカー実験データ可視化Webアプリ（Django、TypeScript、Plotly.js）",
+              "予定実績管理Webアプリ（C# .NET、Outlook API連携）",
+            ],
+            en: [
+              "Chemical manufacturer back-office RPA automation (WinActor), proposed RPA framework concept",
+              "Chemical manufacturer experimental data visualization web app (Django, TypeScript, Plotly.js)",
+              "Plan vs actual management web app (C# .NET, Outlook API integration)",
+            ],
+          },
+        },
+      ],
       joinDate: "2018-10-01",
       leaveDate: "2020-06-30",
     },
@@ -78,6 +98,8 @@ export const profile: Profile = {
       name: "Fignny",
       legalName: "Fignny株式会社",
       kind: "employment",
+      role: "Software Engineer",
+      techStack: ["Python", "Django", "DynamoDB", "AWS Lambda", "Aurora", "Celery"],
       joinDate: "2020-08-01",
       leaveDate: "2021-04-30",
     },
@@ -86,6 +108,8 @@ export const profile: Profile = {
       name: "KiteRa",
       legalName: "株式会社KiteRa",
       kind: "employment",
+      role: "Full-Stack Engineer",
+      techStack: ["Go", "Svelte", "PostgreSQL", "AWS", "Python", "Stripe"],
       joinDate: "2021-05-01",
       leaveDate: "2022-07-31",
     },
@@ -94,6 +118,8 @@ export const profile: Profile = {
       name: "Monstarlab",
       legalName: "Monstarlab株式会社",
       kind: "employment",
+      role: "Tech Lead, Full-Stack Engineer",
+      techStack: ["TypeScript", "Next.js 15", "React", "Astro", "Go", "Vue (NUXT3)", "AWS", "GCP", "SST", "Pulumi", "Terraform", "Cloud Run", "Spanner", "MySQL", "Data Dog"],
       joinDate: "2022-09-01",
       leaveDate: "2025-06-30",
     },
@@ -102,6 +128,8 @@ export const profile: Profile = {
       name: "SUPER STUDIO",
       legalName: "株式会社SUPER STUDIO",
       kind: "employment",
+      role: "Backend Engineer",
+      techStack: ["Go", "Next.js", "Kafka", "Spark", "Trino", "Iceberg", "Parquet", "Kubernetes", "ArgoCD", "k9s"],
       joinDate: "2025-07-01",
       leaveDate: null,
     },
@@ -213,7 +241,32 @@ export const profile: Profile = {
           en: "Leadership"
         }
       ],
-      team: 0
+      team: 0,
+      detail: {
+        heading: { ja: "Big Data Group（Backend Team → xfunction Team）", en: "Big Data Group (Backend Team → xfunction Team)" },
+        bullets: {
+          ja: [
+            "Golang / Next.js / Kafka / Spark / Trino / Iceberg / Parquet / ArgoCD / Kubernetes / k9s を用いたシステム構築・保守",
+            "ビッグデータ基盤、イベント駆動アーキテクチャ、Kubernetes、スクラム開発",
+            "xfunctionチームの立ち上げに初期メンバーとして中心的な役割を果たす",
+            "従来はFE・BEのコミュニケーションや他部署連携がチグハグで、直近PJでは6月リリース予定が10月にずれるなどコミュニケーションロスによる遅延が発生していた",
+            "新チーム創設にあたり心理的安全性を重視し、ドラッカー風エクササイズ、メンバー間の積極的なコミュニケーション、PdM・ステークホルダーとの期待値すり合わせを実施し、チーム設立5ヶ月で意図しないPJ遅延を0にした",
+            "データ基盤はIceberg（保存形式Parquet）採用、分析クエリはTrino。Spark SQLのデータ取り込み処理に CREATE OR REPLACE TABLE 構文を導入し、処理速度・コストを30%改善",
+            "AI活用を推進し、Claude CodeのAgents（サブエージェント）とハーネスを最適化。タスクの性質に応じてOpus・Sonnet・Haikuを使い分けるサブエージェント構成を設計・導入し、トークン使用料を50%削減",
+            "デザイナー・他部署・他チームとの積極的なコミュニケーション、xfunctionチーム内でのリード役",
+          ],
+          en: [
+            "Built and maintained systems with Golang, Next.js, Kafka, Spark, Trino, Iceberg, Parquet, ArgoCD, Kubernetes, and k9s",
+            "Big data infrastructure, event-driven architecture, Kubernetes operations, Scrum development",
+            "Played a central role as a founding member of the xfunction team",
+            "Previously, FE/BE communication and cross-department coordination was fragmented — a project scheduled for June release was delayed until October due to communication losses",
+            "Prioritized psychological safety in the new team: conducted Drucker-style exercises, fostered proactive inter-member communication, and aligned expectations with PdM and stakeholders, eliminating unintended project delays to zero within 5 months of the team's establishment",
+            "Data platform on Iceberg (Parquet storage) with Trino as the analytics query engine; introduced Spark SQL's CREATE OR REPLACE TABLE in the data ingestion process, improving processing speed and cost by 30%",
+            "Drove AI adoption by optimizing Claude Code's Agents (subagents) and harness — designed and rolled out a subagent setup that routes tasks to Opus, Sonnet, or Haiku by workload, cutting token usage cost by 50%",
+            "Proactive communication with designers, cross-department/cross-team collaboration, lead role within xfunction team",
+          ],
+        },
+      },
     },
     {
       companyId: "monstarlab",
@@ -308,7 +361,35 @@ export const profile: Profile = {
           en: "Rapid full-stack development"
         }
       ],
-      team: 16
+      team: 16,
+      detail: {
+        heading: { ja: "沖縄テーマパーク向けWebアプリ開発", en: "Okinawa Theme Park Web App Development" },
+        roleTeam: { ja: "テックリード / 5名（全体PM・PMO含め50名）", en: "Tech Lead / 5 members (50+ including PM/PMO)" },
+        bullets: {
+          ja: [
+            "2025年開業の沖縄テーマパーク向けWebアプリ、ネイティブアプリ、バックエンド、管理画面の構築",
+            "ベトナムチームとの英語でのコミュニケーション、ベトナム現地での協業（出張・滞在）を含むテックリード、アプリ/バックエンド/インフラのオーナーシップ",
+            "アサイン後1.5週間でWebページリリースが迫る中、最初の2日で各ステークホルダーと距離を縮め合意を取り、SST・Pulumiを用いてサーバレス構成でインフラを構築",
+            "瞬間的に10000RPS超のリクエストを捌ける設定を行い、安定稼働に寄与",
+            "マイクロサービスアーキテクチャで3000RPSのオリジントラフィックを処理するバックエンド構築",
+            "Athena・Lambda・Glue・Quick Suite (AWS)、IaCとAIを活用したParquet形式のデータ分析基盤構築",
+            "ネイティブアプリ開発、バックエンド構築、管理画面実装を迅速に提供",
+            "サーバレス最適化でインフラコストを30%削減、AI統合（Devin）・IaC採用を提案",
+            "時間が迫る中でもチームメンバーへの経験共有のためモブプロを実施、仕様・経験の積極的な共有",
+          ],
+          en: [
+            "Web app, native app, backend, and admin panel development for a theme park opening in 2025",
+            "Led team through English communication with Vietnamese team, including onsite collaboration in Vietnam (business trip and stay); owned app/backend/infrastructure",
+            "Joined with 1.5 weeks until web page release deadline; aligned with stakeholders in first 2 days and built IaC-based serverless infrastructure using SST and Pulumi",
+            "Configured system to handle peak traffic exceeding 10,000 RPS, contributing to stable operations",
+            "Built backend in microservices architecture handling 3,000 RPS at origin",
+            "Constructed data analytics platform with Parquet format using Athena, Lambda, Glue, and Quick Suite (AWS), leveraging IaC and AI",
+            "Rapidly delivered native app development, backend construction, and admin panel implementation",
+            "Reduced infrastructure costs by 30% via serverless optimization; proposed AI integration (Devin) and IaC adoption",
+            "Conducted mob programming sessions despite tight deadlines to actively share specifications and experience with team members",
+          ],
+        },
+      },
     },
     {
       companyId: "monstarlab",
@@ -331,7 +412,29 @@ export const profile: Profile = {
       experienceBullets: [
         ""
       ],
-      team: 30
+      team: 30,
+      detail: {
+        heading: { ja: "ふるさと納税ポイント→株式交換サービス", en: "Furusato Tax Points → Stock Exchange Service" },
+        roleTeam: { ja: "ソフトウェアエンジニア / 100名", en: "Software Engineer / 100 members" },
+        // TODO: 基本データ(2024-04〜2024-12 / Tech Lead / 30名)と期間・役割・人数が食い違う — 要確認のうえ統一
+        periodLabel: { ja: "2024-11 〜 2025-01", en: "2024-11 – 2025-01" },
+        bullets: {
+          ja: [
+            "ふるさと納税ポイントを株式に交換可能なサービスのWebアプリ開発にソフトウェアエンジニアとしてアサイン",
+            "マイクロサービスアーキテクチャ、全体トラフィック2万RPS超、担当領域は最大1500RPS",
+            "Next.js 15 App ディレクトリ、GCP Cloud Runで実装",
+            "WebP・AVIF画像最適化、遅延実行などフロントエンドのパフォーマンスチューニング",
+            "アジャイル開発でPBI作成、リリース作業など短期間でキャッチアップしながら作業を推進",
+          ],
+          en: [
+            "Assigned as software engineer to web app development for a service converting furusato tax points to stocks",
+            "Microservices architecture with overall traffic exceeding 20,000 RPS; responsible area handled up to 1,500 RPS",
+            "Implemented with Next.js 15 App Directory and GCP Cloud Run",
+            "Frontend performance tuning including WebP/AVIF image optimization and lazy loading",
+            "Caught up quickly in Agile development with PBI creation and release operations",
+          ],
+        },
+      },
     },
     {
       companyId: "monstarlab",
@@ -358,7 +461,29 @@ export const profile: Profile = {
       experienceBullets: [
         ""
       ],
-      team: 7
+      team: 7,
+      detail: {
+        heading: { ja: "企業ポータルサイトCMS移行", en: "Corporate Website CMS Migration" },
+        roleTeam: { ja: "テックリード / 3名", en: "Tech Lead / 3 members" },
+        bullets: {
+          ja: [
+            "企業ポータルサイトのCMS移行プロジェクトにTechリードとして参画",
+            "提案段階から参入し、顧客のペイン・会社的状況を鑑みてアーキテクチャ・サービスを選定",
+            "カスタマイズされたCMSのリバースエンジニアリング、ヘッドレスCMSへの移行を全てコードベースで完結",
+            "インフラもIaCで記述し属人化を排除",
+            "Lambda + Astro JSでISR的なアーキテクチャを設計、CMS費用を月額20万円→1〜2万円に圧縮",
+            "SEOパフォーマンスも改善し、顧客のKPIに対してフィット",
+          ],
+          en: [
+            "Participated as tech lead in corporate portal site CMS migration project",
+            "Joined from proposal stage, selected architecture and services considering client pain points and company situation",
+            "Reverse-engineered customized CMS and migrated to headless CMS entirely code-based",
+            "Eliminated operational dependencies by implementing infrastructure as IaC",
+            "Designed ISR-like architecture with Lambda + Astro JS, reducing CMS costs from ~200,000 JPY/month to 10,000-20,000 JPY/month",
+            "Improved SEO performance while meeting client KPIs",
+          ],
+        },
+      },
     },
     {
       companyId: "monstarlab",
@@ -384,7 +509,21 @@ export const profile: Profile = {
       experienceBullets: [
         ""
       ],
-      team: 20
+      team: 20,
+      detail: {
+        heading: { ja: "企業サイト更新", en: "Corporate Website Update" },
+        roleTeam: { ja: "ソフトウェアエンジニア / 6名", en: "Software Engineer / 6 members" },
+        bullets: {
+          ja: [
+            "企業のWebアプリ在庫管理システム再構築、DB設計・ディレクション・海外チームとの協業",
+            "フルスタックエンジニアとしてインフラ、バックエンド、フロントエンド全般を担当",
+          ],
+          en: [
+            "Rebuilt company inventory management web app, including DB design, direction, and collaboration with overseas team",
+            "Handled infrastructure, backend, and frontend as full-stack engineer",
+          ],
+        },
+      },
     },
     {
       companyId: "kitera",
@@ -411,7 +550,23 @@ export const profile: Profile = {
           en: ""
         }
       ],
-      team: 5
+      team: 5,
+      detail: {
+        heading: { ja: "社労士向けSaaS開発", en: "SaaS Development for Labor and Social Security Attorneys" },
+        roleTeam: { ja: "ソフトウェアエンジニア / 5名", en: "Software Engineer / 5 members" },
+        bullets: {
+          ja: [
+            "規程管理SaaSの新機能をGolang / Svelte / PostgreSQL / AWSで開発",
+            "日本初の36協定の電子申請機能の開発主担当、e-Govの仕様理解や業務に沿ったソフトウェア開発",
+            "シード・アーリーステージから入社、社員10数名から60〜70名と大規模になる環境で必要な機能を開発",
+          ],
+          en: [
+            "Developed new features for regulation management SaaS using Golang, Svelte, PostgreSQL, and AWS",
+            "Led development of Japan's first electronic application feature for the 36 Agreement via e-Gov integration",
+            "Joined during seed/early stage, developed necessary features as company grew from ~10 to 60-70 employees",
+          ],
+        },
+      },
     },
     {
       companyId: "fignny",
@@ -457,7 +612,27 @@ export const profile: Profile = {
         },
         "AWS"
       ],
-      team: 20
+      team: 20,
+      detail: {
+        heading: { ja: "CRM開発", en: "CRM Development" },
+        roleTeam: { ja: "コーダー / 25名", en: "Coder / 25 members" },
+        bullets: {
+          ja: [
+            "利用企業1600社超のCRMサービスの新規機能追加・バグ修正",
+            "Lambda上にPythonで記述したAPIを展開、全機能をAPIで提供",
+            "DynamoDBクエリ改善、バグ対応、新規機能開発",
+            "環境構築ドキュメント整備により古参エンジニアの工数削減に貢献",
+            "DynamoDBデータ膨大化（150GB）によるパフォーマンス問題をクエリ見直し・インデックス作成で解決",
+          ],
+          en: [
+            "New feature development and bug fixes for CRM service used by 1,600+ companies",
+            "Deployed Python APIs on Lambda, providing all features via API",
+            "DynamoDB query improvements, bug fixes, new feature development",
+            "Improved onboarding documentation, reducing workload for senior engineers",
+            "Resolved performance issues caused by DynamoDB data growth (150GB) through query optimization and index creation",
+          ],
+        },
+      },
     },
     {
       companyId: "fignny",
@@ -512,7 +687,27 @@ export const profile: Profile = {
           en: "Memory management"
         }
       ],
-      team: 2
+      team: 2,
+      detail: {
+        heading: { ja: "まとめサイトスクレイピング", en: "Web Scraping Project" },
+        roleTeam: { ja: "コーダー / 2名", en: "Coder / 2 members" },
+        bullets: {
+          ja: [
+            "月間20億PVのまとめサイト終了に伴う全記事データ取得プロジェクト",
+            "HTML構造のリバースエンジニアリング、BeautifulSoup4を用いたスクレイピングプログラム作成",
+            "AWS EC2/S3/Aurora上でThredPoolExecutor・Celeryで分散処理・キュー処理を組み合わせ高速化",
+            "2週間でコーディング完了、2週間で150万件近い記事をスクレイピング（DB容量60GB以上、画像2TB以上）",
+            "2か月予定の作業を2週間で完了",
+          ],
+          en: [
+            "Scraped all article data from a 2 billion PV/month summary site before service termination",
+            "Reverse-engineered HTML structure, created scraping program with BeautifulSoup4",
+            "High-speed processing with ThredPoolExecutor and Celery distributed/queue processing on AWS EC2/S3/Aurora",
+            "Completed coding in 2 weeks and scraped nearly 1.5 million articles in 2 weeks (DB 60GB+, images 2TB+)",
+            "Finished 2-month planned work in 2 weeks",
+          ],
+        },
+      },
     },
     {
       companyId: "freelance",
@@ -545,7 +740,21 @@ export const profile: Profile = {
           en: "Development experience with Laravel"
         }
       ],
-      team: 4
+      team: 4,
+      detail: {
+        heading: { ja: "士業向け時間管理ソフト開発", en: "Time Management Software for Legal Professionals" },
+        roleTeam: { ja: "コーダー / 4名", en: "Coder / 4 members" },
+        bullets: {
+          ja: [
+            "弁護士法人向け時間・請求管理システム（Laravel）の機能追加",
+            "集計データのCSV出力機能実装、新規機能開発、バグ修正",
+          ],
+          en: [
+            "Feature additions to time and billing management system (Laravel)",
+            "Implemented CSV export for aggregated data, new features, and bug fixes",
+          ],
+        },
+      },
     },
     {
       companyId: "sysnavi",
@@ -586,7 +795,25 @@ export const profile: Profile = {
           en: "Docker development"
         }
       ],
-      team: 4
+      team: 4,
+      detail: {
+        heading: { ja: "士業向け時間管理ソフト開発", en: "Time Management Software for Legal Professionals" },
+        roleTeam: { ja: "コーダー / 4名", en: "Coder / 4 members" },
+        bullets: {
+          ja: [
+            "30人規模の弁護士事務所向け時間管理システム開発",
+            "仕様策定・DB設計から参画、RedmineとBackLogをGitLabと連携しチケット駆動開発を導入",
+            "PDF出力機能、Bootstrapモックアップ作成、docker-composeステージング環境構築、要件定義、顧客対応",
+            "SES中心企業を受託開発企業とする足掛かりとしての環境整備",
+          ],
+          en: [
+            "Developed time management system for 30-person law firm",
+            "Participated from specification and DB design stage; introduced ticket-driven development by integrating Redmine and Backlog with GitLab",
+            "PDF output function, Bootstrap mockup creation, docker-compose staging environment setup, requirements definition, client communication",
+            "Laid groundwork for transforming SES-focused company into contract development company",
+          ],
+        },
+      },
     },
     {
       companyId: "sysnavi",
@@ -702,7 +929,23 @@ export const profile: Profile = {
           en: "SQL data processing"
         }
       ],
-      team: 5
+      team: 5,
+      detail: {
+        heading: { ja: "監査法人DB統合プロジェクト", en: "Audit Firm DB Integration Project" },
+        roleTeam: { ja: "コーダー / 5名", en: "Coder / 5 members" },
+        bullets: {
+          ja: [
+            "世界4大会計事務所の様々なフォーマットデータを一つのDBで管理",
+            "AlteryxとSQL Serverを用いてデータ移行・分析、データクレンジングロジック作成",
+            "KPI・予実情報算出、Tableauでのデータ可視化",
+          ],
+          en: [
+            "Managed various format data from Big 4 accounting firm in unified DB",
+            "Data migration and analysis using Alteryx and SQL Server, data cleansing logic creation",
+            "KPI and budget vs actual calculation, data visualization with Tableau",
+          ],
+        },
+      },
     },
     {
       companyId: "sysnavi",
@@ -764,7 +1007,24 @@ export const profile: Profile = {
       jobDescription: {
         ja: "スペイン産生ハムの輸入販売を目指し、サプライヤー交渉、農場見学、細菌検査、通関手続きを実施。食品衛生責任者資格取得。資金調達中に中断。",
         en: "Aimed to import and sell raw ham from Spain, conducting supplier negotiations, farm visits, bacterial inspections, and customs clearance procedures. Acquired a food sanitation manager qualification. The project was suspended during fundraising."
-      }
+      },
+      detail: {
+        heading: { ja: "生ハムの輸入販売", en: "Spanish Cured Ham Import Business" },
+        bullets: {
+          ja: [
+            "スペイン産生ハム輸入ビジネスの検討",
+            "スペイン大使館より企業情報取得、現地交渉・農場見学、テスト輸入実施",
+            "通関・細菌検査・物流コスト確認、需要調査（ネット予約販売・クラウドファンディング・飛び込み営業）",
+            "自己資本と借入金で損益分岐点到達困難と判断し事業中止",
+          ],
+          en: [
+            "Investigated import business for Spanish cured ham",
+            "Obtained company information from Spanish Embassy, negotiated locally, visited farms, conducted test imports",
+            "Confirmed customs clearance, bacterial testing, logistics costs; conducted demand research (online reservation sales, crowdfunding, direct sales)",
+            "Determined reaching break-even point difficult with own capital and planned borrowing; discontinued business",
+          ],
+        },
+      },
     },
     {
       companyId: "sumitomo-chemical",
@@ -785,7 +1045,23 @@ export const profile: Profile = {
       jobDescription: {
         ja: "医療品グレードのポリプロピレン材料開発。射出成型の歪み抑制、UV照射による汚染防止材料開発。",
         en: "Development of medical-grade polypropylene materials. Focused on suppressing injection molding distortion and developing materials to prevent contamination from UV exposure."
-      }
+      },
+      detail: {
+        heading: { ja: "医療用PP材料開発", en: "Medical-Grade PP Material Development" },
+        roleTeam: { ja: "グレード2 / 4名", en: "Grade 2 / 4 members" },
+        bullets: {
+          ja: [
+            "医療品グレードのポリプロピレン材料開発",
+            "コンタクトレンズ用重合型の組成確立、医療用PPボトルの材料開発",
+            "耐UVグレードの組成を確立",
+          ],
+          en: [
+            "Medical-grade polypropylene material development",
+            "Established composition for contact lens polymerization molds, developed materials for medical PP bottles",
+            "Established UV-resistant grade composition",
+          ],
+        },
+      },
     },
     {
       companyId: "sumitomo-chemical",
@@ -806,7 +1082,23 @@ export const profile: Profile = {
       jobDescription: {
         ja: "PPベースのセパレーターフィルム材料模索。耐熱性、突き刺し強度、空孔率を重視。",
         en: "Explored PP-based separator film materials. Focused on heat resistance, puncture strength, and porosity."
-      }
+      },
+      detail: {
+        heading: { ja: "高耐熱PP材開発", en: "High Heat-Resistant PP Development" },
+        roleTeam: { ja: "グレード1 / 30名", en: "Grade 1 / 30 members" },
+        bullets: {
+          ja: [
+            "バッテリーセパレータ材料開発の基礎研究",
+            "PPベースのセパレーターフィルム材料模索、構造解析",
+            "耐熱性・突き刺し強度・微多孔均一性・空孔率などに焦点を当てた材料開発",
+          ],
+          en: [
+            "Basic research for battery separator material development",
+            "Explored PP-based separator film materials, structural analysis",
+            "Material development focused on heat resistance, puncture strength, microporous uniformity, porosity",
+          ],
+        },
+      },
     },
     {
       companyId: "sumitomo-chemical",
@@ -827,7 +1119,21 @@ export const profile: Profile = {
       jobDescription: {
         ja: "住友化学の石油化学品研究所でポリプロピレンフィルムの研究開発補助。包装材やバッテリーセパレータの開発補助。",
         en: "Assisted in the research and development of polypropylene films at Sumitomo Chemical's petrochemical research institute. Supported the development of packaging materials and battery separators."
-      }
+      },
+      detail: {
+        heading: { ja: "PPフィルム材料開発補助", en: "PP Film Material Development Support" },
+        roleTeam: { ja: "グレード1 / 30名", en: "Grade 1 / 30 members" },
+        bullets: {
+          ja: [
+            "ポリプロピレンフィルムの研究開発補助",
+            "包装材・バッテリーセパレーター開発補助実験",
+          ],
+          en: [
+            "R&D support for polypropylene film",
+            "Support experiments for packaging materials and battery separator development",
+          ],
+        },
+      },
     }
   ],
   selfProjects: [
@@ -883,13 +1189,58 @@ export const profile: Profile = {
       showOnSite: true,
     },
   ],
-  // 履歴書の免許・資格欄 (記載順)
+  // 免許・資格 (取得順)。年月は職務経歴書・英文レジュメの記載を採用。
+  // TODO: 旧履歴書はボイラー技士Ⅱ種を2012年と記載していた（職務経歴書は2010年7月）。
+  // TODO: 旧職務経歴書は普通自動車免許を2010年6月と記載していたが、1994年3月生まれでは
+  //       18歳未満のため普通免許は取得不可 → 旧履歴書の2012年を採用。いずれも要本人確認。
   certifications: [
-    { name: "公害防止管理者 水質一種", year: 2011 },
-    { name: "甲種危険物取扱者", year: 2011 },
-    { name: "第二種電気工事士", year: 2010 },
-    { name: "ボイラー技士Ⅱ種", year: 2010 },
-    { name: "普通自動車免許", year: 2012 },
+    { name: { ja: "ボイラー技士Ⅱ種", en: "Boiler Operator (Type II)" }, year: 2010, month: 7 },
+    { name: { ja: "第二種電気工事士", en: "Second-Class Electrician" }, year: 2010, month: 10 },
+    { name: { ja: "甲種危険物取扱者", en: "Class A Hazardous Materials Handler" }, year: 2011, month: 8 },
+    { name: { ja: "公害防止管理者 水質一種", en: "Class 1 Water Quality Pollution Prevention Manager" }, year: 2011, month: 10 },
+    { name: { ja: "普通自動車免許", en: "Ordinary Driver's License" }, year: 2012 },
+  ],
+  // 自己PR / Personal Strengths（職務経歴書・英文レジュメ）
+  strengths: [
+    {
+      title: { ja: "自発性・継続力", en: "Initiative & Perseverance" },
+      bullets: {
+        ja: [
+          "住友化学フルタイム勤務中に東京理科大学に4年間通学し学士号取得。7:00-16:00勤務後、2時間通学し18:00-21:10授業、課題・レポート・実験報告書を並行してこなす生活を留年なく遂行。",
+          "自分のサービス立ち上げのため日々学習を継続、VPS/AWSを活用しサーバー構築・成果物公開（https://yuta.dev）。",
+        ],
+        en: [
+          "Earned bachelor's degree from Tokyo University of Science while working full-time at Sumitomo Chemical. Maintained rigorous schedule of working 7:00-16:00, commuting 2 hours, attending classes 18:00-21:10, and completing assignments/reports for 4 years without repeating.",
+          "Continuously learning new technologies while building own services, actively sharing work on VPS/AWS and publishing results at https://yuta.dev.",
+        ],
+      },
+    },
+    {
+      title: { ja: "問題認識力・改善能力", en: "Problem Recognition & Improvement Ability" },
+      bullets: {
+        ja: [
+          "前職では年間24件近くの改善提案を提出。慣れた環境に埋もれる問題点を洗い出し、自発的に改善を実施。",
+          "システム開発においても問題発見から解決策検討を一貫して実施。",
+        ],
+        en: [
+          "Submitted nearly 24 improvement proposals annually at previous job. Proactively identified and improved buried problems in familiar environments.",
+          "In system development, consistently execute from problem discovery to solution examination.",
+        ],
+      },
+    },
+    {
+      title: { ja: "情報分析能力", en: "Information Analysis Ability" },
+      bullets: {
+        ja: [
+          "研究業務で実験データを分析し、予想と照らし合わせながら追加測定・議論を重ね答えを導出。",
+          "与えられた情報についてチームで議論し、データ・結果の意味を正確に理解する能力を発揮。",
+        ],
+        en: [
+          "Analyzed experimental data in R&D work, compared with predictions, conducted additional measurements and discussions to derive answers.",
+          "Demonstrated ability to discuss given information with team and accurately understand meaning of data and results.",
+        ],
+      },
+    },
   ],
   motivations: [
     {
@@ -924,28 +1275,28 @@ export const profile: Profile = {
       { name: { ja: "英語", en: "English" }, level: { ja: "日常会話", en: "Conversational" } },
     ],
     programming: [
-      { name: "Golang", description: "Ent, sqlc, gin, JSON-RPC", years: 4 },
-      { name: "AWS", description: "Lambda, CloudFront, RDS", years: 4 },
-      { name: "Pulumi", description: "IaC", years: 1 },
-      { name: "Linux", description: "Ubuntu18,20 CentOS8", years: 5 },
-      { name: "Docker", description: "", years: 4 },
-      { name: "Kubernetes", description: "ArgoCD, k9s", years: 1 },
-      { name: "Terraform", description: "IaC, AWS", years: 1 },
-      { name: "MySQL", description: "", years: 5 },
-      { name: "PostgreSQL", description: "", years: 4 },
-      { name: "MongoDB", description: "", years: 1 },
-      { name: "DynamoDB", description: "", years: 1 },
-      { name: "Redis", description: "", years: 1 },
-      { name: "JavaScript / TypeScript", description: "", years: 4 },
-      { name: "Astro", description: "", years: 1 },
-      { name: "Svelte", description: "", years: 2 },
-      { name: "React", description: "", years: 2 },
-      { name: "SolidJS", description: "", years: 1 },
-      { name: "Python", description: "Django, DRF, BeautifulSoup4, Mecab, Selenium", years: 4 },
-      { name: "PHP", description: "CakePHP, Laravel", years: 1 },
-      { name: "NextJS", description: "", years: 2 },
-      { name: "Kafka", description: "", years: 1 },
-      { name: "Spark", description: "", years: 1 },
+      { name: "Golang", description: "Ent, sqlc, gin, JSON-RPC", years: 4 , group: "backend" },
+      { name: "AWS", description: "Lambda, CloudFront, RDS", years: 4 , group: "infra" },
+      { name: "Pulumi", description: "IaC", years: 1 , group: "infra" },
+      { name: "Linux", description: "Ubuntu18,20 CentOS8", years: 5 , group: "infra" },
+      { name: "Docker", description: "", years: 4 , group: "infra" },
+      { name: "Kubernetes", description: "ArgoCD, k9s", years: 1 , group: "infra" },
+      { name: "Terraform", description: "IaC, AWS", years: 1 , group: "infra" },
+      { name: "MySQL", description: "", years: 5 , group: "db" },
+      { name: "PostgreSQL", description: "", years: 4 , group: "db" },
+      { name: "MongoDB", description: "", years: 1 , group: "db" },
+      { name: "DynamoDB", description: "", years: 1 , group: "db" },
+      { name: "Redis", description: "", years: 1 , group: "db" },
+      { name: "JavaScript / TypeScript", description: "", years: 4 , group: "frontend" },
+      { name: "Astro", description: "", years: 1 , group: "frontend" },
+      { name: "Svelte", description: "", years: 2 , group: "frontend" },
+      { name: "React", description: "", years: 2 , group: "frontend" },
+      { name: "SolidJS", description: "", years: 1 , group: "frontend" },
+      { name: "Python", description: "Django, DRF, BeautifulSoup4, Mecab, Selenium", years: 4 , group: "backend" },
+      { name: "PHP", description: "CakePHP, Laravel", years: 1 , group: "backend" },
+      { name: "NextJS", description: "", years: 2 , group: "frontend" },
+      { name: "Kafka", description: "", years: 1 , group: "other" },
+      { name: "Spark", description: "", years: 1 , group: "other" },
     ],
   },
   rirekisho: {

@@ -37,8 +37,8 @@ src/
 ├── components/       # Astro components — incl. AskPage.astro (the /ask UI)
 ├── data/             # profile/ — canonical résumé data (single source of truth)
 ├── lib/ask/          # the in-browser LLM "Ask AI" engine (see below)
+├── lib/docs/         # document renderers (職務経歴書 / CV / 履歴書 / text resume)
 └── i18n/             # locale helpers
-docs/                 # résumé source docs (md/html) rendered to the PDFs
 public/pdf/           # generated résumé PDFs (built by CI)
 ```
 

@@ -9,26 +9,32 @@
 ## レジュメ内容の更新方法（単一データソース）
 
 レジュメ内容の正規データは **`src/data/profile/profile.ts` ただ1つ**。
-サイト表示（ja/en）と /ask のグラウンディングはここから自動導出される
-（`derive.ts` → `getData()`）。事実（日付・数値・タグ）は言語共通で1回だけ
-持ち、文章のみ `{ja, en}` で持つ。`validate.ts` が時系列・在籍期間の整合性を
-import時に検証するので、矛盾したデータはビルドとテストが落ちる。
+そこからすべての表示・ドキュメントが自動生成される:
 
-### まだ手動同期が必要なファイル（テンプレート化されるまでの暫定）
+- サイト表示（ja/en）と /ask のグラウンディング — `src/data/profile/derive.ts` → `getData()`
+- 職務経歴書（ja HTML）/ CV（en HTML） — `src/lib/docs/career-html.ts`
+- テキスト版レジュメ（ja/en Markdown） — `src/lib/docs/career-markdown.ts`
+- 履歴書（JIS準拠・2ページ固定） — `src/lib/docs/rirekisho.ts`
+- PDF — 上記ページを `npm run generate:pdf`（CI: generate-pdfs.yml）で印刷
 
-以下のダウンロード用ドキュメントはまだ `profile.ts` から生成されていない。
-内容を変えたら**これらにも同じ変更を反映**すること:
+事実（日付・数値・タグ）は言語共通で1回だけ持ち、文章のみ `{ja, en}` で持つ。
+`validate.ts` が時系列・在籍期間の整合性をimport時に検証するので、矛盾した
+データはビルドとテストが落ちる。**`docs/` 配下のドキュメントを直接編集しない**
+こと（旧ファイルはレガシーで、どのページからも参照されていない）。
 
-1. `docs/resume/resume-ja.md` — 日本語レジュメ（テキスト版、Markdownプレビュー＆PDF）
-2. `docs/resume/resume-en.md` — 英語レジュメ（テキスト版、Markdownプレビュー＆PDF）
-3. `docs/職務経歴書/_.html` — 日本語職務経歴書（HTML版、プレビュー＆PDF）
-4. `docs/resume/en-cv.html` — 英語CV（HTML版、プレビュー＆PDF）
-5. `docs/履歴書/_.html` — 日本語履歴書（HTML版、プレビュー＆PDF）
+### PDFのA4レイアウト
+
+- 流し込み系ドキュメント（職務経歴書・CV・テキスト版）は CSS `@page { size: A4;
+  margin: 14mm 15mm }` で全ページに余白がつく。コンテナのpaddingで代用しない
+  こと（中間ページの余白が消える）。
+- 履歴書は `@page { size: A4; margin: 0 }` + 固定 `.sheet`（210mm×296mm・
+  overflow hidden）2枚構成。行を増やす場合は1ページ目に収まるか確認する。
 
 ### 更新後のチェックリスト
 
-1. `src/data/profile/profile.ts` を更新し、上記の未生成ドキュメントにも反映されているか確認する
+1. `src/data/profile/profile.ts` を更新する
 2. `bun test src` と `bun run build` が通ることを確認する（データ整合性もここで検証される）
+3. レイアウトに影響する変更なら `npm run generate:pdf` 後にPDF各ページがA4に収まっているか確認する
 3. コミット・プッシュする
 4. **yuta.dev の全ページをブラウザで確認する**（日本語・英語の各ページ）:
    - `/ja/` — 日本語トップ

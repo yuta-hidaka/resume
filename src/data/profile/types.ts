@@ -37,6 +37,12 @@ export interface SocialLink {
 
 export type CompanyKind = 'employment' | 'self-employed' | 'freelance';
 
+/** A curated block of document prose, bilingual, bullet-based. */
+export interface DetailBlock {
+  heading: Localizable;
+  bullets: { ja: string[]; en: string[] };
+}
+
 /**
  * One employment period. The 履歴書's 学歴・職歴 rows derive from these:
  * employment → 入社/退社, self-employed → 開業/廃業, freelance → 開始行のみ.
@@ -52,6 +58,27 @@ export interface Company {
   joinDate: string;
   /** YYYY-MM-DD, null = 在職中 (現在に至る) */
   leaveDate: string | null;
+  /** role label shown in career-document company headers (e.g. "Tech Lead, Full-Stack Engineer") */
+  role?: Localizable;
+  /** tech-stack chips shown at the end of the company section in career documents */
+  techStack?: string[];
+  /** curated blocks that don't map to a single project (e.g. SysNavi その他プロジェクト) */
+  extraBlocks?: DetailBlock[];
+}
+
+/**
+ * Curated career-document content for one project (職務経歴書 / CV / text
+ * resume). Facts (dates, team) normally derive from the Project; the
+ * label overrides exist only where the historical documents disagree with
+ * the base facts — reconcile and remove them over time.
+ */
+export interface ProjectDetail {
+  heading: Localizable;
+  /** e.g. "テックリード / 5名（全体PM・PMO含め50名）" */
+  roleTeam?: Localizable;
+  /** override shown instead of the project period — only for unreconciled documents */
+  periodLabel?: Localizable;
+  bullets: { ja: string[]; en: string[] };
 }
 
 export interface Project {
@@ -67,6 +94,8 @@ export interface Project {
   jobDescription: Localizable;
   experienceBullets?: Localizable[];
   team?: number;
+  /** curated career-document block for this project */
+  detail?: ProjectDetail;
 }
 
 export interface SelfProject {
@@ -91,9 +120,15 @@ export interface School {
 }
 
 export interface Certification {
-  name: string;
+  name: Localizable;
   year: number;
   month?: number;
+}
+
+/** 自己PR / Personal Strengths shown in career documents. */
+export interface Strength {
+  title: { ja: string; en: string };
+  bullets: { ja: string[]; en: string[] };
 }
 
 export interface Motivation {
@@ -106,10 +141,14 @@ export interface LanguageSkill {
   level: { ja: string; en: string };
 }
 
+export type SkillGroup = 'backend' | 'frontend' | 'infra' | 'db' | 'other';
+
 export interface ProgrammingSkill {
   name: string;
   description: string;
   years: number;
+  /** grouping used by the career documents' skills section */
+  group: SkillGroup;
 }
 
 /** Fields that only exist on the 履歴書 (JIS format). */
@@ -136,6 +175,7 @@ export interface Profile {
   education: School[];
   certifications: Certification[];
   motivations: Motivation[];
+  strengths: Strength[];
   job: { title: { ja: string; en: string }; desc: { ja: string; en: string } };
   skills: {
     languages: LanguageSkill[];
