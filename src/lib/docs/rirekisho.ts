@@ -1,5 +1,6 @@
 import { profile } from '../../data/profile/profile';
 import { esc, type RenderedDoc } from './html';
+import { FONTS_CSS } from './fonts-css';
 
 // ————————————————————————————————————————————————————————————————
 // 履歴書 (JIS-style) — generated from the canonical profile.
@@ -57,16 +58,16 @@ function age(onDate: Date): number {
 }
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&display=swap');
-
+${FONTS_CSS}
 @page {
   size: A4;
   margin: 0;
 }
 
 .rirekisho {
-  font-family: 'Noto Serif JP', 'Noto Sans JP', serif;
+  /* Self-hosted Noto subsets (400/700 only — synthetic weights force Type 3
+     embedding in the PDF, which some viewers render blank). */
+  font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   color: #111111;
   background: #ffffff;
   width: 210mm;
@@ -134,7 +135,7 @@ const CSS = `
   padding: 0.8mm 2mm;
   line-height: 1.3;
   vertical-align: middle;
-  font-weight: 500;
+  font-weight: 400;
   word-break: break-all;
 }
 
@@ -156,7 +157,7 @@ const CSS = `
 .rirekisho .basic .name .label,
 .rirekisho .basic .label {
   font-size: 9pt;
-  font-weight: 500;
+  font-weight: 400;
   color: #333333;
 }
 

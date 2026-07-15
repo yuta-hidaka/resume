@@ -1,21 +1,24 @@
 import type { Lang } from '../../data/profile/types';
 import { buildCareerDoc } from './career';
 import { esc, type RenderedDoc } from './html';
+import { FONTS_CSS } from './fonts-css';
 
 // HTML skin for the career documents: 職務経歴書 (ja) and CV (en).
 // A4-safe: @page sets the per-page margins for print/PDF, so every page
 // of the flowing document keeps its margins; blocks avoid awkward breaks.
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
-
+${FONTS_CSS}
 @page {
   size: A4;
   margin: 14mm 15mm;
 }
 
 .career-doc {
-  font-family: 'Inter', 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Self-hosted Noto subsets (400/700 only — keep every font-weight at 400 or
+     700: synthetic weights/italics force Type 3 embedding in the PDF, which
+     some viewers render blank). */
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', Meiryo, sans-serif;
   color: #0f172a;
   line-height: 1.55;
   font-size: 10pt;
@@ -49,7 +52,7 @@ const CSS = `
 
 .career-doc .doc-name {
   font-size: 12pt;
-  font-weight: 600;
+  font-weight: 700;
   margin: 6px 0 14px;
 }
 
@@ -77,14 +80,14 @@ const CSS = `
 
 .career-doc .block-head {
   font-size: 10.5pt;
-  font-weight: 600;
+  font-weight: 700;
   margin: 8px 0 2px;
   break-after: avoid;
   page-break-after: avoid;
 }
 
 .career-doc .block-head .meta {
-  font-weight: 500;
+  font-weight: 400;
   color: #475569;
   font-size: 9.5pt;
 }

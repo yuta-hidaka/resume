@@ -1,16 +1,19 @@
 // Print/PDF stylesheet for the Markdown text-resume pages.
 // @page carries the A4 margins so every page of the flowing document
 // keeps them (a container padding would only pad the first/last page).
-export const MARKDOWN_DOC_CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+import { FONTS_CSS } from './fonts-css';
 
+export const MARKDOWN_DOC_CSS = `
+${FONTS_CSS}
 @page {
   size: A4;
   margin: 14mm 15mm;
 }
 
 .md-doc {
-  font-family: 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Self-hosted Noto subsets (400/700 only — synthetic weights/italics force
+     Type 3 embedding in the PDF, which some viewers render blank). */
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', Meiryo, sans-serif;
   color: #111827;
   background: #ffffff;
   font-size: 10pt;
@@ -74,6 +77,7 @@ export const MARKDOWN_DOC_CSS = `
 
 .md-doc em {
   color: #6b7280;
+  font-style: normal;
 }
 
 @media print {

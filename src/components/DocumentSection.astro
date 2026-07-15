@@ -41,7 +41,10 @@ const scopeSelector = (selector, scope) => {
 const scopeCss = (css, scope) => {
   if (!css) return '';
   const importRules = [];
-  const cleaned = css.replace(/@import[^;]+;/g, (match) => {
+  // The url may contain semicolons (Google Fonts weight lists: wght@400;700),
+  // so match the quoted/parenthesised url as a unit — a naive [^;]+ truncates
+  // the rule and the leftover breaks the whole stylesheet's parsing.
+  const cleaned = css.replace(/@import\s+(?:url\(\s*(?:'[^']*'|"[^"]*"|[^)]*)\s*\)|'[^']*'|"[^"]*")[^;]*;/g, (match) => {
     importRules.push(match.trim());
     return '';
   });
