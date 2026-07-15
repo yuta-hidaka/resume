@@ -1,4 +1,6 @@
 import { getData } from '../../data/about.ja';
+import { profile } from '../../data/profile/profile';
+import { text as loc } from '../../data/profile/types';
 import type { Data, ExperienceEntity } from '../../types/data';
 import type { Lang } from '../../i18n/utils';
 import type { AskConfig, FactChunk } from './retrieve';
@@ -66,7 +68,9 @@ export function coreProfile(lang: Lang): string {
   }
   // Always carry the career timeline and education so a broad "tell me about
   // yourself" can't tempt the model into inventing employers or a degree.
-  const companies = [...new Set((d.experience ?? []).map((e) => e.company))].slice(0, 6);
+  // The employer list comes from the canonical employment timeline (all of
+  // them, newest first) — not inferred from project entries.
+  const companies = [...profile.companies].reverse().map((c) => loc(c.name, lang));
   if (companies.length) bits.push((lang === 'ja' ? '在籍企業: ' : 'Companies: ') + companies.join(', ') + '.');
   if (d.education?.length) {
     bits.push(
@@ -140,6 +144,74 @@ export function factChunks(lang: Lang): FactChunk[] {
       id: `proj${i}`,
       text: `${p.title}: ${gist(p.desc, 180)}`,
       tags: ['project', 'side project', 'personal', '個人開発', 'アプリ', '作品', p.title, ...(p.tags ?? []).filter(Boolean) as string[]],
+    });
+  });
+
+  // ——— chunks sourced directly from the canonical profile ———
+  // (certifications / strengths / employment timeline / project highlights —
+  //  content that the legacy Data shape doesn't carry)
+
+  const present2 = lang === 'ja' ? '現在' : 'present';
+  const timeline = [...profile.companies]
+    .reverse()
+    .map((co) => {
+      const from = co.joinDate.slice(0, 7);
+      const to = co.leaveDate ? co.leaveDate.slice(0, 7) : present2;
+      return `${loc(co.name, lang)} (${from}–${to})`;
+    })
+    .join(', ');
+  c.push({
+    id: 'timeline',
+    text: (lang === 'ja' ? '職歴タイムライン（入社〜退社）: ' : 'Employment timeline: ') + timeline + '.',
+    tags: [
+      'timeline', 'employers', 'companies', 'history', 'when', 'join', 'career',
+      '職歴', '入社', '退社', '在籍', 'いつ', '経歴',
+      ...profile.companies.map((co) => loc(co.name, lang)),
+    ],
+  });
+
+  const certs = profile.certifications
+    .map((cert) => `${loc(cert.name, lang)} (${cert.year})`)
+    .join(', ');
+  c.push({
+    id: 'certs',
+    text: (lang === 'ja' ? '免許・資格: ' : 'Licenses and certifications: ') + certs + '.',
+    tags: [
+      'certification', 'certifications', 'license', 'licenses', 'qualification', 'qualifications',
+      '資格', '免許', '取得',
+      ...profile.certifications.map((cert) => loc(cert.name, lang)),
+    ],
+  });
+
+  profile.strengths.forEach((s, i) => {
+    c.push({
+      id: `strength${i}`,
+      text: `${lang === 'ja' ? '自己PR' : 'Strength'} — ${s.title[lang]}: ${gist(s.bullets[lang].join(' '), 220)}`,
+      tags: [
+        'strength', 'strengths', 'personality', 'appeal',
+        '自己PR', '強み', '長所', 'アピール',
+        s.title[lang],
+      ],
+    });
+  });
+
+  // Fact-dense highlights from the curated career-document bullets
+  // (numbers like 1600社 / 20億PV / 36協定 that the short jobDescription
+  // gists cut off). One compact chunk per detailed project.
+  profile.projects.forEach((pr, i) => {
+    if (!pr.detail) return;
+    const company = profile.companies.find((co) => co.id === pr.companyId);
+    const heading = loc(pr.detail.heading, lang);
+    c.push({
+      id: `hl${i}`,
+      text: `${company ? loc(company.name, lang) : ''} — ${heading}: ${gist(pr.detail.bullets[lang].join(lang === 'ja' ? '。' : '. '), 230)}`,
+      tags: [
+        company ? loc(company.name, lang) : '',
+        heading,
+        ...(pr.detail.roleTeam ? [loc(pr.detail.roleTeam, lang)] : []),
+        ...pr.tags.map((t) => loc(t, lang)),
+        'プロジェクト', 'project', '実績', 'achievement',
+      ].filter(Boolean),
     });
   });
 
