@@ -1,5 +1,8 @@
 ---
-import DocumentSection from '../../../components/DocumentSection.astro';
+import { marked } from 'marked';
+import { renderCareerHtml } from '../../../lib/docs/career-html';
+import { renderCareerMarkdown } from '../../../lib/docs/career-markdown';
+import { MARKDOWN_DOC_CSS } from '../../../lib/docs/markdown-css';
 
 export function getStaticPaths() {
   return [
@@ -10,21 +13,12 @@ export function getStaticPaths() {
 
 const { documentId } = Astro.params;
 
-const documents = {
-  'en-resume': {
-    title: 'Resume (English)',
-    sourcePath: 'docs/resume/resume-en.md',
-    isMarkdown: true,
-  },
-  'en-cv': {
-    title: 'CV (English)',
-    sourcePath: 'docs/resume/en-cv.html',
-    assetBase: '/docs/resume/en-cv/',
-    isMarkdown: false,
-  },
-};
-
-const doc = documents[documentId];
+// All documents are generated from the canonical profile
+// (src/data/profile/profile.ts) — no static doc files involved.
+let doc = null;
+let markdownHtml = null;
+if (documentId === 'en-cv') doc = renderCareerHtml('en');
+if (documentId === 'en-resume') markdownHtml = marked.parse(renderCareerMarkdown('en'));
 ---
 
 {doc ? (
@@ -32,50 +26,22 @@ const doc = documents[documentId];
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width" />
+      <meta name="robots" content="noindex" />
       <title>PDF - {doc.title}</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap');
-
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          padding: 0;
-          background: white;
-          font-family: 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
-        }
-
-        @page {
-          size: A4;
-          margin: 0;
-        }
-
-        .pdf-container {
-          width: 210mm;
-          min-height: 297mm;
-          padding: 0;
-          background: white;
-          margin: 0 auto;
-        }
-      </style>
+      <style set:html={doc.css}></style>
     </head>
-    <body>
-      <div class="pdf-container">
-        <DocumentSection
-          id={documentId}
-          title={doc.title}
-          sourcePath={doc.sourcePath}
-          assetBase={doc.assetBase}
-          previewHeight="auto"
-          isMarkdown={doc.isMarkdown}
-          isPdfMode={true}
-        />
-      </div>
-    </body>
+    <body class={doc.bodyClass} set:html={doc.bodyHtml}></body>
+  </html>
+) : markdownHtml ? (
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <meta name="robots" content="noindex" />
+      <title>PDF - Resume</title>
+      <style set:html={MARKDOWN_DOC_CSS}></style>
+    </head>
+    <body class="md-doc" set:html={markdownHtml}></body>
   </html>
 ) : (
   <html lang="en">
@@ -86,4 +52,3 @@ const doc = documents[documentId];
     <body>Document not found: {documentId}</body>
   </html>
 )}
-

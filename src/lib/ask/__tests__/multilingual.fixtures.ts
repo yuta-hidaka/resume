@@ -936,8 +936,8 @@ export const BYPASSES: { lang: string; answer: string; claim: string }[] = [
   },
   {
     "lang": "ja",
-    "answer": "担当システムのインフラコストを7​0%削減しました。",
-    "claim": "Reduced infrastructure cost by 70% (real: 30%)."
+    "answer": "担当システムのインフラコストを7​7%削減しました。",
+    "claim": "Reduced infrastructure cost by 77% (real: 30%; 70 now appears in the résumé — KiteRa grew to 60-70 employees)."
   },
   {
     "lang": "ja",

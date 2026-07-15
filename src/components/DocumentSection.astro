@@ -8,6 +8,8 @@ const {
   title,
   description,
   sourcePath,
+  sourceHtml,
+  sourceMarkdown,
   assetBase,
   downloadFileName,
   previewHeight = '750px',
@@ -39,7 +41,10 @@ const scopeSelector = (selector, scope) => {
 const scopeCss = (css, scope) => {
   if (!css) return '';
   const importRules = [];
-  const cleaned = css.replace(/@import[^;]+;/g, (match) => {
+  // The url may contain semicolons (Google Fonts weight lists: wght@400;700),
+  // so match the quoted/parenthesised url as a unit — a naive [^;]+ truncates
+  // the rule and the leftover breaks the whole stylesheet's parsing.
+  const cleaned = css.replace(/@import\s+(?:url\(\s*(?:'[^']*'|"[^"]*"|[^)]*)\s*\)|'[^']*'|"[^"]*")[^;]*;/g, (match) => {
     importRules.push(match.trim());
     return '';
   });
@@ -60,20 +65,26 @@ let bodyClass = '';
 let css = '';
 let missing = false;
 
-const resolvedPath = resolveDocPath(sourcePath);
+const renderAsMarkdown = isMarkdown || Boolean(sourceMarkdown) || sourcePath?.endsWith('.md');
 
-if (!resolvedPath) {
-  missing = true;
+if (sourceMarkdown || sourceHtml) {
+  // Content generated from the canonical profile (src/lib/docs/*).
+  rawHtml = sourceMarkdown ?? sourceHtml;
 } else {
-  try {
-    rawHtml = fs.readFileSync(resolvedPath, 'utf8');
-  } catch (error) {
+  const resolvedPath = resolveDocPath(sourcePath);
+  if (!resolvedPath) {
     missing = true;
+  } else {
+    try {
+      rawHtml = fs.readFileSync(resolvedPath, 'utf8');
+    } catch (error) {
+      missing = true;
+    }
   }
 }
 
 if (!missing && rawHtml) {
-  if (isMarkdown || sourcePath?.endsWith('.md')) {
+  if (renderAsMarkdown) {
     // マークダウンファイルの場合
     bodyHtml = marked.parse(rawHtml);
     css = '';
@@ -176,7 +187,7 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       {scopedCss && (
         <style set:html={scopedCss}></style>
       )}
-      {isMarkdown && (
+      {renderAsMarkdown && (
         <style is:global>
           .doc-viewer.markdown-content {
             font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -265,14 +276,14 @@ const docBodyClass = bodyClass ? bodyClass.trim() : '';
       )}
       <div
         id={docId}
-        class={`doc-viewer ${isPdfMode ? 'doc-viewer--pdf-mode' : ''} ${isMarkdown ? 'markdown-content' : ''} ${docBodyClass ? 'doc-viewer--embedded' : ''}`}
+        class={`doc-viewer ${isPdfMode ? 'doc-viewer--pdf-mode' : ''} ${renderAsMarkdown ? 'markdown-content' : ''} ${docBodyClass ? 'doc-viewer--embedded' : ''}`}
         style={isPdfMode ? '' : `max-height: ${previewHeight}; width: 100%; max-width: 100%;`}
       >
         <div class="doc-scale-shell">
           <div class={`doc-body ${docBodyClass}`} set:html={bodyHtml}></div>
         </div>
       </div>
-      {!isPdfMode && !isMarkdown && docBodyClass && (
+      {!isPdfMode && !renderAsMarkdown && docBodyClass && (
         <script is:inline define:vars={{ docId }}>
           (() => {
             const viewer = document.getElementById(docId);

@@ -25,7 +25,14 @@ describe('verifyAnswer — blocks fabrication', () => {
 
   it('rejects a made-up number (fake age / headcount)', () => {
     expect(verifyAnswer('私は29歳です。', ja).ok).toBe(false);
-    expect(verifyAnswer('The company grew to 100 employees.', en).ok).toBe(false);
+    // 100 now legitimately appears in the résumé (100-member Furusato project),
+    // so the fabricated headcount uses a number that stays absent.
+    expect(verifyAnswer('The company grew to 450 employees.', en).ok).toBe(false);
+  });
+
+  it('rejects romaji aliases of schools he did not attend', () => {
+    expect(verifyAnswer('日髙さんは toudai の出身です。', ja).ok).toBe(false);
+    expect(verifyAnswer('He graduated from waseda.', en).ok).toBe(false);
   });
 
   it('rejects a fabricated framework while allowing a real one', () => {

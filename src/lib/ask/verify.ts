@@ -94,6 +94,11 @@ const NOT_HIS = [
   '剑桥', '劍橋', '牛津', '麻省理工', '东京大学', '東京大学', '京都大学', '清华', '清華', '北京大学',
 ];
 
+// Romaji aliases of schools he did not attend — lowercase Latin evades the
+// proper-noun check (which only fires on capitalized tokens), so these are
+// flagged explicitly, word-bounded, like TITLE_LATIN below.
+const ROMAJI_NOT_HIS = ['toudai', 'todai', 'kyodai', 'kyoudai', 'keio', 'waseda', 'hitotsubashi'];
+
 const HAN_KANA = '\\u3040-\\u30FF\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uF900-\\uFAFF';
 const CJK_NUM = /[〇零一二三四五六七八九十百千万億]{2,}/g;
 
@@ -212,6 +217,9 @@ export function verifyAnswer(answer: string, cfg: AskConfig): Verification {
     if (new RegExp(`(?<![\\p{L}])${t}(?![\\p{L}])`, 'u').test(alpha)) issues.push(t);
   }
   for (const t of TITLE_CJK) if (pre.includes(t)) issues.push(t);
+  for (const t of ROMAJI_NOT_HIS) {
+    if (new RegExp(`(?<![\\p{L}])${t}(?![\\p{L}])`, 'u').test(alpha)) issues.push(t);
+  }
 
   return { ok: issues.length === 0, issues };
 }

@@ -1,6 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import DocumentSection from '../../components/DocumentSection.astro';
+import { renderCareerMarkdown } from '../../lib/docs/career-markdown';
+import { renderCareerHtml } from '../../lib/docs/career-html';
+import { toHtmlDocument } from '../../lib/docs/html';
 ---
 
 <Layout title="CV Download - Yuta Hidaka">
@@ -12,18 +15,16 @@ import DocumentSection from '../../components/DocumentSection.astro';
   <DocumentSection
     id="en-resume"
     title="Resume (English)"
-    sourcePath="docs/resume/resume-en.md"
+    sourceMarkdown={renderCareerMarkdown('en')}
     downloadFileName="yuta-hidaka-resume-en.pdf"
     previewHeight="750px"
-    isMarkdown={true}
     staticPdfUrl="/pdf/yuta-hidaka-resume-en.pdf"
   />
 
   <DocumentSection
     id="en-cv"
     title="CV (English)"
-    sourcePath="docs/resume/en-cv.html"
-    assetBase="/docs/resume/en-cv/"
+    sourceHtml={toHtmlDocument(renderCareerHtml('en'))}
     downloadFileName="yuta-hidaka-cv-en.pdf"
     previewHeight="750px"
     staticPdfUrl="/pdf/yuta-hidaka-cv-en.pdf"

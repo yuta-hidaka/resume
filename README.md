@@ -22,7 +22,7 @@ unverifiable claim.
 | `npm run build` | Production build → `./dist/` |
 | `npm run preview` | Preview the production build |
 | `npm run generate:pdf` | Regenerate the résumé PDFs (puppeteer → `public/pdf/`) |
-| `bun test src/lib/ask` | Run the "Ask AI" test suite |
+| `bun test src` | Run the test suite (Ask AI + résumé data validation) |
 
 > **Do not add `vitest`.** It hoists a second `vite@5` that shadows Astro 7's
 > `vite@8` and breaks `npm run build` (`createIdResolver is not a function`).
@@ -35,10 +35,10 @@ unverifiable claim.
 src/
 ├── pages/            # ja/ + en/ routes (home, career, about, downloads, ask)
 ├── components/       # Astro components — incl. AskPage.astro (the /ask UI)
-├── data/             # about.ja.ts / about.en.ts — résumé display data
+├── data/             # profile/ — canonical résumé data (single source of truth)
 ├── lib/ask/          # the in-browser LLM "Ask AI" engine (see below)
+├── lib/docs/         # document renderers (職務経歴書 / CV / 履歴書 / text resume)
 └── i18n/             # locale helpers
-docs/                 # résumé source docs (md/html) rendered to the PDFs
 public/pdf/           # generated résumé PDFs (built by CI)
 ```
 
