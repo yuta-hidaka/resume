@@ -393,31 +393,32 @@ export const profile: Profile = {
     },
     {
       companyId: "monstarlab",
-      jobTitle: "Tech Lead",
-      startDate: "2024-04-01",
-      endDate: "2024-12-31",
+      jobTitle: "Software Engineer",
+      // 旧サイトデータ(2024-04〜2024-12 / Tech Lead / 30名 / 1000RPS)と旧職務経歴書の
+      // 記載が食い違っていたため、時系列的に整合する職務経歴書側
+      // （企業ポータルCMS移行が2024-11に終了 → 直後に本PJへ参画）に統一。
+      startDate: "2024-11-01",
+      endDate: "2025-01-31",
       tags: [
-        "Golang",
         "NextJS",
-        "GCP"
+        "GCP",
+        "Cloud Run"
       ],
       job: {
         ja: "受託開発",
         en: "Contract Development"
       },
       jobDescription: {
-        ja: "ふるさと納税のポイントを株式に交換できる権利を付与するサービスの開発。最大1000RPSを超えるアクセスを想定し、高トラフィック前提で設計・開発。",
-        en: "Developed a service that allows users to exchange points for stock rights as part of the Furusato Tax Donation system. Designed for high traffic, handling over 1000 RPS at peak access."
+        ja: "ふるさと納税のポイントを株式に交換できる権利を付与するサービスのWebアプリ開発。マイクロサービスアーキテクチャで全体トラフィックは2万RPS超、担当領域は最大1500RPS。Next.js 15（App Directory）とGCP Cloud Runで実装し、WebP・AVIF画像最適化や遅延実行などフロントエンドのパフォーマンスチューニングを担当。",
+        en: "Web app development for a service that converts Furusato tax points into stock rights. Microservices architecture with overall traffic exceeding 20,000 RPS; the owned area handled up to 1,500 RPS. Implemented with Next.js 15 (App Directory) and GCP Cloud Run, with frontend performance tuning such as WebP/AVIF image optimization and lazy loading."
       },
       experienceBullets: [
         ""
       ],
-      team: 30,
+      team: 100,
       detail: {
         heading: { ja: "ふるさと納税ポイント→株式交換サービス", en: "Furusato Tax Points → Stock Exchange Service" },
         roleTeam: { ja: "ソフトウェアエンジニア / 100名", en: "Software Engineer / 100 members" },
-        // TODO: 基本データ(2024-04〜2024-12 / Tech Lead / 30名)と期間・役割・人数が食い違う — 要確認のうえ統一
-        periodLabel: { ja: "2024-11 〜 2025-01", en: "2024-11 – 2025-01" },
         bullets: {
           ja: [
             "ふるさと納税ポイントを株式に交換可能なサービスのWebアプリ開発にソフトウェアエンジニアとしてアサイン",
@@ -1189,10 +1190,10 @@ export const profile: Profile = {
       showOnSite: true,
     },
   ],
-  // 免許・資格 (取得順)。年月は職務経歴書・英文レジュメの記載を採用。
-  // TODO: 旧履歴書はボイラー技士Ⅱ種を2012年と記載していた（職務経歴書は2010年7月）。
-  // TODO: 旧職務経歴書は普通自動車免許を2010年6月と記載していたが、1994年3月生まれでは
-  //       18歳未満のため普通免許は取得不可 → 旧履歴書の2012年を採用。いずれも要本人確認。
+  // 免許・資格 (取得順)。年月は旧文書間の食い違いを次の方針で統一済み:
+  // ボイラー技士Ⅱ種は旧職務経歴書・英文レジュメが一致する2010年7月（旧履歴書のみ2012）、
+  // 普通自動車免許は18歳到達（1994年3月生まれ→2012年3月）と整合する旧履歴書の2012年
+  // （旧職務経歴書の2010年6月は年齢的に不可能）。
   certifications: [
     { name: { ja: "ボイラー技士Ⅱ種", en: "Boiler Operator (Type II)" }, year: 2010, month: 7 },
     { name: { ja: "第二種電気工事士", en: "Second-Class Electrician" }, year: 2010, month: 10 },

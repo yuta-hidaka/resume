@@ -3,20 +3,9 @@ import path from 'node:path';
 
 const assetRoots = [
   {
+    // 履歴書の証明写真 (profile.person.photo が参照)
     source: 'docs/履歴書/images',
     destination: 'public/docs/履歴書/images',
-  },
-  {
-    source: 'docs/職務経歴書/images',
-    destination: 'public/docs/職務経歴書/images',
-  },
-  {
-    source: 'docs/resume/en-cv/images',
-    destination: 'public/docs/resume/en-cv/images',
-  },
-  {
-    source: 'docs/resume/en-resume/images',
-    destination: 'public/docs/resume/en-resume/images',
   },
 ];
 
