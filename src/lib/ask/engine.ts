@@ -7,11 +7,16 @@ import {
   DEFAULT_MODEL_ID,
   getModel,
   dtypeFor,
+  MAX_NEW_TOKENS,
+  WLLAMA_URL,
+  WLLAMA_WASM_URL,
   type Capabilities,
   type ChatMessage,
   type Dtype,
+  type ModelOption,
   type Progress,
 } from './config';
+import { stripThinking } from './format';
 
 export { detectCapabilities, probeWebGPU } from './config';
 export type { Capabilities, ChatMessage, Progress } from './config';
@@ -27,6 +32,11 @@ type AskHandlers = {
 
 export class AskEngine {
   private worker: Worker | null = null;
+  // wllama (llama.cpp WASM, GGUF) runs on the MAIN thread — it cannot start
+  // inside our worker (it touches `document` while wiring up its own internal
+  // inference worker, which also means it never blocks the UI from here).
+  private wllama: any = null;
+  private wllamaAbort: AbortController | null = null;
   readonly caps: Capabilities = detectCapabilities();
   ready = false;
   loading = false;
@@ -36,6 +46,34 @@ export class AskEngine {
   private spawn() {
     if (this.worker) return;
     this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
+  }
+
+  private disposeWllama() {
+    try {
+      this.wllama?.exit?.();
+    } catch {}
+    this.wllama = null;
+    this.wllamaAbort = null;
+  }
+
+  private async loadWllama(model: ModelOption, onProgress?: (p: Progress) => void): Promise<void> {
+    const mod = await import(/* @vite-ignore */ WLLAMA_URL);
+    // Suppress llama.cpp's very chatty native logging; keep warnings/errors.
+    const w = new mod.Wllama({ default: WLLAMA_WASM_URL }, { logger: mod.LoggerWithoutDebug });
+    await w.loadModelFromUrl(`https://huggingface.co/${model.id}/resolve/main/${model.ggufFile}`, {
+      // Small context + q8 KV cache: on phones every hundred MB counts.
+      n_ctx: 2048,
+      cache_type_k: 'q8_0',
+      cache_type_v: 'q8_0',
+      progressCallback: ({ loaded, total }: { loaded: number; total: number }) =>
+        onProgress?.({
+          status: 'progress',
+          progress: total ? Math.round((loaded / total) * 100) : 0,
+          loaded,
+          total,
+        }),
+    });
+    this.wllama = w;
   }
 
   /** Download + initialize a model (idempotent per model). Switching model reloads. */
@@ -48,12 +86,31 @@ export class AskEngine {
     if (this.ready && this.loadedKey === key) return Promise.resolve();
     if (this.loading && this.loadPromise && this.loadingKey === key) return this.loadPromise;
 
-    // Switching to a different model/dtype: throw away the old worker.
-    if (this.worker && (this.loadedKey || this.loadingKey) && (this.loadedKey ?? this.loadingKey) !== key) {
-      this.worker.terminate();
+    // Switching to a different model/dtype: throw away the old runtime.
+    if ((this.worker || this.wllama) && (this.loadedKey || this.loadingKey) && (this.loadedKey ?? this.loadingKey) !== key) {
+      this.worker?.terminate();
       this.worker = null;
+      this.disposeWllama();
       this.ready = false;
       this.loadPromise = null;
+    }
+
+    if (model.engine === 'wllama') {
+      this.loading = true;
+      this.loadingKey = key;
+      this.loadPromise = this.loadWllama(model, opts?.onProgress)
+        .then(() => {
+          this.ready = true;
+          this.loading = false;
+          this.loadedKey = key;
+          this.loadedModelId = modelId;
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.loadPromise = null;
+          throw err;
+        });
+      return this.loadPromise;
     }
 
     this.spawn();
@@ -89,6 +146,44 @@ export class AskEngine {
 
   /** Stream an answer for the given chat messages. */
   ask(messages: ChatMessage[], handlers: AskHandlers) {
+    if (this.wllama && this.ready) {
+      this.busy = true;
+      this.wllamaAbort = new AbortController();
+      let full = '';
+      handlers.onStart?.();
+      this.wllama
+        .createChatCompletion({
+          messages,
+          stream: true,
+          max_tokens: handlers.maxNewTokens ?? MAX_NEW_TOKENS,
+          abortSignal: this.wllamaAbort.signal,
+          // temp 0 = greedy in llama.cpp; the retry pass samples for variety.
+          temperature: handlers.sample ? 0.7 : 0,
+          ...(handlers.sample ? { top_p: 0.9 } : {}),
+          onData: (chunk: any) => {
+            const tok = chunk?.choices?.[0]?.delta?.content || '';
+            if (tok) {
+              full += tok;
+              handlers.onToken?.(tok);
+            }
+          },
+        })
+        .then(() => {
+          this.busy = false;
+          handlers.onDone?.(stripThinking(full));
+        })
+        .catch((err: any) => {
+          this.busy = false;
+          // An interrupt surfaces as an abort error — deliver the partial
+          // text like the worker engines do; anything else is a real failure.
+          if (/abort/i.test(String(err?.name || err?.message || err))) {
+            handlers.onDone?.(stripThinking(full));
+          } else {
+            handlers.onError?.(err instanceof Error ? err : new Error(String(err)));
+          }
+        });
+      return;
+    }
     if (!this.worker || !this.ready) {
       handlers.onError?.(new Error('not-ready'));
       return;
@@ -119,6 +214,10 @@ export class AskEngine {
 
   /** Interrupt an in-flight generation. */
   stop() {
+    if (this.wllama) {
+      this.wllamaAbort?.abort();
+      return;
+    }
     this.worker?.postMessage({ type: 'interrupt' });
   }
 
@@ -137,6 +236,7 @@ export class AskEngine {
       this.worker.terminate();
       this.worker = null;
     }
+    this.disposeWllama();
     this.ready = false;
     this.loading = false;
     this.busy = false;

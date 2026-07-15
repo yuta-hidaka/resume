@@ -3,9 +3,12 @@
 // weights) is fetched from CDNs on demand and runs here, off the main thread,
 // so the UI never freezes during generation.
 //
-// Two runtimes, picked per model (see config.ts):
+// Two of the three runtimes live here, picked per model (see config.ts):
 //  - transformers.js (ONNX) — WebGPU or WASM.
-//  - WebLLM (MLC)           — compiled WebGPU kernels; used for TinySwallow.
+//  - WebLLM (MLC)           — compiled WebGPU kernels; the 1.5B desktop models.
+// The third, wllama (llama.cpp WASM, GGUF), CANNOT run inside a worker — it
+// touches `document` while wiring up its own internal worker — so engine.ts
+// drives it on the main thread instead.
 
 import { TRANSFORMERS_URL, WEBLLM_URL, MAX_NEW_TOKENS, getModel } from './config';
 import { stripThinking } from './format';
@@ -159,19 +162,13 @@ self.addEventListener('message', async (e: MessageEvent<InMsg>) => {
       await ensureLoaded(data);
       post({ type: 'ready' });
     } else if (data.type === 'generate') {
-      if (mlc) {
-        await generateWebllm(data.messages, {
-          maxNewTokens: data.options?.maxNewTokens ?? MAX_NEW_TOKENS,
-          sample: data.options?.sample,
-        });
-      } else if (model) {
-        await generate(data.messages, {
-          maxNewTokens: data.options?.maxNewTokens ?? MAX_NEW_TOKENS,
-          sample: data.options?.sample,
-        });
-      } else {
-        throw new Error('model-not-loaded');
-      }
+      const opts = {
+        maxNewTokens: data.options?.maxNewTokens ?? MAX_NEW_TOKENS,
+        sample: data.options?.sample,
+      };
+      if (mlc) await generateWebllm(data.messages, opts);
+      else if (model) await generate(data.messages, opts);
+      else throw new Error('model-not-loaded');
     } else if (data.type === 'interrupt') {
       if (mlc) mlc.interruptGenerate();
       else stopper?.interrupt();

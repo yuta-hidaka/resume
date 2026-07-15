@@ -14,11 +14,16 @@ export const TRANSFORMERS_URL =
 // proven combo of runtime + prebuilt Qwen2 model lib + MLC weights.
 export const WEBLLM_URL = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.48/+esm';
 
+// wllama = llama.cpp compiled to WASM (CPU). The only browser runtime for GGUF
+// quants, and the only way to run TinySwallow on phones/Safari. Pinned.
+export const WLLAMA_URL = 'https://cdn.jsdelivr.net/npm/@wllama/wllama@3.5.1/esm/index.js';
+export const WLLAMA_WASM_URL = 'https://cdn.jsdelivr.net/npm/@wllama/wllama@3.5.1/esm/wasm/wllama.wasm';
+
 export const MAX_NEW_TOKENS = 200; // short résumé answers; keeps a weak model fast
 
-export type Dtype = 'q4f16' | 'q8' | 'q4' | 'q4f32';
+export type Dtype = 'q4f16' | 'q8' | 'q4' | 'q4f32' | 'q2';
 
-export type EngineKind = 'transformers' | 'webllm';
+export type EngineKind = 'transformers' | 'webllm' | 'wllama';
 
 export type ModelOption = {
   id: string;
@@ -36,6 +41,8 @@ export type ModelOption = {
   engine?: EngineKind;
   /** WebLLM only: prebuilt model-lib wasm filename (appended to the lib CDN). */
   modelLib?: string;
+  /** wllama only: the GGUF filename inside the HF repo (id). */
+  ggufFile?: string;
   /** True for WebLLM models — they have no WASM fallback. */
   webgpuOnly?: boolean;
 };
@@ -61,6 +68,23 @@ export const MODELS: ModelOption[] = [
     engine: 'webllm',
     modelLib: 'Qwen2-1.5B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm',
     webgpuOnly: true,
+  },
+  {
+    // The same TinySwallow, aggressively quantized (IQ2_M GGUF, 601MB) and
+    // run on wllama (llama.cpp WASM, CPU) — the only TinySwallow build with
+    // a chance on phones, where WebLLM/WebGPU is a hard crash. Experimental:
+    // IQ2 costs quality, and memory on iOS is borderline by design.
+    id: 'bartowski/TinySwallow-1.5B-Instruct-GGUF',
+    label: 'TinySwallow 1.5B mini',
+    by: 'Sakana AI',
+    params: '1.5B',
+    noteJa: 'TinySwallow の省メモリ版（IQ2量子化・実験的）。スマホでも試せる。',
+    noteEn: "TinySwallow's low-memory build (IQ2 quant, experimental) — phone-friendly.",
+    sizes: { q2: 0.6 },
+    webgpuDtype: 'q2',
+    wasmDtype: 'q2',
+    engine: 'wllama',
+    ggufFile: 'TinySwallow-1.5B-Instruct-IQ2_M.gguf',
   },
   {
     // The English-optimal sibling: TinySwallow IS a distilled Qwen2.5-1.5B,
@@ -116,11 +140,13 @@ export function modelsFor(lang: 'ja' | 'en'): ModelOption[] {
           'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
           'onnx-community/Qwen2.5-0.5B-Instruct',
           'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
+          'bartowski/TinySwallow-1.5B-Instruct-GGUF',
           'onnx-community/Qwen3-0.6B-ONNX',
         ]
       : [
           'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
           'onnx-community/Qwen2.5-0.5B-Instruct',
+          'bartowski/TinySwallow-1.5B-Instruct-GGUF',
           'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
           'onnx-community/Qwen3-0.6B-ONNX',
         ];

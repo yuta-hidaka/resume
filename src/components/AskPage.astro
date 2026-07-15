@@ -54,6 +54,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
                   data-size-q8={m.sizes.q8}
                   data-size-q4={m.sizes.q4}
                   data-size-q4f32={m.sizes.q4f32}
+                  data-size-q2={m.sizes.q2}
                   data-label={m.label}
                   data-note-ja={m.noteJa}
                   data-note-en={m.noteEn}
@@ -187,7 +188,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     const modelSel = document.getElementById('askp-model') as HTMLSelectElement;
     const modelHint = document.getElementById('askp-model-hint')!;
     const modelIco = document.getElementById('askp-model-ico')!;
-    const SIZE_KEY: Record<string, string> = { q4f16: 'sizeQ4f16', q8: 'sizeQ8', q4: 'sizeQ4', q4f32: 'sizeQ4f32' };
+    const SIZE_KEY: Record<string, string> = { q4f16: 'sizeQ4f16', q8: 'sizeQ8', q4: 'sizeQ4', q4f32: 'sizeQ4f32', q2: 'sizeQ2' };
     const ICO_DOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>';
     const ICO_AI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>';
 
@@ -211,13 +212,31 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     // silent, unconsented re-download (nor a false "loading from cache").
     const isModelInCacheStorage = async (modelId: string): Promise<boolean> => {
       try {
-        if (typeof caches === 'undefined') return false;
-        for (const name of await caches.keys()) {
-          const c = await caches.open(name);
-          const reqs = await c.keys();
-          if (reqs.some((r) => r.url.includes(modelId))) return true;
+        if (typeof caches !== 'undefined') {
+          for (const name of await caches.keys()) {
+            const c = await caches.open(name);
+            const reqs = await c.keys();
+            if (reqs.some((r) => r.url.includes(modelId))) return true;
+          }
         }
-        return false;
+      } catch {}
+      // wllama (llama.cpp WASM) caches GGUF files in OPFS, not the Cache API —
+      // walk it for a filename fragment. A miss just re-shows the size confirm
+      // (wllama's own cache still makes the "download" near-instant).
+      try {
+        const root = await (navigator.storage as any)?.getDirectory?.();
+        if (!root) return false;
+        // '-GGUF' is the repo-name suffix; the cached FILE name may carry only
+        // the model stem (…-IQ2_M.gguf), so match on the stem.
+        const needle = (modelId.split('/').pop() || modelId).replace(/-GGUF$/, '');
+        const walk = async (dir: any, depth: number): Promise<boolean> => {
+          for await (const [name, handle] of dir.entries()) {
+            if (name.includes(needle)) return true;
+            if (handle.kind === 'directory' && depth > 0 && (await walk(handle, depth - 1))) return true;
+          }
+          return false;
+        };
+        return await walk(root, 2);
       } catch { return false; }
     };
 
@@ -527,7 +546,9 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
         markCached(key);
         loadWrap.hidden = true;
         return true;
-      } catch {
+      } catch (err) {
+        // The UI falls back to facts; keep the real cause visible in devtools.
+        console.error('[ask] model load failed:', err);
         loadWrap.hidden = true;
         return false;
       }

@@ -67,7 +67,7 @@ export const askStrings = {
     howRuntimeLabel: '実行環境',
     howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
-      'モデルの重みは4bit量子化済み。数GB級のモデルを約0.5〜0.9GBに抑えているので、これ以上の圧縮は効きません。Qwen は transformers.js（ONNX・WebGPU/WASM）、TinySwallow は Sakana 公式デモと同じ WebLLM（MLC・WebGPU専用）で動作。初回だけ Hugging Face から読み込み、以降はブラウザにキャッシュ（再DL不要）。Web Worker 上なので UI は固まりません。',
+      'モデルの重みは量子化済み（2〜4bit）。数GB級のモデルを約0.5〜0.9GBに抑えているので、これ以上の圧縮は効きません。1.5B級は WebLLM（MLC・WebGPU専用・Sakana 公式デモと同構成）、軽量版は transformers.js（ONNX）と wllama（llama.cpp WASM）で動作。初回だけ Hugging Face から読み込み、以降はブラウザにキャッシュ（再DL不要）。Web Worker 上なので UI は固まりません。',
     howGroundLabel: 'グラウンディング',
     howGroundName: '検索 + 事実照合',
     howGroundDesc:
@@ -141,7 +141,7 @@ export const askStrings = {
     howRuntimeLabel: 'Runtime',
     howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
-      'The weights are 4-bit quantized — that is how a multi-GB model fits in ~0.5–0.9 GB, and why further compression does not help. Qwen runs on transformers.js (ONNX, WebGPU/WASM); TinySwallow runs on WebLLM (MLC, WebGPU-only) — the same stack as Sakana\'s official demo. Weights stream from Hugging Face once, then stay cached in your browser. Everything runs in a Web Worker, so the UI never freezes.',
+      'The weights are 2–4-bit quantized — that is how a multi-GB model fits in ~0.5–0.9 GB, and why further compression does not help. The 1.5B models run on WebLLM (MLC, WebGPU-only, the same stack as Sakana\'s official demo); the light builds run on transformers.js (ONNX) and wllama (llama.cpp WASM). Weights stream from Hugging Face once, then stay cached in your browser. Everything runs in a Web Worker, so the UI never freezes.',
     howGroundLabel: 'Grounding',
     howGroundName: 'Retrieval + fact-check',
     howGroundDesc:
