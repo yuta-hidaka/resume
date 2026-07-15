@@ -63,12 +63,28 @@ export const MODELS: ModelOption[] = [
     webgpuOnly: true,
   },
   {
+    // The English-optimal sibling: TinySwallow IS a distilled Qwen2.5-1.5B,
+    // so the official Qwen2.5-1.5B MLC weights run on the exact same kernel.
+    id: 'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
+    label: 'Qwen2.5 1.5B',
+    by: 'Alibaba',
+    params: '1.5B',
+    noteJa: '英語・多言語が高品質。WebLLMで高速動作（WebGPU必須）。',
+    noteEn: 'Best English answers — fast on WebLLM (needs WebGPU).',
+    sizes: { q4f32: 0.88 },
+    webgpuDtype: 'q4f32',
+    wasmDtype: 'q4f32', // unused — the option is disabled without WebGPU
+    engine: 'webllm',
+    modelLib: 'Qwen2-1.5B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm',
+    webgpuOnly: true,
+  },
+  {
     id: 'onnx-community/Qwen2.5-0.5B-Instruct',
     label: 'Qwen2.5 0.5B',
     by: 'Alibaba',
     params: '0.5B',
-    noteJa: '軽量・多言語・高速。',
-    noteEn: 'Light, multilingual, fast.',
+    noteJa: '軽量・多言語・高速。スマホでも動作。',
+    noteEn: 'Light, multilingual, fast — runs on phones.',
     sizes: { q4f16: 0.5, q8: 0.6, q4: 0.7 },
     webgpuDtype: 'q4f16',
     wasmDtype: 'q8',
@@ -89,6 +105,27 @@ export const MODELS: ModelOption[] = [
 // Default = the first model (TinySwallow). Without WebGPU the UI falls back
 // to the first non-disabled option (Qwen 0.5B).
 export const DEFAULT_MODEL_ID = MODELS[0].id;
+
+// Per-page model order. First = the default; when it can't run here (no
+// WebGPU / mobile), the UI walks down to the first enabled option. So each
+// list reads: best for this language on desktop → best that runs on a phone.
+export function modelsFor(lang: 'ja' | 'en'): ModelOption[] {
+  const order =
+    lang === 'en'
+      ? [
+          'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
+          'onnx-community/Qwen2.5-0.5B-Instruct',
+          'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
+          'onnx-community/Qwen3-0.6B-ONNX',
+        ]
+      : [
+          'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
+          'onnx-community/Qwen2.5-0.5B-Instruct',
+          'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
+          'onnx-community/Qwen3-0.6B-ONNX',
+        ];
+  return order.map((id) => MODELS.find((m) => m.id === id)!).filter(Boolean);
+}
 
 export function getModel(id: string): ModelOption {
   return MODELS.find((m) => m.id === id) ?? MODELS[0];

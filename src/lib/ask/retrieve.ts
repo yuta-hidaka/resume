@@ -101,14 +101,19 @@ export function detectLanguage(q: string): { code: string; name: string } {
   return { code: 'en', name: 'English' };
 }
 
-/** Build the system message: instruction + core profile + retrieved facts.
+/** Build the system message: instruction + core profile + facts.
  *  `foreignLang` is set only when the visitor writes in a language other than the
  *  page's — then we add a hard directive to answer in that language. For the
  *  page's own language the few-shot examples already anchor it, and adding a
- *  directive tends to make the small model loop, so we leave it off. */
-export function buildSystem(cfg: AskConfig, query: string, foreignLang?: string): string {
-  const hits = relevantChunks(query, cfg.chunks, 3);
-  const facts = [cfg.core, ...hits.map((h) => h.text)].join('\n');
+ *  directive tends to make the small model loop, so we leave it off.
+ *  `factsOverride` (staged pipeline) replaces the retrieved chunks with a
+ *  pre-selected, tighter set of fact sentences — a smaller context keeps a
+ *  small model extractive instead of inventive. */
+export function buildSystem(cfg: AskConfig, query: string, foreignLang?: string, factsOverride?: string[]): string {
+  const body = factsOverride?.length
+    ? factsOverride
+    : relevantChunks(query, cfg.chunks, 3).map((h) => h.text);
+  const facts = [cfg.core, ...body].join('\n');
   const base = `${INSTRUCTION}\n\nReference facts:\n${facts}`;
   return foreignLang
     ? `${base}\n\nThe visitor is writing in ${foreignLang}. You MUST write your entire reply in ${foreignLang}, and in no other language.`
@@ -123,10 +128,15 @@ export function buildSystem(cfg: AskConfig, query: string, foreignLang?: string)
  *  The few-shot examples anchor the reply language, so they're only included when
  *  the visitor writes in the page's own language; otherwise an explicit
  *  "reply in X" directive carries it. */
-export function buildMessages(cfg: AskConfig, query: string, history: ChatMessage[] = []): ChatMessage[] {
+export function buildMessages(
+  cfg: AskConfig,
+  query: string,
+  history: ChatMessage[] = [],
+  factsOverride?: string[],
+): ChatMessage[] {
   const det = detectLanguage(query);
   const cross = det.code !== cfg.lang;
-  const grounding = buildSystem(cfg, query, cross ? det.name : undefined);
+  const grounding = buildSystem(cfg, query, cross ? det.name : undefined, factsOverride);
   return [
     ...(!cross && history.length === 0 ? cfg.fewShot : []),
     ...history,

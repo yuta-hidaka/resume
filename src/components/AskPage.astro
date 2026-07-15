@@ -2,12 +2,13 @@
 import { getLangFromUrl } from '../i18n/utils';
 import { askConfig, samplePrompts } from '../lib/ask/profile';
 import { getAskStrings } from '../lib/ask/strings';
-import { MODELS } from '../lib/ask/config';
+import { modelsFor } from '../lib/ask/config';
 
 const lang = getLangFromUrl(Astro.url);
 const s = getAskStrings(lang);
 const cfg = askConfig(lang);
 const chips = samplePrompts(lang);
+const models = modelsFor(lang);
 const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 ---
 
@@ -44,7 +45,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11c4-4.2 7-3.4 9.5 1 2.5-4.4 5.5-5.2 9.5-1"/><path d="M12 12l-1.6 5M12 12l1.6 5"/></svg>
             </span>
             <select id="askp-model" class="askp-tool-select" aria-label={s.engineModelLabel}>
-              {MODELS.map((m) => (
+              {models.map((m) => (
                 <option
                   value={m.id}
                   data-webgpu={m.webgpuDtype}
@@ -150,6 +151,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
 <script>
   import { getEngine, probeWebGPU } from '../lib/ask/engine';
   import { buildMessages, retrieve } from '../lib/ask/retrieve';
+  import { factLines, buildSelectMessages, parseSelection } from '../lib/ask/pipeline';
   import { guardedAnswer, safeFallback, fallbackFacts } from '../lib/ask/verify';
   import { getAskStrings } from '../lib/ask/strings';
   import { downloadStatus, stripThinking } from '../lib/ask/format';
@@ -281,6 +283,19 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     const forcedWebgpu = new URLSearchParams(location.search).get('backend') === 'webgpu';
     const uaData = (navigator as any).userAgentData;
     const webllmOk = forcedWebgpu || (!!uaData && uaData.mobile === false);
+
+    // Phones/tablets: force WASM for the ONNX models too. Mobile browsers
+    // report WebGPU (iOS 26 does), but a GPU inference session is exactly the
+    // kind of memory spike that got the page killed on a real iPhone; the q8
+    // WASM path is slower but stays inside the tab's budget.
+    const isMobile = uaData
+      ? uaData.mobile === true
+      : /iP(hone|ad|od)/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isMobile && !forcedWebgpu && device === 'webgpu') {
+      device = 'wasm';
+      engine.setDevice('wasm');
+    }
 
     // Device line + model availability.
     function applyDeviceUi() {
@@ -518,6 +533,42 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       }
     }
 
+    // One silent generation → a promise for its full text. Used by the staged
+    // pipeline's selection pass: tiny output, nothing streamed to the UI. A
+    // stall triggers engine.stop(), which resolves onDone with the partial
+    // text (partial digits still parse); a dead worker hits the hard timer.
+    function generateOnce(messages: any[], maxNewTokens: number, firstTokenMs: number): Promise<string> {
+      return new Promise((resolve, reject) => {
+        let acc = '';
+        let settled = false;
+        let last = Date.now();
+        const wd = setInterval(() => {
+          if (!settled && Date.now() - last > (acc ? 15000 : firstTokenMs)) engine.stop();
+        }, 2000);
+        const hard = setTimeout(() => {
+          if (!settled) {
+            settled = true;
+            clearInterval(wd);
+            reject(new Error('select-timeout'));
+          }
+        }, firstTokenMs + 30000);
+        const finish = (fn: () => void) => {
+          if (settled) return;
+          settled = true;
+          clearInterval(wd);
+          clearTimeout(hard);
+          fn();
+        };
+        engine.ask(messages, {
+          maxNewTokens,
+          onStart: () => { last = Date.now(); },
+          onToken: (tok) => { acc += tok; last = Date.now(); },
+          onDone: (full) => finish(() => resolve(full || acc)),
+          onError: (err) => finish(() => reject(err)),
+        });
+      });
+    }
+
     async function submit(text: string) {
       if (busy || !text.trim()) return;
       const q = text.trim();
@@ -559,6 +610,27 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
       const orbHtml = (label: string) =>
         `<div class="askp-draft"><span class="askp-orb">${SVG.orb}</span><span class="askp-draft-label">${label}</span></div>`;
 
+      // ——— Stage A (staged grounding): the model picks WHICH facts the
+      // question needs, as bare numbers, and code maps them back to the real
+      // sentences — this step cannot invent content. The compose pass then
+      // sees only those sentences, which keeps a small model extractive. A
+      // garbled/failed selection falls back to the full retrieved context
+      // (the pre-pipeline behavior), so this can only narrow, never lose.
+      const lines = factLines(cfg, q);
+      let selectedFacts: string[] = [];
+      if (lines.length > 4) {
+        const label = a.querySelector('.askp-draft-label');
+        if (label) label.textContent = t.selecting;
+        try {
+          const sel = await generateOnce(buildSelectMessages(q, lines), 24, FIRST_TOKEN_MS);
+          selectedFacts = parseSelection(sel, lines).map((p) => p.text);
+        } catch {}
+        if (label) label.textContent = t.thinking;
+      }
+      // Verifier-failure fallback: prefer the stage-A sentences (always true,
+      // already question-shaped) over a fresh keyword retrieval.
+      const factsFor = () => (selectedFacts.length ? selectedFacts : fallbackFacts(cfg, q));
+
       const runAttempt = (n: number) => {
         let acc = '';
         let draftBody: HTMLElement | null = null;
@@ -584,7 +656,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
             runAttempt(n + 1); // second pass samples for a different result
             return;
           }
-          commitFacts(a, q, fallbackFacts(cfg, q), kind);
+          commitFacts(a, q, factsFor(), kind);
           setBusy(false);
         };
         watchdog = setInterval(() => {
@@ -596,7 +668,9 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
           }
         }, 2500);
 
-        engine.ask(buildMessages(cfg, q, history), {
+        // Stage B (compose): generate from only the stage-A facts (or the
+        // full retrieved context when the selection came back empty).
+        engine.ask(buildMessages(cfg, q, history, selectedFacts.length ? selectedFacts : undefined), {
           sample: n >= 2, // attempt 1 greedy (fastest, most factual); retry samples
           onStart: () => { lastTick = Date.now(); },
           onToken: (tok) => {
