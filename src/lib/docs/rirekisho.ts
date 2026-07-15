@@ -210,7 +210,9 @@ ${FONTS_CSS}
   text-align: center;
 }
 
-.rirekisho .timeline .section-label {
+/* NOTE: not "section-label" — that class name exists in the site's global CSS
+   (green accent) and would leak into the downloads preview. */
+.rirekisho .timeline .tl-label {
   text-align: center;
   font-weight: 700;
   letter-spacing: 0.6em;
@@ -294,7 +296,7 @@ export function renderRirekisho(now: Date = new Date()): RenderedDoc {
   html.push('<colgroup><col class="c-year" /><col class="c-month" /><col /></colgroup>');
   html.push('<tr><th>年</th><th>月</th><th>学歴・職歴（各別にまとめて書く）</th></tr>');
   for (const row of timeline) {
-    const cls = row.align === 'center' ? 'section-label' : row.align === 'right' ? 'right' : '';
+    const cls = row.align === 'center' ? 'tl-label' : row.align === 'right' ? 'right' : '';
     html.push(
       `<tr><td class="num">${esc(row.year)}</td><td class="num">${esc(row.month)}</td>` +
         `<td class="${cls}">${esc(row.label)}</td></tr>`,

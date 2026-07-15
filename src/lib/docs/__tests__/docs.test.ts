@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 
 import { buildCareerDoc } from '../career';
+import { downloadFileName } from '../filenames';
 import { renderCareerMarkdown } from '../career-markdown';
 import { renderCareerHtml } from '../career-html';
 import { renderRirekisho } from '../rirekisho';
@@ -107,6 +108,19 @@ describe('renderRirekisho', () => {
     const last = doc.bodyHtml.indexOf('普通自動車免許');
     expect(first).toBeGreaterThan(-1);
     expect(last).toBeGreaterThan(first);
+  });
+});
+
+describe('downloadFileName', () => {
+  const date = new Date(2026, 6, 15);
+  test('japanese pages get japanese names with a datestamp', () => {
+    expect(downloadFileName('rirekisho', 'ja', date)).toBe('履歴書_日髙悠太_20260715.pdf');
+    expect(downloadFileName('cv', 'ja', date)).toBe('職務経歴書_日髙悠太_20260715.pdf');
+    expect(downloadFileName('resume-text', 'ja', date)).toBe('レジュメ_日髙悠太_20260715.pdf');
+  });
+  test('english pages get english names with a datestamp', () => {
+    expect(downloadFileName('cv', 'en', date)).toBe('yuta-hidaka-cv-en-20260715.pdf');
+    expect(downloadFileName('resume-text', 'en', date)).toBe('yuta-hidaka-resume-en-20260715.pdf');
   });
 });
 
