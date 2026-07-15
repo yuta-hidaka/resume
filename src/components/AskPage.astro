@@ -272,17 +272,28 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     input.addEventListener('focus', () => { maybeWarmLoad(); });
     refreshModel();
 
-    // Device line + model availability. WebLLM models run compiled WebGPU
-    // kernels — no WASM fallback exists — so they are greyed out without WebGPU.
+    // WebLLM models (compiled WebGPU kernels, no WASM fallback) additionally
+    // need a Chromium DESKTOP browser: WebLLM doesn't support Safari/Firefox,
+    // and phones lack the memory for a 1.5B model — a real iPhone hard-crashed
+    // (repeated WebContent kills) on it even though iOS 26 reports WebGPU.
+    // navigator.userAgentData exists only on Chromium; .mobile filters phones.
+    // ?backend=webgpu remains the escape hatch for testing.
+    const forcedWebgpu = new URLSearchParams(location.search).get('backend') === 'webgpu';
+    const uaData = (navigator as any).userAgentData;
+    const webllmOk = forcedWebgpu || (!!uaData && uaData.mobile === false);
+
+    // Device line + model availability.
     function applyDeviceUi() {
       deviceLine.textContent = t.device(device);
       deviceLine.classList.toggle('is-warn', device !== 'webgpu');
       for (const o of Array.from(modelSel.options)) {
-        if (o.dataset.webgpuOnly) o.disabled = device !== 'webgpu';
+        if (o.dataset.webgpuOnly) o.disabled = device !== 'webgpu' || !webllmOk;
       }
-      // If the now-disabled model was selected, fall back to the default one.
+      // If the (default) selection got disabled, fall back to the first model
+      // that can actually run here.
       if (modelSel.selectedOptions[0]?.disabled) {
-        modelSel.value = modelSel.options[0].value;
+        const firstEnabled = Array.from(modelSel.options).find((o) => !o.disabled);
+        if (firstEnabled) modelSel.value = firstEnabled.value;
         refreshModel();
       }
       updateHint();
@@ -297,7 +308,7 @@ const modelHref = 'https://huggingface.co/SakanaAI/TinySwallow-1.5B-Instruct';
     // and probing there would wrongly lock a WebGPU machine to WASM. Nothing
     // can be interacted with while hidden, so waiting loses nothing.
     // ?backend=webgpu still forces WebGPU.
-    if (device === 'webgpu' && new URLSearchParams(location.search).get('backend') !== 'webgpu') {
+    if (device === 'webgpu' && !forcedWebgpu) {
       const probeWhenVisible = async (): Promise<boolean> => {
         if (document.visibilityState === 'hidden') {
           await new Promise<void>((resolve) => {

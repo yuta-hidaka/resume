@@ -40,16 +40,35 @@ export type ModelOption = {
   webgpuOnly?: boolean;
 };
 
-// Models are downloaded once, in the browser, and cached. Sizes are the ~total
-// of the ONNX weight files (onnx-community builds). The verifier is model-agnostic.
+// Models are downloaded once, in the browser, and cached. Order matters: the
+// first option is the default; the UI falls back to the first WASM-capable one
+// when WebGPU is unavailable. The verifier is model-agnostic.
 export const MODELS: ModelOption[] = [
+  {
+    // Sakana's official MLC build, run on WebLLM — the same combo as their
+    // TinySwallow-ChatUI demo. Faster and smaller than the old ONNX build,
+    // but WebGPU-only (WebLLM has no WASM fallback). Default: the best
+    // Japanese answers, which is what this page is mostly asked in.
+    id: 'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
+    label: 'TinySwallow 1.5B',
+    by: 'Sakana AI',
+    params: '1.5B',
+    noteJa: '日本語が得意・高品質。WebLLMで高速動作（WebGPU必須）。',
+    noteEn: 'Strong Japanese, higher quality — fast on WebLLM (needs WebGPU).',
+    sizes: { q4f32: 0.88 },
+    webgpuDtype: 'q4f32',
+    wasmDtype: 'q4f32', // unused — the option is disabled without WebGPU
+    engine: 'webllm',
+    modelLib: 'Qwen2-1.5B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm',
+    webgpuOnly: true,
+  },
   {
     id: 'onnx-community/Qwen2.5-0.5B-Instruct',
     label: 'Qwen2.5 0.5B',
     by: 'Alibaba',
     params: '0.5B',
-    noteJa: '軽量・多言語・高速。まずはこれで十分。',
-    noteEn: 'Light, multilingual, fast — a good default.',
+    noteJa: '軽量・多言語・高速。',
+    noteEn: 'Light, multilingual, fast.',
     sizes: { q4f16: 0.5, q8: 0.6, q4: 0.7 },
     webgpuDtype: 'q4f16',
     wasmDtype: 'q8',
@@ -65,26 +84,10 @@ export const MODELS: ModelOption[] = [
     webgpuDtype: 'q4f16',
     wasmDtype: 'q8',
   },
-  {
-    // Sakana's official MLC build, run on WebLLM — the same combo as their
-    // TinySwallow-ChatUI demo. Faster and smaller than the old ONNX build,
-    // but WebGPU-only (WebLLM has no WASM fallback).
-    id: 'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
-    label: 'TinySwallow 1.5B',
-    by: 'Sakana AI',
-    params: '1.5B',
-    noteJa: '日本語が得意・高品質。WebLLMで高速動作（WebGPU必須）。',
-    noteEn: 'Strong Japanese, higher quality — fast on WebLLM (needs WebGPU).',
-    sizes: { q4f32: 0.88 },
-    webgpuDtype: 'q4f32',
-    wasmDtype: 'q4f32', // unused — the option is disabled without WebGPU
-    engine: 'webllm',
-    modelLib: 'Qwen2-1.5B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm',
-    webgpuOnly: true,
-  },
 ];
 
-// Default to the lightest model — most visitors never need the big one.
+// Default = the first model (TinySwallow). Without WebGPU the UI falls back
+// to the first non-disabled option (Qwen 0.5B).
 export const DEFAULT_MODEL_ID = MODELS[0].id;
 
 export function getModel(id: string): ModelOption {

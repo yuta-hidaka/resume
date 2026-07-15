@@ -62,7 +62,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      '軽量な Qwen2.5-0.5B（約0.5GB・既定）か、日本語が得意な Sakana AI の TinySwallow-1.5B（約0.9GB・TAID蒸留）を選べます。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
+      '日本語が得意な Sakana AI の TinySwallow-1.5B（約0.9GB・TAID蒸留・既定）か、軽量な Qwen2.5-0.5B（約0.5GB）を選べます。TinySwallow は WebGPU 対応の PC ブラウザ向けで、非対応環境では自動的に軽量モデルに切り替わります。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
     howRuntimeLabel: '実行環境',
     howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
@@ -135,7 +135,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 0.5B / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      "Choose the light Qwen2.5-0.5B (~0.5 GB, the default) or Sakana AI's Japanese-strong TinySwallow-1.5B (~0.9 GB, TAID-distilled). The model loads once, then is cached; a no-download “No LLM” mode is also available.",
+      "Choose Sakana AI's Japanese-strong TinySwallow-1.5B (~0.9 GB, TAID-distilled, the default) or the light Qwen2.5-0.5B (~0.5 GB). TinySwallow targets WebGPU-capable desktop browsers; other environments automatically fall back to the lighter model. The model loads once, then is cached; a no-download “No LLM” mode is also available.",
     howRuntimeLabel: 'Runtime',
     howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
