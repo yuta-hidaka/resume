@@ -1,0 +1,106 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 11 — Biochemistry',
+    title: '光学異性体と、薬が効く理由',
+    intro:
+      '4つの異なる基が結びついた炭素は、右手と左手のように「重ね合わせられない鏡像」を2つ持ちます — これが光学異性体（エナンチオマー）です。体内のタンパク質（受容体・酵素）はそれ自身が左右非対称なので、片方の異性体だけがポケットにぴったりはまり、薬として働きます。もう片方は同じ原子で出来ているのに、はまらない、あるいは別の作用をする。分子の「かたち」と「手性（きき手）」が効き目を決めているのです。',
+    hint: 'R体は3点すべてが合ってはまる。S体（鏡像）に切り替えると色が合わず、はまらない',
+    handLabel: '異性体',
+    mirror: 'S（鏡像）',
+    verdict: '結果',
+    active: '結合 ✓ 活性',
+    inactive: '不適合 ✗ 不活性',
+    note: '3点相互作用モデル：受容体の3つの結合点に、薬の3つの基がすべて合ってはじめて結合します。鏡像体はどう平面内で回しても手性が逆なので、全部を同時に合わせられません。悲劇的な実例がサリドマイド — 一方の異性体は鎮静薬、もう一方は催奇性を持ちました（しかも体内で相互変換するため片方だけの投与でも防げなかった）。だから現代の医薬品開発では「片方の異性体だけを作る（不斉合成）」ことが決定的に重要です。アミノ酸がほぼすべて L 体、糖が D 体なのも、生命が最初に選んだ手性の名残です。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 11 — Biochemistry',
+    title: 'Chirality: Why a Drug Works',
+    intro:
+      'A carbon bonded to four different groups comes in two non-superimposable mirror images, like a left and a right hand — these are enantiomers (optical isomers). The proteins in your body (receptors, enzymes) are themselves handed, so typically only one enantiomer fits the pocket and acts as a drug. The mirror image is made of the exact same atoms, yet it may not fit at all, or do something entirely different. Shape and handedness decide the effect.',
+    hint: 'The R form matches all three points and docks. Switch to S (the mirror image) and the colors no longer line up',
+    handLabel: 'Enantiomer',
+    mirror: 'S (mirror)',
+    verdict: 'Result',
+    active: 'binds ✓ active',
+    inactive: 'no fit ✗ inactive',
+    note: 'The three-point attachment model: the drug binds only when all three of its groups meet the receptor’s three complementary sites. A mirror image, spun any way in the plane, has the opposite handedness and can never satisfy all three at once. The tragic case is thalidomide — one enantiomer is a sedative, the other is teratogenic (and worse, the body interconverts them, so giving just one didn’t help). This is why making a single enantiomer (asymmetric synthesis) is decisive in modern drug design. Life’s own choice of handedness — nearly all L-amino acids and D-sugars — is the same phenomenon.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Three-point attachment">
+    受容体 + <i>R</i> → 3/3 接触 → 結合（活性）
+    &ensp;;&ensp;
+    受容体 + <i>S</i> → &lt; 3 接触 → 不適合（不活性）
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="chirality-canvas" class="lab-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <div class="lab-chips" role="group" aria-label={t.handLabel}>
+          <button type="button" class="lab-chip active" data-hand="R">R</button>
+          <button type="button" class="lab-chip" data-hand="S">{t.mirror}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.verdict}</span>
+          <span id="chirality-verdict" data-active={t.active} data-inactive={t.inactive}>{t.active}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createChiralityScene } from '../lib/lab/chirality';
+
+  const canvas = document.getElementById('chirality-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const verdictEl = document.getElementById('chirality-verdict');
+    const activeText = verdictEl?.dataset.active ?? '';
+    const inactiveText = verdictEl?.dataset.inactive ?? '';
+    let lastBinds: boolean | null = null;
+
+    const scene = createChiralityScene(canvas, (_hand, binds) => {
+      if (verdictEl && binds !== lastBinds) {
+        verdictEl.textContent = binds ? activeText : inactiveText;
+        verdictEl.style.color = binds ? 'var(--accent)' : 'var(--ink)';
+        lastBinds = binds;
+      }
+    });
+
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-hand]'));
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.classList.toggle('active', c === chip));
+        scene.setHand(chip.dataset.hand === 'S' ? 'S' : 'R');
+      });
+    });
+  }
+</script>
+
+<style>
+  #chirality-canvas {
+    height: clamp(300px, 52vw, 420px);
+  }
+</style>

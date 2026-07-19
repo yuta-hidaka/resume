@@ -1,0 +1,123 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 05 — Optics',
+    title: '偏光サングラスの物理',
+    intro:
+      '偏光サングラスのフィルムは、延伸した PVA にヨウ素を染み込ませたもの。ヨウ素が鎖状に整列して「導線の格子」のように働き、鎖に平行な電場成分は吸収され、垂直な成分だけが通ります。理想的な偏光板を通った光の強度はマルスの法則 I = I₀cos²θ に従います。2枚目（サングラス）を回して強度の変化を見てください。',
+    hint: 'サングラスを 90° にしてから、45° の1枚を間に挟んでみる',
+    middle: '45°の偏光板を挟む',
+    middleAngle: '中間の角度',
+    glassesAngle: 'サングラスの角度',
+    output: '透過率',
+    note: '90° に直交させた2枚は光を完全に遮りますが、その間に 45° の1枚を挟むと 12.5% の光が復活します。偏光板は光を「ふるいにかける」のではなく、電場をその軸へ射影し直すからです — 量子力学の測定（射影）の、目で見られる古典アナロジー。水面や路面のぎらつきが水平偏光に偏っているため、サングラスの透過軸は縦になっています。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 05 — Optics',
+    title: 'The Physics of Polarized Sunglasses',
+    intro:
+      'The film in polarized sunglasses is stretched PVA doped with iodine. The iodine lines up into chains that act like a grid of wires: the E-field component parallel to the chains is absorbed, only the perpendicular component passes. Through an ideal polarizer the intensity follows Malus’s law, I = I₀cos²θ. Rotate the second filter (the sunglasses) and watch the intensity respond.',
+    hint: 'Cross the sunglasses at 90°, then slip a 45° filter in between',
+    middle: 'Insert 45° filter',
+    middleAngle: 'Middle angle',
+    glassesAngle: 'Sunglasses angle',
+    output: 'Transmission',
+    note: 'Two filters crossed at 90° block everything — yet inserting a 45° filter between them brings 12.5% of the light back. A polarizer doesn’t sieve light; it re-projects the field onto its axis — a visible classical analogue of quantum measurement. Glare off water and roads is horizontally polarized, which is why sunglasses have a vertical transmission axis.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Malus's law">
+    <i>I</i> = <i>I</i>₀ cos²θ &ensp;,&ensp;
+    0° + 45° + 90°: (1/2) · cos²45° · cos²45° = 1/8 = 12.5%
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="polarizer-canvas" class="lab-canvas polarizer-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="glasses-slider">
+          <span class="lab-readout-label">{t.glassesAngle}</span>
+          <span id="glasses-value">θ = 90°</span>
+        </label>
+        <input id="glasses-slider" class="lab-slider" type="range" min="0" max="180" step="1" value="90" />
+      </div>
+      <div class="lab-meta">
+        <label class="lab-readout" for="middle-slider">
+          <span class="lab-readout-label">{t.middleAngle}</span>
+          <span id="middle-value">θ = 45°</span>
+        </label>
+        <input id="middle-slider" class="lab-slider" type="range" min="0" max="180" step="1" value="45" disabled />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="middle-toggle" aria-pressed="false">{t.middle}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.output}</span>
+          <span id="output-value">I / I₀ = 0.0%</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createPolarizerScene, stageIntensities } from '../lib/lab/polarizer';
+
+  const canvas = document.getElementById('polarizer-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const scene = createPolarizerScene(canvas);
+    const glasses = document.getElementById('glasses-slider') as HTMLInputElement;
+    const middle = document.getElementById('middle-slider') as HTMLInputElement;
+    const toggle = document.getElementById('middle-toggle') as HTMLButtonElement;
+    const glassesValue = document.getElementById('glasses-value');
+    const middleValue = document.getElementById('middle-value');
+    const outputValue = document.getElementById('output-value');
+    let middleOn = false;
+
+    const apply = () => {
+      const state = {
+        middleOn,
+        thetaMiddle: Number(middle.value),
+        theta2: Number(glasses.value),
+      };
+      scene.setState(state);
+      const stages = stageIntensities(state);
+      const out = stages[stages.length - 1];
+      if (glassesValue) glassesValue.textContent = `θ = ${glasses.value}°`;
+      if (middleValue) middleValue.textContent = `θ = ${middle.value}°`;
+      if (outputValue) outputValue.textContent = `I / I₀ = ${(out * 100).toFixed(1)}%`;
+    };
+
+    toggle.addEventListener('click', () => {
+      middleOn = !middleOn;
+      middle.disabled = !middleOn;
+      toggle.classList.toggle('active', middleOn);
+      toggle.setAttribute('aria-pressed', String(middleOn));
+      apply();
+    });
+    glasses.addEventListener('input', apply);
+    middle.addEventListener('input', apply);
+    apply();
+  }
+</script>

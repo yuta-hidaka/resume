@@ -1,0 +1,125 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 08 — Quantum Mechanics',
+    title: 'トンネル効果',
+    intro:
+      '時間依存シュレディンガー方程式をスプリットステップ・フーリエ法で数値的に解いています（1,024 格子点、各ステップは厳密にユニタリ）。エネルギー E のガウス波束が高さ V₀ の壁に衝突すると、古典力学では V₀ > E なら 100% 跳ね返るはずが、量子力学では壁の中を「染み込んで」反対側に抜ける成分が現れます。透過率 T が衝突の間にリアルタイムで積み上がっていくのを見てください。',
+    hint: '壁を E より高くしても T が 0 にならないのがトンネル効果',
+    height: '壁の高さ',
+    width: '壁の幅',
+    restart: 'もう一度',
+    trans: '透過 T',
+    refl: '反射 R',
+    note: 'トンネル効果は実在の現象です — 太陽の核融合（陽子同士がクーロン障壁を抜ける）、フラッシュメモリの書き込み、走査型トンネル顕微鏡（STM）、α崩壊はすべてこれで動いています。透過率は壁の幅と √(V₀−E) に対して指数関数的に落ちる（T ≈ e^(−2κL)）ので、壁をほんの少し厚くするだけで劇的に通れなくなります。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 08 — Quantum Mechanics',
+    title: 'Quantum Tunneling',
+    intro:
+      'The time-dependent Schrödinger equation, solved numerically with the split-step Fourier method (1,024 grid points, each step exactly unitary). A gaussian wave packet of energy E hits a barrier of height V₀. Classically, V₀ > E means 100% reflection — but in quantum mechanics part of the packet seeps through the wall and emerges on the far side. Watch the transmission probability T accumulate in real time during the collision.',
+    hint: 'Raise the wall above E — T still refuses to hit zero. That is tunneling',
+    height: 'Barrier height',
+    width: 'Barrier width',
+    restart: 'Run again',
+    trans: 'Transmitted T',
+    refl: 'Reflected R',
+    note: 'Tunneling is everywhere: solar fusion (protons crossing the Coulomb barrier), flash-memory writes, scanning tunneling microscopes, alpha decay. Transmission falls exponentially with barrier width and √(V₀−E) — T ≈ e^(−2κL) — so a slightly thicker wall becomes dramatically harder to cross.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Time-dependent Schrödinger equation">
+    iℏ ∂ψ/∂<i>t</i> = −(ℏ²/2<i>m</i>) ∂²ψ/∂<i>x</i>² + <i>V</i>(<i>x</i>)ψ
+    &ensp;,&ensp;
+    <i>T</i> ≈ e<sup>−2κ<i>L</i></sup>, κ = √(2<i>m</i>(<i>V</i>₀−<i>E</i>))/ℏ
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="tunnel-canvas" class="lab-canvas tunnel-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="tunnel-height">
+          <span class="lab-readout-label">{t.height}</span>
+          <span id="tunnel-height-value">V₀ = 1.20 E</span>
+        </label>
+        <input id="tunnel-height" class="lab-slider" type="range" min="0.2" max="2.5" step="0.05" value="1.2" />
+      </div>
+      <div class="lab-meta">
+        <label class="lab-readout" for="tunnel-width">
+          <span class="lab-readout-label">{t.width}</span>
+          <span id="tunnel-width-value">L = 3</span>
+        </label>
+        <input id="tunnel-width" class="lab-slider" type="range" min="2" max="14" step="1" value="3" />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="tunnel-restart">{t.restart}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.trans}</span>
+          <span id="tunnel-t-value">0.00%</span>
+          <span class="lab-readout-label" style="margin-left:1.2em">{t.refl}</span>
+          <span id="tunnel-r-value">0.00%</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createTunnelScene } from '../lib/lab/tunnel';
+
+  const canvas = document.getElementById('tunnel-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const height = document.getElementById('tunnel-height') as HTMLInputElement;
+    const width = document.getElementById('tunnel-width') as HTMLInputElement;
+    const heightValue = document.getElementById('tunnel-height-value');
+    const widthValue = document.getElementById('tunnel-width-value');
+    const tValue = document.getElementById('tunnel-t-value');
+    const rValue = document.getElementById('tunnel-r-value');
+
+    const scene = createTunnelScene(
+      canvas,
+      { v0OverE: Number(height.value), width: Number(width.value) },
+      (refl, trans) => {
+        if (tValue) tValue.textContent = `${(trans * 100).toFixed(2)}%`;
+        if (rValue) rValue.textContent = `${(refl * 100).toFixed(2)}%`;
+      },
+    );
+
+    const apply = () => {
+      if (heightValue) heightValue.textContent = `V₀ = ${Number(height.value).toFixed(2)} E`;
+      if (widthValue) widthValue.textContent = `L = ${width.value}`;
+      scene.setParams({ v0OverE: Number(height.value), width: Number(width.value) });
+    };
+    height.addEventListener('input', apply);
+    width.addEventListener('input', apply);
+    document.getElementById('tunnel-restart')?.addEventListener('click', () => scene.restart());
+  }
+</script>
+
+<style>
+  .tunnel-canvas {
+    height: clamp(300px, 52vw, 420px);
+  }
+</style>

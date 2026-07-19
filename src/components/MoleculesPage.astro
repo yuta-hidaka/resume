@@ -1,0 +1,277 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 06 — Molecular Dynamics',
+    title: '分子の熱振動と三態',
+    intro:
+      '70 個の粒子が、レナード=ジョーンズ相互作用と弱い重力の下で動く 2D 分子動力学です。使っている「原子」は特定の物質ではなく、LJ ポテンシャルの汎用モデル — このモデルは歴史的にアルゴンなどの希ガスに合わせて作られたもので、ここでは温度を σ・ε をアルゴン基準（ε/k_B = 119.8 K、σ = 3.405 Å）で K に換算して表示します。冷やすと粒子は捕まり合って振動するだけの塊（固体）、温めると滑り合う液体、さらに温めると箱いっぱいの気体になります。水分子の絵は装飾で、実際の水の水素結合は入っていません。',
+    hint: '温度で氷→水→水蒸気。境目に止めると二相が共存する',
+    temp: '温度',
+    reset: 'リセット',
+    phase: '状態',
+    modeLabel: '熱のやりとり',
+    thermostat: '恒温（等温）',
+    adiabatic: '断熱',
+    compress: '圧縮',
+    volume: '体積',
+    phases: { solid: '固体（氷）', liquid: '液体（水）', gas: '気体（水蒸気）' },
+    coexist: { melting: '融解 — 固体⇄液体が共存', boiling: '蒸発 — 液体⇄気体が共存' },
+    solidShort: '固',
+    liquidShort: '液',
+    gasShort: '気',
+    note: '固体・液体・気体は別の物質ではなく、同じ粒子の「運動の激しさ」と「隣との縁の切れやすさ」の違い。境界温度（この模型では T* ≈ 0.32 で融解、≈ 1.0 で蒸発）にスライダーを止めると、一部が固体・一部が液体のように二相が共存します。断熱モードにすると恒温槽を切り、上からピストンで圧縮できます — 熱の出入りがないので、圧縮した仕事がそのまま温度上昇になり、T·V が一定に保たれます（この 2D 単原子気体は自由度 f=2 なので γ=2、実在の 3D 単原子気体は γ=5/3）。ディーゼルエンジンが燃料に点火できるのも、逆に上昇気流で雲ができるのも、この断熱の加熱・冷却です。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 06 — Molecular Dynamics',
+    title: 'Thermal Motion & the States of Matter',
+    intro:
+      'A 2D molecular-dynamics sandbox: 70 particles moving under a Lennard-Jones interaction and weak gravity. The "atom" here is not a specific substance but the generic LJ model — historically calibrated to noble gases, so we map temperature to Kelvin using argon (ε/k_B = 119.8 K, σ = 3.405 Å). Cool them into a vibrating cluster (solid), warm them into a sloshing liquid, heat them into a gas that fills the box. The water glyph is decorative; real water’s hydrogen bonding is not modelled.',
+    hint: 'Temperature drives ice → water → steam. Park it on a boundary for coexistence',
+    temp: 'Temperature',
+    reset: 'Reset',
+    phase: 'Phase',
+    modeLabel: 'Heat exchange',
+    thermostat: 'Isothermal',
+    adiabatic: 'Adiabatic',
+    compress: 'Compress',
+    volume: 'Volume',
+    phases: { solid: 'Solid (ice)', liquid: 'Liquid (water)', gas: 'Gas (steam)' },
+    coexist: { melting: 'Melting — solid ⇄ liquid coexist', boiling: 'Boiling — liquid ⇄ gas coexist' },
+    solidShort: 'S',
+    liquidShort: 'L',
+    gasShort: 'G',
+    note: 'Solid, liquid and gas are not different substances — just different intensities of motion of the same particles. Park the slider on a boundary temperature (this model melts at T* ≈ 0.32 and boils at ≈ 1.0) and the two phases coexist. Switch to Adiabatic to cut the heat bath and compress the gas from the top: with no heat exchange, the piston’s work goes straight into temperature, keeping T·V constant (this 2D monatomic gas has f = 2 degrees of freedom → γ = 2; a real 3D monatomic gas has γ = 5/3). It is exactly this adiabatic heating that lets a diesel engine ignite its fuel, and the adiabatic cooling of rising air that forms clouds.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Lennard-Jones and adiabatic law">
+    <i>V</i>(<i>r</i>) = 4ε[(σ/<i>r</i>)¹² − (σ/<i>r</i>)⁶]
+    &ensp;,&ensp;
+    ⟨½<i>mv</i>²⟩ = <i>k<sub>B</sub>T</i>
+    &ensp;,&ensp;
+    <i>TV</i><sup>γ−1</sup> = const &nbsp;(γ = 2 → <i>TV</i> = const)
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas
+        id="molecules-stage"
+        class="lab-canvas molecules-stage"
+        aria-label={t.title}
+        data-i18n={JSON.stringify({ phases: t.phases, coexist: t.coexist })}
+      ></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="mol-temp">
+          <span class="lab-readout-label">{t.temp}</span>
+          <span id="mol-temp-value">T* = 0.50</span>
+          <span id="mol-kelvin-value" class="mol-kelvin">≈ 60 K</span>
+        </label>
+        <input id="mol-temp" class="lab-slider" type="range" min="0.05" max="1.8" step="0.01" value="0.5" />
+      </div>
+
+      <div class="phase-row">
+        <div class="phase-strip" aria-hidden="true">
+          <span class="phase-seg seg-solid" style="flex: 27"></span>
+          <span class="phase-seg seg-liquid" style="flex: 68"></span>
+          <span class="phase-seg seg-gas" style="flex: 80"></span>
+          <span id="phase-marker" class="phase-marker"></span>
+        </div>
+        <div class="phase-legend">
+          <span>{t.solidShort}</span><span>{t.liquidShort}</span><span>{t.gasShort}</span>
+        </div>
+        <p class="lab-readout mt-1">
+          <span class="lab-readout-label">{t.phase}</span>
+          <span id="mol-phase-value">{t.phases.liquid}</span>
+          <span id="mol-coexist" class="mol-coexist"></span>
+        </p>
+      </div>
+
+      <div class="lab-meta">
+        <div class="lab-chips" role="group" aria-label={t.modeLabel}>
+          <button type="button" class="lab-chip active" data-mode="thermostat">{t.thermostat}</button>
+          <button type="button" class="lab-chip" data-mode="adiabatic">{t.adiabatic}</button>
+        </div>
+        <button type="button" class="lab-chip" id="mol-reset">{t.reset}</button>
+      </div>
+
+      <div class="lab-meta" id="mol-compress-row" hidden>
+        <label class="lab-readout" for="mol-compress">
+          <span class="lab-readout-label">{t.compress}</span>
+          <span id="mol-volume-value">V = 1.00</span>
+          <span id="mol-invariant-value" class="mol-kelvin">T·V = —</span>
+        </label>
+        <input id="mol-compress" class="lab-slider" type="range" min="0" max="1" step="0.01" value="0" />
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import {
+    createMoleculesSim,
+    phaseForTemperature,
+    coexistenceAt,
+    kelvin,
+    MELT_T,
+    VAPORIZE_T,
+    type ThermalMode,
+  } from '../lib/lab/molecules';
+
+  const stage = document.getElementById('molecules-stage') as HTMLCanvasElement | null;
+  if (stage) {
+    const i18n = JSON.parse(stage.dataset.i18n || '{}') as {
+      phases: Record<string, string>;
+      coexist: Record<string, string>;
+    };
+    const sim = createMoleculesSim(stage);
+    const tempSlider = document.getElementById('mol-temp') as HTMLInputElement;
+    const compressSlider = document.getElementById('mol-compress') as HTMLInputElement;
+    const compressRow = document.getElementById('mol-compress-row') as HTMLElement;
+    const tempValue = document.getElementById('mol-temp-value');
+    const kelvinValue = document.getElementById('mol-kelvin-value');
+    const phaseValue = document.getElementById('mol-phase-value');
+    const coexistValue = document.getElementById('mol-coexist');
+    const marker = document.getElementById('phase-marker') as HTMLElement;
+    const volumeValue = document.getElementById('mol-volume-value');
+    const invariantValue = document.getElementById('mol-invariant-value');
+    const modeChips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-mode]'));
+
+    const T_MIN = 0.05;
+    const T_MAX = 1.8;
+
+    sim.setTemperature(Number(tempSlider.value));
+    tempSlider.addEventListener('input', () => sim.setTemperature(Number(tempSlider.value)));
+    compressSlider.addEventListener('input', () => sim.setCompression(Number(compressSlider.value)));
+
+    modeChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        modeChips.forEach((c) => c.classList.toggle('active', c === chip));
+        const mode = chip.dataset.mode as ThermalMode;
+        sim.setMode(mode);
+        compressRow.hidden = mode !== 'adiabatic';
+        tempSlider.disabled = mode === 'adiabatic';
+        if (mode === 'thermostat') {
+          compressSlider.value = '0';
+          sim.setCompression(0);
+        }
+      });
+    });
+
+    document.getElementById('mol-reset')?.addEventListener('click', () => sim.reset());
+
+    // Readouts follow the MEASURED temperature, so adiabatic compression shows
+    // the gas actually heating up and (if it crosses a boundary) changing phase.
+    let invariant0: number | null = null;
+    const refresh = () => {
+      requestAnimationFrame(refresh);
+      const Tm = sim.measuredT;
+      const V = sim.volumeFraction;
+      if (tempValue) tempValue.textContent = `T* = ${Tm.toFixed(2)}`;
+      if (kelvinValue) kelvinValue.textContent = `≈ ${Math.round(kelvin(Tm))} K`;
+      const ph = phaseForTemperature(Tm);
+      if (phaseValue) phaseValue.textContent = i18n.phases[ph];
+      const co = coexistenceAt(Tm);
+      if (coexistValue) coexistValue.textContent = co ? '· ' + i18n.coexist[co] : '';
+      if (marker) {
+        const frac = Math.min(1, Math.max(0, (Tm - T_MIN) / (T_MAX - T_MIN)));
+        marker.style.left = `${frac * 100}%`;
+      }
+      if (volumeValue) volumeValue.textContent = `V = ${V.toFixed(2)}`;
+      if (invariantValue) {
+        if (invariant0 === null && Number(compressSlider.value) < 0.02) invariant0 = Tm * V;
+        invariantValue.textContent = `T·V = ${(Tm * V).toFixed(2)}`;
+      }
+    };
+    refresh();
+    // Reset the invariant baseline whenever we (re-)enter adiabatic mode.
+    modeChips
+      .find((c) => c.dataset.mode === 'adiabatic')
+      ?.addEventListener('click', () => (invariant0 = null));
+  }
+</script>
+
+<style>
+  .molecules-stage {
+    height: clamp(300px, 52vw, 420px);
+  }
+
+  .mol-kelvin {
+    margin-left: 0.7em;
+    color: var(--ink-muted);
+    font-size: 0.9em;
+  }
+
+  .mol-coexist {
+    margin-left: 0.5em;
+    color: var(--accent);
+    font-size: 0.9em;
+  }
+
+  .phase-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .phase-strip {
+    position: relative;
+    display: flex;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--line);
+  }
+
+  .phase-seg {
+    height: 100%;
+  }
+
+  .seg-solid {
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .seg-liquid {
+    background: color-mix(in srgb, var(--accent) 62%, transparent);
+  }
+  .seg-gas {
+    background: color-mix(in srgb, #d9b36c 62%, transparent);
+  }
+
+  .phase-marker {
+    position: absolute;
+    top: -3px;
+    width: 2px;
+    height: 14px;
+    background: var(--ink);
+    border-radius: 2px;
+    transform: translateX(-1px);
+    transition: left 0.1s linear;
+  }
+
+  .phase-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+  }
+</style>

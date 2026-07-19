@@ -1,0 +1,143 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 09 — Chemical Kinetics',
+    title: '速度論支配と熱力学支配',
+    intro:
+      '反応物 A から2つの生成物への道があります。B へは低い山（活性化エネルギー小）だけど浅い谷、C へは高い山だけど深い谷。240 個の粒子がエネルギー地形の上で熱ゆらぎに揺すられるランジュバン動力学です。低温では、越えられる山が低い方だけなので B に溜まります — 速さが勝負を決める「速度論支配」。高温では両方の山を自由に行き来できるようになり、最後は深い谷 C がボルツマン分布で勝ちます — 安定さが勝負を決める「熱力学支配」。',
+    hint: '低温で B に溜めてから、温度を上げて C への逆転を見る',
+    temp: '温度',
+    reset: 'リセット',
+    kinetic: 'B（速度論的生成物）',
+    thermo: 'C（熱力学的生成物）',
+    note: 'ダイヤモンドは熱力学的には黒鉛より不安定ですが、変換の山が高すぎて室温では事実上永遠に持ちます — 速度論支配の産物。有機合成では低温・短時間で速度論的生成物を、高温・長時間で熱力学的生成物を作り分けます（例：1,2- vs 1,4-付加）。「どちらが安定か」と「どちらが速いか」は別の問い、というのがこのページの全部です。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 09 — Chemical Kinetics',
+    title: 'Kinetic vs Thermodynamic Control',
+    intro:
+      'Reactant A has two ways out: over a LOW barrier into a SHALLOW well (product B), or over a HIGH barrier into a DEEP well (product C). 240 particles jitter across this energy landscape under Langevin dynamics. At low temperature only the low barrier is passable, so everything piles up in B — speed decides: kinetic control. At high temperature both barriers open up, traffic flows both ways, and the deep well C wins by the Boltzmann factor — stability decides: thermodynamic control.',
+    hint: 'Fill B at low temperature, then heat it up and watch C stage its comeback',
+    temp: 'Temperature',
+    reset: 'Reset',
+    kinetic: 'B (kinetic product)',
+    thermo: 'C (thermodynamic product)',
+    note: 'Diamond is thermodynamically less stable than graphite, but the conversion barrier is so high it lasts practically forever at room temperature — a product of kinetic control. Synthetic chemists switch products with conditions: cold and quick for the kinetic product, hot and long for the thermodynamic one (e.g. 1,2- vs 1,4-addition). "Which is more stable" and "which forms faster" are different questions — that is this whole page.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Arrhenius and Boltzmann">
+    <i>k</i> = <i>A</i> e<sup>−<i>E<sub>a</sub></i>/<i>k<sub>B</sub>T</i></sup>
+    &ensp;,&ensp;
+    [C]/[B]<sub>eq</sub> = e<sup>−(Δ<i>E<sub>C</sub></i>−Δ<i>E<sub>B</sub></i>)/<i>k<sub>B</sub>T</i></sup>
+    &ensp;,&ensp;
+    d<i>x</i> = −<i>V</i>′(<i>x</i>)d<i>t</i> + √(2<i>k<sub>B</sub>T</i> d<i>t</i>)·η
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="kinetics-stage" class="lab-canvas kinetics-stage" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+    <div class="kinetics-chart-wrap">
+      <canvas id="kinetics-chart" aria-label="Populations over time"></canvas>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="kinetics-temp">
+          <span class="lab-readout-label">{t.temp}</span>
+          <span id="kinetics-temp-value">T = 0.09</span>
+        </label>
+        <input id="kinetics-temp" class="lab-slider" type="range" min="0.05" max="0.35" step="0.005" value="0.09" />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="kinetics-reset">{t.reset}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="kinetics-dot kinetics-dot-b" aria-hidden="true"></span>
+          <span class="lab-readout-label">{t.kinetic}</span>
+          <span id="kinetics-b-value">0%</span>
+          <span class="kinetics-dot kinetics-dot-c" aria-hidden="true" style="margin-left:1.1em"></span>
+          <span class="lab-readout-label">{t.thermo}</span>
+          <span id="kinetics-c-value">0%</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createKineticsScene } from '../lib/lab/kinetics';
+
+  const stage = document.getElementById('kinetics-stage') as HTMLCanvasElement | null;
+  const chart = document.getElementById('kinetics-chart') as HTMLCanvasElement | null;
+  if (stage && chart) {
+    const slider = document.getElementById('kinetics-temp') as HTMLInputElement;
+    const tempValue = document.getElementById('kinetics-temp-value');
+    const bValue = document.getElementById('kinetics-b-value');
+    const cValue = document.getElementById('kinetics-c-value');
+
+    const scene = createKineticsScene(stage, chart, (b, c) => {
+      if (bValue) bValue.textContent = `${Math.round(b * 100)}%`;
+      if (cValue) cValue.textContent = `${Math.round(c * 100)}%`;
+    });
+
+    slider.addEventListener('input', () => {
+      scene.setTemperature(Number(slider.value));
+      if (tempValue) tempValue.textContent = `T = ${Number(slider.value).toFixed(2)}`;
+    });
+    document.getElementById('kinetics-reset')?.addEventListener('click', () => scene.reset());
+  }
+</script>
+
+<style>
+  .kinetics-stage {
+    height: clamp(300px, 52vw, 420px);
+  }
+
+  .kinetics-chart-wrap {
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 1.1rem 0.4rem;
+  }
+
+  #kinetics-chart {
+    display: block;
+    width: 100%;
+    height: 84px;
+  }
+
+  .kinetics-dot {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50%;
+    transform: translateY(-0.05em);
+    margin-right: 0.35em;
+  }
+
+  .kinetics-dot-b {
+    background: #b8934f;
+  }
+
+  .kinetics-dot-c {
+    background: var(--accent);
+  }
+</style>

@@ -1,0 +1,214 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 01 — Quantum Mechanics',
+    title: '水素原子の電子雲',
+    intro:
+      'シュレディンガー方程式を水素原子のクーロンポテンシャルについて解くと、波動関数 ψ が量子数 (n, l, m) ごとに求まります。下の点群は、その確率密度 |ψ|² から実際にサンプリングした 26,000 点 — 電子を観測したとき「そこに見出される」場所の分布です。',
+    hint: 'ドラッグで回転、スクロールで拡大縮小',
+    plus: '位相 +',
+    minus: '位相 −',
+    energy: 'エネルギー固有値',
+    samples: '観測回数',
+    isotope: '同位体',
+    proton: '陽子',
+    neutron: '中性子',
+    note: '緑と金の点群は波動関数の符号（位相）。点は1回の「観測」に対応し、N が増えるほど雲の形＝確率分布がはっきりしていきます。中心の粒が原子核（金＝陽子、灰＝中性子）— ただし縮尺は大幅に誇張していて、実際の核はこの表示の約10万分の1の大きさです。同位体を替えても電子雲がほぼ変わらないことに注目 — 化学的性質が中性子の数に鈍感な理由です（換算質量の補正は 0.03% 以下）。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 01 — Quantum Mechanics',
+    title: 'Hydrogen Electron Clouds',
+    intro:
+      'Solving the Schrödinger equation for the Coulomb potential of hydrogen yields wavefunctions ψ indexed by the quantum numbers (n, l, m). The point cloud below is 26,000 samples drawn from the probability density |ψ|² — the distribution of where a measurement would actually find the electron.',
+    hint: 'Drag to rotate, scroll to zoom',
+    plus: 'phase +',
+    minus: 'phase −',
+    energy: 'Energy eigenvalue',
+    samples: 'Measurements',
+    isotope: 'Isotope',
+    proton: 'proton',
+    neutron: 'neutron',
+    note: 'The green/gold points mark the sign (phase) of the wavefunction; each point is one "measurement", and the distribution emerges as N grows. The lump at the center is the nucleus (gold = protons, gray = neutrons) — drawn ~100,000× larger than life. Note that switching isotopes barely changes the cloud: chemistry is nearly blind to neutron count (the reduced-mass correction is under 0.03%).',
+  },
+} as const;
+const t = copy[lang];
+
+// Real orbitals: (n, l, |m|, cos/sin azimuthal form)
+const orbitals = [
+  { key: '1s', n: 1, l: 0, m: 0, form: 'cos', label: '1s' },
+  { key: '2s', n: 2, l: 0, m: 0, form: 'cos', label: '2s' },
+  { key: '2pz', n: 2, l: 1, m: 0, form: 'cos', label: '2p<sub>z</sub>' },
+  { key: '3s', n: 3, l: 0, m: 0, form: 'cos', label: '3s' },
+  { key: '3pz', n: 3, l: 1, m: 0, form: 'cos', label: '3p<sub>z</sub>' },
+  { key: '3dz2', n: 3, l: 2, m: 0, form: 'cos', label: '3d<sub>z²</sub>' },
+  { key: '3dxy', n: 3, l: 2, m: 2, form: 'sin', label: '3d<sub>xy</sub>' },
+  { key: '4fz3', n: 4, l: 3, m: 0, form: 'cos', label: '4f<sub>z³</sub>' },
+] as const;
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Schrödinger equation">
+    −(ℏ²/2<i>m</i>)∇²ψ − <i>e</i>²/(4πε₀<i>r</i>)·ψ = <i>E</i>ψ &ensp;,&ensp;
+    <i>P</i>(<i>r</i>,θ,φ) = |ψ<sub><i>nlm</i></sub>|² &ensp;,&ensp;
+    <i>E<sub>n</sub></i> = −13.6 eV/<i>n</i>²
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="orbital-canvas" class="lab-canvas orbital-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-chips" id="orbital-chips" role="group" aria-label="Orbital">
+        {orbitals.map((o, i) => (
+          <button
+            type="button"
+            class:list={['lab-chip', i === 0 && 'active']}
+            data-n={o.n}
+            data-l={o.l}
+            data-m={o.m}
+            data-form={o.form}
+            set:html={o.label}
+          />
+        ))}
+      </div>
+
+      <div class="lab-meta">
+        <div class="lab-chips" id="isotope-chips" role="group" aria-label={t.isotope}>
+          <button type="button" class="lab-chip active" data-p="1" data-nn="0">¹H</button>
+          <button type="button" class="lab-chip" data-p="1" data-nn="1">²H</button>
+          <button type="button" class="lab-chip" data-p="1" data-nn="2">³H</button>
+        </div>
+        <p class="orbital-legend">
+          <span class="legend-dot legend-proton" aria-hidden="true"></span>{t.proton}
+          <span class="legend-dot legend-neutron" aria-hidden="true"></span>{t.neutron}
+        </p>
+      </div>
+
+      <div class="lab-meta">
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.energy}</span>
+          <span id="orbital-energy-value">E₁ = −13.61 eV</span>
+        </p>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.samples}</span>
+          <span id="orbital-count">N = 0 / 26,000</span>
+        </p>
+        <p class="orbital-legend">
+          <span class="legend-dot legend-plus" aria-hidden="true"></span>{t.plus}
+          <span class="legend-dot legend-minus" aria-hidden="true"></span>{t.minus}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createOrbitalScene } from '../lib/hydrogen/scene';
+  import type { OrbitalSpec } from '../lib/hydrogen/orbital';
+
+  const canvas = document.getElementById('orbital-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const countEl = document.getElementById('orbital-count');
+    const orbitalScene = createOrbitalScene(canvas, (shown, total) => {
+      if (countEl) countEl.textContent = `N = ${shown.toLocaleString()} / ${total.toLocaleString()}`;
+    });
+    const chips = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('#orbital-chips .lab-chip'),
+    );
+    const energyEl = document.getElementById('orbital-energy-value');
+    const SUBSCRIPTS = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
+
+    const select = (chip: HTMLButtonElement) => {
+      chips.forEach((c) => c.classList.toggle('active', c === chip));
+      const spec: OrbitalSpec = {
+        n: Number(chip.dataset.n),
+        l: Number(chip.dataset.l),
+        m: Number(chip.dataset.m),
+        form: chip.dataset.form === 'sin' ? 'sin' : 'cos',
+      };
+      orbitalScene.setOrbital(spec);
+      if (energyEl) {
+        const e = -13.605693 / (spec.n * spec.n);
+        energyEl.textContent = `E${SUBSCRIPTS[spec.n]} = ${e.toFixed(2).replace('-', '−')} eV`;
+      }
+    };
+
+    chips.forEach((chip) => chip.addEventListener('click', () => select(chip)));
+    select(chips[0]);
+
+    const isotopeChips = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('#isotope-chips .lab-chip'),
+    );
+    isotopeChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        isotopeChips.forEach((c) => c.classList.toggle('active', c === chip));
+        orbitalScene.setNucleus(Number(chip.dataset.p), Number(chip.dataset.nn));
+      });
+    });
+  }
+</script>
+
+<style>
+  .orbital-canvas {
+    cursor: grab;
+  }
+
+  .orbital-canvas:active {
+    cursor: grabbing;
+  }
+
+  .orbital-legend {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45em;
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50%;
+    transform: translateY(-0.05em);
+  }
+
+  .orbital-legend .legend-minus {
+    margin-left: 0.8em;
+  }
+
+  .legend-plus {
+    background: var(--accent);
+  }
+
+  .legend-minus {
+    background: #b8934f;
+  }
+
+  .legend-proton {
+    background: #c99a3f;
+  }
+
+  .legend-neutron {
+    background: #7e858c;
+  }
+
+  .orbital-legend .legend-neutron {
+    margin-left: 0.8em;
+  }
+</style>

@@ -1,0 +1,127 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 02 — Signal Processing',
+    title: 'フーリエ変換の描画機械',
+    intro:
+      '閉じた図形を周期的な複素信号 z(t) = x(t) + iy(t) とみなして離散フーリエ変換すると、図形は「回転する円（エピサイクル）の連なり」に分解されます。振幅の大きい順に K 個だけ残すと、少ない周波数で形の大部分が再現できることが分かります。マウスやタッチで自分の図形を描くこともできます。',
+    hint: 'キャンバスに直接描くと、その図形を分解します',
+    terms: '円の数',
+    presetStar: '星',
+    presetHeart: 'ハート',
+    presetLemniscate: 'レムニスケート',
+    drawn: '手描き',
+    note: 'これは JPEG や MP3 の圧縮と同じ原理 — 信号を周波数に分解し、寄与の小さい成分を捨てる。K を下げるほど「粗い要約」になり、上げるほど原形に収束していきます。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 02 — Signal Processing',
+    title: 'Fourier Drawing Machine',
+    intro:
+      'Treat a closed shape as a periodic complex signal z(t) = x(t) + iy(t) and take its discrete Fourier transform: the shape decomposes into a chain of rotating circles (epicycles). Keeping only the K largest terms shows how few frequencies carry most of the form. Draw your own shape with mouse or touch.',
+    hint: 'Draw directly on the canvas to decompose your own shape',
+    terms: 'Circles',
+    presetStar: 'Star',
+    presetHeart: 'Heart',
+    presetLemniscate: 'Lemniscate',
+    drawn: 'Drawn',
+    note: 'This is the same principle behind JPEG and MP3 compression — decompose a signal into frequencies and discard the small contributions. Lower K gives a rougher summary; higher K converges to the original.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Discrete Fourier transform">
+    <i>c<sub>k</sub></i> = (1/<i>N</i>) Σ<sub><i>n</i></sub> <i>z<sub>n</sub></i> e<sup>−2πi<i>kn</i>/<i>N</i></sup>
+    &ensp;,&ensp;
+    <i>z</i>(<i>t</i>) ≈ Σ<sub>top-<i>K</i></sub> <i>c<sub>k</sub></i> e<sup>2πi<i>kt</i></sup>
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="fourier-canvas" class="lab-canvas fourier-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-chips" role="group" aria-label="Shape">
+        <button type="button" class="lab-chip active" data-preset="star">{t.presetStar}</button>
+        <button type="button" class="lab-chip" data-preset="heart">{t.presetHeart}</button>
+        <button type="button" class="lab-chip" data-preset="lemniscate">{t.presetLemniscate}</button>
+        <button type="button" class="lab-chip" data-preset="drawn" id="drawn-chip" disabled>{t.drawn}</button>
+      </div>
+
+      <div class="lab-meta">
+        <label class="lab-readout" for="terms-slider">
+          <span class="lab-readout-label">{t.terms}</span>
+          <span id="terms-value">K = 32</span>
+        </label>
+        <input
+          id="terms-slider"
+          class="lab-slider"
+          type="range"
+          min="1"
+          max="128"
+          value="32"
+        />
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createFourierMachine, PRESETS } from '../lib/lab/fourier';
+
+  const canvas = document.getElementById('fourier-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.lab-chip'));
+    const drawnChip = document.getElementById('drawn-chip') as HTMLButtonElement;
+    const slider = document.getElementById('terms-slider') as HTMLInputElement;
+    const termsValue = document.getElementById('terms-value');
+
+    const activate = (chip: HTMLButtonElement) => {
+      chips.forEach((c) => c.classList.toggle('active', c === chip));
+    };
+
+    const machine = createFourierMachine(canvas, () => {
+      // A hand-drawn shape replaces the current one.
+      drawnChip.disabled = false;
+      activate(drawnChip);
+    });
+    machine.setPreset('star');
+
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const preset = chip.dataset.preset;
+        if (preset && preset in PRESETS) {
+          machine.setPreset(preset as keyof typeof PRESETS);
+          activate(chip);
+        }
+      });
+    });
+
+    slider.addEventListener('input', () => {
+      machine.setTerms(Number(slider.value));
+      if (termsValue) termsValue.textContent = `K = ${slider.value}`;
+    });
+  }
+</script>
+
+<style>
+  .fourier-canvas {
+    cursor: crosshair;
+  }
+</style>

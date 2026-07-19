@@ -11,6 +11,7 @@ const links = [
   { label: t('nav.about'), path: '/about' },
   { label: t('nav.downloads'), path: '/downloads' },
   { label: t('nav.ask'), path: '/ask' },
+  { label: t('nav.lab'), path: '/lab' },
 ];
 
 const otherLang: Lang = lang === 'ja' ? 'en' : 'ja';
@@ -30,7 +31,8 @@ const currentPath = Astro.url.pathname;
       <ul class="nav-list">
         {links.map((link) => {
           const href = getLocalizedPath(lang, link.path);
-          const isActive = currentPath === href || currentPath === href + '/';
+          const isActive =
+            currentPath === href || currentPath === href + '/' || currentPath.startsWith(href + '/');
           return (
             <li>
               <a href={href} class:list={['nav-item', isActive && 'nav-item-active']} aria-current={isActive ? 'page' : undefined}>

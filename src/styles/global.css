@@ -57,6 +57,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 8rem;
+  overflow-x: clip;
 }
 
 @media (min-width: 768px) {
@@ -74,6 +75,9 @@ body {
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Allow full-bleed 100vw sections (the lab gallery) without a horizontal
+     scrollbar from the scrollbar-width delta. Fixed header is unaffected. */
+  overflow-x: clip;
 }
 
 /* ——— Surface (flat card) ——— */
@@ -196,6 +200,170 @@ a {
   border-bottom: 1px dotted var(--line-strong);
   margin: 0 0.6em;
   transform: translateY(-0.35em);
+}
+
+/* ——— Lab (interactive artifact pages) ——— */
+
+.lab-stage {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  /* Depth backdrop: a soft emerald aurora + a whisper grid, showing through
+     the transparent canvases that most pieces render on. */
+  background:
+    radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
+    radial-gradient(90% 70% at 85% 115%, color-mix(in srgb, #d9b36c 9%, transparent), transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ink) 4%, transparent), transparent 40%);
+  overflow: hidden;
+}
+
+.lab-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(130% 100% at 50% 40%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(130% 100% at 50% 40%, #000 30%, transparent 78%);
+  opacity: 0.5;
+}
+
+.lab-canvas {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: clamp(340px, 62vw, 480px);
+  touch-action: none;
+}
+
+.lab-hint {
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+
+.lab-panel {
+  padding: 0.9rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lab-chip {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.lab-chip:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.lab-chip.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent),
+    0 0 16px -4px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.lab-chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.lab-chip sub {
+  font-size: 0.68em;
+}
+
+.lab-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1.5rem;
+}
+
+.lab-readout {
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-readout-label {
+  margin-right: 0.6em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.lab-back {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  transition: color 0.15s ease;
+}
+
+.lab-back:hover {
+  color: var(--accent);
+}
+
+.lab-slider {
+  width: 100%;
+  max-width: 260px;
+  accent-color: var(--accent);
+}
+
+/* Governing equation, set like a display formula in a paper */
+.lab-formula {
+  position: relative;
+  margin-top: 1.4rem;
+  padding: 0.8rem 1.2rem;
+  border-left: 2px solid transparent;
+  border-image: linear-gradient(180deg, var(--accent), color-mix(in srgb, #d9b36c 70%, var(--accent))) 1;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%);
+  border-radius: 0 8px 8px 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-secondary);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.lab-formula i {
+  font-style: italic;
+}
+
+/* Living preview on the lab index tiles (framed by .lab-thumb-frame) */
+.lab-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
 }
 
 /* ——— Details ——— */

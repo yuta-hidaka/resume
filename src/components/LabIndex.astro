@@ -1,0 +1,383 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    label: 'Lab',
+    title: 'ラボ',
+    intro:
+      '仕事とは関係のない、趣味の小さなインタラクティブ作品置き場。物理や数学の「教科書で読むだけだったもの」を、ブラウザの中で動かして遊べるようにしています。',
+    entries: [
+      {
+        no: '01',
+        key: 'hydrogen',
+        tag: 'Quantum Mechanics',
+        title: '水素原子の電子雲',
+        desc: 'シュレディンガー方程式の解 |ψ|² から 26,000 点をサンプリングした電子の確率分布。観測回数 N が増えるほど雲が形になる。',
+        path: '/lab/hydrogen',
+      },
+      {
+        no: '02',
+        key: 'fourier',
+        tag: 'Signal Processing',
+        title: 'フーリエ変換の描画機械',
+        desc: '閉じた図形を回転する円の連なりに分解する。円の数を絞って「圧縮」の意味を体感する。手描き入力対応。',
+        path: '/lab/fourier',
+      },
+      {
+        no: '03',
+        key: 'entropy',
+        tag: 'Statistical Mechanics',
+        title: 'エントロピーと混合',
+        desc: '2,600 粒子の気体の壁を外し、混合エントロピーが 1 へ向かうのをライブで見る。第二法則は数え上げの帰結。',
+        path: '/lab/entropy',
+      },
+      {
+        no: '04',
+        key: 'ising',
+        tag: 'Magnetism',
+        title: 'スピンと磁石の相転移',
+        desc: '2D イジング模型。温度が Tc をまたぐ瞬間に無秩序が自発磁化へ変わる。外部磁場でスピンを傾けられる。',
+        path: '/lab/ising',
+      },
+      {
+        no: '05',
+        key: 'polarizer',
+        tag: 'Optics',
+        title: '偏光サングラスの物理',
+        desc: 'ヨウ素の鎖が光の向きを選ぶ。マルスの法則と、直交2枚の間に45°を挟むと光が復活するパラドックス。',
+        path: '/lab/polarizer',
+      },
+      {
+        no: '06',
+        key: 'molecules',
+        tag: 'Molecular Dynamics',
+        title: '分子の熱振動と三態',
+        desc: '水分子 70 個の分子動力学。温度を上げ下げして氷・水・水蒸気を往復する。分子内振動も温度で変わる。',
+        path: '/lab/molecules',
+      },
+      {
+        no: '07',
+        key: 'millikan',
+        tag: 'Experiment',
+        title: 'ミリカンの油滴実験',
+        desc: '電圧で油滴を静止させて電荷を記録。繰り返すほど測定値が e の整数倍に集まる — 電荷の量子化の追体験。',
+        path: '/lab/millikan',
+      },
+      {
+        no: '08',
+        key: 'tunnel',
+        tag: 'Quantum Mechanics',
+        title: 'トンネル効果',
+        desc: 'シュレディンガー方程式を数値的に解く。エネルギーより高い壁に波束が衝突し、透過率 T が目の前で積み上がる。',
+        path: '/lab/tunnel',
+      },
+      {
+        no: '09',
+        key: 'kinetics',
+        tag: 'Chemical Kinetics',
+        title: '速度論支配と熱力学支配',
+        desc: '低い山の浅い谷 B と、高い山の深い谷 C。低温では速さが、高温では安定さが勝負を決める。',
+        path: '/lab/kinetics',
+      },
+      {
+        no: '10',
+        key: 'well',
+        tag: 'Quantum Mechanics',
+        title: '井戸型ポテンシャル',
+        desc: '箱に閉じ込めた粒子。定在波しか許されず、エネルギーは飛び飛びに。ゼロ点エネルギーと 1/L² 則も。',
+        path: '/lab/well',
+      },
+      {
+        no: '11',
+        key: 'chirality',
+        tag: 'Biochemistry',
+        title: '光学異性体と、薬が効く理由',
+        desc: '鏡像体の片方だけが受容体にはまり薬になる。3点相互作用モデルとサリドマイドの悲劇。',
+        path: '/lab/chirality',
+      },
+      {
+        no: '12',
+        key: 'polymer',
+        tag: 'Polymer Chemistry',
+        title: 'ポリプロピレンの重合',
+        desc: 'プロピレンが次々つながる付加重合。メチル基の並び（立体規則性）が硬いプラにも柔いゴムにもする。',
+        path: '/lab/polymer',
+      },
+      {
+        no: '13',
+        key: 'fusion',
+        tag: 'Nuclear Physics',
+        title: '核融合とクーロン障壁',
+        desc: '水素がヘリウムに融合し 17.6 MeV を放出。クーロン障壁をトンネル効果で越える、星が輝く仕組み。E=mc²。',
+        path: '/lab/fusion',
+      },
+      {
+        no: '14',
+        key: 'fission',
+        tag: 'Nuclear Physics',
+        title: '核分裂の連鎖反応',
+        desc: 'ウラン235・プルトニウム239が中性子で割れ 約200 MeV を放出。増倍率 k が未臨界・臨界・超臨界を分ける。',
+        path: '/lab/fission',
+      },
+    ],
+  },
+  en: {
+    label: 'Lab',
+    title: 'Lab',
+    intro:
+      'A shelf of small interactive pieces, made for fun and unrelated to work. Things from physics and mathematics that usually stay on the textbook page, brought to life in the browser.',
+    entries: [
+      {
+        no: '01',
+        key: 'hydrogen',
+        tag: 'Quantum Mechanics',
+        title: 'Hydrogen Electron Clouds',
+        desc: '26,000 samples of |ψ|², the solutions of the Schrödinger equation. Watch the cloud take shape as the measurement count N grows.',
+        path: '/lab/hydrogen',
+      },
+      {
+        no: '02',
+        key: 'fourier',
+        tag: 'Signal Processing',
+        title: 'Fourier Drawing Machine',
+        desc: 'Decompose a closed shape into a chain of rotating circles. Throttle the circle count to feel what compression means. Draw your own.',
+        path: '/lab/fourier',
+      },
+      {
+        no: '03',
+        key: 'entropy',
+        tag: 'Statistical Mechanics',
+        title: 'Entropy & Mixing',
+        desc: 'Remove the wall between 2,600 gas particles and watch the mixing entropy climb to 1, live. The second law as counting.',
+        path: '/lab/entropy',
+      },
+      {
+        no: '04',
+        key: 'ising',
+        tag: 'Magnetism',
+        title: 'Spins & the Magnetic Phase Transition',
+        desc: 'The 2D Ising model: disorder snaps into spontaneous magnetization as T crosses Tc. Tilt the spins with an external field.',
+        path: '/lab/ising',
+      },
+      {
+        no: '05',
+        key: 'polarizer',
+        tag: 'Optics',
+        title: 'The Physics of Polarized Sunglasses',
+        desc: 'Iodine chains that choose a direction of light. Malus’s law, plus the paradox of the 45° filter reviving crossed polarizers.',
+        path: '/lab/polarizer',
+      },
+      {
+        no: '06',
+        key: 'molecules',
+        tag: 'Molecular Dynamics',
+        title: 'Thermal Motion & the States of Matter',
+        desc: 'Molecular dynamics of 70 water molecules. Sweep the temperature between ice, water and steam; watch bond vibrations grow.',
+        path: '/lab/molecules',
+      },
+      {
+        no: '07',
+        key: 'millikan',
+        tag: 'Experiment',
+        title: "Millikan's Oil-Drop Experiment",
+        desc: 'Balance a droplet with voltage and record its charge. Repeat, and the measurements pile up at integer multiples of e.',
+        path: '/lab/millikan',
+      },
+      {
+        no: '08',
+        key: 'tunnel',
+        tag: 'Quantum Mechanics',
+        title: 'Quantum Tunneling',
+        desc: 'The Schrödinger equation solved numerically: a wave packet meets a wall above its energy, and T accumulates before your eyes.',
+        path: '/lab/tunnel',
+      },
+      {
+        no: '09',
+        key: 'kinetics',
+        tag: 'Chemical Kinetics',
+        title: 'Kinetic vs Thermodynamic Control',
+        desc: 'A shallow well behind a low barrier vs a deep well behind a high one. Cold, speed wins; hot, stability wins.',
+        path: '/lab/kinetics',
+      },
+      {
+        no: '10',
+        key: 'well',
+        tag: 'Quantum Mechanics',
+        title: 'The Square Well',
+        desc: 'A particle trapped in a box: only standing waves allowed, energy in discrete rungs. Zero-point energy and the 1/L² law.',
+        path: '/lab/well',
+      },
+      {
+        no: '11',
+        key: 'chirality',
+        tag: 'Biochemistry',
+        title: 'Chirality: Why a Drug Works',
+        desc: 'Only one mirror-image form fits the receptor and acts. The three-point model and the thalidomide tragedy.',
+        path: '/lab/chirality',
+      },
+      {
+        no: '12',
+        key: 'polymer',
+        tag: 'Polymer Chemistry',
+        title: 'Polymerizing Polypropylene',
+        desc: 'Propylene chains up by addition; the arrangement of methyl groups turns it into a hard plastic or a soft gum.',
+        path: '/lab/polymer',
+      },
+      {
+        no: '13',
+        key: 'fusion',
+        tag: 'Nuclear Physics',
+        title: 'Nuclear Fusion & the Coulomb Barrier',
+        desc: 'Hydrogen fuses to helium, releasing 17.6 MeV by tunneling through the Coulomb barrier — how stars shine. E=mc².',
+        path: '/lab/fusion',
+      },
+      {
+        no: '14',
+        key: 'fission',
+        tag: 'Nuclear Physics',
+        title: 'The Fission Chain Reaction',
+        desc: 'U-235 and Pu-239 split under neutrons for ~200 MeV; the multiplication factor k sets subcritical vs supercritical.',
+        path: '/lab/fission',
+      },
+    ],
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <p class="section-label">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <div class="lab-grid mt-10">
+    {t.entries.map((e) => (
+      <a href={getLocalizedPath(lang, e.path)} class="glass lab-card">
+        <div class="lab-thumb-frame">
+          <canvas class="lab-thumb" data-thumb={e.key} aria-hidden="true"></canvas>
+        </div>
+        <div class="lab-card-body">
+          <div class="lab-card-head">
+            <span class="lab-card-no tnum">{e.no}</span>
+            <span class="lab-card-tag">{e.tag}</span>
+          </div>
+          <h2 class="lab-card-title font-display">{e.title}</h2>
+          <p class="lab-card-desc">{e.desc}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { initThumbs } from '../lib/lab/thumbs';
+  initThumbs();
+</script>
+
+<style>
+  /* Full-bleed gallery: the grid breaks out of the centered text column to
+     span the whole viewport, on desktop and mobile alike. */
+  .lab-grid {
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: clamp(14px, 3vw, 44px);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(48%, 250px), 1fr));
+    gap: clamp(10px, 1.4vw, 18px);
+  }
+
+  /* Instagram-style tile: big visual on top, compact caption below. */
+  .lab-card {
+    display: block;
+    overflow: hidden;
+    transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .lab-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px -14px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  /* Thumbnail frame carries the aurora/grid backdrop so the living preview
+     sits on the same depth as the full pieces. */
+  .lab-thumb-frame {
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    background:
+      radial-gradient(120% 100% at 50% -10%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 62%),
+      radial-gradient(90% 80% at 85% 120%, color-mix(in srgb, #d9b36c 10%, transparent), transparent 58%);
+  }
+
+  .lab-thumb-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 0%, transparent), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .lab-card:hover .lab-thumb-frame::after {
+    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent 55%);
+    opacity: 1;
+  }
+
+  .lab-card-body {
+    padding: 0.9rem 1.1rem 1.05rem;
+  }
+
+  .lab-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+
+  .lab-card-no {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  .lab-card-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .lab-card-title {
+    margin-top: 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+
+  .lab-card:hover .lab-card-title {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.35em;
+    text-decoration-color: var(--accent);
+  }
+
+  .lab-card-desc {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--ink-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
