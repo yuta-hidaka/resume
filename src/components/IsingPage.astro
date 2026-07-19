@@ -1,0 +1,148 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 04 — Magnetism',
+    title: 'スピンと磁石の相転移',
+    intro:
+      '各マスはミクロな磁石（スピン、↑=緑 / ↓=金）。隣同士は向きが揃うとエネルギーが下がり、熱がそれを乱します — 2D イジング模型です。温度を臨界温度 Tc ≈ 2.27 より下げると、無秩序だった格子が突然どちらかの向きに揃う「自発磁化」が起こります。鉄が磁石になれるのはこの相転移のおかげ。外部磁場 H をかけると好きな向きに傾けられます。',
+    hint: '温度を Tc の下まで下げて、ドメインが育つのを見る',
+    temp: '温度',
+    fieldLabel: '外部磁場',
+    magnet: '磁化',
+    randomize: 'ランダム化',
+    note: '磁化 M(t) のグラフは −1（全部↓）から +1（全部↑）。Tc 直下では緑と金の島（磁区・ドメイン）がせめぎ合いながらゆっくり粗大化していきます — 本物の磁石の中でも同じことが起きています。H = 0 のとき、どちらの向きに揃うかは完全に偶然です（自発的対称性の破れ）。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 04 — Magnetism',
+    title: 'Spins & the Magnetic Phase Transition',
+    intro:
+      'Each cell is a microscopic magnet (a spin, ↑ = green / ↓ = gold). Neighbours lower their energy by aligning; heat scrambles them — the 2D Ising model. Cool below the critical temperature Tc ≈ 2.27 and the disordered lattice suddenly locks into one orientation: spontaneous magnetization, the reason iron can be a magnet at all. An external field H tilts the balance either way.',
+    hint: 'Drop the temperature below Tc and watch domains grow',
+    temp: 'Temperature',
+    fieldLabel: 'External field',
+    magnet: 'Magnetization',
+    randomize: 'Randomize',
+    note: 'The chart tracks M(t) from −1 (all ↓) to +1 (all ↑). Just below Tc, green and gold islands — magnetic domains — wrestle and slowly coarsen, exactly as inside a real magnet. At H = 0, which orientation wins is pure chance: spontaneous symmetry breaking.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Ising Hamiltonian">
+    <i>E</i> = −<i>J</i> Σ<sub>⟨<i>ij</i>⟩</sub> <i>s<sub>i</sub>s<sub>j</sub></i> − <i>H</i> Σ<sub><i>i</i></sub> <i>s<sub>i</sub></i>
+    &ensp;,&ensp;
+    <i>P</i>(flip) = min(1, e<sup>−Δ<i>E</i>/<i>T</i></sup>)
+    &ensp;,&ensp;
+    <i>T<sub>c</sub></i> = 2/ln(1+√2) ≈ 2.269
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="ising-stage" class="lab-canvas ising-stage" aria-label={t.title}></canvas>
+      <p class="lab-hint ising-hint">{t.hint}</p>
+    </div>
+    <div class="ising-chart-wrap">
+      <canvas id="ising-chart" aria-label="M(t)"></canvas>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="ising-temp">
+          <span class="lab-readout-label">{t.temp}</span>
+          <span id="ising-temp-value">T = 3.50</span>
+        </label>
+        <input id="ising-temp" class="lab-slider" type="range" min="0.5" max="5" step="0.01" value="3.5" />
+      </div>
+      <div class="lab-meta">
+        <label class="lab-readout" for="ising-field">
+          <span class="lab-readout-label">{t.fieldLabel}</span>
+          <span id="ising-field-value">H = 0.00</span>
+        </label>
+        <input id="ising-field" class="lab-slider" type="range" min="-1" max="1" step="0.01" value="0" />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="ising-randomize">{t.randomize}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.magnet}</span>
+          <span id="ising-m-value">M = 0.00</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createIsingSim, T_CRITICAL } from '../lib/lab/ising';
+
+  const stage = document.getElementById('ising-stage') as HTMLCanvasElement | null;
+  const chart = document.getElementById('ising-chart') as HTMLCanvasElement | null;
+  if (stage && chart) {
+    const tempSlider = document.getElementById('ising-temp') as HTMLInputElement;
+    const fieldSlider = document.getElementById('ising-field') as HTMLInputElement;
+    const tempValue = document.getElementById('ising-temp-value');
+    const fieldValue = document.getElementById('ising-field-value');
+    const mValue = document.getElementById('ising-m-value');
+
+    const sim = createIsingSim(stage, chart, (m) => {
+      if (mValue) mValue.textContent = `M = ${m >= 0 ? '+' : '−'}${Math.abs(m).toFixed(2)}`;
+    });
+
+    const showTemp = () => {
+      const T = Number(tempSlider.value);
+      sim.setTemperature(T);
+      if (tempValue) {
+        const side = T > T_CRITICAL ? '>' : '<';
+        tempValue.textContent = `T = ${T.toFixed(2)} ${side} Tc`;
+      }
+    };
+    const showField = () => {
+      const H = Number(fieldSlider.value);
+      sim.setField(H);
+      if (fieldValue) fieldValue.textContent = `H = ${H >= 0 ? '+' : '−'}${Math.abs(H).toFixed(2)}`;
+    };
+    tempSlider.addEventListener('input', showTemp);
+    fieldSlider.addEventListener('input', showField);
+    document.getElementById('ising-randomize')?.addEventListener('click', () => sim.randomize());
+    showTemp();
+    showField();
+  }
+</script>
+
+<style>
+  .ising-stage {
+    height: clamp(300px, 52vw, 420px);
+  }
+
+  /* The lattice fills the canvas edge-to-edge; keep the hint legible on it. */
+  .ising-hint {
+    mix-blend-mode: difference;
+    color: #9a9a9a;
+  }
+
+  .ising-chart-wrap {
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 1.1rem 0.4rem;
+  }
+
+  #ising-chart {
+    display: block;
+    width: 100%;
+    height: 84px;
+  }
+</style>

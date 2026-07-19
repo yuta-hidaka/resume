@@ -1,0 +1,224 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+// Mirrors the isotope constants in ../lib/lab/fission.ts (ISOTOPES). Kept as
+// plain literals here — that module pulls in canvas/DOM code at import time
+// via ./viz, which is only safe inside the client <script>, not this
+// server-rendered frontmatter.
+const isotopeInfo = {
+  ja: {
+    u235: 'ν̄ = 2.43 ・ E = 200 MeV/分裂 ・ 臨界質量 ≈ 52 kg',
+    pu239: 'ν̄ = 2.88 ・ E = 207 MeV/分裂 ・ 臨界質量 ≈ 10 kg',
+  },
+  en: {
+    u235: 'ν̄ = 2.43 · E = 200 MeV/fission · critical mass ≈ 52 kg',
+    pu239: 'ν̄ = 2.88 · E = 207 MeV/fission · critical mass ≈ 10 kg',
+  },
+} as const;
+const K_MIN = 0.6;
+const K_MAX = 1.5;
+const DEFAULT_K = 1.0;
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 14 — Nuclear Physics',
+    title: '核分裂の連鎖反応',
+    intro:
+      '重い原子核(²³⁵U や ²³⁹Pu)に中性子が飛び込むと核分裂が起こります——核は2つの破片に割れ、中性子を数個放出しながら莫大なエネルギーを出します。例:²³⁵U + n → ¹⁴¹Ba + ⁹²Kr + 3n + 約200 MeV。放出された中性子が次の核を叩けばまた分裂が起こる——これが連鎖反応です。1回の分裂が平均何回の次の分裂を引き起こすかを表すのが実効増倍率 k。k<1 なら反応は減衰して止まり(未臨界)、k=1 なら中性子数は一定に保たれ(臨界、原子炉の状態)、k>1 なら指数関数的に増え続けます(超臨界、核爆発の領域)。中性子を発射し、k を動かしながら箱の中の連鎖反応を見てください。',
+    hint: 'k を1より上げると、中性子が指数関数的に増えていく',
+    isotopeLabel: '核種',
+    kLabel: '実効増倍率 k',
+    regimeLabel: '状態',
+    subcritical: '未臨界',
+    critical: '臨界',
+    supercritical: '超臨界',
+    fire: '中性子を発射',
+    reset: 'リセット',
+    energy: '放出エネルギー',
+    fissions: '分裂数',
+    neutrons: '中性子数',
+    note:
+      '連鎖反応の運命は k だけで決まります。k<1(未臨界)では自然に減衰して止まり、k=1(臨界)では中性子数が一定に保たれます——原子炉の定常運転状態です。k>1(超臨界)では世代ごとに k 倍で指数関数的に増え続けます。臨界質量(裸の球体)はおよそ ²³⁵U で52 kg、²³⁹Pu で10 kg——中性子反射材で包めばもっと少なくて済みます。²³⁸U は分裂しにくい「親物質」で、中性子を吸収してもほとんどは分裂せず ²³⁹Pu へ変わるだけ——天然ウランの濃縮が必要な理由です。中性子の大部分は分裂と同時(即発)に出ますが、約0.65%は数秒〜数十秒遅れて出ます(遅発中性子)。この遅れのおかげで原子炉は制御棒でゆっくり調整でき、暴走しにくくなっています。エネルギーの正体は質量欠損——核の質量が分裂前後で約0.1%軽くなり、その差が E=mc² として放出されます。1回の分裂で約200 MeV(≈3.2×10⁻¹¹ J)、²³⁵U 1 g がすべて分裂すると約8×10¹⁰ J——石炭2.5トン分の熱量、TNT換算で約17トン分に相当します。広島に落とされたのはウラン砲身型、長崎はプルトニウム爆縮型——同じ物理が、制御されれば世界の原子力発電を支えています。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 14 — Nuclear Physics',
+    title: 'The Fission Chain Reaction',
+    intro:
+      'A neutron striking a heavy nucleus (²³⁵U or ²³⁹Pu) can trigger fission: the nucleus splits into two fragments, spits out a few fresh neutrons, and releases an enormous amount of energy — e.g. ²³⁵U + n → ¹⁴¹Ba + ⁹²Kr + 3n + ~200 MeV. If those neutrons strike more nuclei, more fissions follow: a chain reaction. The effective multiplication factor k counts how many next-generation fissions each fission causes on average. k<1 and the population decays away (subcritical); k=1 and it holds steady (critical — a reactor); k>1 and it grows exponentially (supercritical — a bomb). Fire a neutron, tune k, and watch the chain reaction play out inside the box.',
+    hint: 'Push k above 1 and the neutron count runs away exponentially',
+    isotopeLabel: 'Isotope',
+    kLabel: 'Multiplication factor k',
+    regimeLabel: 'Regime',
+    subcritical: 'Subcritical',
+    critical: 'Critical',
+    supercritical: 'Supercritical',
+    fire: 'Fire a neutron',
+    reset: 'Reset',
+    energy: 'Energy released',
+    fissions: 'Fissions',
+    neutrons: 'Neutrons',
+    note:
+      "The chain reaction’s fate comes down to k alone. Below k=1 (subcritical) it decays away on its own; at k=1 (critical) the neutron population holds steady â the normal running state of a nuclear reactor. Above k=1 (supercritical) the population multiplies by k every generation, growing exponentially. The critical mass (bare sphere) is roughly 52 kg for Â²Â³âµU and 10 kg for Â²Â³â¹Pu â a neutron reflector shaves both down further. Â²Â³â¸U is âfertile,â not fissile: it mostly just captures neutrons instead of splitting, transmuting toward Â²Â³â¹Pu â which is why natural uranium has to be enriched. Most neutrons appear instantly at the moment of fission (prompt), but about 0.65% are delayed by seconds to tens of seconds (delayed neutrons) â that lag is exactly what lets a reactor be steered with slow-moving control rods instead of running away. The energy itself comes from a mass defect: the fragments weigh about 0.1% less than the original nucleus, and that missing mass reappears as energy via E=mcÂ². One fission releases about 200 MeV (â3.2Ã10â»Â¹Â¹ J); fully fissioning 1 g of Â²Â³âµU releases about 8Ã10Â¹â° J â the heat of roughly 2.5 tonnes of coal, or about 17 tonnes of TNT. Hiroshima used a uranium gun-type weapon; Nagasaki used a plutonium implosion device. The very same physics, tamed, is what powers nuclear plants today.",
+  },
+} as const;
+const t = copy[lang];
+const info = isotopeInfo[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Chain reaction multiplication factor">
+    <i>k</i> = ν̄·<i>P</i>(fission | <i>n</i>)
+    &ensp;,&ensp;
+    <i>N</i>(<i>g</i>) = <i>N</i>₀<i>k<sup>g</sup></i>
+    &ensp;,&ensp;
+    <i>E</i> ≈ 200 MeV / fission
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="fission-stage" class="lab-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+    <div class="fission-chart-wrap">
+      <canvas id="fission-chart" aria-label="Neutron population over time"></canvas>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-chips" role="group" aria-label={t.isotopeLabel}>
+        <button type="button" class="lab-chip active" data-isotope="u235">²³⁵U</button>
+        <button type="button" class="lab-chip" data-isotope="pu239">²³⁹Pu</button>
+      </div>
+      <p class="lab-readout">
+        <span id="fission-isotope-info" data-u235={info.u235} data-pu239={info.pu239}>{info.u235}</span>
+      </p>
+
+      <div class="lab-meta">
+        <label class="lab-readout" for="fission-k">
+          <span class="lab-readout-label">{t.kLabel}</span>
+          <span id="fission-k-value">k = {DEFAULT_K.toFixed(2)}</span>
+        </label>
+        <input
+          id="fission-k"
+          class="lab-slider"
+          type="range"
+          min={K_MIN}
+          max={K_MAX}
+          step="0.05"
+          value={DEFAULT_K}
+        />
+      </div>
+
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="fission-fire">{t.fire}</button>
+          <button type="button" class="lab-chip" id="fission-reset">{t.reset}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.regimeLabel}</span>
+          <span id="fission-regime" data-subcritical={t.subcritical} data-critical={t.critical} data-supercritical={t.supercritical}>{t.critical}</span>
+        </p>
+      </div>
+
+      <div class="lab-meta">
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.energy}</span>
+          <span id="fission-energy-value">0 MeV</span>
+        </p>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.fissions}</span>
+          <span id="fission-fission-value">0</span>
+          <span class="lab-readout-label" style="margin-left:1.1em">{t.neutrons}</span>
+          <span id="fission-neutron-value">0</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createFissionScene, type IsotopeKey, type FissionSnapshot, type Regime } from '../lib/lab/fission';
+
+  const stage = document.getElementById('fission-stage') as HTMLCanvasElement | null;
+  const chart = document.getElementById('fission-chart') as HTMLCanvasElement | null;
+  if (stage && chart) {
+    const kSlider = document.getElementById('fission-k') as HTMLInputElement;
+    const kValue = document.getElementById('fission-k-value');
+    const regimeEl = document.getElementById('fission-regime') as HTMLElement | null;
+    const infoEl = document.getElementById('fission-isotope-info') as HTMLElement | null;
+    const energyValue = document.getElementById('fission-energy-value');
+    const fissionValue = document.getElementById('fission-fission-value');
+    const neutronValue = document.getElementById('fission-neutron-value');
+
+    const REGIME_COLOR: Record<Regime, string> = {
+      subcritical: 'var(--ink-muted)',
+      critical: 'var(--accent)',
+      supercritical: '#d9b36c',
+    };
+
+    const fmtEnergy = (mev: number, joules: number) =>
+      mev < 1000 ? `${mev.toFixed(0)} MeV` : `${mev.toExponential(2)} MeV (${joules.toExponential(2)} J)`;
+
+    const scene = createFissionScene(
+      stage,
+      chart,
+      { isotope: 'u235', k: Number(kSlider.value) },
+      (snap: FissionSnapshot) => {
+        if (energyValue) energyValue.textContent = fmtEnergy(snap.energyMeV, snap.energyJoules);
+        if (fissionValue) fissionValue.textContent = `${snap.fissionCount}`;
+        if (neutronValue) neutronValue.textContent = `${snap.neutronCount}`;
+        if (regimeEl) {
+          const text = regimeEl.dataset[snap.regime];
+          if (text) regimeEl.textContent = text;
+          regimeEl.style.color = REGIME_COLOR[snap.regime];
+        }
+      },
+    );
+
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-isotope]'));
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.classList.toggle('active', c === chip));
+        const key = (chip.dataset.isotope === 'pu239' ? 'pu239' : 'u235') as IsotopeKey;
+        scene.setIsotope(key);
+        if (infoEl) infoEl.textContent = infoEl.dataset[key] ?? '';
+      });
+    });
+
+    kSlider.addEventListener('input', () => {
+      const k = Number(kSlider.value);
+      scene.setK(k);
+      if (kValue) kValue.textContent = `k = ${k.toFixed(2)}`;
+    });
+
+    document.getElementById('fission-fire')?.addEventListener('click', () => scene.fire());
+    document.getElementById('fission-reset')?.addEventListener('click', () => scene.reset());
+  }
+</script>
+
+<style>
+  #fission-stage {
+    height: clamp(300px, 52vw, 420px);
+  }
+
+  .fission-chart-wrap {
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 1.1rem 0.4rem;
+  }
+
+  #fission-chart {
+    display: block;
+    width: 100%;
+    height: 84px;
+  }
+</style>

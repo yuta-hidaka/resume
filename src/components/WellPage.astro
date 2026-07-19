@@ -1,0 +1,134 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 10 — Quantum Mechanics',
+    title: '井戸型ポテンシャル（箱の中の粒子）',
+    intro:
+      'シュレディンガー方程式で最初に解く定番が、これ — 幅 L の「箱」に閉じ込められた粒子です。壁の間にぴったり収まる定在波だけが許されるので、波動関数は ψ_n(x) = √(2/L)·sin(nπx/L)、エネルギーは E_n = n²π²ℏ²/2mL² と飛び飛び（量子化）になります。ギターの弦が特定の倍音しか鳴らせないのと同じ理屈で、電子のエネルギーが連続でなく段々になる理由がここにあります。',
+    hint: '準位を選び、箱の幅を変える。狭くするほど全準位が 1/L² で跳ね上がる',
+    level: '準位 n',
+    width: '箱の幅 L',
+    energy: 'エネルギー',
+    mode: '表示',
+    modePsi: '波動関数 ψ',
+    modeProb: '確率密度 |ψ|²',
+    note: '3つの発見がここに詰まっています。① エネルギーが飛び飛び（量子化）— 準位の間の値は取れない。② 最低準位 E₁ でもゼロにならない（ゼロ点エネルギー）— 不確定性原理から、閉じ込められた粒子は完全に静止できない。③ 箱を狭めると全エネルギーが 1/L² で上昇 — 半導体量子ドットの色が粒径で変わるのはこのため。n が増えると波の節（腹の境目）が増えるのも見どころです。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 10 — Quantum Mechanics',
+    title: 'The Square Well (Particle in a Box)',
+    intro:
+      'This is the first problem every quantum course solves: a particle trapped in a box of width L. Only standing waves that fit exactly between the walls are allowed, so the wavefunction is ψ_n(x) = √(2/L)·sin(nπx/L) and the energy is quantized: E_n = n²π²ℏ²/2mL². Just as a guitar string sounds only its harmonics, this is why an electron’s energy comes in discrete rungs rather than a continuum.',
+    hint: 'Pick a level and change the box width — squeeze it and every level shoots up as 1/L²',
+    level: 'Level n',
+    width: 'Box width L',
+    energy: 'Energy',
+    mode: 'Show',
+    modePsi: 'Wavefunction ψ',
+    modeProb: 'Probability |ψ|²',
+    note: 'Three lessons live here. (1) Energy is quantized — no value between the rungs is allowed. (2) Even the ground state E₁ is nonzero (zero-point energy): by the uncertainty principle a confined particle can never be fully at rest. (3) Shrinking the box raises every energy as 1/L² — this is why the color of a semiconductor quantum dot depends on its size. Notice too that higher n means more nodes in the wave.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Infinite square well">
+    ψ<sub><i>n</i></sub>(<i>x</i>) = √(2/<i>L</i>) sin(<i>n</i>π<i>x</i>/<i>L</i>)
+    &ensp;,&ensp;
+    <i>E<sub>n</sub></i> = <i>n</i>²π²ℏ²/2<i>mL</i>²
+    &ensp;,&ensp;
+    <i>n</i> = 1, 2, 3, …
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="well-canvas" class="lab-canvas well-canvas" aria-label={t.title}></canvas>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="well-level">
+          <span class="lab-readout-label">{t.level}</span>
+          <span id="well-level-value">n = 1</span>
+        </label>
+        <input id="well-level" class="lab-slider" type="range" min="1" max="6" step="1" value="1" />
+      </div>
+      <div class="lab-meta">
+        <label class="lab-readout" for="well-width">
+          <span class="lab-readout-label">{t.width}</span>
+          <span id="well-width-value">L = 1.00</span>
+        </label>
+        <input id="well-width" class="lab-slider" type="range" min="0.6" max="1" step="0.01" value="1" />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips" role="group" aria-label={t.mode}>
+          <button type="button" class="lab-chip active" data-mode="psi">{t.modePsi}</button>
+          <button type="button" class="lab-chip" data-mode="prob">{t.modeProb}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.energy}</span>
+          <span id="well-energy-value">E₁ = 1.00</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createWellScene } from '../lib/lab/well';
+
+  const canvas = document.getElementById('well-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const scene = createWellScene(canvas);
+    const levelSlider = document.getElementById('well-level') as HTMLInputElement;
+    const widthSlider = document.getElementById('well-width') as HTMLInputElement;
+    const levelValue = document.getElementById('well-level-value');
+    const widthValue = document.getElementById('well-width-value');
+    const energyValue = document.getElementById('well-energy-value');
+    const modeChips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-mode]'));
+    const SUB = '₀₁₂₃₄₅₆';
+
+    const refresh = () => {
+      const n = Number(levelSlider.value);
+      if (levelValue) levelValue.textContent = `n = ${n}`;
+      if (widthValue) widthValue.textContent = `L = ${Number(widthSlider.value).toFixed(2)}`;
+      if (energyValue) energyValue.textContent = `E${SUB[n]} = ${scene.currentEnergy().toFixed(2)}`;
+    };
+
+    levelSlider.addEventListener('input', () => {
+      scene.setLevel(Number(levelSlider.value));
+      refresh();
+    });
+    widthSlider.addEventListener('input', () => {
+      scene.setWidth(Number(widthSlider.value));
+      refresh();
+    });
+    modeChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        modeChips.forEach((c) => c.classList.toggle('active', c === chip));
+        scene.setMode(chip.dataset.mode === 'prob' ? 'prob' : 'psi');
+      });
+    });
+    refresh();
+  }
+</script>
+
+<style>
+  .well-canvas {
+    height: clamp(320px, 56vw, 460px);
+  }
+</style>

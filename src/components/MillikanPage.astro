@@ -1,0 +1,165 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 07 — Experiment',
+    title: 'ミリカンの油滴実験',
+    intro:
+      '1909 年、ミリカンは帯電した油滴を平行板コンデンサの間に浮かべ、電気素量 e を測りました。ここでは油滴の電荷（e の何倍かは伏せてあります）と質量だけが決まっていて、あなたが電圧を調整して重力と電気力を釣り合わせます。静止したら「記録」— 何滴も繰り返すと、測った電荷が e の整数倍にだけ集まっていくのが見えてきます。電荷が連続量ではなく粒であることの、歴史的な発見の追体験です。',
+    hint: '油滴が緑になったら釣り合い。矢印キーで電圧の微調整ができる',
+    voltage: '電圧',
+    drift: '油滴の動き',
+    driftStates: { up: '↑ 上昇中', down: '↓ 落下中', hover: '静止（釣り合い）' },
+    newDrop: '新しい油滴',
+    record: '記録する',
+    count: '記録数',
+    note: '記録した電荷 q = mgd/V が 1e, 2e, 3e… の線上にだけ並ぶこと — それが「電荷の量子化」です。実際のミリカンの測定値は e = 1.59×10⁻¹⁹ C（空気の粘性係数の誤差でわずかにずれていた）。この功績で 1923 年にノーベル物理学賞を受けています。ここでは油滴の質量は既知としていますが、本物の実験では電場を切って終端速度から質量も測ります。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 07 — Experiment',
+    title: "Millikan's Oil-Drop Experiment",
+    intro:
+      'In 1909 Millikan suspended charged oil droplets between capacitor plates and measured the elementary charge e. Here the droplet has a hidden charge (some multiple of e) and a known mass — you tune the voltage until the electric force balances gravity. When it hovers, hit “record”. Repeat over many droplets and the measured charges pile up only at integer multiples of e: charge comes in lumps, and you get to rediscover it.',
+    hint: 'The droplet turns green when balanced. Arrow keys fine-tune the voltage',
+    voltage: 'Voltage',
+    drift: 'Droplet motion',
+    driftStates: { up: '↑ rising', down: '↓ falling', hover: 'hovering (balanced)' },
+    newDrop: 'New droplet',
+    record: 'Record',
+    count: 'Records',
+    note: 'The recorded charges q = mgd/V land only on the 1e, 2e, 3e… lines — that is charge quantization. Millikan measured e = 1.59×10⁻¹⁹ C (slightly off due to the then-known viscosity of air) and won the 1923 Nobel Prize. Here the droplet mass is given; in the real experiment it is deduced from the fall speed with the field off.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Force balance">
+    <i>qE</i> = <i>qV</i>/<i>d</i> = <i>mg</i>
+    &ensp;⇒&ensp;
+    <i>q</i> = <i>mgd</i>/<i>V</i>
+    &ensp;,&ensp;
+    <i>q</i> = <i>n</i>·<i>e</i>, <i>e</i> = 1.602×10⁻¹⁹ C
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="millikan-stage" class="lab-canvas millikan-stage" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+    <div class="millikan-chart-wrap">
+      <canvas id="millikan-chart" aria-label="q/e"></canvas>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="millikan-voltage">
+          <span class="lab-readout-label">{t.voltage}</span>
+          <span id="millikan-v-value">V = 0 V</span>
+        </label>
+        <input id="millikan-voltage" class="lab-slider" type="range" min="0" max="1600" step="1" value="0" />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="millikan-new">{t.newDrop}</button>
+          <button type="button" class="lab-chip" id="millikan-record" disabled>{t.record}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.drift}</span>
+          <span id="millikan-drift-value">{t.driftStates.down}</span>
+          <span class="lab-readout-label" style="margin-left:1.2em">{t.count}</span>
+          <span id="millikan-count-value">0</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p
+    class="mt-5 text-sm text-[var(--ink-muted)]"
+    id="millikan-note"
+    data-states={JSON.stringify(t.driftStates)}
+  >
+    {t.note}
+  </p>
+</section>
+
+<script>
+  import { createMillikanSim } from '../lib/lab/millikan';
+
+  const stage = document.getElementById('millikan-stage') as HTMLCanvasElement | null;
+  const chart = document.getElementById('millikan-chart') as HTMLCanvasElement | null;
+  if (stage && chart) {
+    const states = JSON.parse(
+      document.getElementById('millikan-note')?.dataset.states || '{}',
+    ) as Record<string, string>;
+    const slider = document.getElementById('millikan-voltage') as HTMLInputElement;
+    const vValue = document.getElementById('millikan-v-value');
+    const driftValue = document.getElementById('millikan-drift-value');
+    const countValue = document.getElementById('millikan-count-value');
+    const recordBtn = document.getElementById('millikan-record') as HTMLButtonElement;
+
+    const sim = createMillikanSim(stage, chart, (drift, balanced) => {
+      recordBtn.disabled = !balanced;
+      if (driftValue) {
+        driftValue.textContent = balanced ? states.hover : drift > 0 ? states.down : states.up;
+      }
+    });
+
+    slider.addEventListener('input', () => {
+      sim.setVoltage(Number(slider.value));
+      if (vValue) vValue.textContent = `V = ${slider.value} V`;
+    });
+    document.getElementById('millikan-new')?.addEventListener('click', () => sim.newDroplet());
+    recordBtn.addEventListener('click', () => {
+      if (sim.record() !== null && countValue) {
+        countValue.textContent = String(sim.records.length);
+      }
+    });
+  }
+</script>
+
+<style>
+  .millikan-stage {
+    height: clamp(280px, 46vw, 380px);
+  }
+
+  .millikan-chart-wrap {
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    padding: 0.55rem 1.1rem 0.45rem;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 3%, transparent), transparent 65%);
+  }
+
+  /* A delicate emerald→gold hairline echoing the balanced/unbalanced states,
+     marking this strip as the instrument's readout. */
+  .millikan-chart-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--accent) 35%, transparent) 20%,
+      color-mix(in srgb, #d9b36c 35%, transparent) 80%,
+      transparent
+    );
+    opacity: 0.7;
+  }
+
+  #millikan-chart {
+    display: block;
+    width: 100%;
+    height: 84px;
+  }
+</style>

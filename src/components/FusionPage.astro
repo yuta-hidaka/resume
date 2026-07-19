@@ -1,0 +1,195 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 13 — Nuclear Physics',
+    title: '核融合とクーロン障壁',
+    intro:
+      '2つの軽い原子核は、短距離で働く強い力が引き合わせてくれる前に、まずクーロン力で反発し合います — クーロン障壁 V(r) = 1.44·Z₁Z₂/r MeV。古典力学なら、核はこの障壁の頂上を超えるだけの運動エネルギーを持っていない限り融合できません。しかし量子力学では、トンネル効果のページとまったく同じ理屈で、ガモフ因子 P = exp(−√(E_G/E)) が、古典的には届かないはずのエネルギーでも一定の確率ですり抜けさせてくれます。反応を選び、温度（＝運動エネルギー）を上げてみてください — まれなトンネル成功が、やがて障壁を悠々と越える古典的な衝突に置き換わっていきます。',
+    hint: 'T を上げるとトンネル成功が増える。さらに上げると障壁を古典的に越える',
+    reaction: '反応',
+    temp: '温度',
+    energy: '放出エネルギー',
+    massdefect: '質量欠損',
+    barrier: '障壁 対 KE',
+    tunnel: 'トンネル確率',
+    count: '融合回数',
+    classical: '≈1（古典的に通過）',
+    note: 'D–T 融合はわずか 0.018884 u（陽子1個の質量の約2%）を、E = Δm·c² = Δm × 931.494 MeV/u によって 17.59 MeV に変えます。核子あたりの結合エネルギーは ⁵⁶Fe / ⁶²Ni 付近（約8.8 MeV/核子）でピークになり、軽い核はそのピークに向かって融合することで、重い核はそのピークに向かって分裂することでエネルギーを放出します — 核融合と核分裂は同じ1本の曲線を両端から読んでいるだけです。燃料は水（重水素）とリチウムから作れるほど豊富で、灰はヘリウムだけ（長寿命の放射性廃棄物が出ません）。難しいのはクーロン障壁と「閉じ込め」— ITER のようなトカマクは D–T 反応を約1億5000万ケルビンで狙っています。実験炉のプラズマはおよそ 10–20 keV（≈1–2×10⁸ K）ですが、太陽の中心はそれよりずっと「冷たい」1.3 keV（1.5×10⁷ K）しかなく、1個の陽子が p–p 反応を起こすまで平均で数十億年も待つことになります。トンネル確率だけならゼロではありませんが、最初の一歩 p + p → d + e⁺ + ν が弱い力を介するため、実際にはさらに桁違いに稀です。太陽も水素爆弾も、同じ反応をまったく違う速さで走らせているだけなのです。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 13 — Nuclear Physics',
+    title: 'Nuclear Fusion & the Coulomb Barrier',
+    intro:
+      "Two light nuclei repel each other electrostatically â the Coulomb barrier, V(r) = 1.44Â·ZâZâ/r MeV â long before the short-range strong force gets a chance to bind them into something heavier and lower-energy. Classically, colliding nuclei need kinetic energy above that barrier’s peak to fuse. Quantum mechanically, exactly as on the tunneling page, they don’t: the Gamow factor P = exp(ââ(E_G/E)) lets a fraction sneak through even when the classical kinetic energy sits well below the summit. Pick a reaction and turn up the temperature (= kinetic energy) â watch rare tunneling successes give way to a routine climb over the top.",
+    hint: 'Raise T — tunneling succeeds more often, then push past the barrier for a classical crossing',
+    reaction: 'Reaction',
+    temp: 'Temperature',
+    energy: 'Energy released',
+    massdefect: 'Mass defect',
+    barrier: 'Barrier vs KE',
+    tunnel: 'Tunneling probability',
+    count: 'Fusions',
+    classical: '≈1 (classical crossing)',
+    note: 'DâT fusion turns just 0.018884 u of mass â about 2% of a proton â into 17.59 MeV via E = ÎmÂ·cÂ² = Îm Ã 931.494 MeV/u. Binding energy per nucleon peaks near âµâ¶Fe / â¶Â²Ni (~8.8 MeV/nucleon): light nuclei release energy by fusing toward that peak, heavy nuclei by fissioning toward it â fusion and fission are the same curve, read from opposite ends. The fuel (hydrogen isotopes, bred from lithium) is abundant and the ash is just helium â no long-lived radioactive waste. What makes fusion hard is the Coulomb barrier and confinement: tokamaks like ITER target DâT around 150 million kelvin. Reactor plasmas run at roughly 10â20 keV (â1â2Ã10â¸ K); the Sun’s core is a comparatively cool 1.3 keV (1.5Ã10â· K), so a given proton there waits billions of years, on average, for its pâp turn. Barrier tunneling alone would not make it that rare â the actual bottleneck is that the first step, p + p â d + eâº + Î½, also needs the weak force, making it rarer still. The Sun and a hydrogen bomb run on the very same reaction, just at wildly different rates.',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Mass-energy equivalence, Coulomb barrier, Gamow factor">
+    <i>E</i> = Δ<i>m</i>·<i>c</i>² = Δ<i>m</i> × 931.494 MeV/u
+    &ensp;,&ensp;
+    <i>V</i>(<i>r</i>) = 1.44·<i>Z</i>₁<i>Z</i>₂/<i>r</i> MeV
+    &ensp;,&ensp;
+    <i>P</i> = exp(−√(<i>E</i><sub>G</sub>/<i>E</i>))
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="fusion-canvas" class="lab-canvas fusion-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <div class="lab-chips" id="fusion-reaction-chips" role="group" aria-label={t.reaction}>
+          <button type="button" class="lab-chip active" data-reaction="dt">²H + ³H</button>
+          <button type="button" class="lab-chip" data-reaction="dd">²H + ²H</button>
+          <button type="button" class="lab-chip" data-reaction="pp">4 ¹H</button>
+        </div>
+      </div>
+
+      <div class="lab-meta">
+        <label class="lab-readout" for="fusion-temp">
+          <span class="lab-readout-label">{t.temp}</span>
+          <span id="fusion-temp-value">T = 15.0 keV ≈ 1.74×10⁸ K</span>
+        </label>
+        <input id="fusion-temp" class="lab-slider" type="range" min="0" max="1000" step="1" value="413" />
+      </div>
+
+      <div class="lab-meta">
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.energy}</span>
+          <span id="fusion-energy-value">Q = 17.59 MeV → ⁴He + n</span>
+        </p>
+      </div>
+      <div class="lab-meta">
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.massdefect}</span>
+          <span id="fusion-massdefect-value">Δm = 0.018884 u × 931.494 MeV/u</span>
+        </p>
+      </div>
+      <div class="lab-meta">
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.barrier}</span>
+          <span id="fusion-barrier-value">V₀ = 0.44 MeV · KE = 0.0150 MeV</span>
+        </p>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.tunnel}</span>
+          <span id="fusion-tunnel-value" data-classical={t.classical}>P ≈ 1.38×10⁻⁴</span>
+        </p>
+      </div>
+      <div class="lab-meta">
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.count}</span>
+          <span id="fusion-count-value">0</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createFusionScene, REACTIONS, formatScientific, keVToKelvin, MEV_PER_U } from '../lib/lab/fusion';
+  import type { ReactionKey } from '../lib/lab/fusion';
+
+  const canvas = document.getElementById('fusion-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const chips = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('#fusion-reaction-chips .lab-chip'),
+    );
+    const slider = document.getElementById('fusion-temp') as HTMLInputElement;
+    const tempValue = document.getElementById('fusion-temp-value');
+    const energyValue = document.getElementById('fusion-energy-value');
+    const massdefectValue = document.getElementById('fusion-massdefect-value');
+    const barrierValue = document.getElementById('fusion-barrier-value');
+    const tunnelValue = document.getElementById('fusion-tunnel-value');
+    const countValue = document.getElementById('fusion-count-value');
+    const classicalLabel = tunnelValue?.dataset.classical ?? '≈1 (classical crossing)';
+
+    // Log-mapped slider: 1–700 keV spans solar-core (~1.3 keV) through
+    // reactor-scale (~10â20 keV) up past every reaction’s classical barrier
+    // (0.44–0.60 MeV), so the same control reaches both regimes.
+    const KEV_MIN = 1;
+    const KEV_MAX = 700;
+    const LOG_MIN = Math.log10(KEV_MIN);
+    const LOG_MAX = Math.log10(KEV_MAX);
+    const sliderToKeV = (v: number) => 10 ** (LOG_MIN + (v / 1000) * (LOG_MAX - LOG_MIN));
+
+    let reactionKey: ReactionKey = 'dt';
+
+    const updateReactionReadouts = () => {
+      const r = REACTIONS[reactionKey];
+      if (energyValue) {
+        energyValue.textContent = r.branches
+          .map((b) => `Q = ${b.qMeV.toFixed(2)} MeV → ${b.productsLabel}`)
+          .join('  /  ');
+      }
+      if (massdefectValue) {
+        massdefectValue.textContent = r.branches
+          .map((b) => `Δm = ${b.deltaMU.toFixed(6)} u × ${MEV_PER_U} MeV/u`)
+          .join('  /  ');
+      }
+    };
+    updateReactionReadouts();
+
+    const scene = createFusionScene(
+      canvas,
+      { reaction: reactionKey, keVTemp: sliderToKeV(Number(slider.value)) },
+      (u) => {
+        if (barrierValue) {
+          barrierValue.textContent = `V₀ = ${u.barrierMeV.toFixed(2)} MeV · KE = ${u.keMeV.toFixed(4)} MeV`;
+        }
+        if (tunnelValue) {
+          tunnelValue.textContent = u.overBarrier ? classicalLabel : `P ≈ ${formatScientific(u.pTunnelRaw)}`;
+        }
+        if (countValue) countValue.textContent = String(u.fusions);
+      },
+    );
+
+    const applyTemp = () => {
+      const keV = sliderToKeV(Number(slider.value));
+      const kelvin = keVToKelvin(keV);
+      if (tempValue) {
+        const keVStr = keV < 10 ? keV.toFixed(2) : keV.toFixed(1);
+        tempValue.textContent = `T = ${keVStr} keV ≈ ${formatScientific(kelvin)} K`;
+      }
+      scene.setParams({ keVTemp: keV });
+    };
+    slider.addEventListener('input', applyTemp);
+    applyTemp();
+
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.classList.toggle('active', c === chip));
+        reactionKey = (chip.dataset.reaction as ReactionKey) ?? 'dt';
+        scene.setParams({ reaction: reactionKey });
+        updateReactionReadouts();
+      });
+    });
+  }
+</script>

@@ -1,0 +1,107 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 12 — Polymer Chemistry',
+    title: 'ポリプロピレンの重合',
+    intro:
+      'プロピレン（CH₂=CH–CH₃）の C=C 二重結合が開いて、次々と鎖につながっていく付加重合です。骨格は –CH₂–CH(CH₃)– の繰り返しになり、横に出るメチル基（CH₃）の並び方＝「タクチシティ（立体規則性）」が材料の性質を決めます。すべて同じ側なら結晶化しやすく丈夫な実用プラスチック（アイソタクチック）、交互ならシンジオタクチック、バラバラだと柔らかいゴム状（アタクチック）。この並びを制御できるようになったこと（チーグラー・ナッタ触媒）が、ノーベル賞級の大発明でした。',
+    hint: 'タクチシティを選ぶと、メチル基の並び方が変わる — 同じ分子式なのに別物になる',
+    tacticity: '立体規則性',
+    iso: 'アイソタクチック',
+    syn: 'シンジオタクチック',
+    ata: 'アタクチック',
+    reset: '最初から重合',
+    units: '繰り返し単位',
+    note: 'まったく同じ組成（プロピレンだけ）から、メチル基の並びだけで硬いプラスチックにも柔らかいゴムにもなる — これが高分子の面白さです。アイソタクチックPPは規則正しい並びのおかげで結晶化し、融点約 160℃、密度は水より軽い（0.90）。容器・繊維・自動車部品に大量に使われています。付加重合なので副生成物が出ず、原子はすべて鎖に取り込まれます（アトムエコノミー100%）。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 12 — Polymer Chemistry',
+    title: 'Polymerizing Polypropylene',
+    intro:
+      'Addition polymerization: the C=C double bond of propylene (CH₂=CH–CH₃) opens and links monomer after monomer into a chain. The backbone becomes a repeating –CH₂–CH(CH₃)–, and the arrangement of the methyl side groups — the tacticity — decides the material. All on one side gives a strong, crystalline everyday plastic (isotactic); strictly alternating is syndiotactic; random gives a soft gum (atactic). Learning to control that arrangement (Ziegler–Natta catalysis) was a Nobel-winning breakthrough.',
+    hint: 'Pick a tacticity and the methyl groups line up differently — same formula, different material',
+    tacticity: 'Tacticity',
+    iso: 'Isotactic',
+    syn: 'Syndiotactic',
+    ata: 'Atactic',
+    reset: 'Polymerize again',
+    units: 'Repeat units',
+    note: 'From the exact same composition (just propylene), the methyl arrangement alone turns it into a hard plastic or a soft gum — the essence of polymer science. Isotactic PP crystallizes thanks to its regular order: melting point ~160 °C, density 0.90 (lighter than water). It fills containers, fibers, and car parts. Being addition polymerization, no byproduct forms — every atom ends up in the chain (100% atom economy).',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <p class="lab-formula" aria-label="Polymerization of propylene">
+    <i>n</i> CH₂=CH(CH₃) &nbsp;→&nbsp; –[ CH₂–CH(CH₃) ]<sub><i>n</i></sub>–
+  </p>
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="polymer-canvas" class="lab-canvas" aria-label={t.title}></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-chips" role="group" aria-label={t.tacticity}>
+        <button type="button" class="lab-chip active" data-tac="isotactic">{t.iso}</button>
+        <button type="button" class="lab-chip" data-tac="syndiotactic">{t.syn}</button>
+        <button type="button" class="lab-chip" data-tac="atactic">{t.ata}</button>
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="polymer-reset">{t.reset}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.units}</span>
+          <span id="polymer-units">n = 0</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createPolymerScene, type Tacticity } from '../lib/lab/polymer';
+
+  const canvas = document.getElementById('polymer-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const unitsEl = document.getElementById('polymer-units');
+    const scene = createPolymerScene(canvas, (units) => {
+      if (unitsEl) unitsEl.textContent = `n = ${units}`;
+    });
+
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tac]'));
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.classList.toggle('active', c === chip));
+        scene.setTacticity(chip.dataset.tac as Tacticity);
+        if (unitsEl) unitsEl.textContent = 'n = 0';
+      });
+    });
+    document.getElementById('polymer-reset')?.addEventListener('click', () => {
+      scene.reset();
+      if (unitsEl) unitsEl.textContent = 'n = 0';
+    });
+  }
+</script>
+
+<style>
+  #polymer-canvas {
+    height: clamp(300px, 52vw, 420px);
+  }
+</style>
