@@ -15,7 +15,7 @@ const copy = {
     reset: 'リセット',
     kinetic: 'B（速度論的生成物）',
     thermo: 'C（熱力学的生成物）',
-    note: 'ダイヤモンドは熱力学的には黒鉛より不安定ですが、変換の山が高すぎて室温では事実上永遠に持ちます — 速度論支配の産物。有機合成では低温・短時間で速度論的生成物を、高温・長時間で熱力学的生成物を作り分けます（例：1,2- vs 1,4-付加）。「どちらが安定か」と「どちらが速いか」は別の問い、というのがこのページの全部です。',
+    note: '具体例：1,3-ブタジエン（CH₂=CH–CH=CH₂）に臭化水素 HBr を1分子付加させると、2つの生成物ができます。B = 1,2-付加体〈3-ブロモ-1-ブテン, CH₂=CH–CHBr–CH₃〉は活性化エネルギーが低く速くできる速度論的生成物。C = 1,4-付加体〈1-ブロモ-2-ブテン, BrCH₂–CH=CH–CH₃〉は二重結合が内部にあって安定な熱力学的生成物。−80 ℃ では約 80 : 20 で B が優勢（速さが勝つ）、+40 ℃ では逆転して約 15 : 85 で C が優勢（安定さが勝つ）。ダイヤモンドが黒鉛より不安定なのに室温で事実上永遠に持つのも、変換の山が高すぎる速度論支配です。「どちらが安定か」と「どちらが速いか」は別の問い、というのがこのページの全部です。',
   },
   en: {
     back: '← Lab',
@@ -28,7 +28,7 @@ const copy = {
     reset: 'Reset',
     kinetic: 'B (kinetic product)',
     thermo: 'C (thermodynamic product)',
-    note: 'Diamond is thermodynamically less stable than graphite, but the conversion barrier is so high it lasts practically forever at room temperature — a product of kinetic control. Synthetic chemists switch products with conditions: cold and quick for the kinetic product, hot and long for the thermodynamic one (e.g. 1,2- vs 1,4-addition). "Which is more stable" and "which forms faster" are different questions — that is this whole page.',
+    note: 'A concrete case: add one HBr to 1,3-butadiene (CH₂=CH–CH=CH₂) and two products appear. B = the 1,2-adduct 〈3-bromo-1-butene, CH₂=CH–CHBr–CH₃〉 forms fast over a low barrier — the kinetic product. C = the 1,4-adduct 〈1-bromo-2-butene, BrCH₂–CH=CH–CH₃〉 is more stable thanks to its internal double bond — the thermodynamic product. At −80 °C the mixture is roughly 80 : 20 in favour of B (speed wins); warm it to +40 °C and it flips to about 15 : 85 in favour of C (stability wins). Diamond outlasting graphite at room temperature despite being the less stable form is the same story: kinetic control behind an impossibly high barrier. “Which is more stable” and “which forms faster” are different questions — that is this whole page.',
   },
 } as const;
 const t = copy[lang];

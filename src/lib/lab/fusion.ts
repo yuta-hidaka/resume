@@ -394,6 +394,10 @@ export function createFusionScene(
   let dir: 1 | -1 = 1;
   let overBarrier = false;
   let willTunnel = false;
+  // Whether THIS approach actually fuses. Crossing the Coulomb barrier (over it
+  // or by tunnelling) is necessary but not sufficient: p–p still needs the weak
+  // interaction, so it can cross yet almost never fuse.
+  let willFuse = false;
   let uTurn = 0;
   let uAtRn = 0;
   let branch: FusionBranch = REACTIONS[params.reaction].branches[0];
@@ -423,11 +427,15 @@ export function createFusionScene(
       if (reaction.key === 'pp') pAnim *= PP_WEAK_ILLUSTRATIVE;
       pAnim = clamp(pAnim, 0, 0.97);
       willTunnel = Math.random() < pAnim;
+      willFuse = willTunnel; // below the barrier, fusion happens iff it tunnels
     } else {
       lastPTunnelRaw = 1;
       willTunnel = false;
       uTurn = 1;
       uAtRn = uOfR(reaction.touchRadiusFm);
+      // Above the barrier the pair reaches contact classically, but p–p still
+      // needs the weak interaction — so it crosses yet almost never fuses.
+      willFuse = reaction.key !== 'pp' || Math.random() < PP_WEAK_ILLUSTRATIVE;
     }
   };
   beginLeg();
@@ -513,7 +521,15 @@ export function createFusionScene(
       u += (dt / TRAVEL_SECONDS) * dir;
       if (dir === 1) {
         if (overBarrier) {
-          if (u >= 1) triggerFuse();
+          // Reached contact: fuse if the reaction actually proceeds, else the
+          // pair bounces back apart (p–p above the barrier: crosses, no fusion).
+          if (u >= 1) {
+            if (willFuse) triggerFuse();
+            else {
+              u = 1;
+              dir = -1;
+            }
+          }
         } else if (willTunnel) {
           if (u >= 1) triggerFuse();
         } else if (u >= uTurn) {
