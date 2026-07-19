@@ -6,24 +6,36 @@
 
 変更内容を適切なコミットメッセージでコミットし、リモートリポジトリにプッシュすることを忘れないでください。
 
-## レジュメ・職務経歴書の更新時に必ず変更するファイル一覧
+## レジュメ内容の更新方法（単一データソース）
 
-職歴やスキルなどのレジュメ内容を更新する場合、**以下の6ファイルすべて**に同じ変更を反映すること。漏れがあるとサイト表示とダウンロードPDFの内容がずれる。
+レジュメ内容の正規データは **`src/data/profile/profile.ts` ただ1つ**。
+そこからすべての表示・ドキュメントが自動生成される:
 
-### サイト表示データ（Astro/TSファイル）
-1. `src/data/about.ja.ts` — 日本語サイト表示データ（experience, skills, education 等）
-2. `src/data/about.en.ts` — 英語サイト表示データ（上記の英訳）
+- サイト表示（ja/en）と /ask のグラウンディング — `src/data/profile/derive.ts` → `getData()`
+- 職務経歴書（ja HTML）/ CV（en HTML） — `src/lib/docs/career-html.ts`
+- テキスト版レジュメ（ja/en Markdown） — `src/lib/docs/career-markdown.ts`
+- 履歴書（JIS準拠・2ページ固定） — `src/lib/docs/rirekisho.ts`
+- PDF — 上記ページを `npm run generate:pdf`（CI: generate-pdfs.yml）で印刷
 
-### ダウンロード用ドキュメント
-3. `docs/resume/resume-ja.md` — 日本語レジュメ（テキスト版、Markdownプレビュー＆PDF）
-4. `docs/resume/resume-en.md` — 英語レジュメ（テキスト版、Markdownプレビュー＆PDF）
-5. `docs/職務経歴書/_.html` — 日本語職務経歴書（HTML版、プレビュー＆PDF）
-6. `docs/resume/en-cv.html` — 英語CV（HTML版、プレビュー＆PDF）
+事実（日付・数値・タグ）は言語共通で1回だけ持ち、文章のみ `{ja, en}` で持つ。
+`validate.ts` が時系列・在籍期間の整合性をimport時に検証するので、矛盾した
+データはビルドとテストが落ちる。旧静的ドキュメント（Google Docsエクスポート等）
+は削除済みで、`docs/` に残っているのは履歴書の証明写真
+（`docs/履歴書/images/image1.jpg` → `profile.person.photo`）のみ。
+
+### PDFのA4レイアウト
+
+- 流し込み系ドキュメント（職務経歴書・CV・テキスト版）は CSS `@page { size: A4;
+  margin: 14mm 15mm }` で全ページに余白がつく。コンテナのpaddingで代用しない
+  こと（中間ページの余白が消える）。
+- 履歴書は `@page { size: A4; margin: 0 }` + 固定 `.sheet`（210mm×296mm・
+  overflow hidden）2枚構成。行を増やす場合は1ページ目に収まるか確認する。
 
 ### 更新後のチェックリスト
 
-1. **6ファイルすべてに変更が反映されているか確認する**
-2. `bun run build` でビルドが通ることを確認する
+1. `src/data/profile/profile.ts` を更新する
+2. `bun test src` と `bun run build` が通ることを確認する（データ整合性もここで検証される）
+3. レイアウトに影響する変更なら `npm run generate:pdf` 後にPDF各ページがA4に収まっているか確認する
 3. コミット・プッシュする
 4. **yuta.dev の全ページをブラウザで確認する**（日本語・英語の各ページ）:
    - `/ja/` — 日本語トップ

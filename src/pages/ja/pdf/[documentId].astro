@@ -1,5 +1,9 @@
 ---
-import DocumentSection from '../../../components/DocumentSection.astro';
+import { marked } from 'marked';
+import { renderCareerHtml } from '../../../lib/docs/career-html';
+import { renderCareerMarkdown } from '../../../lib/docs/career-markdown';
+import { renderRirekisho } from '../../../lib/docs/rirekisho';
+import { MARKDOWN_DOC_CSS } from '../../../lib/docs/markdown-css';
 
 export function getStaticPaths() {
   return [
@@ -11,27 +15,13 @@ export function getStaticPaths() {
 
 const { documentId } = Astro.params;
 
-const documents = {
-  'jp-resume-md': {
-    title: 'レジュメ（テキスト）',
-    sourcePath: 'docs/resume/resume-ja.md',
-    isMarkdown: true,
-  },
-  'jp-cv': {
-    title: '職務経歴書',
-    sourcePath: 'docs/職務経歴書/_.html',
-    assetBase: '/docs/職務経歴書/',
-    isMarkdown: false,
-  },
-  'jp-resume': {
-    title: '履歴書',
-    sourcePath: 'docs/履歴書/_.html',
-    assetBase: '/docs/履歴書/',
-    isMarkdown: false,
-  },
-};
-
-const doc = documents[documentId];
+// All documents are generated from the canonical profile
+// (src/data/profile/profile.ts) — no static doc files involved.
+let doc = null;
+let markdownHtml = null;
+if (documentId === 'jp-cv') doc = renderCareerHtml('ja');
+if (documentId === 'jp-resume') doc = renderRirekisho();
+if (documentId === 'jp-resume-md') markdownHtml = marked.parse(renderCareerMarkdown('ja'));
 ---
 
 {doc ? (
@@ -39,50 +29,22 @@ const doc = documents[documentId];
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width" />
+      <meta name="robots" content="noindex" />
       <title>PDF - {doc.title}</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap');
-
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          padding: 0;
-          background: white;
-          font-family: 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
-        }
-
-        @page {
-          size: A4;
-          margin: 0;
-        }
-
-        .pdf-container {
-          width: 210mm;
-          min-height: 297mm;
-          padding: 0;
-          background: white;
-          margin: 0 auto;
-        }
-      </style>
+      <style set:html={doc.css}></style>
     </head>
-    <body>
-      <div class="pdf-container">
-        <DocumentSection
-          id={documentId}
-          title={doc.title}
-          sourcePath={doc.sourcePath}
-          assetBase={doc.assetBase}
-          previewHeight="auto"
-          isMarkdown={doc.isMarkdown}
-          isPdfMode={true}
-        />
-      </div>
-    </body>
+    <body class={doc.bodyClass} set:html={doc.bodyHtml}></body>
+  </html>
+) : markdownHtml ? (
+  <html lang="ja">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <meta name="robots" content="noindex" />
+      <title>PDF - レジュメ（テキスト）</title>
+      <style set:html={MARKDOWN_DOC_CSS}></style>
+    </head>
+    <body class="md-doc" set:html={markdownHtml}></body>
   </html>
 ) : (
   <html lang="ja">
@@ -93,4 +55,3 @@ const doc = documents[documentId];
     <body>Document not found: {documentId}</body>
   </html>
 )}
-

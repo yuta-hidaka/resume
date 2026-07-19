@@ -30,6 +30,11 @@ export default defineConfig({
   use: {
     baseURL,
     browserName: 'chromium',
+    // Sandboxed/CI environments ship a pinned Chromium instead of letting
+    // Playwright download one — point at it via env when provided.
+    launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH
+      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+      : {},
     // Fixed rendering environment so screenshots are deterministic run-to-run.
     viewport: { width: 1280, height: 800 },
     deviceScaleFactor: 1,
