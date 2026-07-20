@@ -28,7 +28,7 @@ export const askStrings = {
     corrected: '確認できた事実のみ表示',
     correctedHint: 'モデルの下書きに裏づけの取れない記述があったため、経歴データから確実な情報だけをお見せしています。',
     timeoutTitle: '応答に時間がかかりました',
-    timeoutHint: 'モデルの生成が時間内に終わらなかったため、確実な経歴データをお見せします。上で軽い「Qwen2.5 0.5B」を選ぶか「LLM利用なし」にすると速く答えられます。',
+    timeoutHint: 'モデルの生成が時間内に終わらなかったため、確実な経歴データをお見せします。上で「LLM利用なし」を選ぶと即答できます。',
     checking: '事実を照合中…',
     sources: '根拠にした経歴データ',
     disclaimer: '小型モデルのため表現は不完全なことがありますが、内容は経歴データと自動照合し、裏づけの取れない記述は表示しません。',
@@ -63,7 +63,7 @@ export const askStrings = {
     howModelName: 'TinySwallow 1.5B / Qwen2.5',
     howModelBy: 'Sakana AI / Alibaba',
     howModelDesc:
-      '日本語が得意な Sakana AI の TinySwallow-1.5B（約0.9GB・TAID蒸留・既定）か、軽量な Qwen2.5-0.5B（約0.5GB）を選べます。TinySwallow は WebGPU 対応の PC ブラウザ向けで、非対応環境では自動的に軽量モデルに切り替わります。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
+      '日本語が得意な Sakana AI の TinySwallow-1.5B（約0.9GB・TAID蒸留・既定）か、軽量な Qwen2.5-0.5B を選べます。TinySwallow は WebGPU 対応の PC ブラウザ向けで、スマホ（iPhone Safari 等）では自動的に、llama.cpp で動く省メモリの Qwen2.5-0.5B（約0.4GB・GGUF）に切り替わります。モデルは初回だけ読み込み、以降はブラウザにキャッシュ。ダウンロード不要の「LLM利用なし」も選べます。',
     howRuntimeLabel: '実行環境',
     howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:
@@ -102,7 +102,7 @@ export const askStrings = {
       "The model's draft contained claims that couldn't be confirmed, so only verified facts from the résumé are shown.",
     timeoutTitle: 'The model took too long',
     timeoutHint:
-      "The model didn't finish in time, so here are verified résumé facts. Pick the lighter “Qwen2.5 0.5B” above, or “No LLM”, for a faster answer.",
+      "The model didn't finish in time, so here are verified résumé facts. Pick “No LLM” above for an instant answer.",
     checking: 'Checking the facts…',
     sources: 'Résumé data used',
     disclaimer:
@@ -137,7 +137,7 @@ export const askStrings = {
     howModelName: 'Qwen2.5 / TinySwallow 1.5B',
     howModelBy: 'Alibaba / Sakana AI',
     howModelDesc:
-      "Defaults to Qwen2.5-1.5B (~0.9 GB) — the strongest English answers here; Sakana AI's TAID-distilled TinySwallow-1.5B covers Japanese. Both target WebGPU-capable desktop browsers; phones automatically fall back to the light Qwen2.5-0.5B (~0.5 GB). The model loads once, then is cached; a no-download “No LLM” mode is also available.",
+      "Defaults to Qwen2.5-1.5B (~0.9 GB) — the strongest English answers here; Sakana AI's TAID-distilled TinySwallow-1.5B covers Japanese. Both target WebGPU-capable desktop browsers; phones (incl. iPhone Safari) automatically fall back to a low-memory Qwen2.5-0.5B GGUF running on llama.cpp (~0.4 GB). The model loads once, then is cached; a no-download “No LLM” mode is also available.",
     howRuntimeLabel: 'Runtime',
     howRuntimeName: 'transformers.js / WebLLM · WebGPU',
     howRuntimeDesc:

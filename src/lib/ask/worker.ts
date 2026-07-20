@@ -37,6 +37,13 @@ async function loadTransformers(msg: LoadMsg): Promise<void> {
   // navigator.storage.persist() request, which keeps them from being evicted.
   if (tf.env) tf.env.useBrowserCache = true;
 
+  // Keep ORT-Web's peak memory down. The page isn't cross-origin isolated, so
+  // ORT is single-threaded regardless — pin it so no thread pool is even
+  // attempted. Phones (esp. iOS Safari) can OOM-kill the tab loading even the
+  // 0.5B ONNX build, so we default them to the wllama GGUF path instead; this
+  // just makes the ONNX path lighter for when it IS chosen.
+  if (tf.env?.backends?.onnx?.wasm) tf.env.backends.onnx.wasm.numThreads = 1;
+
   const progress_callback = (p: any) => post({ type: 'progress', data: p });
 
   tokenizer = await AutoTokenizer.from_pretrained(msg.model, { progress_callback });
@@ -44,6 +51,9 @@ async function loadTransformers(msg: LoadMsg): Promise<void> {
     dtype: msg.dtype,
     device: msg.device,
     progress_callback,
+    // Drop ORT's memory arena and reuse planner — both pre-grab and hold large
+    // pools that push the peak over tight (mobile) budgets. Small perf cost.
+    session_options: { enableCpuMemArena: false, enableMemPattern: false },
   });
   stopper = new InterruptableStoppingCriteria();
 }

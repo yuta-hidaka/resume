@@ -87,6 +87,25 @@ export const MODELS: ModelOption[] = [
     ggufFile: 'TinySwallow-1.5B-Instruct-IQ2_M.gguf',
   },
   {
+    // The phone default. Alibaba's Qwen2.5-0.5B as a GGUF quant on wllama
+    // (llama.cpp WASM, CPU): llama.cpp keeps the weights quantized in RAM, so
+    // peak memory (~0.4 GB) stays inside iOS Safari's WebContent budget. The
+    // ONNX 0.5B build below (transformers.js) blows past it and hard-crashes
+    // the tab right after the download finishes, so on mobile the fall-through
+    // lands here instead (see modelsFor). Q4_K_M keeps quality respectable.
+    id: 'bartowski/Qwen2.5-0.5B-Instruct-GGUF',
+    label: 'Qwen2.5 0.5B mini',
+    by: 'Alibaba',
+    params: '0.5B',
+    noteJa: 'スマホ向けの省メモリ版（llama.cpp・GGUF・Q4）。iPhone Safari でも安定。',
+    noteEn: 'Phone-safe low-memory build (llama.cpp GGUF, Q4) — stable on iPhone Safari.',
+    sizes: { q4: 0.4 },
+    webgpuDtype: 'q4',
+    wasmDtype: 'q4',
+    engine: 'wllama',
+    ggufFile: 'Qwen2.5-0.5B-Instruct-Q4_K_M.gguf',
+  },
+  {
     // The English-optimal sibling: TinySwallow IS a distilled Qwen2.5-1.5B,
     // so the official Qwen2.5-1.5B MLC weights run on the exact same kernel.
     id: 'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
@@ -134,10 +153,15 @@ export const DEFAULT_MODEL_ID = MODELS[0].id;
 // WebGPU / mobile), the UI walks down to the first enabled option. So each
 // list reads: best for this language on desktop → best that runs on a phone.
 export function modelsFor(lang: 'ja' | 'en'): ModelOption[] {
+  // First = desktop default (WebGPU/WebLLM). The mobile fall-through picks the
+  // first option that isn't WebGPU-only, so the phone-safe wllama GGUF is
+  // placed AHEAD of the ONNX 0.5B — the latter OOM-crashes iOS Safari, so a
+  // phone must never land on it by default.
   const order =
     lang === 'en'
       ? [
           'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
+          'bartowski/Qwen2.5-0.5B-Instruct-GGUF',
           'onnx-community/Qwen2.5-0.5B-Instruct',
           'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
           'bartowski/TinySwallow-1.5B-Instruct-GGUF',
@@ -145,6 +169,7 @@ export function modelsFor(lang: 'ja' | 'en'): ModelOption[] {
         ]
       : [
           'SakanaAI/TinySwallow-1.5B-Instruct-q4f32_1-MLC',
+          'bartowski/Qwen2.5-0.5B-Instruct-GGUF',
           'onnx-community/Qwen2.5-0.5B-Instruct',
           'bartowski/TinySwallow-1.5B-Instruct-GGUF',
           'mlc-ai/Qwen2.5-1.5B-Instruct-q4f32_1-MLC',
