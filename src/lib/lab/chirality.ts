@@ -97,9 +97,20 @@ export interface ChiralityScene {
   dispose(): void;
 }
 
+/** Localized captions for the two on-canvas parts of the schematic. Kept out of
+ *  the sim so this module stays i18n-free; the page passes the current-language
+ *  strings in. */
+export interface ChiralityLabels {
+  /** Caption above the receptor cradle (e.g. "受容体" / "Receptor"). */
+  receptor: string;
+  /** Caption above the incoming drug molecule (e.g. "薬" / "Drug"). */
+  drug: string;
+}
+
 export function createChiralityScene(
   canvas: HTMLCanvasElement,
   onUpdate?: (hand: Hand, binds: boolean, matched: number) => void,
+  labels?: ChiralityLabels,
 ): ChiralityScene {
   const ctx = canvas.getContext('2d')!;
   let hand: Hand = 'R';
@@ -305,6 +316,20 @@ export function createChiralityScene(
       ctx.beginPath();
       ctx.arc(gx, gy, r * 0.55, 0, 2 * Math.PI);
       ctx.fill();
+      ctx.restore();
+    }
+
+    // Faint captions so the schematic reads on its own: which arc is the
+    // receptor pocket, which glowing cluster is the incoming drug. Drawn last,
+    // flat (no glow), in muted ink so they never compete with the molecule.
+    if (labels && (labels.receptor || labels.drug)) {
+      ctx.save();
+      ctx.font = '500 11px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = rgb(colors.bond, colors.dark ? 0.72 : 0.78);
+      if (labels.receptor) ctx.fillText(labels.receptor, pocketX, cy - R * 2.2);
+      if (labels.drug) ctx.fillText(labels.drug, cx, cy - bond * 1.3);
       ctx.restore();
     }
 

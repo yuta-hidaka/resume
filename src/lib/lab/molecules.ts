@@ -68,8 +68,12 @@ export interface MoleculesSim {
   /** Piston compression 0 (open) → 1 (max), only acts in adiabatic mode. */
   setCompression(c: number): void;
   reset(): void;
-  /** Mean kinetic energy per particle (the measured temperature). */
+  /** Mean kinetic energy per particle (the measured temperature). Drives the
+   *  physics; fluctuates ~±1/√N frame to frame. */
   readonly measuredT: number;
+  /** Render-smoothed low-pass of measuredT — drive the on-screen readouts and
+   *  phase label off this so the digits don't flicker on the raw estimate. */
+  readonly displayT: number;
   /** Available volume fraction (1 = open box), for the adiabatic readout. */
   readonly volumeFraction: number;
   dispose(): void;
@@ -272,7 +276,10 @@ export function createMoleculesSim(stage: HTMLCanvasElement): MoleculesSim {
     const rH = rO * 0.62;
     const bond = SIGMA * 0.42 * scale;
     // Internal vibration amplitude grows with √T (stretch + bend wobble).
-    const vibAmp = 0.28 * Math.sqrt(Math.min(2, targetT));
+    // Driven by the actual (render-smoothed) temperature, not the slider
+    // target, so under adiabatic compression the wobble grows with the heating
+    // gas instead of freezing at whatever the slider last read.
+    const vibAmp = 0.28 * Math.sqrt(Math.min(2, displayT));
     const halfHOH = (104.5 / 2 / 180) * Math.PI;
     const oDot = rO * 3.4;
     const hDot = rH * 4.0;
@@ -359,6 +366,9 @@ export function createMoleculesSim(stage: HTMLCanvasElement): MoleculesSim {
     reset,
     get measuredT() {
       return measuredT;
+    },
+    get displayT() {
+      return displayT;
     },
     get volumeFraction() {
       return Math.max(0.05, 1 - ceiling);

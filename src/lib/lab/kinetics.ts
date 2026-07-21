@@ -155,11 +155,23 @@ export function createKineticsScene(
   let historyB: number[] = [];
   let historyC: number[] = [];
 
+  // Offscreen buffer that holds ONLY the beads. It is the only layer that gets
+  // faded for motion trails; the static landscape is redrawn fresh on the stage
+  // each frame and composited over it — so the valley fills, curve, and labels
+  // render at exactly their authored alpha instead of accumulating a trail gain.
+  const trail = document.createElement('canvas');
+  const tctx = trail.getContext('2d')!;
+  const clearTrail = () => {
+    tctx.setTransform(1, 0, 0, 1, 0, 0);
+    tctx.clearRect(0, 0, trail.width, trail.height);
+  };
+
   const themeObserver = new MutationObserver(() => {
     colors = themeColors();
     goldSprite = tintSprite(colors.gold);
     greenSprite = tintSprite(colors.green);
     neutralSprite = tintSprite(colors.inkMuted);
+    clearTrail(); // drop trails tinted for the old theme
   });
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
@@ -169,6 +181,9 @@ export function createKineticsScene(
       c.width = Math.max(1, Math.round(c.clientWidth * dpr));
       c.height = Math.max(1, Math.round(c.clientHeight * dpr));
     }
+    // Match the bead buffer to the stage backing store (this also clears it).
+    trail.width = stage.width;
+    trail.height = stage.height;
   };
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(stage);
@@ -180,15 +195,48 @@ export function createKineticsScene(
     const dpr = Math.min(window.devicePixelRatio, 2);
     const w = stage.width / dpr;
     const h = stage.height / dpr;
-    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    // Afterimage trails: beads leave a faint hop-trail as they cross the
-    // barriers. The curve and labels are redrawn at full strength every
-    // frame, so only the moving beads ever visibly smear.
-    fadeTrails(sctx, w, h, colors.dark ? 0.3 : 0.42);
 
     const sx = (x: number) => ((x + 1.15) / 2.3) * w;
     const sy = (v: number) => h * 0.12 + ((0.85 - v) / 1.8) * h * 0.78;
+
+    // --- Bead buffer: the only layer that keeps afterimage trails. ---
+    // Count each well's current population first so a dense pile can share out
+    // its glow instead of every bead firing at full additive alpha.
+    const { xs } = core;
+    let cntB = 0;
+    let cntC = 0;
+    for (let i = 0; i < xs.length; i++) {
+      if (xs[i] < -0.4) cntB++;
+      else if (xs[i] > 0.4) cntC++;
+    }
+
+    tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fadeTrails(tctx, w, h, colors.dark ? 0.3 : 0.42);
+    const dot = 10.5;
+    tctx.save();
+    tctx.globalCompositeOperation = colors.blend;
+    for (let i = 0; i < xs.length; i++) {
+      const x = xs[i];
+      const inB = x < -0.4;
+      const inC = x > 0.4;
+      const sprite = inB ? goldSprite : inC ? greenSprite : neutralSprite;
+      // Density-aware alpha: small piles keep the full glow; a full well drops
+      // each bead's additive alpha so the core stays recognisably gold/green
+      // rather than saturating to white (min caps the boost at 1).
+      const inWell = inB || inC;
+      const base = inWell ? colors.glowAlpha : colors.glowAlpha * 0.55;
+      tctx.globalAlpha = inWell ? base * Math.min(1, 14 / (inB ? cntB : cntC)) : base;
+      const jx = (((i * 53) % 15) - 7) * 0.35;
+      const jy = ((i * 29) % 13) * 0.9;
+      const bx = sx(x) + jx;
+      const by = sy(potential(x)) - 4 - jy;
+      tctx.drawImage(sprite, bx - dot / 2, by - dot / 2, dot, dot);
+    }
+    tctx.restore();
+
+    // --- Stage: static landscape, redrawn fresh at its authored alpha. ---
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sctx.clearRect(0, 0, w, h);
 
     // Landscape curve, sampled once and reused for the stroke + well fills.
     const SAMPLES = 240;
@@ -210,6 +258,35 @@ export function createKineticsScene(
 
     glowStroke(sctx, curvePts, colors.inkMuted, 1.6, colors.dark ? 0.8 : 0.4, colors.dark);
 
+    // Activation-energy sticks: a whisper-quiet dashed riser from the reactant
+    // (A) reference floor up to each barrier crest, tying the low-vs-high hump
+    // comparison to the Eₐ in the Arrhenius formula above. Gold marks the low
+    // B barrier, emerald the high C barrier.
+    const eaFloorY = sy(potential(0));
+    const eaMark = (xDom: number, color: RGB, side: -1 | 1) => {
+      const x = sx(xDom);
+      const yTop = sy(potential(xDom));
+      sctx.save();
+      sctx.globalCompositeOperation = 'source-over';
+      sctx.globalAlpha = 0.6;
+      sctx.strokeStyle = rgb(color, 1);
+      sctx.lineWidth = 1;
+      sctx.setLineDash([3, 3]);
+      sctx.beginPath();
+      sctx.moveTo(x, eaFloorY);
+      sctx.lineTo(x, yTop);
+      sctx.stroke();
+      sctx.restore();
+      label(sctx, 'Eₐ', x + side * 6, (yTop + eaFloorY) / 2 + 4, color, {
+        size: 11,
+        weight: 500,
+        align: side < 0 ? 'right' : 'left',
+        alpha: 0.6,
+      });
+    };
+    eaMark(-BX, colors.gold, -1);
+    eaMark(BX, colors.green, 1);
+
     // Region labels, tinted toward the product each side favors.
     label(sctx, 'B', sx(-WX), sy(-WELL_B) + 26, colors.gold, {
       size: 13,
@@ -230,26 +307,9 @@ export function createKineticsScene(
       alpha: 0.9,
     });
 
-    // Beads: glowing points that sit on the curve, piling up wherever the
-    // ensemble currently favors. Deterministic per-index jitter so a pile
-    // reads as a pile, not a jittery blob.
-    const { xs } = core;
-    const dot = 10.5;
-    sctx.save();
-    sctx.globalCompositeOperation = colors.blend;
-    for (let i = 0; i < xs.length; i++) {
-      const x = xs[i];
-      const inB = x < -0.4;
-      const inC = x > 0.4;
-      const sprite = inB ? goldSprite : inC ? greenSprite : neutralSprite;
-      sctx.globalAlpha = inB || inC ? colors.glowAlpha : colors.glowAlpha * 0.55;
-      const jx = (((i * 53) % 15) - 7) * 0.35;
-      const jy = ((i * 29) % 13) * 0.9;
-      const bx = sx(x) + jx;
-      const by = sy(potential(x)) - 4 - jy;
-      sctx.drawImage(sprite, bx - dot / 2, by - dot / 2, dot, dot);
-    }
-    sctx.restore();
+    // Composite the bead buffer (device pixels) over the fresh landscape.
+    sctx.setTransform(1, 0, 0, 1, 0, 0);
+    sctx.drawImage(trail, 0, 0);
   };
 
   const drawChart = () => {
@@ -325,6 +385,7 @@ export function createKineticsScene(
       core.reset();
       historyB = [];
       historyC = [];
+      clearTrail();
     },
     dispose() {
       cancelAnimationFrame(rafId);

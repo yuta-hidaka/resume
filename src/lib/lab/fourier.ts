@@ -97,6 +97,8 @@ export interface FourierMachine {
   setShape(points: Pt[]): void;
   setPreset(name: keyof typeof PRESETS): void;
   setTerms(k: number): void;
+  /** Re-decompose the last hand-drawn shape; returns false if none exists yet. */
+  restoreDrawn(): boolean;
   readonly maxTerms: number;
   dispose(): void;
 }
@@ -117,6 +119,8 @@ export function createFourierMachine(
   let path: Pt[] = []; // reconstruction with `terms` terms, normalized coords
   /** True once the current shape came from hand-drawn input (colors the trace gold). */
   let drawnSource = false;
+  /** The last hand-drawn shape (resampled), kept so the "drawn" chip can restore it. */
+  let drawnPts: Pt[] | null = null;
 
   // Evaluate the truncated Fourier sum at phase u ∈ [0, 1).
   const evalSum = (u: number, k: number): Pt => {
@@ -136,8 +140,10 @@ export function createFourierMachine(
   };
 
   const setShapeInternal = (points: Pt[], drawn: boolean) => {
-    epicycles = dft(resampleClosed(points, SAMPLES));
+    const sampled = resampleClosed(points, SAMPLES);
+    epicycles = dft(sampled);
     drawnSource = drawn;
+    if (drawn) drawnPts = sampled;
     recomputePath();
   };
 
@@ -250,12 +256,27 @@ export function createFourierMachine(
         }
         glowStroke(ctx, basePts, sampleRamp(curveRamp, 0.4), 1.3, tk.glowAlpha * 0.5, tk.dark);
       }
-      const cometPts: { x: number; y: number }[] = [];
-      for (let i = tail; i <= upto; i++) {
-        const p = path[i];
-        cometPts.push({ x: sx(p), y: sy(p) });
+      // Comet head [tail, upto]: draw in short sub-chunks that share endpoints
+      // and lerp their brightness/width from the tail values up to the head,
+      // so the fade is continuous instead of a single flat step.
+      const COMET_CHUNKS = 8;
+      const span = upto - tail;
+      for (let c = 0; c < COMET_CHUNKS; c++) {
+        const i0 = tail + Math.floor((span * c) / COMET_CHUNKS);
+        const i1 = tail + Math.floor((span * (c + 1)) / COMET_CHUNKS);
+        if (i1 <= i0) continue;
+        const chunk: { x: number; y: number }[] = [];
+        for (let i = i0; i <= i1; i++) {
+          const p = path[i];
+          chunk.push({ x: sx(p), y: sy(p) });
+        }
+        // f runs 0 (tail) → 1 (head) across the comet span.
+        const f = (c + 0.5) / COMET_CHUNKS;
+        const shade = sampleRamp(curveRamp, 0.4 + 0.5 * f);
+        const width = 1.3 + 1.1 * f;
+        const glow = tk.glowAlpha * (0.5 + 0.5 * f);
+        glowStroke(ctx, chunk, shade, width, glow, tk.dark);
       }
-      glowStroke(ctx, cometPts, sampleRamp(curveRamp, 0.9), 2.4, tk.glowAlpha, tk.dark);
     }
 
     // Epicycle chain: barely-there rings + thin, glowing radius vectors.
@@ -295,6 +316,11 @@ export function createFourierMachine(
     setTerms(k) {
       terms = Math.max(1, Math.round(k));
       recomputePath();
+    },
+    restoreDrawn() {
+      if (!drawnPts) return false;
+      setShapeInternal(drawnPts, true);
+      return true;
     },
     get maxTerms() {
       return SAMPLES;

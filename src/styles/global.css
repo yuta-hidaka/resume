@@ -337,26 +337,8 @@ a {
   accent-color: var(--accent);
 }
 
-/* Governing equation, set like a display formula in a paper */
-.lab-formula {
-  position: relative;
-  margin-top: 1.4rem;
-  padding: 0.8rem 1.2rem;
-  border-left: 2px solid transparent;
-  border-image: linear-gradient(180deg, var(--accent), color-mix(in srgb, #d9b36c 70%, var(--accent))) 1;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%);
-  border-radius: 0 8px 8px 0;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
-  color: var(--ink-secondary);
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.lab-formula i {
-  font-style: italic;
-}
+/* Governing equations are now typeset with KaTeX via the <Formula> component
+   (see src/components/Formula.astro, class .lab-eq). */
 
 /* Living preview on the lab index tiles (framed by .lab-thumb-frame) */
 .lab-thumb {

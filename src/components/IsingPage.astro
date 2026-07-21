@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -15,7 +16,7 @@ const copy = {
     fieldLabel: '外部磁場',
     magnet: '磁化',
     randomize: 'ランダム化',
-    note: '磁化 M(t) のグラフは −1（全部↓）から +1（全部↑）。Tc 直下では緑と金の島（磁区・ドメイン）がせめぎ合いながらゆっくり粗大化していきます — 本物の磁石の中でも同じことが起きています。H = 0 のとき、どちらの向きに揃うかは完全に偶然です（自発的対称性の破れ）。',
+    note: '磁化 M(t) のグラフは −1（全部↓）から +1（全部↑）。Tc 直下では緑と金の島（磁区・ドメイン）がせめぎ合いながら、ゆっくり大きく育っていきます — 本物の磁石の中でも同じことが起きています。島の縁がほのかに光っているのは「磁壁」。向きの違うスピンが隣り合って、余分なエネルギーを払っている場所です。H = 0 のとき、どちらの向きに揃うかは完全に偶然です（自発的対称性の破れ）。',
   },
   en: {
     back: '← Lab',
@@ -28,7 +29,7 @@ const copy = {
     fieldLabel: 'External field',
     magnet: 'Magnetization',
     randomize: 'Randomize',
-    note: 'The chart tracks M(t) from −1 (all ↓) to +1 (all ↑). Just below Tc, green and gold islands — magnetic domains — wrestle and slowly coarsen, exactly as inside a real magnet. At H = 0, which orientation wins is pure chance: spontaneous symmetry breaking.',
+    note: 'The chart tracks M(t) from −1 (all ↓) to +1 (all ↑). Just below Tc, green and gold islands — magnetic domains — wrestle and slowly grow, exactly as inside a real magnet. The faint glow along their edges marks the domain walls: the places where opposite spins meet and pay an extra energy cost. At H = 0, which orientation wins is pure chance: spontaneous symmetry breaking.',
   },
 } as const;
 const t = copy[lang];
@@ -40,13 +41,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Ising Hamiltonian">
-    <i>E</i> = −<i>J</i> Σ<sub>⟨<i>ij</i>⟩</sub> <i>s<sub>i</sub>s<sub>j</sub></i> − <i>H</i> Σ<sub><i>i</i></sub> <i>s<sub>i</sub></i>
-    &ensp;,&ensp;
-    <i>P</i>(flip) = min(1, e<sup>−Δ<i>E</i>/<i>T</i></sup>)
-    &ensp;,&ensp;
-    <i>T<sub>c</sub></i> = 2/ln(1+√2) ≈ 2.269
-  </p>
+  <Formula
+    label="Ising Hamiltonian, Metropolis acceptance, and critical temperature"
+    tex={String.raw`E = -J \sum_{\langle ij \rangle} s_i s_j \; - \; H \sum_i s_i \qquad P(\mathrm{flip}) = \min\!\left(1,\; e^{-\Delta E / T}\right) \qquad T_c = \dfrac{2}{\ln\!\left(1 + \sqrt{2}\right)} \approx 2.269`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -129,10 +127,16 @@ const t = copy[lang];
     height: clamp(300px, 52vw, 420px);
   }
 
-  /* The lattice fills the canvas edge-to-edge; keep the hint legible on it. */
+  /* The lattice fills the canvas edge-to-edge; wrap the hint in a small
+     blurred glass pill so it stays legible over both spin colours. */
   .ising-hint {
-    mix-blend-mode: difference;
-    color: #9a9a9a;
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 999px;
+    padding: 0.18em 0.7em;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
   }
 
   .ising-chart-wrap {

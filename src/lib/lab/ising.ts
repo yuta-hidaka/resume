@@ -184,14 +184,25 @@ export function createIsingSim(
     sctx.imageSmoothingEnabled = true;
     sctx.imageSmoothingQuality = 'high';
     sctx.clearRect(0, 0, stage.width, stage.height);
-    sctx.drawImage(fieldMid2, 0, 0, stage.width, stage.height);
+
+    // Cover-fit the lattice into the stage so cells stay square whatever the
+    // canvas aspect is — otherwise a tall mobile canvas stretches the
+    // statistically isotropic domains into vertical blobs. Periodic
+    // boundaries make the cropped edge cells free of visible seams.
+    const scale = Math.max(stage.width / fieldMid2.width, stage.height / fieldMid2.height);
+    const dw = fieldMid2.width * scale;
+    const dh = fieldMid2.height * scale;
+    const dx = (stage.width - dw) / 2;
+    const dy = (stage.height - dh) / 2;
+    sctx.drawImage(fieldMid2, dx, dy, dw, dh);
 
     // A single soft (bilinear) pass for the wall glow, composited additively
-    // in dark mode — a faint luminous film over every domain boundary.
+    // in dark mode — a faint luminous film over every domain boundary. Same
+    // destination rect as the field so the seams stay registered.
     sctx.save();
     sctx.globalCompositeOperation = colors.blend;
     sctx.globalAlpha = colors.glowAlpha * 0.55;
-    sctx.drawImage(wallOff, 0, 0, stage.width, stage.height);
+    sctx.drawImage(wallOff, dx, dy, dw, dh);
     sctx.restore();
   };
 
@@ -221,6 +232,14 @@ export function createIsingSim(
     cctx.moveTo(0, midY);
     cctx.lineTo(w, midY);
     cctx.stroke();
+
+    // Micro-labels so the chart is self-describing: M runs +1 (all ↑) at the
+    // top to −1 (all ↓) at the bottom. Left-aligned inside the pad so they
+    // never collide with the curve's leading edge on the right.
+    cctx.fillStyle = rgb(colors.inkMuted, colors.dark ? 0.5 : 0.55);
+    cctx.font = '9px ui-sans-serif, system-ui';
+    cctx.fillText('+1', 4, pad + 9);
+    cctx.fillText('−1', 4, h - pad - 3);
     cctx.restore();
 
     if (history.length > 1) {

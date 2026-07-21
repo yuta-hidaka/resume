@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,13 +10,13 @@ const copy = {
     label: 'Lab 09 — Chemical Kinetics',
     title: '速度論支配と熱力学支配',
     intro:
-      '反応物 A から2つの生成物への道があります。B へは低い山（活性化エネルギー小）だけど浅い谷、C へは高い山だけど深い谷。240 個の粒子がエネルギー地形の上で熱ゆらぎに揺すられるランジュバン動力学です。低温では、越えられる山が低い方だけなので B に溜まります — 速さが勝負を決める「速度論支配」。高温では両方の山を自由に行き来できるようになり、最後は深い谷 C がボルツマン分布で勝ちます — 安定さが勝負を決める「熱力学支配」。',
+      '反応物 A から2つの生成物への道があります。B への道は山（活性化エネルギー）が低いかわり谷が浅く、C への道は山が高いかわり谷が深い。画面では 240 個の粒子が、熱ゆらぎに揺すられながらこの地形を転がります（ランジュバン動力学）。低温では、越えられるのは低い山だけなので B に溜まります — 速さが勝負を決める「速度論支配」。高温では両方の山を自由に行き来できるようになり、最後は深い谷 C がボルツマン分布で勝ちます — 安定さが勝負を決める「熱力学支配」。',
     hint: '低温で B に溜めてから、温度を上げて C への逆転を見る',
     temp: '温度',
     reset: 'リセット',
     kinetic: 'B（速度論的生成物）',
     thermo: 'C（熱力学的生成物）',
-    note: '具体例：1,3-ブタジエン（CH₂=CH–CH=CH₂）に臭化水素 HBr を1分子付加させると、2つの生成物ができます。B = 1,2-付加体〈3-ブロモ-1-ブテン, CH₂=CH–CHBr–CH₃〉は活性化エネルギーが低く速くできる速度論的生成物。C = 1,4-付加体〈1-ブロモ-2-ブテン, BrCH₂–CH=CH–CH₃〉は二重結合が内部にあって安定な熱力学的生成物。−80 ℃ では約 80 : 20 で B が優勢（速さが勝つ）、+40 ℃ では逆転して約 15 : 85 で C が優勢（安定さが勝つ）。ダイヤモンドが黒鉛より不安定なのに室温で事実上永遠に持つのも、変換の山が高すぎる速度論支配です。「どちらが安定か」と「どちらが速いか」は別の問い、というのがこのページの全部です。',
+    note: '具体例：1,3-ブタジエン（CH₂=CH–CH=CH₂）に臭化水素 HBr を1分子付加させると、2つの生成物ができます。B は 1,2-付加体（3-ブロモ-1-ブテン）。低い山を越えて速くできる、速度論的生成物です。C は 1,4-付加体（1-ブロモ-2-ブテン）。二重結合が鎖の内側にあるぶん安定な、熱力学的生成物です。−80 ℃ では約 80 : 20 で B が優勢（速さが勝つ）、+40 ℃ では逆転して約 15 : 85 で C が優勢（安定さが勝つ）。ダイヤモンドが黒鉛より不安定なのに室温で事実上永遠に持つのも、変換の山が高すぎる速度論支配です。「どちらが安定か」と「どちらが速いか」は別の問い、というのがこのページの全部です。',
   },
   en: {
     back: '← Lab',
@@ -28,7 +29,7 @@ const copy = {
     reset: 'Reset',
     kinetic: 'B (kinetic product)',
     thermo: 'C (thermodynamic product)',
-    note: 'A concrete case: add one HBr to 1,3-butadiene (CH₂=CH–CH=CH₂) and two products appear. B = the 1,2-adduct 〈3-bromo-1-butene, CH₂=CH–CHBr–CH₃〉 forms fast over a low barrier — the kinetic product. C = the 1,4-adduct 〈1-bromo-2-butene, BrCH₂–CH=CH–CH₃〉 is more stable thanks to its internal double bond — the thermodynamic product. At −80 °C the mixture is roughly 80 : 20 in favour of B (speed wins); warm it to +40 °C and it flips to about 15 : 85 in favour of C (stability wins). Diamond outlasting graphite at room temperature despite being the less stable form is the same story: kinetic control behind an impossibly high barrier. “Which is more stable” and “which forms faster” are different questions — that is this whole page.',
+    note: 'A concrete case: add one molecule of HBr to 1,3-butadiene (CH₂=CH–CH=CH₂) and two products appear. B is the 1,2-adduct (3-bromo-1-butene): it forms fast over a low barrier — the kinetic product. C is the 1,4-adduct (1-bromo-2-butene): its double bond sits inside the chain, which makes it the more stable one — the thermodynamic product. At −80 °C the mixture is roughly 80 : 20 in favour of B (speed wins); warm it to +40 °C and it flips to about 15 : 85 in favour of C (stability wins). Diamond is the same story: it is less stable than graphite, yet at room temperature it lasts essentially forever, because the barrier to convert is impossibly high — kinetic control. “Which is more stable” and “which forms faster” are different questions — that is this whole page.',
   },
 } as const;
 const t = copy[lang];
@@ -40,13 +41,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Arrhenius and Boltzmann">
-    <i>k</i> = <i>A</i> e<sup>−<i>E<sub>a</sub></i>/<i>k<sub>B</sub>T</i></sup>
-    &ensp;,&ensp;
-    [C]/[B]<sub>eq</sub> = e<sup>−(Δ<i>E<sub>C</sub></i>−Δ<i>E<sub>B</sub></i>)/<i>k<sub>B</sub>T</i></sup>
-    &ensp;,&ensp;
-    d<i>x</i> = −<i>V</i>′(<i>x</i>)d<i>t</i> + √(2<i>k<sub>B</sub>T</i> d<i>t</i>)·η
-  </p>
+  <Formula
+    label="Arrhenius rate, Boltzmann product ratio, and overdamped Langevin dynamics"
+    tex={String.raw`k = A\,\exp\!\left(-\dfrac{E_{\mathrm{a}}}{k_{\mathrm{B}}T}\right) \qquad \left(\dfrac{[\mathrm{C}]}{[\mathrm{B}]}\right)_{\!\mathrm{eq}} = \exp\!\left(-\dfrac{\Delta E_{\mathrm{C}} - \Delta E_{\mathrm{B}}}{k_{\mathrm{B}}T}\right) \qquad \mathrm{d}x = -V'(x)\,\mathrm{d}t + \sqrt{2k_{\mathrm{B}}T\,\mathrm{d}t}\;\eta`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -133,8 +131,22 @@ const t = copy[lang];
     margin-right: 0.35em;
   }
 
+  /* Track the canvas gold exactly (viz.ts tokens: dark #d9b36c, light #8f6521)
+     so the swatch matches the curve and beads it indexes. Mirrors isDark()'s
+     precedence: an explicit theme class wins, otherwise the system preference. */
   .kinetics-dot-b {
-    background: #b8934f;
+    background: #d9b36c;
+  }
+  @media (prefers-color-scheme: light) {
+    .kinetics-dot-b {
+      background: #8f6521;
+    }
+  }
+  :global(html.dark) .kinetics-dot-b {
+    background: #d9b36c;
+  }
+  :global(html.light) .kinetics-dot-b {
+    background: #8f6521;
   }
 
   .kinetics-dot-c {

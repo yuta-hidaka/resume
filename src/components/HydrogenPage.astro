@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,7 +10,7 @@ const copy = {
     label: 'Lab 01 — Quantum Mechanics',
     title: '水素原子の電子雲',
     intro:
-      'シュレディンガー方程式を水素原子のクーロンポテンシャルについて解くと、波動関数 ψ が量子数 (n, l, m) ごとに求まります。下の点群は、その確率密度 |ψ|² から実際にサンプリングした 26,000 点 — 電子を観測したとき「そこに見出される」場所の分布です。',
+      'シュレディンガー方程式を、原子核がつくる電気的な引力（クーロンポテンシャル）のもとで解くと、波動関数 ψ が量子数 (n, l, m) の組ごとに求まります。下の点群は、その確率密度 |ψ|² から実際にサンプリングした 26,000 点 — 電子を観測したとき「そこに見出される」場所の分布です。チップで 1s から 4f まで切り替えると、雲のかたちががらりと変わります。',
     hint: 'ドラッグで回転、スクロールで拡大縮小',
     plus: '位相 +',
     minus: '位相 −',
@@ -18,14 +19,14 @@ const copy = {
     isotope: '同位体',
     proton: '陽子',
     neutron: '中性子',
-    note: '緑と金の点群は波動関数の符号（位相）。点は1回の「観測」に対応し、N が増えるほど雲の形＝確率分布がはっきりしていきます。中心の粒が原子核（金＝陽子、灰＝中性子）— ただし縮尺は大幅に誇張していて、実際の核はこの表示の約10万分の1の大きさです。同位体を替えても電子雲がほぼ変わらないことに注目 — 化学的性質が中性子の数に鈍感な理由です（換算質量の補正は 0.03% 以下）。',
+    note: '緑と金の点は波動関数の符号（位相）に対応。点は1回の「観測」で、N が増えるほど雲の形＝確率分布がはっきりしていきます。中心の粒は原子核（金＝陽子、灰＝中性子）。縮尺は大幅に誇張してあり、実際の核はこの表示の約10万分の1の大きさです。同位体を替えても電子雲は変わりません。核が重くなることによる実際のずれも 0.03% 以下で、目に見えないほど — 化学が中性子の数をほとんど気にしないのは、このためです。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 01 — Quantum Mechanics',
     title: 'Hydrogen Electron Clouds',
     intro:
-      'Solving the Schrödinger equation for the Coulomb potential of hydrogen yields wavefunctions ψ indexed by the quantum numbers (n, l, m). The point cloud below is 26,000 samples drawn from the probability density |ψ|² — the distribution of where a measurement would actually find the electron.',
+      'Solve the Schrödinger equation in the electric pull of the nucleus — the Coulomb potential — and you get a wavefunction ψ for each set of quantum numbers (n, l, m). The point cloud below is 26,000 samples drawn from the probability density |ψ|²: the distribution of where a measurement would actually find the electron. Flip through the chips from 1s to 4f and watch the cloud change shape.',
     hint: 'Drag to rotate, scroll to zoom',
     plus: 'phase +',
     minus: 'phase −',
@@ -34,7 +35,7 @@ const copy = {
     isotope: 'Isotope',
     proton: 'proton',
     neutron: 'neutron',
-    note: 'The green/gold points mark the sign (phase) of the wavefunction; each point is one "measurement", and the distribution emerges as N grows. The lump at the center is the nucleus (gold = protons, gray = neutrons) — drawn ~100,000× larger than life. Note that switching isotopes barely changes the cloud: chemistry is nearly blind to neutron count (the reduced-mass correction is under 0.03%).',
+    note: 'Green and gold mark the sign (phase) of the wavefunction. Each point is one "measurement"; as N grows, the shape of the cloud — the probability distribution — comes into focus. The lump at the center is the nucleus (gold = protons, gray = neutrons), drawn about 100,000× larger than life. Switching isotopes leaves the cloud unchanged: the real shift from the heavier nucleus is under 0.03%, far too small to see. That is why chemistry barely notices the neutron count.',
   },
 } as const;
 const t = copy[lang];
@@ -58,11 +59,10 @@ const orbitals = [
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Schrödinger equation">
-    −(ℏ²/2<i>m</i>)∇²ψ − <i>e</i>²/(4πε₀<i>r</i>)·ψ = <i>E</i>ψ &ensp;,&ensp;
-    <i>P</i>(<i>r</i>,θ,φ) = |ψ<sub><i>nlm</i></sub>|² &ensp;,&ensp;
-    <i>E<sub>n</sub></i> = −13.6 eV/<i>n</i>²
-  </p>
+  <Formula
+    label="Schrödinger equation, probability density, and energy levels of hydrogen"
+    tex={String.raw`-\dfrac{\hbar^{2}}{2m}\nabla^{2}\psi \;-\; \dfrac{e^{2}}{4\pi\varepsilon_{0} r}\,\psi = E\psi \qquad P(r,\theta,\varphi) = \bigl|\psi_{nlm}\bigr|^{2} \qquad E_{n} = -\dfrac{13.6\ \mathrm{eV}}{n^{2}}`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -196,16 +196,19 @@ const orbitals = [
     background: var(--accent);
   }
 
+  /* Swatches track the theme-dependent point/nucleus colors (PALETTE mid stops
+     in scene.ts). light-dark() follows the color-scheme global.css sets for the
+     light, .dark, and OS-follow states alike, so the dots match in every theme. */
   .legend-minus {
-    background: #b8934f;
+    background: light-dark(#82531c, #d9b36c);
   }
 
   .legend-proton {
-    background: #c99a3f;
+    background: light-dark(#b08430, #e6b45a);
   }
 
   .legend-neutron {
-    background: #7e858c;
+    background: light-dark(#6f767d, #8e959c);
   }
 
   .orbital-legend .legend-neutron {

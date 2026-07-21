@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,8 +10,8 @@ const copy = {
     label: 'Lab 13 — Nuclear Physics',
     title: '核融合とクーロン障壁',
     intro:
-      '2つの軽い原子核は、短距離で働く強い力が引き合わせてくれる前に、まずクーロン力で反発し合います — クーロン障壁 V(r) = 1.44·Z₁Z₂/r MeV。古典力学なら、核はこの障壁の頂上を超えるだけの運動エネルギーを持っていない限り融合できません。しかし量子力学では、トンネル効果のページとまったく同じ理屈で、ガモフ因子 P = exp(−√(E_G/E)) が、古典的には届かないはずのエネルギーでも一定の確率ですり抜けさせてくれます。反応を選び、温度（＝運動エネルギー）を上げてみてください — まれなトンネル成功が、やがて障壁を悠々と越える古典的な衝突に置き換わっていきます。',
-    hint: 'T を上げるとトンネル成功が増える。さらに上げると障壁を古典的に越える',
+      '2つの軽い原子核は、短距離で働く強い力が引き合わせてくれる前に、まずクーロン力で反発し合います。画面の火山のような山がその反発の壁 — クーロン障壁 V(r) = 1.44·Z₁Z₂/r MeV — で、2つの核は左右からこの山を登っていきます。古典力学では、頂上を越えるだけの運動エネルギーがなければ融合できません。しかし量子力学は違います。トンネル効果のページと同じ理屈で、ガモフ因子 P = exp(−√(E_G/E)) の確率なら、届かないはずの高さでも壁をすり抜けられるのです。反応を選び、温度（＝運動エネルギー）を上げてみてください。まれなトンネル成功が、やがて障壁を悠々と越える古典的な衝突に置き換わっていきます。',
+    hint: 'T を上げるとトンネル成功が増え、さらに上げると古典的に障壁を越える（p–p は越えてもほぼ融合しない — 弱い力がボトルネック）',
     reaction: '反応',
     temp: '温度',
     energy: '放出エネルギー',
@@ -19,15 +20,15 @@ const copy = {
     tunnel: 'トンネル確率',
     count: '融合回数',
     classical: '≈1（古典的に通過）',
-    note: 'D–T 融合はわずか 0.018884 u（陽子1個の質量の約2%）を、E = Δm·c² = Δm × 931.494 MeV/u によって 17.59 MeV に変えます。核子あたりの結合エネルギーは ⁵⁶Fe / ⁶²Ni 付近（約8.8 MeV/核子）でピークになり、軽い核はそのピークに向かって融合することで、重い核はそのピークに向かって分裂することでエネルギーを放出します — 核融合と核分裂は同じ1本の曲線を両端から読んでいるだけです。燃料は水（重水素）とリチウムから作れるほど豊富で、灰はヘリウムだけ（長寿命の放射性廃棄物が出ません）。難しいのはクーロン障壁と「閉じ込め」— ITER のようなトカマクは D–T 反応を約1億5000万ケルビンで狙っています。実験炉のプラズマはおよそ 10–20 keV（≈1–2×10⁸ K）ですが、太陽の中心はそれよりずっと「冷たい」1.3 keV（1.5×10⁷ K）しかなく、1個の陽子が p–p 反応を起こすまで平均で数十億年も待つことになります。トンネル確率だけならゼロではありませんが、最初の一歩 p + p → d + e⁺ + ν が弱い力を介するため、実際にはさらに桁違いに稀です。太陽も水素爆弾も、同じ反応をまったく違う速さで走らせているだけなのです。',
+    note: 'D–T 融合はわずか 0.018884 u（陽子1個の質量の約2%）を、E = Δm·c² = Δm × 931.494 MeV/u によって 17.59 MeV に変えます。核子あたりの結合エネルギーは ⁵⁶Fe / ⁶²Ni 付近（約8.8 MeV/核子）でピークになり、軽い核は融合で、重い核は分裂で、その山頂に向かうことでエネルギーを放出します — 核融合と核分裂は、同じ1本の曲線を両端から読んでいるだけです。燃料は水（重水素）とリチウムから作れるほど豊富で、灰はヘリウム。核分裂のような長寿命の高レベル廃棄物は残りません（中性子が炉壁を放射化する課題は残ります）。難しいのはクーロン障壁と「閉じ込め」です。ITER のようなトカマクは D–T 反応を約1億5000万ケルビン、10–20 keV で狙います。一方、太陽の中心はずっと「冷たい」1.3 keV（1.5×10⁷ K）。そこでは1個の陽子が p–p 反応を起こすまで、平均で数十億年も待ちます。トンネル効果だけならここまで稀にはなりません。最初の一歩 p + p → d + e⁺ + ν が弱い力を介するため、桁違いに遅くなるのです（このページの p–p は、4個の陽子が ⁴He になる連鎖全体をひとつにまとめて描いています）。だからこそ水素爆弾は p–p ではなく、速い D–T を使います。同じ「水素の核融合」でも、太陽と爆弾では走らせている反応が違うのです。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 13 — Nuclear Physics',
     title: 'Nuclear Fusion & the Coulomb Barrier',
     intro:
-      "Two light nuclei repel each other electrostatically â the Coulomb barrier, V(r) = 1.44Â·ZâZâ/r MeV â long before the short-range strong force gets a chance to bind them into something heavier and lower-energy. Classically, colliding nuclei need kinetic energy above that barrier’s peak to fuse. Quantum mechanically, exactly as on the tunneling page, they don’t: the Gamow factor P = exp(ââ(E_G/E)) lets a fraction sneak through even when the classical kinetic energy sits well below the summit. Pick a reaction and turn up the temperature (= kinetic energy) â watch rare tunneling successes give way to a routine climb over the top.",
-    hint: 'Raise T — tunneling succeeds more often, then push past the barrier for a classical crossing',
+      "Two light nuclei repel each other electrostatically long before the short-range strong force can bind them. The volcano-shaped curve on screen is that wall — the Coulomb barrier, V(r) = 1.44·Z₁Z₂/r MeV — and the two glowing nuclei climb it from either side. Classically they need kinetic energy above the summit to fuse. Quantum mechanically they don’t: exactly as on the tunneling page, the Gamow factor P = exp(−√(E_G/E)) lets a fraction sneak through well below the top. Pick a reaction and turn up the temperature (= kinetic energy) — watch rare tunneling successes give way to a routine climb over the summit.",
+    hint: 'Raise T — tunneling succeeds more often, then crosses the barrier classically (p–p crosses yet almost never fuses — the weak force is the bottleneck)',
     reaction: 'Reaction',
     temp: 'Temperature',
     energy: 'Energy released',
@@ -36,7 +37,7 @@ const copy = {
     tunnel: 'Tunneling probability',
     count: 'Fusions',
     classical: '≈1 (classical crossing)',
-    note: 'DâT fusion turns just 0.018884 u of mass â about 2% of a proton â into 17.59 MeV via E = ÎmÂ·cÂ² = Îm Ã 931.494 MeV/u. Binding energy per nucleon peaks near âµâ¶Fe / â¶Â²Ni (~8.8 MeV/nucleon): light nuclei release energy by fusing toward that peak, heavy nuclei by fissioning toward it â fusion and fission are the same curve, read from opposite ends. The fuel (hydrogen isotopes, bred from lithium) is abundant and the ash is just helium â no long-lived radioactive waste. What makes fusion hard is the Coulomb barrier and confinement: tokamaks like ITER target DâT around 150 million kelvin. Reactor plasmas run at roughly 10â20 keV (â1â2Ã10â¸ K); the Sun’s core is a comparatively cool 1.3 keV (1.5Ã10â· K), so a given proton there waits billions of years, on average, for its pâp turn. Barrier tunneling alone would not make it that rare â the actual bottleneck is that the first step, p + p â d + eâº + Î½, also needs the weak force, making it rarer still. The Sun and a hydrogen bomb run on the very same reaction, just at wildly different rates.',
+    note: 'D–T fusion turns just 0.018884 u of mass — about 2% of a proton — into 17.59 MeV via E = Δm·c² = Δm × 931.494 MeV/u. Binding energy per nucleon peaks near ⁵⁶Fe / ⁶²Ni (~8.8 MeV per nucleon): light nuclei climb toward that peak by fusing, heavy nuclei by fissioning — fusion and fission are the same curve, read from opposite ends. The fuel (hydrogen isotopes, bred from seawater and lithium) is abundant and the ash is helium; there is none of fission’s long-lived high-level waste, though neutrons do activate the reactor walls. What makes fusion hard is the Coulomb barrier and confinement: tokamaks like ITER aim to run D–T at about 150 million kelvin, 10–20 keV. The Sun’s core is far cooler — 1.3 keV (1.5×10⁷ K) — so a proton there waits billions of years, on average, for its p–p turn. Tunneling alone wouldn’t make it that rare: the first step, p + p → d + e⁺ + ν, also needs the weak force, which slows it by many orders of magnitude (the p–p option on this page bundles the whole four-proton chain into one event). That is exactly why hydrogen bombs burn fast D–T instead — the Sun and the bomb both fuse hydrogen, but not via the same reaction.',
   },
 } as const;
 const t = copy[lang];
@@ -48,13 +49,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Mass-energy equivalence, Coulomb barrier, Gamow factor">
-    <i>E</i> = Δ<i>m</i>·<i>c</i>² = Δ<i>m</i> × 931.494 MeV/u
-    &ensp;,&ensp;
-    <i>V</i>(<i>r</i>) = 1.44·<i>Z</i>₁<i>Z</i>₂/<i>r</i> MeV
-    &ensp;,&ensp;
-    <i>P</i> = exp(−√(<i>E</i><sub>G</sub>/<i>E</i>))
-  </p>
+  <Formula
+    label="Mass-energy equivalence, Coulomb barrier, Gamow factor"
+    tex={String.raw`E = \Delta m\,c^{2} = \Delta m \times 931.494\ \mathrm{MeV/u} \qquad V(r) = \dfrac{1.44\,Z_1 Z_2}{r\,[\mathrm{fm}]}\ \mathrm{MeV} \qquad P = \exp\!\left(-\sqrt{\dfrac{E_G}{E}}\,\right)`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -94,7 +92,7 @@ const t = copy[lang];
       <div class="lab-meta">
         <p class="lab-readout">
           <span class="lab-readout-label">{t.barrier}</span>
-          <span id="fusion-barrier-value">V₀ = 0.44 MeV · KE = 0.0150 MeV</span>
+          <span id="fusion-barrier-value">V₀ = 0.44 MeV　／　KE = 0.0150 MeV</span>
         </p>
         <p class="lab-readout">
           <span class="lab-readout-label">{t.tunnel}</span>
@@ -132,7 +130,7 @@ const t = copy[lang];
     const classicalLabel = tunnelValue?.dataset.classical ?? '≈1 (classical crossing)';
 
     // Log-mapped slider: 1–700 keV spans solar-core (~1.3 keV) through
-    // reactor-scale (~10â20 keV) up past every reaction’s classical barrier
+    // reactor-scale (~10–20 keV) up past every reaction’s classical barrier
     // (0.44–0.60 MeV), so the same control reaches both regimes.
     const KEV_MIN = 1;
     const KEV_MAX = 700;
@@ -162,7 +160,7 @@ const t = copy[lang];
       { reaction: reactionKey, keVTemp: sliderToKeV(Number(slider.value)) },
       (u) => {
         if (barrierValue) {
-          barrierValue.textContent = `V₀ = ${u.barrierMeV.toFixed(2)} MeV · KE = ${u.keMeV.toFixed(4)} MeV`;
+          barrierValue.textContent = `V₀ = ${u.barrierMeV.toFixed(2)} MeV　／　KE = ${u.keMeV.toFixed(4)} MeV`;
         }
         if (tunnelValue) {
           tunnelValue.textContent = u.overBarrier ? classicalLabel : `P ≈ ${formatScientific(u.pTunnelRaw)}`;

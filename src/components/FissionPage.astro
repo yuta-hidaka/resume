@@ -1,20 +1,24 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
-// Mirrors the isotope constants in ../lib/lab/fission.ts (ISOTOPES). Kept as
-// plain literals here -- that module pulls in canvas/DOM code at import time
-// via ./viz, which is only safe inside the client <script>, not this
-// server-rendered frontmatter.
-const isotopeInfo = {
+// Isotope constant read-outs, as KaTeX so the ν̄ macron and unit spacing
+// render crisply. Mirrors the isotope constants in ../lib/lab/fission.ts
+// (ISOTOPES) — kept as plain literals here since that module pulls in
+// canvas/DOM code at import time via ./viz, only safe inside the client
+// <script>, not this server-rendered frontmatter. Both variants are
+// pre-rendered at build time and toggled by the isotope chips (the text is
+// KaTeX now, so JS can no longer just swap textContent).
+const isotopeTex = {
   ja: {
-    u235: 'ν̄ = 2.43 ・ E = 200 MeV/分裂 ・ 臨界質量 ≈ 52 kg',
-    pu239: 'ν̄ = 2.88 ・ E = 207 MeV/分裂 ・ 臨界質量 ≈ 10 kg',
+    u235: String.raw`\bar{\nu} = 2.43,\quad E = 200\ \mathrm{MeV}/\text{分裂},\quad \text{臨界質量} \approx 52\ \mathrm{kg}`,
+    pu239: String.raw`\bar{\nu} = 2.88,\quad E = 207\ \mathrm{MeV}/\text{分裂},\quad \text{臨界質量} \approx 10\ \mathrm{kg}`,
   },
   en: {
-    u235: 'ν̄ = 2.43, E = 200 MeV/fission, critical mass ≈ 52 kg',
-    pu239: 'ν̄ = 2.88, E = 207 MeV/fission, critical mass ≈ 10 kg',
+    u235: String.raw`\bar{\nu} = 2.43,\quad E = 200\ \mathrm{MeV/fission},\quad \text{critical mass} \approx 52\ \mathrm{kg}`,
+    pu239: String.raw`\bar{\nu} = 2.88,\quad E = 207\ \mathrm{MeV/fission},\quad \text{critical mass} \approx 10\ \mathrm{kg}`,
   },
 } as const;
 const K_MIN = 0.6;
@@ -27,7 +31,7 @@ const copy = {
     label: 'Lab 14 — Nuclear Physics',
     title: '核分裂の連鎖反応',
     intro:
-      '重い原子核(²³⁵U や ²³⁹Pu)に中性子が飛び込むと核分裂が起こります。核は2つの破片に割れ、中性子を数個放出しながら莫大なエネルギーを出します。例:²³⁵U + n → ¹⁴¹Ba + ⁹²Kr + 3n + 約200 MeV。放出された中性子が次の核を叩けばまた分裂が起こる、これが連鎖反応です。1回の分裂が平均何回の次の分裂を引き起こすかを表すのが実効増倍率 k。k<1 なら反応は減衰して止まり(未臨界)、k=1 なら中性子数は一定に保たれ(臨界、原子炉の状態)、k>1 なら指数関数的に増え続けます(超臨界、核爆発の領域)。中性子を発射し、k を動かしながら箱の中の連鎖反応を見てください。',
+      '重い原子核(²³⁵U や ²³⁹Pu)に中性子が飛び込むと核分裂が起こります。核は2つの破片に割れ、莫大なエネルギーとともに新しい中性子を平均2〜3個放出します。この平均が ν̄ です。例:²³⁵U + n → ¹⁴¹Ba + ⁹²Kr + 3n + 約200 MeV。放出された中性子が次の核を叩けばまた分裂が起こる、これが連鎖反応です。1回の分裂が平均して次の分裂を何回引き起こすか — それが実効増倍率 k。ν̄ に「中性子1個が次の分裂を起こす確率」を掛けたものです。k が1より小さければ反応はやがて減衰して止まります(未臨界)。ちょうど1なら中性子数は一定に保たれます(臨界。原子炉はこの状態で運転します)。1を超えると世代ごとに k 倍、指数関数的に増え続けます(超臨界、核爆発の領域)。中性子を発射し、k を動かしながら箱の中の連鎖反応を見てください。',
     hint: 'k を1より上げると、中性子が指数関数的に増えていく',
     isotopeLabel: '核種',
     kLabel: '実効増倍率 k',
@@ -40,15 +44,17 @@ const copy = {
     energy: '放出エネルギー',
     fissions: '分裂数',
     neutrons: '中性子数',
+    chartAria: '中性子数の推移',
+    chartCeiling: '上限',
     note:
-      '連鎖反応の運命は k だけで決まります。k<1(未臨界)では自然に減衰して止まり、k=1(臨界)では中性子数が一定に保たれます。原子炉の定常運転状態です。k>1(超臨界)では世代ごとに k 倍で指数関数的に増え続けます。臨界質量(裸の球体)はおよそ ²³⁵U で52 kg、²³⁹Pu で10 kg。中性子反射材で包めばもっと少なくて済みます。²³⁸U は分裂しにくい「親物質」で、中性子を吸収してもほとんどは分裂せず ²³⁹Pu へ変わるだけ。天然ウランの濃縮が必要な理由です。中性子の大部分は分裂と同時(即発)に出ますが、約0.65%は数秒から数十秒遅れて出ます(遅発中性子)。この遅れのおかげで原子炉は制御棒でゆっくり調整でき、暴走しにくくなっています。エネルギーの正体は質量欠損。核の質量が分裂前後で約0.1%軽くなり、その差が E=mc² として放出されます。1回の分裂で約200 MeV(約3.2×10⁻¹¹ J)、²³⁵U 1 g がすべて分裂すると約8×10¹⁰ J。石炭2.5トン分の熱量、TNT換算で約17トン分に相当します。広島に落とされたのはウラン砲身型、長崎はプルトニウム爆縮型。同じ物理が、制御されれば世界の原子力発電を支えています。',
+      '臨界質量は反射材なしの球形でおよそ ²³⁵U が52 kg、²³⁹Pu が10 kg。中性子を跳ね返す反射材で包めばもっと少なくて済みます。²³⁸U は分裂しにくい「親物質」で、中性子を吸収してもほとんどは分裂せず ²³⁹Pu へ変わるだけ。天然ウランに濃縮が必要な理由です。中性子の大部分は分裂と同時に出ます(即発)が、約0.65%は数秒から数十秒遅れて出ます(遅発中性子)。この遅れのおかげで原子炉は制御棒でゆっくり調整でき、暴走しにくくなっています。エネルギーの正体は質量欠損。分裂の前後で核の質量が約0.1%軽くなり、その差が E=mc² として放出されます。1回の分裂で約200 MeV(約3.2×10⁻¹¹ J)、²³⁵U 1 g がすべて分裂すると約8×10¹⁰ J。石炭2.5トン分の熱量、TNT換算で約17トンに相当します。広島に落とされたのはウラン砲身型、長崎はプルトニウム爆縮型。同じ物理が、制御されれば世界の原子力発電を支えています。なお、この箱では時おり中性子がひとりでに生まれます(自発核分裂や宇宙線による背景中性子)。使い切った核はしばらくすると周囲の燃料から補充され、描画の都合で中性子は220個が上限 — 超臨界の指数増加はグラフ上端の点線で頭打ちになります。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 14 — Nuclear Physics',
     title: 'The Fission Chain Reaction',
     intro:
-      'A neutron striking a heavy nucleus (²³⁵U or ²³⁹Pu) can trigger fission: the nucleus splits into two fragments, spits out a few fresh neutrons, and releases an enormous amount of energy, e.g. ²³⁵U + n gives ¹⁴¹Ba + ⁹²Kr + 3n + about 200 MeV. If those neutrons strike more nuclei, more fissions follow: a chain reaction. The effective multiplication factor k counts how many next-generation fissions each fission causes on average. k below 1 and the population decays away (subcritical); k equal to 1 and it holds steady (critical, a reactor); k above 1 and it grows exponentially (supercritical, a bomb). Fire a neutron, tune k, and watch the chain reaction play out inside the box.',
+      'A neutron striking a heavy nucleus (²³⁵U or ²³⁹Pu) can trigger fission: the nucleus splits into two fragments and releases an enormous amount of energy along with two or three fresh neutrons — their average is ν̄. For example, ²³⁵U + n → ¹⁴¹Ba + ⁹²Kr + 3n + about 200 MeV. If those neutrons strike more nuclei, more fissions follow: a chain reaction. How many next-generation fissions each fission causes on average is the effective multiplication factor k — ν̄ times the probability that any one neutron goes on to cause a fission. Below 1, the population decays away (subcritical). At exactly 1, it holds steady (critical — the state a reactor runs in). Above 1, it multiplies by k every generation, growing exponentially (supercritical — bomb territory). Fire a neutron, tune k, and watch the chain reaction play out inside the box.',
     hint: 'Push k above 1 and the neutron count runs away exponentially',
     isotopeLabel: 'Isotope',
     kLabel: 'Multiplication factor k',
@@ -61,12 +67,14 @@ const copy = {
     energy: 'Energy released',
     fissions: 'Fissions',
     neutrons: 'Neutrons',
+    chartAria: 'Neutron population over time',
+    chartCeiling: 'max',
     note:
-      'The chain reaction fate comes down to k alone. Below k=1 (subcritical) it decays away on its own; at k=1 (critical) the neutron population holds steady, the normal running state of a nuclear reactor. Above k=1 (supercritical) the population multiplies by k every generation, growing exponentially. The critical mass (bare sphere) is roughly 52 kg for ²³⁵U and 10 kg for ²³⁹Pu, and a neutron reflector shaves both down further. ²³⁸U is "fertile," not fissile: it mostly just captures neutrons instead of splitting, transmuting toward ²³⁹Pu, which is why natural uranium has to be enriched. Most neutrons appear instantly at the moment of fission (prompt), but about 0.65% are delayed by seconds to tens of seconds (delayed neutrons); that lag is exactly what lets a reactor be steered with slow-moving control rods instead of running away. The energy itself comes from a mass defect: the fragments weigh about 0.1% less than the original nucleus, and that missing mass reappears as energy via E=mc². One fission releases about 200 MeV (about 3.2×10⁻¹¹ J); fully fissioning 1 g of ²³⁵U releases about 8×10¹⁰ J, the heat of roughly 2.5 tonnes of coal, or about 17 tonnes of TNT. Hiroshima used a uranium gun-type weapon; Nagasaki used a plutonium implosion device. The very same physics, tamed, is what powers nuclear plants today.',
+      'The critical mass — an unreflected sphere — is roughly 52 kg for ²³⁵U and 10 kg for ²³⁹Pu; wrap it in a neutron reflector and both figures shrink. ²³⁸U is "fertile," not fissile: it mostly just captures neutrons instead of splitting, transmuting toward ²³⁹Pu — which is why natural uranium has to be enriched. Most neutrons appear at the instant of fission (prompt), but about 0.65% arrive seconds to tens of seconds late (delayed neutrons); that lag is exactly what lets a reactor be steered with slow-moving control rods instead of running away. The energy itself is a mass defect: the fragments weigh about 0.1% less than the original nucleus, and the missing mass reappears as energy via E=mc². One fission releases about 200 MeV (about 3.2×10⁻¹¹ J); fully fissioning 1 g of ²³⁵U yields about 8×10¹⁰ J — the heat of roughly 2.5 tonnes of coal, or about 17 tonnes of TNT. Hiroshima used a uranium gun-type weapon; Nagasaki a plutonium implosion device. The very same physics, tamed, powers nuclear plants today. One honest note about the box: stray neutrons occasionally appear on their own (the ambient background of spontaneous fission and cosmic rays), spent nuclei restock from the surrounding fuel after a moment, and the display caps at 220 neutrons — so a supercritical run saturates at the chart\'s dashed ceiling rather than growing forever.',
   },
 } as const;
 const t = copy[lang];
-const info = isotopeInfo[lang];
+const isoTex = isotopeTex[lang];
 ---
 
 <section>
@@ -75,13 +83,10 @@ const info = isotopeInfo[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Chain reaction multiplication factor">
-    <i>k</i> = ν̄·<i>P</i>(fission | <i>n</i>)
-    &ensp;,&ensp;
-    <i>N</i>(<i>g</i>) = <i>N</i>₀<i>k<sup>g</sup></i>
-    &ensp;,&ensp;
-    <i>E</i> ≈ 200 MeV / fission
-  </p>
+  <Formula
+    label="Chain reaction multiplication factor, generation growth, and energy per fission"
+    tex={String.raw`k = \bar{\nu}\,P(\text{fission}\mid n) \qquad N(g) = N_0\,k^{g} \qquad E \approx 200\ \mathrm{MeV/fission}`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -89,7 +94,12 @@ const info = isotopeInfo[lang];
       <p class="lab-hint">{t.hint}</p>
     </div>
     <div class="fission-chart-wrap">
-      <canvas id="fission-chart" aria-label="Neutron population over time"></canvas>
+      <canvas
+        id="fission-chart"
+        aria-label={t.chartAria}
+        data-neutrons-label={t.neutrons}
+        data-ceiling-word={t.chartCeiling}
+      ></canvas>
     </div>
 
     <div class="lab-panel">
@@ -98,7 +108,14 @@ const info = isotopeInfo[lang];
         <button type="button" class="lab-chip" data-isotope="pu239">²³⁹Pu</button>
       </div>
       <p class="lab-readout">
-        <span id="fission-isotope-info" data-u235={info.u235} data-pu239={info.pu239}>{info.u235}</span>
+        <span id="fission-isotope-info">
+          <span class="fission-iso-variant" data-variant="u235">
+            <Formula display={false} label="Uranium-235 constants" tex={isoTex.u235} />
+          </span>
+          <span class="fission-iso-variant" data-variant="pu239" hidden>
+            <Formula display={false} label="Plutonium-239 constants" tex={isoTex.pu239} />
+          </span>
+        </span>
       </p>
 
       <div class="lab-meta">
@@ -147,7 +164,7 @@ const info = isotopeInfo[lang];
 </section>
 
 <script>
-  import { createFissionScene, type IsotopeKey, type FissionSnapshot, type Regime } from '../lib/lab/fission';
+  import { createFissionScene, POP_CHART_MAX, type IsotopeKey, type FissionSnapshot, type Regime } from '../lib/lab/fission';
 
   const stage = document.getElementById('fission-stage') as HTMLCanvasElement | null;
   const chart = document.getElementById('fission-chart') as HTMLCanvasElement | null;
@@ -169,6 +186,14 @@ const info = isotopeInfo[lang];
     const fmtEnergy = (mev: number, joules: number) =>
       mev < 1000 ? `${mev.toFixed(0)} MeV` : `${mev.toExponential(2)} MeV (${joules.toExponential(2)} J)`;
 
+    // Localized annotations for the population chart (lang lives in the Astro
+    // layer, so it arrives via data-* attributes on the canvas). The ceiling
+    // tag reads e.g. "上限 220" / "max 220", pinned to the display cap.
+    const chartLabels = {
+      neutrons: chart.dataset.neutronsLabel ?? 'neutrons',
+      ceiling: `${chart.dataset.ceilingWord ?? 'max'} ${POP_CHART_MAX}`,
+    };
+
     const scene = createFissionScene(
       stage,
       chart,
@@ -183,6 +208,7 @@ const info = isotopeInfo[lang];
           regimeEl.style.color = REGIME_COLOR[snap.regime];
         }
       },
+      chartLabels,
     );
 
     const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-isotope]'));
@@ -191,7 +217,10 @@ const info = isotopeInfo[lang];
         chips.forEach((c) => c.classList.toggle('active', c === chip));
         const key = (chip.dataset.isotope === 'pu239' ? 'pu239' : 'u235') as IsotopeKey;
         scene.setIsotope(key);
-        if (infoEl) infoEl.textContent = infoEl.dataset[key] ?? '';
+        // Both isotope read-outs are pre-rendered KaTeX; show the selected one.
+        infoEl?.querySelectorAll<HTMLElement>('.fission-iso-variant').forEach((v) => {
+          v.hidden = v.dataset.variant !== key;
+        });
       });
     });
 
