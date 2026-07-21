@@ -482,6 +482,69 @@ const DRAWERS: Record<string, Drawer> = {
       dot(ctx, LW * 0.08 + t * (LW * 0.42), LH * 0.5, 1.3, p.gold, 0.9, p.dark);
     }
   },
+
+  doubleslit(ctx, p) {
+    // Wavefronts from two slits + dots accreting into fringes on the screen.
+    const barrierX = LW * 0.34;
+    const cy = LH / 2;
+    const screenX = LW * 0.92;
+    const slitGap = 10;
+    const slitY = [cy - slitGap / 2, cy + slitGap / 2];
+    for (let s = 0; s < 2; s++) {
+      for (let k = 0; k < 3; k++) {
+        const r = (p.T * 22 + k * 13) % 40;
+        ctx.globalAlpha = Math.max(0, 1 - r / 40) * 0.45;
+        ctx.strokeStyle = rgb(p.green, 1);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(barrierX, slitY[s], r, -0.9, 0.9);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = rgb(p.mid, 0.9);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(barrierX, 4);
+    ctx.lineTo(barrierX, slitY[0] - 2);
+    ctx.moveTo(barrierX, slitY[0] + 2);
+    ctx.lineTo(barrierX, slitY[1] - 2);
+    ctx.moveTo(barrierX, slitY[1] + 2);
+    ctx.lineTo(barrierX, LH - 4);
+    ctx.stroke();
+    ctx.strokeStyle = rgb(p.faint, 0.5);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(screenX, 6);
+    ctx.lineTo(screenX, LH - 6);
+    ctx.stroke();
+    const fringe = 9;
+    const rand = rng(31);
+    for (let b = -2; b <= 2; b++) {
+      const yb = cy + b * fringe;
+      const bright = Math.exp(-(b * b) / 4);
+      const nd = Math.round(6 * bright + 1);
+      for (let i = 0; i < nd; i++) {
+        dot(ctx, screenX + 2 + rand() * 3, yb + (rand() - 0.5) * 4, 1, p.green, 0.8 * bright + 0.12, p.dark);
+      }
+    }
+    const ph = (p.T * 0.5) % 1;
+    const s = Math.floor(p.T) % 2;
+    const sy = slitY[s];
+    let px: number;
+    let py: number;
+    if (ph < 0.5) {
+      const u = ph / 0.5;
+      px = LW * 0.08 + (barrierX - LW * 0.08) * u;
+      py = cy + (sy - cy) * u;
+    } else {
+      const u = (ph - 0.5) / 0.5;
+      px = barrierX + (screenX - barrierX) * u;
+      py = sy + (cy - sy) * u;
+    }
+    dot(ctx, px, py, 1.5, p.gold, 0.9, p.dark);
+    dot(ctx, LW * 0.08, cy, 1.6, p.green, 0.85, p.dark);
+  },
 };
 
 function coarsen(f: Int8Array, gx: number, gy: number): Int8Array {

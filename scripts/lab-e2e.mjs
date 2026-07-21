@@ -6,7 +6,7 @@ import { chromium } from '@playwright/test';
 const BASE = process.env.BASE || 'http://localhost:4321';
 const PIECES = [
   '', 'hydrogen', 'fourier', 'entropy', 'ising', 'polarizer', 'molecules',
-  'millikan', 'tunnel', 'kinetics', 'well', 'chirality', 'polymer', 'fusion', 'fission',
+  'millikan', 'tunnel', 'kinetics', 'well', 'chirality', 'polymer', 'fusion', 'fission', 'doubleslit',
 ];
 const LANGS = ['ja', 'en'];
 const urls = [];

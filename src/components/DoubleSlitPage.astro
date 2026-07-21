@@ -1,0 +1,146 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 15 — Quantum Mechanics',
+    title: '二重スリット — 波と粒子',
+    intro:
+      '量子を「線（波）」と「点（粒子）」の両方で同時に見るページです。左の光源から量子（電子でも光子でも）を1個ずつ発射し、2本のスリットを通して右のスクリーンに当てます。1個1個は必ず1つの点として検出される — なのに、何千個と溜めていくと、点の分布が明暗の干渉縞を描きます。粒子なのに、波のように自分自身と干渉している。背景で揺れているのが波（波動関数）、スクリーンに積もっていくのが粒子。同じ1つの量子の、2つの顔です。',
+    hint: 'N を増やして、点が縞になっていくのを見る。「測定」を押すと縞が消える',
+    sep: 'スリット間隔 d',
+    wavelength: '波長 λ',
+    measure: 'どちらのスリットか測定',
+    reset: 'クリア',
+    count: '検出数',
+    canvasFringes: '干渉縞',
+    canvasMeasured: 'which-path 測定 → 干渉消失',
+    note: '一番不思議なのは「どちらのスリットを通ったか」を観測した瞬間に干渉縞が消えること。粒子を乱暴に叩くからではなく、経路の情報が確定すると波の重ね合わせ（コヒーレンス）が壊れるという、量子力学の根っこの性質です。しかも量子を1個ずつ送っても縞ができる — 1個の量子が両方のスリットを「同時に通って」自分自身と干渉している。1989 年、外村彰らは電子を1個ずつ送る実験で、点がゆっくり縞に育つ様子を実際に撮影しました。このページの「線＝波」「点＝粒子」は、水素原子の電子雲（|ψ|² を1点ずつサンプリング）と同じ考え方です。',
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 15 — Quantum Mechanics',
+    title: 'The Double Slit — Wave & Particle',
+    intro:
+      'A quantum seen as both a “line” (a wave) and a “point” (a particle) at once. Fire quanta (electrons or photons) one at a time from the source on the left, through two slits, onto the screen on the right. Every single one is detected as exactly one point — yet let thousands pile up and the dots trace out bright-and-dark interference fringes. A particle, interfering like a wave with itself. The shimmer in the background is the wave (the wavefunction); the dots accumulating on the screen are the particles. Two faces of the same quantum.',
+    hint: 'Grow N and watch the dots become fringes. Press “measure” and the fringes vanish',
+    sep: 'Slit separation d',
+    wavelength: 'Wavelength λ',
+    measure: 'Measure which path',
+    reset: 'Clear',
+    count: 'Detected',
+    canvasFringes: 'interference fringes',
+    canvasMeasured: 'which-path measured → no interference',
+    note: 'The deepest strangeness: the fringes vanish the instant you observe which slit the quantum took — not because you jostle the particle, but because pinning down the path destroys the superposition (coherence) of the two waves. And the fringes appear even when quanta go through one at a time: a single quantum passes through both slits “at once” and interferes with itself. In 1989 Tonomura and colleagues sent electrons one by one and filmed the dots slowly growing into fringes. This page’s “line = wave, point = particle” is the same idea as the hydrogen electron cloud (sampling |ψ|² one point at a time).',
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <Formula
+    label="Far-field two-slit intensity and the fringe spacing"
+    tex={String.raw`I(\theta) = I_0\,\cos^2\!\left(\frac{\pi d \sin\theta}{\lambda}\right)\operatorname{sinc}^2\!\left(\frac{\pi a \sin\theta}{\lambda}\right) \qquad \Delta y = \frac{\lambda L}{d}`}
+  />
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas
+        id="doubleslit-canvas"
+        class="lab-canvas doubleslit-canvas"
+        aria-label={t.title}
+        data-labels={JSON.stringify({ fringes: t.canvasFringes, measured: t.canvasMeasured })}
+      ></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="ds-sep">
+          <span class="lab-readout-label">{t.sep}</span>
+          <span id="ds-sep-value">d = 72</span>
+        </label>
+        <input id="ds-sep" class="lab-slider" type="range" min="30" max="110" step="1" value="72" />
+      </div>
+      <div class="lab-meta">
+        <label class="lab-readout" for="ds-lambda">
+          <span class="lab-readout-label">{t.wavelength}</span>
+          <span id="ds-lambda-value">λ = 12</span>
+        </label>
+        <input id="ds-lambda" class="lab-slider" type="range" min="7" max="20" step="1" value="12" />
+      </div>
+      <div class="lab-meta">
+        <div class="lab-chips">
+          <button type="button" class="lab-chip" id="ds-measure" aria-pressed="false">{t.measure}</button>
+          <button type="button" class="lab-chip" id="ds-reset">{t.reset}</button>
+        </div>
+        <p class="lab-readout">
+          <span class="lab-readout-label">{t.count}</span>
+          <span id="ds-count-value">N = 0</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createDoubleSlitScene } from '../lib/lab/doubleslit';
+
+  const canvas = document.getElementById('doubleslit-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels || '{}') as { fringes: string; measured: string };
+    const countEl = document.getElementById('ds-count-value');
+    const scene = createDoubleSlitScene(
+      canvas,
+      (n) => {
+        if (countEl) countEl.textContent = `N = ${n.toLocaleString()}`;
+      },
+      labels,
+    );
+
+    const sep = document.getElementById('ds-sep') as HTMLInputElement;
+    const lambda = document.getElementById('ds-lambda') as HTMLInputElement;
+    const sepValue = document.getElementById('ds-sep-value');
+    const lambdaValue = document.getElementById('ds-lambda-value');
+    const measure = document.getElementById('ds-measure') as HTMLButtonElement;
+
+    scene.setSeparation(Number(sep.value));
+    scene.setWavelength(Number(lambda.value));
+
+    sep.addEventListener('input', () => {
+      scene.setSeparation(Number(sep.value));
+      if (sepValue) sepValue.textContent = `d = ${sep.value}`;
+    });
+    lambda.addEventListener('input', () => {
+      scene.setWavelength(Number(lambda.value));
+      if (lambdaValue) lambdaValue.textContent = `λ = ${lambda.value}`;
+    });
+
+    let measured = false;
+    measure.addEventListener('click', () => {
+      measured = !measured;
+      scene.setMeasured(measured);
+      measure.classList.toggle('active', measured);
+      measure.setAttribute('aria-pressed', String(measured));
+      scene.reset();
+    });
+    document.getElementById('ds-reset')?.addEventListener('click', () => scene.reset());
+  }
+</script>
+
+<style>
+  .doubleslit-canvas {
+    height: clamp(340px, 58vw, 480px);
+  }
+</style>
