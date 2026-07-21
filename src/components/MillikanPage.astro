@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,7 +10,7 @@ const copy = {
     label: 'Lab 07 — Experiment',
     title: 'ミリカンの油滴実験',
     intro:
-      '1909 年、ミリカンは帯電した油滴を平行板コンデンサの間に浮かべ、電気素量 e を測りました。ここでは油滴の電荷（e の何倍かは伏せてあります）と質量だけが決まっていて、あなたが電圧を調整して重力と電気力を釣り合わせます。静止したら「記録」— 何滴も繰り返すと、測った電荷が e の整数倍にだけ集まっていくのが見えてきます。電荷が連続量ではなく粒であることの、歴史的な発見の追体験です。',
+      '1909 年、ミリカンは帯電した油滴を平行板コンデンサの間に浮かべ、電気素量 e を測りました。ここに浮かぶ油滴は質量が分かっていて、マイナスに帯電しています — 電荷が e の何倍なのかは伏せたまま。電圧を上げると油滴は上向きの電気力を受けるので、重力とちょうど釣り合って静止する電圧を探してください。静止したら「記録する」。何滴も繰り返すと、測った電荷が e の整数倍にだけ集まっていくのが見えてきます。電荷が連続量ではなく粒であることの、歴史的な発見の追体験です。',
     hint: '油滴が緑になったら釣り合い。矢印キーで電圧の微調整ができる',
     voltage: '電圧',
     drift: '油滴の動き',
@@ -17,14 +18,14 @@ const copy = {
     newDrop: '新しい油滴',
     record: '記録する',
     count: '記録数',
-    note: '記録した電荷 q = mgd/V が 1e, 2e, 3e… の線上にだけ並ぶこと — それが「電荷の量子化」です。実際のミリカンの測定値は e = 1.59×10⁻¹⁹ C（空気の粘性係数の誤差でわずかにずれていた）。この功績で 1923 年にノーベル物理学賞を受けています。ここでは油滴の質量は既知としていますが、本物の実験では電場を切って終端速度から質量も測ります。',
+    note: '記録した電荷 q = mgd/V が 1e, 2e, 3e… の線の上にだけ並ぶこと — それが「電荷の量子化」です。ミリカン自身の測定値は e = 1.59×10⁻¹⁹ C。当時使われていた空気の粘りけ（粘性係数）の値が少し不正確で、そのぶんだけ真の値からずれていました。この功績で 1923 年にノーベル物理学賞を受けています。ここでは油滴の質量を既知としていますが、本物の実験では電場を切り、落下の終端速度から質量も測ります。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 07 — Experiment',
     title: "Millikan's Oil-Drop Experiment",
     intro:
-      'In 1909 Millikan suspended charged oil droplets between capacitor plates and measured the elementary charge e. Here the droplet has a hidden charge (some multiple of e) and a known mass — you tune the voltage until the electric force balances gravity. When it hovers, hit “record”. Repeat over many droplets and the measured charges pile up only at integer multiples of e: charge comes in lumps, and you get to rediscover it.',
+      'In 1909 Millikan suspended charged oil droplets between capacitor plates and measured the elementary charge e. The droplet here has a known mass and a negative charge — some hidden multiple of e. Raising the voltage pulls it upward, so hunt for the voltage where the electric force exactly balances gravity. When it hovers, hit “Record”. Repeat over many droplets and the measured charges pile up only at integer multiples of e: charge comes in lumps, and you get to rediscover it.',
     hint: 'The droplet turns green when balanced. Arrow keys fine-tune the voltage',
     voltage: 'Voltage',
     drift: 'Droplet motion',
@@ -32,7 +33,7 @@ const copy = {
     newDrop: 'New droplet',
     record: 'Record',
     count: 'Records',
-    note: 'The recorded charges q = mgd/V land only on the 1e, 2e, 3e… lines — that is charge quantization. Millikan measured e = 1.59×10⁻¹⁹ C (slightly off due to the then-known viscosity of air) and won the 1923 Nobel Prize. Here the droplet mass is given; in the real experiment it is deduced from the fall speed with the field off.',
+    note: 'The recorded charges q = mgd/V land only on the 1e, 2e, 3e… lines — that is charge quantization. Millikan himself measured e = 1.59×10⁻¹⁹ C — slightly off because the accepted value for the viscosity of air was itself in error — and won the 1923 Nobel Prize. Here the droplet mass is given; in the real experiment it is deduced from the fall speed with the field off.',
   },
 } as const;
 const t = copy[lang];
@@ -44,13 +45,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Force balance">
-    <i>qE</i> = <i>qV</i>/<i>d</i> = <i>mg</i>
-    &ensp;⇒&ensp;
-    <i>q</i> = <i>mgd</i>/<i>V</i>
-    &ensp;,&ensp;
-    <i>q</i> = <i>n</i>·<i>e</i>, <i>e</i> = 1.602×10⁻¹⁹ C
-  </p>
+  <Formula
+    label="Force balance"
+    tex={String.raw`qE = \dfrac{qV}{d} = mg \quad\Rightarrow\quad q = \dfrac{mgd}{V}, \qquad q = n\cdot e, \quad e = 1.602\times 10^{-19}\ \mathrm{C}`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">

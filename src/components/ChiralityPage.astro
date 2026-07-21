@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,7 +10,11 @@ const copy = {
     label: 'Lab 11 — Biochemistry',
     title: '光学異性体と、薬が効く理由',
     intro:
-      '4つの異なる基が結びついた炭素は、右手と左手のように「重ね合わせられない鏡像」を2つ持ちます — これが光学異性体（エナンチオマー）です。体内のタンパク質（受容体・酵素）はそれ自身が左右非対称なので、片方の異性体だけがポケットにぴったりはまり、薬として働きます。もう片方は同じ原子で出来ているのに、はまらない、あるいは別の作用をする。分子の「かたち」と「手性（きき手）」が効き目を決めているのです。',
+      '4つの異なる基が結びついた炭素は、右手と左手のように「重ね合わせられない鏡像」を2つ持ちます — これが光学異性体（エナンチオマー）です。体内のタンパク質（受容体・酵素）はそれ自身が左右非対称なので、片方の異性体だけがポケットにぴったりはまり、薬として働きます。もう片方は同じ原子で出来ているのに、はまらない、あるいは別の作用をする。分子の「かたち」と「手性（右手か左手か）」が効き目を決めているのです。',
+    formula: String.raw`\begin{aligned}\text{受容体} + R &\longrightarrow 3/3\ \text{接触} \longrightarrow \text{結合（活性）} \\ \text{受容体} + S &\longrightarrow {<}\,3\ \text{接触} \longrightarrow \text{不適合（不活性）}\end{aligned}`,
+    formulaLabel: '3点相互作用モデル',
+    receptorLabel: '受容体',
+    drugLabel: '薬',
     hint: 'R体は3点すべてが合ってはまる。S体（鏡像）に切り替えると色が合わず、はまらない',
     handLabel: '異性体',
     mirror: 'S（鏡像）',
@@ -24,6 +29,10 @@ const copy = {
     title: 'Chirality: Why a Drug Works',
     intro:
       'A carbon bonded to four different groups comes in two non-superimposable mirror images, like a left and a right hand — these are enantiomers (optical isomers). The proteins in your body (receptors, enzymes) are themselves handed, so typically only one enantiomer fits the pocket and acts as a drug. The mirror image is made of the exact same atoms, yet it may not fit at all, or do something entirely different. Shape and handedness decide the effect.',
+    formula: String.raw`\begin{aligned}\text{Receptor} + R &\longrightarrow 3/3\ \text{contacts} \longrightarrow \text{binds (active)} \\ \text{Receptor} + S &\longrightarrow {<}\,3\ \text{contacts} \longrightarrow \text{no fit (inactive)}\end{aligned}`,
+    formulaLabel: 'Three-point attachment model',
+    receptorLabel: 'Receptor',
+    drugLabel: 'Drug',
     hint: 'The R form matches all three points and docks. Switch to S (the mirror image) and the colors no longer line up',
     handLabel: 'Enantiomer',
     mirror: 'S (mirror)',
@@ -42,15 +51,16 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Three-point attachment">
-    受容体 + <i>R</i> → 3/3 接触 → 結合（活性）
-    &ensp;;&ensp;
-    受容体 + <i>S</i> → &lt; 3 接触 → 不適合（不活性）
-  </p>
+  <Formula label={t.formulaLabel} tex={t.formula} />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
-      <canvas id="chirality-canvas" class="lab-canvas" aria-label={t.title}></canvas>
+      <canvas
+        id="chirality-canvas"
+        class="lab-canvas"
+        aria-label={t.title}
+        data-receptor={t.receptorLabel}
+        data-drug={t.drugLabel}></canvas>
       <p class="lab-hint">{t.hint}</p>
     </div>
 
@@ -81,13 +91,22 @@ const t = copy[lang];
     const inactiveText = verdictEl?.dataset.inactive ?? '';
     let lastBinds: boolean | null = null;
 
-    const scene = createChiralityScene(canvas, (_hand, binds) => {
-      if (verdictEl && binds !== lastBinds) {
-        verdictEl.textContent = binds ? activeText : inactiveText;
-        verdictEl.style.color = binds ? 'var(--accent)' : 'var(--ink)';
-        lastBinds = binds;
-      }
-    });
+    const labels = {
+      receptor: canvas.dataset.receptor ?? '',
+      drug: canvas.dataset.drug ?? '',
+    };
+
+    const scene = createChiralityScene(
+      canvas,
+      (_hand, binds) => {
+        if (verdictEl && binds !== lastBinds) {
+          verdictEl.textContent = binds ? activeText : inactiveText;
+          verdictEl.style.color = binds ? 'var(--accent)' : 'var(--ink)';
+          lastBinds = binds;
+        }
+      },
+      labels,
+    );
 
     const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-hand]'));
     chips.forEach((chip) => {

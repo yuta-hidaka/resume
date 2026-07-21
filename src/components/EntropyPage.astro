@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,22 +10,22 @@ const copy = {
     label: 'Lab 03 — Statistical Mechanics',
     title: 'エントロピーと混合',
     intro:
-      '緑と金、2種類の理想気体 2,600 粒子が壁で仕切られた箱に入っています。数秒後、壁はひとりでに外れます。粒子はただ直進と反射を繰り返すだけ — それでも必ず混ざり、そして二度と元の左右分離には戻りません。逆向きの運動も物理法則としては完全に許されているのに、です。下のグラフは箱を 16×10 の格子に粗視化した混合エントロピー S。乱雑さへ向かう一方通行 — 第二法則は力ではなく、単なる「場合の数の数え上げ」の帰結です。',
-    hint: 'まもなく壁が外れる。ここから先は一方通行 — 何分眺めても元には戻らない',
+      '緑と金、2種類の理想気体 2,600 粒子が壁で仕切られた箱に入っています。数秒後、壁はひとりでに外れます。粒子はただ直進と反射を繰り返すだけ — それでも必ず混ざり、そして二度と元の左右分離には戻りません。逆向きの運動も物理法則としては完全に許されているのに、です。下のグラフは、箱を 16×10 のマス目に区切り、各マスで緑と金がどれだけ混ざったかを数え上げた混合エントロピー S。乱雑さへ向かう一方通行 — 第二法則は力ではなく、単なる「場合の数の数え上げ」の帰結です。',
+    hint: '壁はひとりでに外れる。ここから先は一方通行 — 何分眺めても元には戻らない',
     reset: 'もう一度最初から',
     entropy: '混合エントロピー',
-    note: 'S はゆらぎながら 1 に近づき、まれに少しだけ下がります — 小さな系ではエントロピーの減少も起こりうる（ゆらぎの定理）。ただし全粒子が左半分に戻る確率はおよそ 2⁻²⁶⁰⁰。宇宙の年齢を何回繰り返しても足りません。',
+    note: 'S はゆらぎながら 1 に近づき、まれに少しだけ下がります — 小さな系ではエントロピーの減少も起こりうる（ゆらぎの定理）。ただし緑がすべて左へ、金がすべて右へそろい直す確率はおよそ 2⁻²⁶⁰⁰。宇宙の年齢を何回繰り返しても足りません。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 03 — Statistical Mechanics',
     title: 'Entropy & Mixing',
     intro:
-      'Two ideal gases — 2,600 particles of green and gold — sit in a box divided by a wall. After a few seconds the wall drops on its own. The particles do nothing but fly straight and bounce — yet they inevitably mix, and never return to the separated state, even though the reversed motion is perfectly allowed by the laws of physics. The chart tracks the mixing entropy S, coarse-grained on a 16×10 grid: a one-way street toward disorder. The second law is not a force; it is what counting configurations inevitably produces.',
-    hint: 'The wall is about to drop. From then on it is one-way — watch as long as you like, it never goes back',
+      'Two ideal gases — 2,600 particles of green and gold — sit in a box divided by a wall. After a few seconds the wall drops on its own. The particles do nothing but fly straight and bounce — yet they inevitably mix, and never return to the separated state, even though the reversed motion is perfectly allowed by the laws of physics. The chart tracks the mixing entropy S: divide the box into a 16×10 grid and score how evenly green and gold share each cell. A one-way street toward disorder — the second law is not a force; it is what counting configurations inevitably produces.',
+    hint: 'The wall drops on its own. From then on it is one-way — watch as long as you like, it never goes back',
     reset: 'Run it again',
     entropy: 'Mixing entropy',
-    note: 'S fluctuates on its way up and occasionally dips — in small systems entropy can briefly decrease (fluctuation theorem). But the chance of all particles returning to the left half is about 2⁻²⁶⁰⁰: not once in any number of ages of the universe.',
+    note: 'S fluctuates on its way up and occasionally dips — in small systems entropy can briefly decrease (fluctuation theorem). But the chance of every green particle finding the left half again and every gold the right is about 2⁻²⁶⁰⁰: not once in any number of ages of the universe.',
   },
 } as const;
 const t = copy[lang];
@@ -36,11 +37,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Mixing entropy">
-    <i>S</i> = Σ<sub><i>c</i></sub> <i>w<sub>c</sub></i> · <i>H</i>(<i>f<sub>c</sub></i>)
-    &ensp;,&ensp;
-    <i>H</i>(<i>f</i>) = −[<i>f</i> ln <i>f</i> + (1−<i>f</i>) ln(1−<i>f</i>)] / ln 2
-  </p>
+  <Formula
+    label="Mixing entropy"
+    tex={String.raw`S = \sum_{c} w_c\, H(f_c), \qquad H(f) = -\dfrac{f \ln f + (1-f)\ln(1-f)}{\ln 2}`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">

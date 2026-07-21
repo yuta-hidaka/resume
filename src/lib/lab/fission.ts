@@ -239,7 +239,9 @@ function spawnNeutron(
   nuBar: number,
   rng: () => number,
 ) {
-  if (into.length >= MAX_NEUTRONS) return;
+  // No cap check here: a newborn neutron must always be created at its flash
+  // site. The display cap is enforced downstream in step() by evicting the
+  // oldest in-flight neutrons, not by refusing births (see the merge below).
   const pFission = fissionProbability(k, nuBar);
   const targetIdx = rng() < pFission ? randomAliveIndex(nuclei, rng) : -1;
   let vx: number;
@@ -365,16 +367,23 @@ export function createFissionCore(initial: Partial<FissionParams> = {}, rng: () 
         // else: leaked out of the box, lost
       }
 
-      neutrons = survivors.concat(spawned).slice(0, MAX_NEUTRONS);
-
       // Faint ambient background (spontaneous fission / cosmic rays): one
       // stray neutron every AMBIENT_INTERVAL seconds, born inside the
-      // material itself rather than fired in from outside.
+      // material itself rather than fired in from outside. Emitted into the
+      // newborn set so it takes part in the cap eviction below.
       ambientAccum += dt;
       if (ambientAccum >= AMBIENT_INTERVAL) {
         ambientAccum -= AMBIENT_INTERVAL;
-        spawnNeutron(neutrons, nuclei, 0.1 + rng() * 0.8, 0.1 + rng() * 0.8, null, params.k, isotope.nuBar, rng);
+        spawnNeutron(spawned, nuclei, 0.1 + rng() * 0.8, 0.1 + rng() * 0.8, null, params.k, isotope.nuBar, rng);
       }
+
+      // At the display cap, evict the OLDEST in-flight neutrons rather than
+      // dropping newborns: a freshly emitted neutron must always appear at
+      // its flash site, so it is the least visually attributable (oldest)
+      // neutrons that vanish instead. k-in-expectation is unaffected — this
+      // only bites while the population is pinned at MAX_NEUTRONS.
+      const merged = survivors.concat(spawned);
+      neutrons = merged.length > MAX_NEUTRONS ? merged.slice(merged.length - MAX_NEUTRONS) : merged;
 
       sampleAccum += dt;
       if (sampleAccum >= SAMPLE_INTERVAL) {
@@ -475,11 +484,21 @@ export interface FissionScene {
   dispose(): void;
 }
 
+/** Localized captions drawn onto the population strip chart. Optional — the
+ *  chart renders fine without them, just unlabelled. */
+export interface FissionChartLabels {
+  /** caption at top-left, e.g. "中性子数" / "neutrons" */
+  neutrons: string;
+  /** tag on the dashed display-cap line, e.g. "上限 220" / "max 220" */
+  ceiling: string;
+}
+
 export function createFissionScene(
   stage: HTMLCanvasElement,
   chart: HTMLCanvasElement,
   initial: Partial<FissionParams> = {},
   onUpdate?: (snap: FissionSnapshot) => void,
+  chartLabels?: FissionChartLabels,
 ): FissionScene {
   const sctx = stage.getContext('2d')!;
   const cctx = chart.getContext('2d')!;
@@ -630,6 +649,23 @@ export function createFissionScene(
       }));
       areaFill(cctx, pts, h - pad, curveColor, colors.dark ? 0.26 : 0.16);
       glowStroke(cctx, pts, curveColor, 1.6, colors.dark ? 0.8 : 0.4, colors.dark);
+    }
+
+    // Annotate the strip: what it plots (top-left) and the dashed cap it can
+    // saturate against (right-aligned on the ceiling line). Drawn last so the
+    // captions read cleanly over the curve.
+    if (chartLabels) {
+      label(cctx, chartLabels.neutrons, 3, pad + 9, colors.inkMuted, {
+        size: 9.5,
+        weight: 500,
+        alpha: colors.dark ? 0.72 : 0.66,
+      });
+      label(cctx, chartLabels.ceiling, w - 3, pad + 9, colors.inkMuted, {
+        size: 9.5,
+        weight: 500,
+        align: 'right',
+        alpha: colors.dark ? 0.58 : 0.52,
+      });
     }
   };
 

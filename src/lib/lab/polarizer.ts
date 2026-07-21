@@ -36,6 +36,13 @@ export function stageIntensities(s: PolarizerState): number[] {
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const WHITE: RGB = [255, 255, 255];
 
+/** Horizontal foreshortening of the filter plane. The bench is viewed at a
+ *  slight tilt, so each disk (perpendicular to the beam) reads as an ellipse
+ *  and the in-plane horizontal axis is compressed to this fraction. Every
+ *  in-plane quantity — ring, hatch, E-field arrows — is projected through the
+ *  same factor so all angles live in one consistent plane. */
+const PLANE_X = 0.42;
+
 /** Generalized glowStroke for arbitrary (possibly multi-subpath) paths — used
  *  for the E-field arrows and filter rings, which glowStroke's polyline API
  *  can't express. Mirrors glowStroke's own dark/light convention exactly. */
@@ -99,57 +106,92 @@ export function createPolarizerScene(canvas: HTMLCanvasElement): PolarizerScene 
   window.addEventListener('resize', resize);
   resize();
 
-  /** Filter disk: a fine hatch marks the transmission axis; the ring's glow
-   *  brightens with how much light this filter is actually passing. */
+  /** Filter disk, seen as a foreshortened ellipse in the tilted bench plane.
+   *  The faint hatch runs along the iodine chains (the "wires" that absorb the
+   *  parallel field); a brighter gold line marks the perpendicular
+   *  transmission axis that light actually passes. The ring's glow brightens
+   *  with how much light this filter is passing. */
   const drawFilter = (x: number, y: number, r: number, deg: number, labelText: string, throughput: number) => {
     const glowT = clamp01(throughput / 0.5);
-    ctx.save();
-    ctx.translate(x, y);
+    const rad = (deg * Math.PI) / 180;
+    const cs = Math.cos(rad);
+    const sn = Math.sin(rad);
+    // Project a disk-local point (a = along transmission axis, b = along the
+    // chains) into screen space, foreshortening the in-plane horizontal by
+    // PLANE_X so the disk reads as a tilted plane.
+    const proj = (a: number, b: number): [number, number] => [
+      x + (a * sn + b * cs) * PLANE_X,
+      y - (a * cs - b * sn),
+    ];
 
-    ctx.save();
-    ctx.rotate((deg * Math.PI) / 180);
+    // Hatch = iodine chains, perpendicular to the transmission axis.
     ctx.strokeStyle = rgb(t.inkMuted, t.dark ? 0.3 : 0.38);
     ctx.lineWidth = 1;
     ctx.beginPath();
-    for (let o = -r + 7; o < r; o += 7) {
-      const half = Math.sqrt(Math.max(0, r * r - o * o)) - 2;
+    for (let a = -r + 7; a < r; a += 7) {
+      const half = Math.sqrt(Math.max(0, r * r - a * a)) - 2;
       if (half <= 0) continue;
-      ctx.moveTo(o, -half);
-      ctx.lineTo(o, half);
+      const [x1, y1] = proj(a, -half);
+      const [x2, y2] = proj(a, half);
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
     }
     ctx.stroke();
-    ctx.restore();
 
+    // Transmission axis: a subtle double-headed gold tick across the disk.
+    const [ax1, ay1] = proj(-r + 3, 0);
+    const [ax2, ay2] = proj(r - 3, 0);
+    ctx.strokeStyle = rgb(sampleRamp(goldR, 0.55 + 0.4 * glowT), t.dark ? 0.55 : 0.62);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(ax1, ay1);
+    ctx.lineTo(ax2, ay2);
+    ctx.stroke();
+
+    // Ring: an ellipse, foreshortened horizontally (a circle in the tilted
+    // plane projects to the same ellipse regardless of the axis angle).
     const ringColor = mix(t.inkMuted, sampleRamp(goldR, glowT), 0.3 + 0.55 * glowT);
     const ringPath = () => {
       ctx.beginPath();
-      ctx.arc(0, 0, r, 0, 2 * Math.PI);
+      ctx.ellipse(x, y, r * PLANE_X, r, 0, 0, 2 * Math.PI);
     };
     strokeGlowPath(ctx, ringPath, ringColor, 1.4, t.glowAlpha * (0.2 + 0.6 * glowT), t.dark);
-    ctx.restore();
 
     label(ctx, labelText, x, y + r + 20, t.inkMuted, { size: 12, align: 'center' });
   };
 
-  /** Double-headed E-field arrow at screen angle θ from vertical, glowing. */
+  /** Double-headed E-field arrow at angle θ from vertical, living in the same
+   *  tilted plane as the filters: the vertical reach is full, the in-plane
+   *  horizontal reach is foreshortened by PLANE_X. A near-horizontal field
+   *  (θ→90°) therefore reads as poking into the bench rather than running
+   *  along the beam. */
   const drawEArrow = (x: number, y: number, deg: number, len: number, pulse: number) => {
     if (len < 2) return;
     const l = len * (0.75 + 0.25 * pulse);
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate((deg * Math.PI) / 180);
+    const rad = (deg * Math.PI) / 180;
+    // Projected axis offset from centre to tip (screen up = negative y).
+    const ox = Math.sin(rad) * PLANE_X;
+    const oy = -Math.cos(rad);
+    const mag = Math.hypot(ox, oy) || 1;
+    const hx = ox / mag; // unit heading, for the arrowheads
+    const hy = oy / mag;
+    const px = -hy; // unit perpendicular, for the barbs
+    const py = hx;
     const path = () => {
       ctx.beginPath();
-      ctx.moveTo(0, -l);
-      ctx.lineTo(0, l);
+      ctx.moveTo(x - ox * l, y - oy * l);
+      ctx.lineTo(x + ox * l, y + oy * l);
       for (const dir of [-1, 1]) {
-        ctx.moveTo(-3.5, dir * (l - 5));
-        ctx.lineTo(0, dir * l);
-        ctx.lineTo(3.5, dir * (l - 5));
+        const ex = x + dir * ox * l;
+        const ey = y + dir * oy * l;
+        const bx = ex - dir * hx * 5;
+        const by = ey - dir * hy * 5;
+        ctx.moveTo(bx + px * 3.5, by + py * 3.5);
+        ctx.lineTo(ex, ey);
+        ctx.lineTo(bx - px * 3.5, by - py * 3.5);
       }
     };
     strokeGlowPath(ctx, path, t.green, 1.8, t.glowAlpha * (0.45 + 0.35 * pulse), t.dark);
-    ctx.restore();
   };
 
   /** Unpolarized light: arrows in every direction. */
@@ -254,6 +296,21 @@ export function createPolarizerScene(canvas: HTMLCanvasElement): PolarizerScene 
     ctx.strokeStyle = rgb(t.inkMuted, t.dark ? 0.55 : 0.7);
     ctx.lineWidth = 1.2;
     ctx.strokeRect(meterX, meterTop, 18, meterH);
+
+    // Ideal-filter ceiling: unpolarized light through any polarizer chain caps
+    // at I₀/2, so the fill can never pass this half-way line. Mark it so a
+    // maxed-out meter doesn't read as stuck or broken.
+    const ceilY = meterBottom - meterH * 0.5;
+    ctx.save();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = rgb(t.inkMuted, t.dark ? 0.5 : 0.6);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(meterX - 3, ceilY);
+    ctx.lineTo(meterX + 18, ceilY);
+    ctx.stroke();
+    ctx.restore();
+    label(ctx, '50%', meterX - 7, ceilY + 3.5, t.inkMuted, { size: 9, align: 'right' });
 
     if (out > 0.001) {
       const grad = ctx.createLinearGradient(0, filledTop, 0, meterBottom);

@@ -614,16 +614,23 @@ export function createFusionScene(
       alpha: 0.75,
     });
 
-    const keY = yFor(keMeV);
-    ctx.save();
-    ctx.strokeStyle = rgb(tk.inkMuted, tk.dark ? 0.45 : 0.55);
-    ctx.setLineDash([2, 4]);
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, keY);
-    ctx.lineTo(w, keY);
-    ctx.stroke();
-    ctx.restore();
+    // Clamp the KE reference to a minimum offset above the baseline so it never
+    // vanishes into the baseline hairline at very low T (1 keV → ~0.4 px), and
+    // drop the dashed line (keep only the label) when the true line would sit
+    // within 2 px of the baseline — otherwise it just thickens the hairline.
+    const keYraw = yFor(keMeV);
+    const keY = Math.min(keYraw, baseline - 3);
+    if (baseline - keYraw > 2) {
+      ctx.save();
+      ctx.strokeStyle = rgb(tk.inkMuted, tk.dark ? 0.45 : 0.55);
+      ctx.setLineDash([2, 4]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, keY);
+      ctx.lineTo(w, keY);
+      ctx.stroke();
+      ctx.restore();
+    }
     label(ctx, 'KE', 8, keY - 6, tk.inkMuted, { size: 10, alpha: 0.8 });
 
     // ——— the two traveling nuclei ———
@@ -707,6 +714,33 @@ export function createFusionScene(
     ctx.moveTo(0, baseline);
     ctx.lineTo(w, baseline);
     ctx.stroke();
+
+    // ——— axis captions + log-r ticks ———
+    // Name the two axes so the "the mountain IS V(r)" metaphor is stated
+    // visually: height is potential energy, the horizontal spread is the log
+    // internuclear separation (both nuclei sit at ±r/2, so r reads symmetric
+    // about the fused center at cx). Faint ticks mark the decades of r.
+    ctx.save();
+    ctx.setLineDash([]);
+    ctx.strokeStyle = rgb(tk.inkMuted, tk.dark ? 0.3 : 0.4);
+    ctx.lineWidth = 1;
+    for (const rFm of [10, 100, 1000]) {
+      const off = xFor(uOfR(rFm));
+      for (const sx of [cx + off, cx - off]) {
+        ctx.beginPath();
+        ctx.moveTo(sx, baseline);
+        ctx.lineTo(sx, baseline + 4);
+        ctx.stroke();
+      }
+      label(ctx, String(rFm), cx + off, baseline + 14, tk.inkMuted, {
+        size: 9,
+        align: 'center',
+        alpha: 0.5,
+      });
+    }
+    ctx.restore();
+    label(ctx, 'r (fm, log)', w - 8, baseline - 6, tk.inkMuted, { size: 9, align: 'right', alpha: 0.55 });
+    label(ctx, 'V (MeV)', 8, 14, tk.inkMuted, { size: 9, alpha: 0.55 });
 
     onUpdate?.({
       barrierMeV: reaction.barrierMeV,

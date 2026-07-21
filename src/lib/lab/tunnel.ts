@@ -268,7 +268,10 @@ export function createTunnelScene(
     // tail that has tunneled past the barrier glows brighter — the part of
     // the story worth lingering on.
     const { re, im } = core;
-    const psiScale = h * 5.2;
+    // Scale chosen so the reflection standing wave (incident + reflected
+    // interference peaks at ~4× the incident density) still clears the top
+    // edge in the high-V₀ / wide-L runs the hint encourages.
+    const psiScale = h * 4.4;
     const pts: { x: number; y: number }[] = [];
     for (let j = 0; j < N; j++) {
       const p = re[j] * re[j] + im[j] * im[j];

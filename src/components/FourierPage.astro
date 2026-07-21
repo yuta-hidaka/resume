@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -8,9 +9,11 @@ const copy = {
     back: '← ラボ',
     label: 'Lab 02 — Signal Processing',
     title: 'フーリエ変換の描画機械',
-    intro:
-      '閉じた図形を周期的な複素信号 z(t) = x(t) + iy(t) とみなして離散フーリエ変換すると、図形は「回転する円（エピサイクル）の連なり」に分解されます。振幅の大きい順に K 個だけ残すと、少ない周波数で形の大部分が再現できることが分かります。マウスやタッチで自分の図形を描くこともできます。',
-    hint: 'キャンバスに直接描くと、その図形を分解します',
+    introBefore:
+      '回転する円を鎖のようにつなぎ、いちばん先の一点をペンにして図形を一筆書きする機械です。種を明かせばフーリエ変換 — 閉じた図形を周期的な複素信号 ',
+    introAfter:
+      ' とみなすと、回転する円（エピサイクル）の連なりに分解できます。振幅の大きい順に K 個だけ残しても、形の大部分はきちんと再現される。スライダーで確かめたら、マウスやタッチで自分の図形も描いてみてください。',
+    hint: 'キャンバスに直接描くと、その図形を分解します。閉じた一筆書きがコツ',
     terms: '円の数',
     presetStar: '星',
     presetHeart: 'ハート',
@@ -22,9 +25,11 @@ const copy = {
     back: '← Lab',
     label: 'Lab 02 — Signal Processing',
     title: 'Fourier Drawing Machine',
-    intro:
-      'Treat a closed shape as a periodic complex signal z(t) = x(t) + iy(t) and take its discrete Fourier transform: the shape decomposes into a chain of rotating circles (epicycles). Keeping only the K largest terms shows how few frequencies carry most of the form. Draw your own shape with mouse or touch.',
-    hint: 'Draw directly on the canvas to decompose your own shape',
+    introBefore:
+      'A machine that draws with a chain of spinning circles, using the very tip as its pen. The secret is the Fourier transform: treat a closed shape as a periodic complex signal ',
+    introAfter:
+      ', and it splits into a chain of rotating circles — epicycles. Keep only the K largest terms, and most of the form still comes through. Try the slider, then draw your own shape with mouse or touch.',
+    hint: 'Draw your own shape right on the canvas — a closed single stroke works best',
     terms: 'Circles',
     presetStar: 'Star',
     presetHeart: 'Heart',
@@ -40,13 +45,18 @@ const t = copy[lang];
   <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
   <p class="section-label mt-6">{t.label}</p>
   <h1 class="page-title mt-2">{t.title}</h1>
-  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
-
-  <p class="lab-formula" aria-label="Discrete Fourier transform">
-    <i>c<sub>k</sub></i> = (1/<i>N</i>) Σ<sub><i>n</i></sub> <i>z<sub>n</sub></i> e<sup>−2πi<i>kn</i>/<i>N</i></sup>
-    &ensp;,&ensp;
-    <i>z</i>(<i>t</i>) ≈ Σ<sub>top-<i>K</i></sub> <i>c<sub>k</sub></i> e<sup>2πi<i>kt</i></sup>
+  <p class="mt-5 text-[var(--ink-secondary)]">
+    {t.introBefore}<Formula
+      display={false}
+      tex={String.raw`z(t) = x(t) + i\,y(t)`}
+      label="complex signal z of t equals x of t plus i y of t"
+    />{t.introAfter}
   </p>
+
+  <Formula
+    label="Discrete Fourier transform"
+    tex={String.raw`c_k = \dfrac{1}{N}\sum_{n=0}^{N-1} z_n\, e^{-2\pi i k n / N}, \qquad z(t) \approx \sum_{\text{top-}K} c_k\, e^{2\pi i k t}`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -102,10 +112,16 @@ const t = copy[lang];
       activate(drawnChip);
     });
     machine.setPreset('star');
+    slider.max = String(machine.maxTerms);
 
     chips.forEach((chip) => {
       chip.addEventListener('click', () => {
         const preset = chip.dataset.preset;
+        if (preset === 'drawn') {
+          // Restore the last hand-drawn shape instead of a preset.
+          if (machine.restoreDrawn()) activate(chip);
+          return;
+        }
         if (preset && preset in PRESETS) {
           machine.setPreset(preset as keyof typeof PRESETS);
           activate(chip);

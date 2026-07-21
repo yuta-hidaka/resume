@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,30 +10,30 @@ const copy = {
     label: 'Lab 10 — Quantum Mechanics',
     title: '井戸型ポテンシャル（箱の中の粒子）',
     intro:
-      'シュレディンガー方程式で最初に解く定番が、これ — 幅 L の「箱」に閉じ込められた粒子です。壁の間にぴったり収まる定在波だけが許されるので、波動関数は ψ_n(x) = √(2/L)·sin(nπx/L)、エネルギーは E_n = n²π²ℏ²/2mL² と飛び飛び（量子化）になります。ギターの弦が特定の倍音しか鳴らせないのと同じ理屈で、電子のエネルギーが連続でなく段々になる理由がここにあります。',
-    hint: '準位を選び、箱の幅を変える。狭くするほど全準位が 1/L² で跳ね上がる',
+      'シュレディンガー方程式で最初に解く定番が、これ — 幅 L の「箱」に閉じ込められた粒子です。量子力学では粒子は波でもあるため、壁の間にぴったり収まる定在波しか存在できず、エネルギーは飛び飛びの値（量子化）に限られます。具体的な形はすぐ下の式のとおり。ギターの弦が特定の倍音しか鳴らせないのと同じ理屈で、電子のエネルギーが連続でなく段々になる理由がここにあります。',
+    hint: '準位を選び、箱の幅を変える。狭くするほど全準位が 1/L² で跳ね上がる（E は L = 1 の基底状態を 1 とした値）',
     level: '準位 n',
     width: '箱の幅 L',
     energy: 'エネルギー',
     mode: '表示',
     modePsi: '波動関数 ψ',
     modeProb: '確率密度 |ψ|²',
-    note: '3つの発見がここに詰まっています。① エネルギーが飛び飛び（量子化）— 準位の間の値は取れない。② 最低準位 E₁ でもゼロにならない（ゼロ点エネルギー）— 不確定性原理から、閉じ込められた粒子は完全に静止できない。③ 箱を狭めると全エネルギーが 1/L² で上昇 — 半導体量子ドットの色が粒径で変わるのはこのため。n が増えると波の節（腹の境目）が増えるのも見どころです。',
+    note: '3つの発見がここに詰まっています。① エネルギーが飛び飛び（量子化）— 準位の間の値は取れない。② 最低準位 E₁ でもゼロにならない（ゼロ点エネルギー）— 不確定性原理から、閉じ込められた粒子は完全に静止できない。③ 箱を狭めると全エネルギーが 1/L² で上昇 — 半導体量子ドットの色が粒径で変わるのはこのため。n を上げると波の節 — 振幅がゼロのまま動かない点 — が増え、ψ の揺れも速くなります。いっぽう |ψ|² に切り替えると形がぴたりと止まる。時間が経っても確率分布が変わらない「定常状態」です。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 10 — Quantum Mechanics',
     title: 'The Square Well (Particle in a Box)',
     intro:
-      'This is the first problem every quantum course solves: a particle trapped in a box of width L. Only standing waves that fit exactly between the walls are allowed, so the wavefunction is ψ_n(x) = √(2/L)·sin(nπx/L) and the energy is quantized: E_n = n²π²ℏ²/2mL². Just as a guitar string sounds only its harmonics, this is why an electron’s energy comes in discrete rungs rather than a continuum.',
-    hint: 'Pick a level and change the box width — squeeze it and every level shoots up as 1/L²',
+      'This is the first problem every quantum course solves: a particle trapped in a box of width L. In quantum mechanics a particle is also a wave, so only standing waves that fit exactly between the walls can exist — which limits the energy to discrete values (quantization); the exact form is the formula just below. Just as a guitar string sounds only its harmonics, this is why an electron’s energy comes in discrete rungs rather than a continuum.',
+    hint: 'Pick a level and change the box width — squeeze it and every level shoots up as 1/L² (E is in units of the widest box’s ground state)',
     level: 'Level n',
     width: 'Box width L',
     energy: 'Energy',
     mode: 'Show',
     modePsi: 'Wavefunction ψ',
     modeProb: 'Probability |ψ|²',
-    note: 'Three lessons live here. (1) Energy is quantized — no value between the rungs is allowed. (2) Even the ground state E₁ is nonzero (zero-point energy): by the uncertainty principle a confined particle can never be fully at rest. (3) Shrinking the box raises every energy as 1/L² — this is why the color of a semiconductor quantum dot depends on its size. Notice too that higher n means more nodes in the wave.',
+    note: 'Three lessons live here. (1) Energy is quantized — no value between the rungs is allowed. (2) Even the ground state E₁ is nonzero (zero-point energy): by the uncertainty principle a confined particle can never be fully at rest. (3) Shrinking the box raises every energy as 1/L² — this is why the color of a semiconductor quantum dot depends on its size. Notice too that higher n means more nodes — points where the wave stays pinned at zero — and a faster shimmer. Switch to |ψ|² and the shape freezes: a stationary state’s probability distribution never changes.',
   },
 } as const;
 const t = copy[lang];
@@ -44,13 +45,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Infinite square well">
-    ψ<sub><i>n</i></sub>(<i>x</i>) = √(2/<i>L</i>) sin(<i>n</i>π<i>x</i>/<i>L</i>)
-    &ensp;,&ensp;
-    <i>E<sub>n</sub></i> = <i>n</i>²π²ℏ²/2<i>mL</i>²
-    &ensp;,&ensp;
-    <i>n</i> = 1, 2, 3, …
-  </p>
+  <Formula
+    label="Infinite square well eigenstates and energies"
+    tex={String.raw`\psi_n(x) = \sqrt{\dfrac{2}{L}}\,\sin\!\left(\dfrac{n\pi x}{L}\right) \qquad E_n = \dfrac{n^2 \pi^2 \hbar^2}{2mL^2} \qquad n = 1,\, 2,\, 3,\, \dots`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">

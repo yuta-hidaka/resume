@@ -84,10 +84,21 @@ export function createWellScene(canvas: HTMLCanvasElement): WellScene {
     const boxW = (w - 2 * padX) * L;
     const bx0 = w / 2 - boxW / 2;
     const bx1 = w / 2 + boxW / 2;
-    const eY = (E: number) => bottom - (E / E_AXIS_MAX) * (bottom - top);
+    // Square-root-compressed energy axis. A linear axis crushes the low levels:
+    // at L=1 the E₁=1 rung sits a few px above the floor, hiding the zero-point
+    // gap and letting the ground-state wave dip below the box. Mapping through
+    // √E lifts E₁ well clear of the floor and spaces the rungs wide enough that
+    // the standing wave no longer breaks through — the ladder still climbs as
+    // the box narrows, so all three lessons survive (trade-off: the n² rung
+    // spacing reads as ∝ n rather than widening).
+    const eY = (E: number) => bottom - Math.sqrt(E / E_AXIS_MAX) * (bottom - top);
 
-    // Standing-wave oscillation: Re(ψ e^{-iEt}) = ψ cos(Et). Faster for higher E.
-    const phase = Math.cos(t * energy(n, L) * 1.1);
+    // Standing-wave oscillation: Re(ψ e^{-iEt}) = ψ cos(Et). The true rate ∝ E
+    // aliases into flicker at high n (≈17 Hz at n=6/L=0.6 vs the 60fps rAF), so
+    // the animation clock runs through √E instead — still monotonic in E, so
+    // "higher level breathes faster" reads, but the top speed drops to a
+    // legible ≈1.75 Hz.
+    const phase = Math.cos(t * 1.1 * Math.sqrt(energy(n, L)));
 
     // Well walls (infinite potential) — a single quiet, faintly luminous line.
     glowStroke(

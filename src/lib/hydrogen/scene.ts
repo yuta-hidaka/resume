@@ -126,6 +126,16 @@ export function createOrbitalScene(
   scene.add(bloomPoints);
   scene.add(corePoints);
 
+  // Draw-order index buffer. Light mode blends the core layer with NormalBlending,
+  // which is order-dependent, so we re-sort the revealed prefix back-to-front by
+  // camera distance each tick (see sortByDepth). Dark mode is additive
+  // (order-independent) and stays in sample order so the cloud accumulates as
+  // scattered single events.
+  const order = new Uint32Array(POINT_COUNT);
+  for (let i = 0; i < POINT_COUNT; i++) order[i] = i;
+  const indexAttr = new THREE.BufferAttribute(order, 1);
+  geometry.setIndex(indexAttr);
+
   // Lighting for the schematic nucleus.
   scene.add(new THREE.AmbientLight(0xffffff, 1.0));
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -169,8 +179,11 @@ export function createOrbitalScene(
   };
   buildNucleus();
 
-  let signs = new Int8Array(0);
+  let signs: Int8Array<ArrayBufferLike> = new Int8Array(0);
   let radiiNorm = new Float32Array(0); // per-point radius, normalized to [0,1]
+  let positions: Float32Array<ArrayBufferLike> = new Float32Array(0); // world-space xyz, kept for depth sorting
+  const sortDist = new Float32Array(POINT_COUNT); // scratch: squared camera distance per sample
+  let depthSort = false; // true in light mode (order-dependent alpha blending)
 
   const applyTheme = () => {
     const dark = isDark();
@@ -178,6 +191,7 @@ export function createOrbitalScene(
     coreMaterial.opacity = palette.opacity;
     coreMaterial.blending = palette.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
     coreMaterial.needsUpdate = true;
+    depthSort = !palette.additive; // only NormalBlending needs back-to-front ordering
     bloomMaterial.opacity = palette.bloomOpacity;
     bloomMaterial.visible = palette.bloomOpacity > 0;
     protonMaterial.color.set(palette.proton);
@@ -221,6 +235,10 @@ export function createOrbitalScene(
     }
     for (let i = 0; i < signs.length; i++) radiiNorm[i] = Math.min(1, radiiNorm[i] / (rMax * 0.85));
     geometry.setAttribute('position', new THREE.BufferAttribute(samples.positions, 3));
+    positions = samples.positions;
+    // Reset draw order to sample order (identity); light mode re-sorts each tick.
+    for (let i = 0; i < POINT_COUNT; i++) order[i] = i;
+    indexAttr.needsUpdate = true;
     revealed = 0;
     geometry.setDrawRange(0, 0);
     onProgress?.(0, POINT_COUNT);
@@ -244,7 +262,28 @@ export function createOrbitalScene(
   window.addEventListener('resize', resize);
   resize();
 
+  // Back-to-front sort of the revealed prefix by camera distance, so the
+  // order-dependent light-mode blend resolves nearer lobes over farther ones.
+  // Only the first `revealed` slots are touched, so the visible set stays the
+  // first-N samples — reveal semantics are preserved, only draw order changes.
+  const cameraPos = new THREE.Vector3();
+  const sortByDepth = () => {
+    if (!depthSort || revealed < 2) return;
+    camera.getWorldPosition(cameraPos);
+    const { x: cx, y: cy, z: cz } = cameraPos;
+    for (let i = 0; i < revealed; i++) {
+      const j = order[i];
+      const dx = positions[j * 3] - cx;
+      const dy = positions[j * 3 + 1] - cy;
+      const dz = positions[j * 3 + 2] - cz;
+      sortDist[j] = dx * dx + dy * dy + dz * dz;
+    }
+    order.subarray(0, revealed).sort((a, b) => sortDist[b] - sortDist[a]);
+    indexAttr.needsUpdate = true;
+  };
+
   let rafId = 0;
+  let sortTick = 0;
   const loop = () => {
     rafId = requestAnimationFrame(loop);
     if (revealed < POINT_COUNT && signs.length > 0) {
@@ -255,6 +294,9 @@ export function createOrbitalScene(
     nucleus.rotation.y += 0.004;
     nucleus.rotation.x += 0.0017;
     controls.update();
+    // Re-sort every ~12 frames: the auto-rotate drift between ticks is <2°, so
+    // the throttle is imperceptible but keeps the per-frame cost negligible.
+    if (depthSort && ++sortTick % 12 === 0) sortByDepth();
     renderer.render(scene, camera);
   };
   const onVisibility = () => {

@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,28 +10,34 @@ const copy = {
     label: 'Lab 08 — Quantum Mechanics',
     title: 'トンネル効果',
     intro:
-      '時間依存シュレディンガー方程式をスプリットステップ・フーリエ法で数値的に解いています（1,024 格子点、各ステップは厳密にユニタリ）。エネルギー E のガウス波束が高さ V₀ の壁に衝突すると、古典力学では V₀ > E なら 100% 跳ね返るはずが、量子力学では壁の中を「染み込んで」反対側に抜ける成分が現れます。透過率 T が衝突の間にリアルタイムで積み上がっていくのを見てください。',
+      '高さ V₀ の壁に、エネルギー E のガウス波束 — 量子力学が描く粒子の姿 — が衝突します。古典力学なら V₀ > E で 100% 跳ね返るはず。ところが量子力学では、壁の中を「染み込んで」反対側へ抜ける成分が現れます。衝突のあいだ、透過率 T がリアルタイムで積み上がっていくのを見てください。裏側では時間依存シュレディンガー方程式をスプリットステップ・フーリエ法で数値的に解いています（1,024 格子点。各ステップで確率の合計が厳密に 100% に保たれる、ユニタリな計算です）。',
     hint: '壁を E より高くしても T が 0 にならないのがトンネル効果',
     height: '壁の高さ',
     width: '壁の幅',
     restart: 'もう一度',
     trans: '透過 T',
     refl: '反射 R',
-    note: 'トンネル効果は実在の現象です — 太陽の核融合（陽子同士がクーロン障壁を抜ける）、フラッシュメモリの書き込み、走査型トンネル顕微鏡（STM）、α崩壊はすべてこれで動いています。透過率は壁の幅と √(V₀−E) に対して指数関数的に落ちる（T ≈ e^(−2κL)）ので、壁をほんの少し厚くするだけで劇的に通れなくなります。',
+    noteBefore:
+      'トンネル効果は実在の現象です — 太陽の核融合（陽子どうしが電気的な反発の壁 = クーロン障壁を抜ける）、フラッシュメモリの書き込み、走査型トンネル顕微鏡（STM）、α崩壊は、すべてこれで動いています。透過率は壁の厚さに対して指数関数的に落ちる（',
+    noteMid: '、κ は ',
+    noteAfter: ' に比例）ので、壁をほんの少し厚くするだけで劇的に通れなくなります。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 08 — Quantum Mechanics',
     title: 'Quantum Tunneling',
     intro:
-      'The time-dependent Schrödinger equation, solved numerically with the split-step Fourier method (1,024 grid points, each step exactly unitary). A gaussian wave packet of energy E hits a barrier of height V₀. Classically, V₀ > E means 100% reflection — but in quantum mechanics part of the packet seeps through the wall and emerges on the far side. Watch the transmission probability T accumulate in real time during the collision.',
+      "A gaussian wave packet — quantum mechanics' portrait of a particle — with energy E slams into a barrier of height V₀. Classically, V₀ > E means 100% reflection. But in quantum mechanics, part of the packet seeps through the wall and emerges on the far side. Watch the transmission probability T accumulate in real time during the collision. Under the hood, the time-dependent Schrödinger equation is solved with the split-step Fourier method — 1,024 grid points, every step keeping total probability at exactly 100% (exactly unitary).",
     hint: 'Raise the wall above E — T still refuses to hit zero. That is tunneling',
     height: 'Barrier height',
     width: 'Barrier width',
     restart: 'Run again',
     trans: 'Transmitted T',
     refl: 'Reflected R',
-    note: 'Tunneling is everywhere: solar fusion (protons crossing the Coulomb barrier), flash-memory writes, scanning tunneling microscopes, alpha decay. Transmission falls exponentially with barrier width and √(V₀−E) — T ≈ e^(−2κL) — so a slightly thicker wall becomes dramatically harder to cross.',
+    noteBefore:
+      'Tunneling is everywhere: solar fusion (protons crossing the Coulomb barrier — the wall of their electric repulsion), flash-memory writes, scanning tunneling microscopes, alpha decay. Transmission falls exponentially with barrier thickness — ',
+    noteMid: ', with κ growing like ',
+    noteAfter: ' — so a slightly thicker wall becomes dramatically harder to cross.',
   },
 } as const;
 const t = copy[lang];
@@ -42,11 +49,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Time-dependent Schrödinger equation">
-    iℏ ∂ψ/∂<i>t</i> = −(ℏ²/2<i>m</i>) ∂²ψ/∂<i>x</i>² + <i>V</i>(<i>x</i>)ψ
-    &ensp;,&ensp;
-    <i>T</i> ≈ e<sup>−2κ<i>L</i></sup>, κ = √(2<i>m</i>(<i>V</i>₀−<i>E</i>))/ℏ
-  </p>
+  <Formula
+    label="Time-dependent Schrödinger equation"
+    tex={String.raw`i\hbar\,\frac{\partial \psi}{\partial t} = -\frac{\hbar^2}{2m}\,\frac{\partial^2 \psi}{\partial x^2} + V(x)\,\psi \qquad T \approx e^{-2\kappa L}, \quad \kappa = \frac{\sqrt{2m(V_0 - E)}}{\hbar}`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
@@ -83,7 +89,17 @@ const t = copy[lang];
     </div>
   </div>
 
-  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">
+    {t.noteBefore}<Formula
+      display={false}
+      tex={String.raw`T \approx e^{-2\kappa L}`}
+      label="transmission probability approximately e to the minus two kappa L"
+    />{t.noteMid}<Formula
+      display={false}
+      tex={String.raw`\sqrt{V_0 - E}`}
+      label="square root of V naught minus E"
+    />{t.noteAfter}
+  </p>
 </section>
 
 <script>

@@ -17,11 +17,11 @@ const TIME_SCALE = 18; // visual speed-up of the drift
 const BALANCE_V = 3e-6; // |drift| below this counts as "hovering" (m/s)
 
 interface Droplet {
-  /** radius, m (0.8–1.4 µm) */
+  /** radius, m (0.7–1.1 µm) */
   r: number;
   /** mass, kg */
   m: number;
-  /** charge, C — always n·e with hidden n */
+  /** charge magnitude, C — |q| = n·e of a negatively charged drop, n hidden */
   q: number;
   n: number;
   /** height above the bottom plate, m ∈ [0, PLATE_GAP] */
@@ -85,6 +85,7 @@ export function createMillikanSim(
   let voltage = 0;
   let records: number[] = [];
   let colors = themeColors();
+  let resetAt = 0; // timestamp of the last mid-chamber recenter, for the fade-in
 
   const driftVelocity = (): number =>
     (droplet.m * G - (droplet.q * voltage) / PLATE_GAP) / (6 * Math.PI * ETA_AIR * droplet.r);
@@ -106,7 +107,7 @@ export function createMillikanSim(
   window.addEventListener('resize', resize);
   resize();
 
-  const drawStage = () => {
+  const drawStage = (now: number) => {
     const dpr = Math.min(window.devicePixelRatio, 2);
     const w = stage.width / dpr;
     const h = stage.height / dpr;
@@ -119,8 +120,8 @@ export function createMillikanSim(
     const fieldAlpha = Math.min(0.65, voltage / 2500);
 
     // Capacitor plates: a polished instrument bar with a bright inner edge
-    // that energizes with the applied field. Top +, bottom − (field pushes
-    // positive charge up).
+    // that energizes with the applied field. Top +, bottom −: the field points
+    // down, so the negatively charged droplet feels an upward force qE.
     const drawPlate = (barY: number, edgeY: number) => {
       sctx.fillStyle = rgb(colors.inkMuted, colors.dark ? 0.8 : 0.85);
       sctx.fillRect(plateX, barY, plateW, 4);
@@ -170,15 +171,19 @@ export function createMillikanSim(
     const y = top + (1 - droplet.y / PLATE_GAP) * (bottom - top);
     const x = w / 2;
     const dropColor = balanced ? colors.green : colors.gold;
+    // After a recenter the bead fades back in over ~250 ms so the jump reads
+    // as a fresh view of the same drop rather than a rendering glitch.
+    const fade = Math.min(1, (now - resetAt) / 250);
 
-    glowDot(sctx, x, y, 6, dropColor, colors.glowAlpha + (colors.dark ? 0.1 : 0.3));
+    glowDot(sctx, x, y, 6, dropColor, (colors.glowAlpha + (colors.dark ? 0.1 : 0.3)) * fade);
     // A small bright highlight sells the "glass bead" read.
-    sctx.fillStyle = rgb(mix(dropColor, WHITE, colors.dark ? 0.55 : 0.25), colors.dark ? 0.85 : 0.55);
+    sctx.fillStyle = rgb(mix(dropColor, WHITE, colors.dark ? 0.55 : 0.25), (colors.dark ? 0.85 : 0.55) * fade);
     sctx.beginPath();
     sctx.arc(x - 1.7, y - 1.9, 1.5, 0, 2 * Math.PI);
     sctx.fill();
 
-    if (!balanced) {
+    // Suppress the drift arrow mid-fade so the reset doesn't flash a cue.
+    if (!balanced && fade >= 1) {
       const dir = v > 0 ? 1 : -1; // falling = down the screen
       const len = Math.min(26, 8 + Math.abs(v) * 4e6);
       glowStroke(
@@ -260,9 +265,10 @@ export function createMillikanSim(
     // Drifted out of view: bring it back mid-chamber (same hidden charge).
     if (droplet.y < 0.03 * PLATE_GAP || droplet.y > 0.97 * PLATE_GAP) {
       droplet.y = PLATE_GAP / 2;
+      resetAt = now;
     }
     onUpdate?.(v, Math.abs(v) < BALANCE_V);
-    drawStage();
+    drawStage(now);
     drawChart();
   };
   const onVisibility = () => {

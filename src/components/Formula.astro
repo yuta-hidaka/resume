@@ -1,0 +1,85 @@
+---
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  /** KaTeX / LaTeX source. */
+  tex: string;
+  /** Display (block) math when true, inline math when false. */
+  display?: boolean;
+  /** Accessible label for the equation region. */
+  label?: string;
+  /** Extra class names on the wrapper. */
+  class?: string;
+}
+
+const { tex, display = true, label, class: extra = '' } = Astro.props;
+
+const html = katex.renderToString(tex, {
+  displayMode: display,
+  throwOnError: true,
+  output: 'htmlAndMathml',
+  strict: 'ignore',
+  trust: false,
+});
+---
+
+{
+  display ? (
+    <div class={`lab-eq ${extra}`} role="math" aria-label={label} set:html={html} />
+  ) : (
+    <span class={`lab-eq-inline ${extra}`} set:html={html} />
+  )
+}
+
+<style is:global>
+  /* Display equation — framed like a display formula set in a paper,
+     with the site's emerald→gold left rule. */
+  .lab-eq {
+    position: relative;
+    margin-top: 1.4rem;
+    padding: 0.9rem 1.3rem;
+    border-left: 2px solid transparent;
+    border-image: linear-gradient(
+        180deg,
+        var(--accent),
+        color-mix(in srgb, #d9b36c 70%, var(--accent))
+      )
+      1;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 72%
+    );
+    border-radius: 0 8px 8px 0;
+    color: var(--ink-secondary);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  /* KaTeX defaults to centered display math; the site sets its formulas
+     flush-left like a numbered equation, so override the alignment. */
+  .lab-eq .katex-display {
+    margin: 0;
+    text-align: left;
+  }
+  .lab-eq .katex-display > .katex {
+    text-align: left;
+    white-space: normal;
+  }
+  .lab-eq .katex {
+    color: var(--ink-secondary);
+    font-size: 1.12rem;
+  }
+
+  .lab-eq-inline .katex {
+    color: inherit;
+    font-size: 1em;
+  }
+
+  @media (max-width: 640px) {
+    .lab-eq .katex {
+      font-size: 1rem;
+    }
+  }
+</style>

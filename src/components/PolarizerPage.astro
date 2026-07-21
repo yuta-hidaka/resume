@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,20 +10,20 @@ const copy = {
     label: 'Lab 05 — Optics',
     title: '偏光サングラスの物理',
     intro:
-      '偏光サングラスのフィルムは、延伸した PVA にヨウ素を染み込ませたもの。ヨウ素が鎖状に整列して「導線の格子」のように働き、鎖に平行な電場成分は吸収され、垂直な成分だけが通ります。理想的な偏光板を通った光の強度はマルスの法則 I = I₀cos²θ に従います。2枚目（サングラス）を回して強度の変化を見てください。',
+      '偏光サングラスのフィルムは、引き伸ばしたポリビニルアルコール（PVA）にヨウ素を染み込ませたもの。ヨウ素が鎖状に整列して「導線の格子」のように働き、鎖に平行な電場成分は吸収され、垂直な成分だけが通ります。いったん偏光した光が、角度 θ ずれた偏光板をもう1枚通るとき、強度はマルスの法則 I = I₀cos²θ に従って弱まります。2枚目（サングラス）を回して強度の変化を見てください。',
     hint: 'サングラスを 90° にしてから、45° の1枚を間に挟んでみる',
     middle: '45°の偏光板を挟む',
     middleAngle: '中間の角度',
     glassesAngle: 'サングラスの角度',
     output: '透過率',
-    note: '90° に直交させた2枚は光を完全に遮りますが、その間に 45° の1枚を挟むと 12.5% の光が復活します。偏光板は光を「ふるいにかける」のではなく、電場をその軸へ射影し直すからです — 量子力学の測定（射影）の、目で見られる古典アナロジー。水面や路面のぎらつきが水平偏光に偏っているため、サングラスの透過軸は縦になっています。',
+    note: '90° に直交させた2枚は光を完全に遮りますが、その間に 45° の1枚を挟むと 12.5% の光が復活します。偏光板は光を「ふるいにかける」のではなく、電場をその軸へ射影し直すからです — 量子力学の測定（射影）の、目に見える古典アナロジー。水面や路面のぎらつきが水平偏光に偏っているため、サングラスの透過軸は縦になっています。',
   },
   en: {
     back: '← Lab',
     label: 'Lab 05 — Optics',
     title: 'The Physics of Polarized Sunglasses',
     intro:
-      'The film in polarized sunglasses is stretched PVA doped with iodine. The iodine lines up into chains that act like a grid of wires: the E-field component parallel to the chains is absorbed, only the perpendicular component passes. Through an ideal polarizer the intensity follows Malus’s law, I = I₀cos²θ. Rotate the second filter (the sunglasses) and watch the intensity respond.',
+      'The film in polarized sunglasses is stretched polyvinyl alcohol (PVA) doped with iodine. The iodine lines up into chains that act like a grid of wires: the E-field component parallel to the chains is absorbed, only the perpendicular component passes. Once the light is polarized, passing it through another polarizer tilted by θ dims it by Malus’s law, I = I₀cos²θ. Rotate the second filter (the sunglasses) and watch the intensity respond.',
     hint: 'Cross the sunglasses at 90°, then slip a 45° filter in between',
     middle: 'Insert 45° filter',
     middleAngle: 'Middle angle',
@@ -40,10 +41,10 @@ const t = copy[lang];
   <h1 class="page-title mt-2">{t.title}</h1>
   <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
-  <p class="lab-formula" aria-label="Malus's law">
-    <i>I</i> = <i>I</i>₀ cos²θ &ensp;,&ensp;
-    0° + 45° + 90°: (1/2) · cos²45° · cos²45° = 1/8 = 12.5%
-  </p>
+  <Formula
+    label="Malus's law"
+    tex={String.raw`I = I_0 \cos^2\theta \qquad 0^\circ \to 45^\circ \to 90^\circ:\ \dfrac{1}{2}\cdot\cos^2 45^\circ \cdot\cos^2 45^\circ = \dfrac{1}{8} = 12.5\%`}
+  />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">

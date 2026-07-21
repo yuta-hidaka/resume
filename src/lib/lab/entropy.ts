@@ -15,6 +15,8 @@ const GRID_X = 16;
 const GRID_Y = 10;
 const SPEED_SIGMA = 0.05; // box widths per second (gaussian components)
 const HISTORY_CAP = 900;
+/** Seconds of simulated time between chart samples. 900 × 1/15 s ≈ 60 s window. */
+const SAMPLE_INTERVAL_S = 1 / 15;
 /** The wall drops on its own after this long — entropy needs no button. */
 const AUTO_RELEASE_S = 3;
 /** Render-only: how long the dropped wall takes to dissolve visually. Does
@@ -251,7 +253,6 @@ export function createEntropySim(
     cctx.lineTo(w, h - pad);
     cctx.stroke();
     cctx.restore();
-    label(cctx, 'S = 1', w - 4, pad + 10, colors.inkMuted, { size: 9, align: 'right', alpha: 0.5 });
 
     if (history.length > 1) {
       const pts = history.map((s, i) => ({
@@ -261,11 +262,23 @@ export function createEntropySim(
       areaFill(cctx, pts, h - pad, colors.green, colors.dark ? 0.3 : 0.16);
       glowStroke(cctx, pts, colors.green, 1.6, colors.dark ? 1 : 0.55, colors.dark);
     }
+
+    // Draw the 'S = 1' label last, over a small transparent knockout — in the
+    // mixed end state S rides right along the dashed line, and the additive
+    // glow would otherwise swallow this 9px caption.
+    cctx.save();
+    cctx.font = '400 9px system-ui, -apple-system, sans-serif';
+    const tw = cctx.measureText('S = 1').width;
+    cctx.clearRect(w - 4 - tw - 3, pad + 1, tw + 6, 13);
+    cctx.restore();
+    label(cctx, 'S = 1', w - 4, pad + 10, colors.inkMuted, { size: 9, align: 'right', alpha: 0.5 });
   };
 
   let rafId = 0;
   let last = performance.now();
-  let frame = 0;
+  /** The chart samples on simulated wall-clock (not frame count) so its ~60 s
+   *  window is identical on 60 Hz and 120 Hz displays. 900 samples × 1/15 s. */
+  let sampleClock = 0;
   const loop = (now: number) => {
     rafId = requestAnimationFrame(loop);
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -278,13 +291,14 @@ export function createEntropySim(
       wallDissolve = Math.max(0, wallDissolve - dt / WALL_DISSOLVE_S);
     }
     step(dt);
-    if (frame % 4 === 0) {
+    sampleClock += dt;
+    if (sampleClock >= SAMPLE_INTERVAL_S) {
+      sampleClock %= SAMPLE_INTERVAL_S;
       mixing = computeMixing();
       if (history.length >= HISTORY_CAP) history.shift();
       history.push(mixing);
       onUpdate?.(mixing, wallUp);
     }
-    frame++;
     drawStage();
     drawChart();
   };
