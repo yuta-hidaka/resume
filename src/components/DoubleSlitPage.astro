@@ -11,14 +11,16 @@ const copy = {
     title: '二重スリット — 波と粒子',
     intro:
       '量子を「線（波）」と「点（粒子）」の両方で同時に見るページです。左の光源から量子（電子でも光子でも）を1個ずつ発射し、2本のスリットを通して右のスクリーンに当てます。1個1個は必ず1つの点として検出される — なのに、何千個と溜めていくと、点の分布が明暗の干渉縞を描きます。粒子なのに、波のように自分自身と干渉している。背景で揺れているのが波（波動関数）、スクリーンに積もっていくのが粒子。同じ1つの量子の、2つの顔です。',
-    hint: 'N を増やして、点が縞になっていくのを見る。「測定」を押すと縞が消える',
+    hint: 'N を増やして、点が縞になっていくのを見る。「比較」で〈見ない〉と〈経路を見る〉を上下に並べ、変わるのは経路を知るかどうかだけ、を確かめる',
     sep: 'スリット間隔 d',
     wavelength: '波長 λ',
-    measure: 'どちらのスリットか測定',
+    modeFringes: '見ない',
+    modeMeasured: '経路を見る',
+    modeCompare: '比較',
     reset: 'クリア',
     count: '検出数',
-    canvasFringes: '干渉縞',
-    canvasMeasured: 'which-path 測定 → 干渉消失',
+    canvasFringes: '見ない → 干渉縞',
+    canvasMeasured: '経路を見る → 干渉消失',
     note: '一番不思議なのは「どちらのスリットを通ったか」を観測した瞬間に干渉縞が消えること。粒子を乱暴に叩くからではなく、経路の情報が確定すると波の重ね合わせ（コヒーレンス）が壊れるという、量子力学の根っこの性質です。しかも量子を1個ずつ送っても縞ができる — 1個の量子が両方のスリットを「同時に通って」自分自身と干渉している。1989 年、外村彰らは電子を1個ずつ送る実験で、点がゆっくり縞に育つ様子を実際に撮影しました。このページの「線＝波」「点＝粒子」は、水素原子の電子雲（|ψ|² を1点ずつサンプリング）と同じ考え方です。',
   },
   en: {
@@ -27,14 +29,16 @@ const copy = {
     title: 'The Double Slit — Wave & Particle',
     intro:
       'A quantum seen as both a “line” (a wave) and a “point” (a particle) at once. Fire quanta (electrons or photons) one at a time from the source on the left, through two slits, onto the screen on the right. Every single one is detected as exactly one point — yet let thousands pile up and the dots trace out bright-and-dark interference fringes. A particle, interfering like a wave with itself. The shimmer in the background is the wave (the wavefunction); the dots accumulating on the screen are the particles. Two faces of the same quantum.',
-    hint: 'Grow N and watch the dots become fringes. Press “measure” and the fringes vanish',
+    hint: 'Grow N and watch the dots become fringes. Hit “Compare” to stack don’t-look vs see-the-path — the only difference is knowing which slit',
     sep: 'Slit separation d',
     wavelength: 'Wavelength λ',
-    measure: 'Measure which path',
+    modeFringes: 'Don’t look',
+    modeMeasured: 'See the path',
+    modeCompare: 'Compare',
     reset: 'Clear',
     count: 'Detected',
-    canvasFringes: 'interference fringes',
-    canvasMeasured: 'which-path measured → no interference',
+    canvasFringes: 'don’t look → interference fringes',
+    canvasMeasured: 'see the path → no interference',
     note: 'The deepest strangeness: the fringes vanish the instant you observe which slit the quantum took — not because you jostle the particle, but because pinning down the path destroys the superposition (coherence) of the two waves. And the fringes appear even when quanta go through one at a time: a single quantum passes through both slits “at once” and interferes with itself. In 1989 Tonomura and colleagues sent electrons one by one and filmed the dots slowly growing into fringes. This page’s “line = wave, point = particle” is the same idea as the hydrogen electron cloud (sampling |ψ|² one point at a time).',
   },
 } as const;
@@ -79,8 +83,12 @@ const t = copy[lang];
         <input id="ds-lambda" class="lab-slider" type="range" min="7" max="20" step="1" value="12" />
       </div>
       <div class="lab-meta">
+        <div class="lab-chips" role="group" aria-label="mode">
+          <button type="button" class="lab-chip active" data-mode="interference" aria-pressed="true">{t.modeFringes}</button>
+          <button type="button" class="lab-chip" data-mode="measured" aria-pressed="false">{t.modeMeasured}</button>
+          <button type="button" class="lab-chip" data-mode="compare" aria-pressed="false">{t.modeCompare}</button>
+        </div>
         <div class="lab-chips">
-          <button type="button" class="lab-chip" id="ds-measure" aria-pressed="false">{t.measure}</button>
           <button type="button" class="lab-chip" id="ds-reset">{t.reset}</button>
         </div>
         <p class="lab-readout">
@@ -113,7 +121,9 @@ const t = copy[lang];
     const lambda = document.getElementById('ds-lambda') as HTMLInputElement;
     const sepValue = document.getElementById('ds-sep-value');
     const lambdaValue = document.getElementById('ds-lambda-value');
-    const measure = document.getElementById('ds-measure') as HTMLButtonElement;
+    const modeChips = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('.lab-chip[data-mode]'),
+    );
 
     scene.setSeparation(Number(sep.value));
     scene.setWavelength(Number(lambda.value));
@@ -127,14 +137,17 @@ const t = copy[lang];
       if (lambdaValue) lambdaValue.textContent = `λ = ${lambda.value}`;
     });
 
-    let measured = false;
-    measure.addEventListener('click', () => {
-      measured = !measured;
-      scene.setMeasured(measured);
-      measure.classList.toggle('active', measured);
-      measure.setAttribute('aria-pressed', String(measured));
-      scene.reset();
-    });
+    for (const chip of modeChips) {
+      chip.addEventListener('click', () => {
+        const mode = chip.dataset.mode as 'interference' | 'measured' | 'compare';
+        scene.setMode(mode);
+        for (const c of modeChips) {
+          const on = c === chip;
+          c.classList.toggle('active', on);
+          c.setAttribute('aria-pressed', String(on));
+        }
+      });
+    }
     document.getElementById('ds-reset')?.addEventListener('click', () => scene.reset());
   }
 </script>

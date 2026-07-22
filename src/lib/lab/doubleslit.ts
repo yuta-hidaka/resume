@@ -9,6 +9,10 @@
  * into the very fringe pattern the wave predicts. Turn on "which-path" and the
  * coherence is destroyed: the cos² interference term drops out, the fringes
  * dissolve into a single diffraction band, and the wave field decoheres.
+ *
+ * The COMPARE mode stacks the two experiments — identical slits, wavelength and
+ * source, differing ONLY in whether a which-path detector is present — so the
+ * one thing that changes the outcome (knowing the path) is isolated on screen.
  */
 import {
   tokens,
@@ -31,6 +35,8 @@ export interface SlitParams {
   /** slits→screen distance, px */
   L: number;
 }
+
+export type Mode = 'interference' | 'measured' | 'compare';
 
 const sinc = (x: number) => (x === 0 ? 1 : Math.sin(x) / x);
 
@@ -107,19 +113,32 @@ function colors(): Colors {
 export interface DoubleSlitScene {
   setSeparation(d: number): void;
   setWavelength(lambda: number): void;
-  setMeasured(measured: boolean): void;
+  setMode(mode: Mode): void;
   reset(): void;
   readonly count: number;
   dispose(): void;
 }
 
 interface Dot {
-  y: number; // screen offset from center, px
+  y: number; // screen offset from lane center, px
 }
 interface Flyer {
   t: number; // 0..1 along its path
   slit: 0 | 1;
   yScreen: number; // final landing offset
+}
+
+/** One self-contained experiment occupying a vertical band of the canvas. */
+interface Lane {
+  yTop: number;
+  yBottom: number;
+  measured: boolean;
+  caption: string;
+  dots: Dot[];
+  flyers: Flyer[];
+  spawnAccum: number;
+  sampler: (u: number) => number;
+  decohere: number; // 0..1 wash-out of fringes when measured
 }
 
 const MAX_DOTS = 4000;
@@ -128,9 +147,9 @@ const FIELD_W = 150; // low-res wave-field buffer
 const FIELD_H = 96;
 
 export interface DoubleSlitLabels {
-  /** in-canvas caption for the interference (unmeasured) state */
+  /** in-canvas caption for the interference (unmeasured) lane */
   fringes: string;
-  /** in-canvas caption for the measured (which-path) state */
+  /** in-canvas caption for the measured (which-path) lane */
   measured: string;
 }
 
@@ -142,17 +161,10 @@ export function createDoubleSlitScene(
   const ctx = canvas.getContext('2d')!;
   let c = colors();
 
-  // Geometry is recomputed on resize; params are in px on that geometry.
   let dSep = 46;
   let lambda = 13;
   const slitWidth = 12;
-  let measured = false;
-
-  let dots: Dot[] = [];
-  let flyers: Flyer[] = [];
-  let spawnAccum = 0; // fractional particle-spawn accumulator (time-based)
-  let sampler: (u: number) => number = () => 0;
-  let decohere = 0; // 0..1 wash-out of fringes when measured
+  let mode: Mode = 'interference';
 
   const off = document.createElement('canvas');
   off.width = FIELD_W;
@@ -167,20 +179,69 @@ export function createDoubleSlitScene(
 
   let w = 0;
   let h = 0;
-  const geom = () => {
+  const xGeom = () => {
     const sourceX = w * 0.06;
     const barrierX = w * 0.3;
     const screenX = w * 0.9;
-    const cy = h / 2;
-    const L = screenX - barrierX;
-    const half = h * 0.46;
-    return { sourceX, barrierX, screenX, cy, L, half };
+    return { sourceX, barrierX, screenX, L: screenX - barrierX };
+  };
+  // lane-local geometry
+  const laneCy = (lane: Lane) => (lane.yTop + lane.yBottom) / 2;
+  const laneHalf = (lane: Lane) => (lane.yBottom - lane.yTop) * 0.44;
+
+  let lanes: Lane[] = [];
+
+  const rebuildSampler = (lane: Lane) => {
+    const { L } = xGeom();
+    const half = laneHalf(lane);
+    if (L <= 0 || half <= 0) return;
+    lane.sampler = makeScreenSampler({ d: dSep, a: slitWidth, lambda, L }, lane.measured, half);
   };
 
-  const rebuildSampler = () => {
-    const { L, half } = geom();
-    if (L <= 0) return;
-    sampler = makeScreenSampler({ d: dSep, a: slitWidth, lambda, L }, measured, half);
+  const LANE_GAP = 10;
+  // vertical bands + measured flag for the current mode (compare = two stacked)
+  const laneBands = (): { yTop: number; yBottom: number; measured: boolean }[] =>
+    mode === 'compare'
+      ? [
+          { yTop: 0, yBottom: h / 2 - LANE_GAP, measured: false },
+          { yTop: h / 2 + LANE_GAP, yBottom: h, measured: true },
+        ]
+      : [{ yTop: 0, yBottom: h, measured: mode === 'measured' }];
+
+  // Build FRESH lanes (empties the accumulated dots) — only for a mode change.
+  const buildLanes = () => {
+    lanes = laneBands().map((b) => {
+      const lane: Lane = {
+        yTop: b.yTop,
+        yBottom: b.yBottom,
+        measured: b.measured,
+        caption: b.measured ? labels.measured : labels.fringes,
+        dots: [],
+        flyers: [],
+        spawnAccum: 0,
+        sampler: () => 0,
+        decohere: b.measured ? 1 : 0,
+      };
+      rebuildSampler(lane);
+      return lane;
+    });
+  };
+
+  // Reposition the EXISTING lanes on resize and rebuild their samplers, WITHOUT
+  // clearing accumulated dots/flyers/progress — a window resize must not erase
+  // the pattern the viewer is watching build. Falls back to a fresh build only
+  // if the lane structure doesn't match the current mode (e.g. first paint).
+  const relayoutLanes = () => {
+    const bands = laneBands();
+    if (bands.length !== lanes.length) {
+      buildLanes();
+      return;
+    }
+    bands.forEach((b, i) => {
+      lanes[i].yTop = b.yTop;
+      lanes[i].yBottom = b.yBottom;
+      rebuildSampler(lanes[i]);
+    });
   };
 
   const resize = () => {
@@ -189,46 +250,49 @@ export function createDoubleSlitScene(
     canvas.height = Math.max(1, Math.round(canvas.clientHeight * dpr));
     w = canvas.clientWidth;
     h = canvas.clientHeight;
-    rebuildSampler();
+    relayoutLanes();
   };
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(canvas);
   window.addEventListener('resize', resize);
   resize();
 
+  const totalCount = () => lanes.reduce((n, l) => n + l.dots.length, 0);
   const reset = () => {
-    dots = [];
-    flyers = [];
+    for (const l of lanes) {
+      l.dots = [];
+      l.flyers = [];
+    }
     onCount?.(0);
   };
 
-  // ——— wave field: instantaneous Re(ψ) from the two slit sources ———
-  const drawField = (now: number) => {
-    const { barrierX, screenX, cy } = geom();
+  // ——— wave field for one lane: instantaneous Re(ψ) from its two slits ———
+  const drawLaneField = (now: number, lane: Lane) => {
+    const { barrierX, screenX } = xGeom();
+    const cy = laneCy(lane);
     const slitY1 = cy - dSep / 2;
     const slitY2 = cy + dSep / 2;
     const k = (2 * Math.PI) / lambda;
-    const omega = 6; // rad/s wave motion
-    const phase = omega * (now / 1000);
-    // When measured, jitter slit 2's phase so the two waves lose coherence and
-    // the interference fringes wash out (which-path destroys coherence).
-    const decoherePhase = measured ? decohere * Math.sin(now / 140) * Math.PI * 4 : 0;
+    const phase = 6 * (now / 1000);
+    // measured → jitter slit 2's phase so coherence (and the fringes) wash out
+    const decoherePhase = lane.measured ? lane.decohere * Math.sin(now / 140) * Math.PI * 4 : 0;
+    const laneH = lane.yBottom - lane.yTop;
+    // Sample only as many field rows as the lane's share of the canvas height, so
+    // two half-height compare lanes cost the same as one full lane (and keep the
+    // same vertical field resolution) instead of doubling the priciest inner loop.
+    const fh = h > 0 ? Math.max(24, Math.min(FIELD_H, Math.round((FIELD_H * laneH) / h))) : FIELD_H;
     const d = fieldImg.data;
-    const x0 = barrierX;
-    const x1 = screenX;
-    for (let j = 0; j < FIELD_H; j++) {
-      const y = (j / (FIELD_H - 1)) * h;
+    for (let j = 0; j < fh; j++) {
+      const y = lane.yTop + (j / (fh - 1)) * laneH;
       for (let i = 0; i < FIELD_W; i++) {
-        const x = x0 + (i / (FIELD_W - 1)) * (x1 - x0);
-        const r1 = Math.hypot(x - x0, y - slitY1) + 1;
-        const r2 = Math.hypot(x - x0, y - slitY2) + 1;
+        const x = barrierX + (i / (FIELD_W - 1)) * (screenX - barrierX);
+        const r1 = Math.hypot(x - barrierX, y - slitY1) + 1;
+        const r2 = Math.hypot(x - barrierX, y - slitY2) + 1;
         const psi =
           Math.cos(k * r1 - phase) / Math.sqrt(r1) +
           Math.cos(k * r2 - phase + decoherePhase) / Math.sqrt(r2);
-        // scale up (near-field amplitudes are small)
-        const amp = psi * 5.5;
-        const mag = Math.min(1, Math.abs(amp));
-        const col = amp >= 0 ? c.crest : c.trough;
+        const mag = Math.min(1, Math.abs(psi * 5.5));
+        const col = psi >= 0 ? c.crest : c.trough;
         const o = (j * FIELD_W + i) * 4;
         d[o] = col[0];
         d[o + 1] = col[1];
@@ -242,42 +306,37 @@ export function createDoubleSlitScene(
     ctx.globalAlpha = c.dark ? 0.85 : 0.6;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    // paint the field ONLY in the physical [barrierX, screenX] region it was
-    // sampled for, so the wave rippling out of the slits lines up with the
-    // slits and the screen (the particle layer it must correspond to).
-    ctx.drawImage(off, 0, 0, FIELD_W, FIELD_H, barrierX, 0, screenX - barrierX, h);
+    ctx.drawImage(off, 0, 0, FIELD_W, fh, barrierX, lane.yTop, screenX - barrierX, laneH);
     ctx.restore();
   };
 
-  let rafId = 0;
-  let lastNow = performance.now();
-  const draw = (now: number) => {
-    rafId = requestAnimationFrame(draw);
-    const dt = Math.min(0.05, (now - lastNow) / 1000);
-    lastNow = now;
-    decohere += ((measured ? 1 : 0) - decohere) * Math.min(1, dt * 3);
-
-    const dpr = Math.min(window.devicePixelRatio, 2);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    const { sourceX, barrierX, screenX, cy, L, half } = geom();
+  const renderLane = (now: number, dt: number, lane: Lane) => {
+    lane.decohere += ((lane.measured ? 1 : 0) - lane.decohere) * Math.min(1, dt * 3);
+    const { sourceX, barrierX, screenX } = xGeom();
+    const cy = laneCy(lane);
+    const half = laneHalf(lane);
     const slitY1 = cy - dSep / 2;
     const slitY2 = cy + dSep / 2;
 
-    // 1) wave field (the "line")
-    drawField(now);
+    // clip everything to this lane's band so nothing bleeds into the divider
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, lane.yTop, w, lane.yBottom - lane.yTop);
+    ctx.clip();
+
+    // 1) wave field
+    drawLaneField(now, lane);
 
     // 2) barrier with two slits
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = rgb(c.inkMuted, c.dark ? 0.9 : 1);
     const bw = 4;
     const gap = slitWidth;
-    // top wall, between-slits wall, bottom wall
-    ctx.fillRect(barrierX - bw / 2, 0, bw, slitY1 - gap / 2);
+    ctx.fillRect(barrierX - bw / 2, lane.yTop, bw, slitY1 - gap / 2 - lane.yTop);
     ctx.fillRect(barrierX - bw / 2, slitY1 + gap / 2, bw, slitY2 - gap / 2 - (slitY1 + gap / 2));
-    ctx.fillRect(barrierX - bw / 2, slitY2 + gap / 2, bw, h - (slitY2 + gap / 2));
+    ctx.fillRect(barrierX - bw / 2, slitY2 + gap / 2, bw, lane.yBottom - (slitY2 + gap / 2));
 
-    // 3) source
+    // 3) source + beam
     glowDot(ctx, sourceX, cy, 4, c.particle, c.glowAlpha);
     ctx.strokeStyle = rgb(c.inkMuted, 0.4);
     ctx.lineWidth = 1;
@@ -288,88 +347,118 @@ export function createDoubleSlitScene(
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // 4) fire particles at a fixed real-time rate (independent of refresh rate);
-    //    each lands at Y ~ I(Y)
-    spawnAccum += dt * SPAWN_RATE;
-    while (spawnAccum >= 1) {
-      spawnAccum -= 1;
-      const yScreen = sampler(Math.random());
-      const slit: 0 | 1 = Math.random() < 0.5 ? 0 : 1;
-      flyers.push({ t: 0, slit, yScreen });
+    // 3b) which-path detector marks at the slits (measured lane only)
+    if (lane.measured) {
+      for (const sy of [slitY1, slitY2]) {
+        ctx.strokeStyle = rgb(c.trough, c.dark ? 0.8 : 0.9);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(barrierX, sy, 6, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
     }
-    // advance flyers along source→slit→screen; on arrival, deposit a dot
+
+    // 4) fire particles at a fixed real-time rate; each lands at Y ~ I(Y)
+    lane.spawnAccum += dt * SPAWN_RATE;
+    while (lane.spawnAccum >= 1) {
+      lane.spawnAccum -= 1;
+      lane.flyers.push({ t: 0, slit: Math.random() < 0.5 ? 0 : 1, yScreen: lane.sampler(Math.random()) });
+    }
     const nextFlyers: Flyer[] = [];
     ctx.globalCompositeOperation = c.blend;
-    for (const f of flyers) {
+    for (const f of lane.flyers) {
       f.t += dt * 1.6;
       const slitY = f.slit === 0 ? slitY1 : slitY2;
       let px: number;
       let py: number;
       if (f.t < 0.5) {
-        const u = f.t / 0.5; // source → slit
+        const u = f.t / 0.5;
         px = sourceX + (barrierX - sourceX) * u;
         py = cy + (slitY - cy) * u;
       } else {
-        const u = (f.t - 0.5) / 0.5; // slit → landing point on screen
+        const u = (f.t - 0.5) / 0.5;
         px = barrierX + (screenX - barrierX) * u;
         py = slitY + (cy + f.yScreen - slitY) * u;
       }
       if (f.t >= 1) {
-        dots.push({ y: f.yScreen });
-        if (dots.length > MAX_DOTS) dots.shift();
-        onCount?.(dots.length);
-        // detector flash at the measured slit
-        if (measured) glowDot(ctx, barrierX, slitY, 3.5, c.trough, c.glowAlpha);
+        lane.dots.push({ y: f.yScreen });
+        if (lane.dots.length > MAX_DOTS) lane.dots.shift();
+        if (lane.measured) glowDot(ctx, barrierX, slitY, 3.5, c.trough, c.glowAlpha);
       } else {
         glowDot(ctx, px, py, 1.8, c.particle, c.glowAlpha * 0.9);
         nextFlyers.push(f);
       }
     }
-    flyers = nextFlyers;
+    lane.flyers = nextFlyers;
 
-    // 5) accumulated dots on the screen (the "points" building the pattern)
+    // 5) accumulated dots (the "points")
     ctx.globalCompositeOperation = c.blend;
     ctx.fillStyle = rgb(c.particle, 1);
-    for (const dpt of dots) {
-      const y = cy + dpt.y;
-      // small x-jitter so the strip reads as a band, not a 1px line
+    for (const dpt of lane.dots) {
       const x = screenX + 2 + (((dpt.y * 53) % 9) - 4) * 0.7;
       ctx.globalAlpha = (c.dark ? 0.5 : 0.75) * 0.9;
       ctx.beginPath();
-      ctx.arc(x, y, 1.4, 0, 2 * Math.PI);
+      ctx.arc(x, cy + dpt.y, 1.4, 0, 2 * Math.PI);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
 
-    // 6) screen line + theoretical intensity curve I(Y) hugging the screen
+    // 6) screen line + theoretical I(Y) curve
     ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = rgb(c.inkMuted, c.dark ? 0.5 : 0.6);
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(screenX, 0);
-    ctx.lineTo(screenX, h);
+    ctx.moveTo(screenX, lane.yTop);
+    ctx.lineTo(screenX, lane.yBottom);
     ctx.stroke();
 
-    // (guard: on the very first frame before ResizeObserver lands, L/half can
-    //  be 0 → intensity() would be 0/0 = NaN; skip until the geometry is real.)
+    const { L } = xGeom();
     if (L > 0 && half > 0) {
       const curvePts: { x: number; y: number }[] = [];
-      const amp = 46; // px the curve extends to the right of the screen
+      const amp = Math.min(46, half * 0.5);
       const p: SlitParams = { d: dSep, a: slitWidth, lambda, L };
       for (let i = 0; i <= 120; i++) {
         const Y = -half + (2 * half * i) / 120;
-        const I = intensity(Y, p, measured);
-        curvePts.push({ x: screenX + I * amp, y: cy + Y });
+        curvePts.push({ x: screenX + intensity(Y, p, lane.measured) * amp, y: cy + Y });
       }
       glowStroke(ctx, curvePts, c.curve, 1.8, c.glowAlpha, c.dark);
     }
 
-    // 7) labels
-    label(ctx, measured ? labels.measured : labels.fringes, screenX - 8, 18, c.inkMuted, {
-      size: 11,
-      align: 'right',
-    });
-    label(ctx, `N = ${dots.length}`, sourceX - 2, h - 10, c.inkMuted, { size: 11 });
+    // 7) caption
+    label(ctx, lane.caption, screenX - 8, lane.yTop + 16, c.inkMuted, { size: 11, align: 'right' });
+
+    ctx.restore();
+  };
+
+  let rafId = 0;
+  let lastNow = performance.now();
+  const draw = (now: number) => {
+    rafId = requestAnimationFrame(draw);
+    const dt = Math.min(0.05, (now - lastNow) / 1000);
+    lastNow = now;
+
+    const dpr = Math.min(window.devicePixelRatio, 2);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    for (const lane of lanes) renderLane(now, dt, lane);
+
+    // divider between the two compared experiments
+    if (lanes.length === 2) {
+      const my = (lanes[0].yBottom + lanes[1].yTop) / 2;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = rgb(c.inkMuted, c.dark ? 0.28 : 0.34);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 5]);
+      ctx.beginPath();
+      ctx.moveTo(0, my);
+      ctx.lineTo(w, my);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    onCount?.(totalCount());
+    label(ctx, `N = ${totalCount()}`, xGeom().sourceX - 2, h - 10, c.inkMuted, { size: 11 });
   };
   rafId = requestAnimationFrame(draw);
   const onVisibility = () => {
@@ -384,19 +473,20 @@ export function createDoubleSlitScene(
   return {
     setSeparation(d) {
       dSep = Math.max(16, d);
-      rebuildSampler();
+      for (const l of lanes) rebuildSampler(l);
     },
     setWavelength(l) {
       lambda = Math.max(6, l);
-      rebuildSampler();
+      for (const lane of lanes) rebuildSampler(lane);
     },
-    setMeasured(m) {
-      measured = m;
-      rebuildSampler();
+    setMode(m) {
+      mode = m;
+      buildLanes();
+      onCount?.(0);
     },
     reset,
     get count() {
-      return dots.length;
+      return totalCount();
     },
     dispose() {
       cancelAnimationFrame(rafId);
