@@ -90,30 +90,37 @@ const DRAWERS: Record<string, Drawer> = {
   },
 
   fourier(ctx, p) {
-    // A rotating epicycle whose pen traces a glowing 5-petal rose.
-    const cx = LW / 2;
-    const cy = LH / 2;
-    const rose = (t: number): [number, number] => {
-      const r = 13 + 8 * Math.cos(5 * t);
-      return [cx + r * Math.cos(t), cy + r * Math.sin(t)];
-    };
-    const head = (p.T * 0.7) % (2 * Math.PI);
-    // faint carrier circles
+    // Measure → transform: a scrolling measured waveform up top, its spectrum
+    // as a row of glowing bars below.
+    const ph = p.T * 2.2;
+    const cy = LH * 0.28;
+    const wav: [number, number][] = [];
+    for (let i = 0; i <= 64; i++) {
+      const u = i / 64;
+      const x = 8 + u * (LW - 16);
+      const s = Math.sin(u * Math.PI * 6 - ph) + 0.45 * Math.sin(u * Math.PI * 16 - ph * 1.7);
+      wav.push([x, cy + s * 9]);
+    }
+    glowLine(ctx, wav, p.green, 1.5, p.dark);
+    // spectrum bars: two dominant peaks + smaller components, gently pulsing.
+    const bars = [0.22, 0.95, 0.18, 0.5, 0.14, 0.28, 0.12, 0.1];
+    const baseY = LH - 9;
+    const slotW = (LW - 20) / bars.length;
+    ctx.lineCap = 'round';
+    bars.forEach((m, i) => {
+      const x = 12 + i * slotW + slotW * 0.5;
+      const pulse = 0.88 + 0.12 * Math.sin(p.T * 2.4 + i * 1.3);
+      const hgt = Math.max(2, m * pulse * (LH * 0.34));
+      ctx.globalCompositeOperation = p.dark ? 'lighter' : 'source-over';
+      ctx.strokeStyle = rgb(p.gold, p.dark ? 0.85 : 1);
+      ctx.lineWidth = Math.min(6, slotW * 0.5);
+      ctx.beginPath();
+      ctx.moveTo(x, baseY);
+      ctx.lineTo(x, baseY - hgt);
+      ctx.stroke();
+    });
+    ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1;
-    ctx.strokeStyle = rgb(p.faint, 0.28);
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 22, 0, 2 * Math.PI);
-    ctx.stroke();
-    const [ex, ey] = rose(head);
-    ctx.beginPath();
-    ctx.arc((cx + ex) / 2, (cy + ey) / 2, 9, 0, 2 * Math.PI);
-    ctx.stroke();
-    // traced curve up to the head
-    const pts: [number, number][] = [];
-    for (let a = 0; a <= head; a += 0.06) pts.push(rose(a));
-    glowLine(ctx, pts, p.green, 1.6, p.dark);
-    dot(ctx, ex, ey, 1.6, p.green, 1, p.dark);
   },
 
   entropy(ctx, p) {
@@ -544,6 +551,32 @@ const DRAWERS: Record<string, Drawer> = {
     }
     dot(ctx, px, py, 1.5, p.gold, 0.9, p.dark);
     dot(ctx, LW * 0.08, cy, 1.6, p.green, 0.85, p.dark);
+  },
+
+  diffraction(ctx, p) {
+    // Left: a rotating real-space lattice. Right: its reciprocal spot grid,
+    // spinning in lock-step (the Fourier transform commutes with rotation).
+    const th = p.T * 0.22;
+    const cos = Math.cos(th);
+    const sin = Math.sin(th);
+    const rot = (cx: number, cy: number, x: number, y: number): [number, number] => [
+      cx + x * cos - y * sin,
+      cy + x * sin + y * cos,
+    ];
+    const lcx = LW * 0.28;
+    const rcx = LW * 0.74;
+    const cy = LH / 2;
+    for (let i = -2; i <= 2; i++) {
+      for (let j = -2; j <= 2; j++) {
+        const [rx, ry] = rot(lcx, cy, i * 11, j * 11);
+        if (rx > 3 && rx < LW * 0.5) dot(ctx, rx, ry, 1.2, p.green, 0.75, p.dark);
+        const [sx, sy] = rot(rcx, cy, i * 14, j * 14);
+        if (sx > LW * 0.52 && sx < LW - 3) {
+          const b = Math.exp(-(i * i + j * j) / 3.2);
+          dot(ctx, sx, sy, 1 + b, p.gold, 0.32 + 0.6 * b, p.dark);
+        }
+      }
+    }
   },
 };
 

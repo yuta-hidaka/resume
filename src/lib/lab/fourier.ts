@@ -1,338 +1,427 @@
 /**
- * Fourier drawing machine: a closed 2D path is treated as a periodic complex
- * signal z(t) = x(t) + iy(t), decomposed by DFT, and redrawn by a chain of
- * rotating vectors (epicycles). Truncating to the K largest terms shows how
- * few frequencies carry most of the shape.
+ * The Fourier transform as a *measurement* instrument. Measure a signal x(t) —
+ * from the laptop microphone (real) or a synthesized source — then apply the
+ * linear transform X = F·x and watch the frequency content appear. Top of the
+ * main canvas: the measured waveform. Bottom: its magnitude spectrum |X(f)|.
+ * A side canvas shows the DFT matrix F itself: X = F·x is just a change of basis
+ * into pure frequencies, and each row of F is one of those frequencies.
+ *
+ * The pure transform lives in ./fft (DOM-free, unit-tested headless). This file
+ * is the measuring + rendering glue.
  */
 
-import { tokens, ramp, sampleRamp, rgb, glowStroke, glowDot, type Ramp } from './viz';
+import { tokens, ramp, sampleRamp, rgb, glowStroke, glowDot, areaFill, subtleGrid, label } from './viz';
+import { fft, hann, magnitude, peakBin, dftMatrixCos } from './fft';
 
-export interface Pt {
-  x: number;
-  y: number;
+export type SourceKind = 'tone' | 'chord' | 'square' | 'noise' | 'mic';
+
+export interface FourierLabels {
+  measured: string; // "測定：信号 x(t)"
+  transform: string; // "フーリエ変換  X = F x"
+  spectrum: string; // "スペクトル |X(f)|"
+  time: string; // "時間 →"
+  freq: string; // "周波数 (Hz)"
+  micDenied: string; // fallback note when the mic can't be opened
+  matrixRow: string; // "各行 = 1つの周波数"
 }
 
-interface Epicycle {
-  freq: number;
-  amp: number;
-  phase: number;
+export interface FourierInfo {
+  source: SourceKind;
+  peakHz: number | null;
+  micActive: boolean;
+  micError: boolean;
 }
 
-const SAMPLES = 256;
-
-/** DFT of a complex signal, terms sorted by descending amplitude. */
-function dft(points: Pt[]): Epicycle[] {
-  const N = points.length;
-  const out: Epicycle[] = [];
-  for (let k = 0; k < N; k++) {
-    let re = 0;
-    let im = 0;
-    for (let n = 0; n < N; n++) {
-      const phi = (2 * Math.PI * k * n) / N;
-      const cos = Math.cos(phi);
-      const sin = Math.sin(phi);
-      re += points[n].x * cos + points[n].y * sin;
-      im += points[n].y * cos - points[n].x * sin;
-    }
-    re /= N;
-    im /= N;
-    out.push({
-      freq: k <= N / 2 ? k : k - N,
-      amp: Math.hypot(re, im),
-      phase: Math.atan2(im, re),
-    });
-  }
-  out.sort((a, b) => b.amp - a.amp);
-  return out;
-}
-
-/** Resample a polyline as a closed curve with uniform arc-length spacing. */
-function resampleClosed(points: Pt[], n: number): Pt[] {
-  const cum = [0];
-  for (let i = 1; i <= points.length; i++) {
-    const a = points[i - 1];
-    const b = points[i % points.length];
-    cum.push(cum[i - 1] + Math.hypot(b.x - a.x, b.y - a.y));
-  }
-  const total = cum[cum.length - 1];
-  const out: Pt[] = [];
-  let seg = 0;
-  for (let i = 0; i < n; i++) {
-    const target = (total * i) / n;
-    while (seg < points.length - 1 && cum[seg + 1] < target) seg++;
-    const a = points[seg];
-    const b = points[(seg + 1) % points.length];
-    const span = cum[seg + 1] - cum[seg];
-    const t = span > 0 ? (target - cum[seg]) / span : 0;
-    out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
-  }
-  return out;
-}
-
-/** Preset shapes in normalized coords (roughly within [-1, 1]²). */
-export const PRESETS: Record<string, () => Pt[]> = {
-  star: () =>
-    Array.from({ length: SAMPLES }, (_, i) => {
-      const t = (2 * Math.PI * i) / SAMPLES;
-      const r = 0.62 + 0.38 * Math.cos(5 * t);
-      return { x: r * Math.cos(t), y: r * Math.sin(t) };
-    }),
-  heart: () =>
-    Array.from({ length: SAMPLES }, (_, i) => {
-      const t = (2 * Math.PI * i) / SAMPLES;
-      return {
-        x: (16 * Math.sin(t) ** 3) / 17,
-        y: (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 17,
-      };
-    }),
-  lemniscate: () =>
-    Array.from({ length: SAMPLES }, (_, i) => {
-      const t = (2 * Math.PI * i) / SAMPLES;
-      const d = 1 + Math.sin(t) ** 2;
-      return { x: Math.cos(t) / d, y: (0.9 * Math.sin(t) * Math.cos(t)) / d };
-    }),
-};
-
-export interface FourierMachine {
-  setShape(points: Pt[]): void;
-  setPreset(name: keyof typeof PRESETS): void;
-  setTerms(k: number): void;
-  /** Re-decompose the last hand-drawn shape; returns false if none exists yet. */
-  restoreDrawn(): boolean;
-  readonly maxTerms: number;
+export interface FourierScope {
+  setSource(kind: SourceKind): Promise<void>;
+  setFrequency(hz: number): void;
+  reset(): void;
   dispose(): void;
 }
 
-const PERIOD_S = 10;
-const PATH_LEN = 512;
-/** Length, in path samples, of the bright comet head trailing the tracer. */
-const COMET_LEN = 70;
+const N = 2048; // analysis window (power of two for the radix-2 FFT)
+const SYNTH_SR = 8000; // synth sample rate — puts musical tones in a clean bin range
+const FMAX_HZ = 2000; // top of the displayed frequency axis
+const N_MAT = 32; // size of the illustrative DFT matrix heatmap
 
-export function createFourierMachine(
-  canvas: HTMLCanvasElement,
-  onDrawnShape?: () => void,
-): FourierMachine {
-  const ctx = canvas.getContext('2d')!;
-  let epicycles: Epicycle[] = [];
-  let terms = 32;
-  let t = 0;
-  let path: Pt[] = []; // reconstruction with `terms` terms, normalized coords
-  /** True once the current shape came from hand-drawn input (colors the trace gold). */
-  let drawnSource = false;
-  /** The last hand-drawn shape (resampled), kept so the "drawn" chip can restore it. */
-  let drawnPts: Pt[] | null = null;
+export function createFourierScope(
+  main: HTMLCanvasElement,
+  matrixCanvas: HTMLCanvasElement,
+  labels: FourierLabels,
+  onInfo?: (info: FourierInfo) => void,
+): FourierScope {
+  const ctx = main.getContext('2d')!;
+  const mctx = matrixCanvas.getContext('2d')!;
 
-  // Evaluate the truncated Fourier sum at phase u ∈ [0, 1).
-  const evalSum = (u: number, k: number): Pt => {
-    let x = 0;
-    let y = 0;
-    for (let i = 0; i < Math.min(k, epicycles.length); i++) {
-      const e = epicycles[i];
-      const a = 2 * Math.PI * e.freq * u + e.phase;
-      x += e.amp * Math.cos(a);
-      y += e.amp * Math.sin(a);
+  const win = hann(N);
+  const timeBuf = new Float64Array(N); // measured samples x[n]
+  const micTime = new Float32Array(N); // scratch for AnalyserNode reads
+  const re = new Float64Array(N);
+  const im = new Float64Array(N);
+  const magSmooth = new Float64Array(N / 2 + 1); // temporally-averaged |X|
+  let specMax = 1e-6; // auto-scale for the spectrum band
+  let waveMax = 0.5; // auto-gain for the waveform display (helps quiet mic input)
+
+  let source: SourceKind = 'tone';
+  let toneHz = 440;
+  let clock = 0; // synth sample clock (advances the waveform)
+  let peakHz: number | null = null;
+  let currentSR = SYNTH_SR; // sample rate of the window now in timeBuf
+
+  // ——— audio input (real measurement), opened lazily and fully guarded ———
+  let audioCtx: AudioContext | null = null;
+  let analyser: AnalyserNode | null = null;
+  let micStream: MediaStream | null = null;
+  let micError = false;
+  let micGen = 0; // bumped on every setSource; invalidates in-flight mic opens
+
+  const emit = () =>
+    onInfo?.({ source, peakHz, micActive: source === 'mic' && !!analyser, micError });
+
+  const stopMic = () => {
+    if (micStream) {
+      for (const tr of micStream.getTracks()) tr.stop();
+      micStream = null;
     }
-    return { x, y };
+    if (audioCtx) {
+      audioCtx.close().catch(() => {});
+      audioCtx = null;
+    }
+    analyser = null;
   };
 
-  const recomputePath = () => {
-    path = Array.from({ length: PATH_LEN }, (_, i) => evalSum(i / PATH_LEN, terms));
-  };
-
-  const setShapeInternal = (points: Pt[], drawn: boolean) => {
-    const sampled = resampleClosed(points, SAMPLES);
-    epicycles = dft(sampled);
-    drawnSource = drawn;
-    if (drawn) drawnPts = sampled;
-    recomputePath();
-  };
-
-  const setShape = (points: Pt[]) => setShapeInternal(points, false);
-
-  // Drawing input (normalized coords; y flipped so up is positive).
-  let stroke: Pt[] = [];
-  let drawing = false;
-  const toNorm = (ev: PointerEvent): Pt => {
-    const rect = canvas.getBoundingClientRect();
-    const s = Math.min(rect.width, rect.height) * 0.36;
-    return {
-      x: (ev.clientX - rect.left - rect.width / 2) / s,
-      y: -(ev.clientY - rect.top - rect.height / 2) / s,
+  // `gen` is this request's generation. If the user switches source while the
+  // permission prompt is open (or double-clicks the mic chip), a newer request
+  // bumps micGen and this call becomes stale — it must tear down whatever it
+  // created rather than commit it, so no orphaned stream keeps recording.
+  const startMic = async (gen: number): Promise<boolean> => {
+    micError = false;
+    let stream: MediaStream | null = null;
+    let ctx: AudioContext | null = null;
+    const abandon = () => {
+      if (stream) for (const tr of stream.getTracks()) tr.stop();
+      if (ctx) ctx.close().catch(() => {});
     };
-  };
-  const onDown = (ev: PointerEvent) => {
-    drawing = true;
-    stroke = [toNorm(ev)];
     try {
-      canvas.setPointerCapture(ev.pointerId);
+      const AC: typeof AudioContext =
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AC || !navigator.mediaDevices?.getUserMedia) throw new Error('unsupported');
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+      });
+      if (gen !== micGen) return abandon(), false; // superseded during the prompt
+      ctx = new AC();
+      if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
+      if (gen !== micGen) return abandon(), false; // superseded during resume
+      const srcNode = ctx.createMediaStreamSource(stream);
+      const an = ctx.createAnalyser();
+      an.fftSize = N;
+      an.smoothingTimeConstant = 0;
+      srcNode.connect(an); // analyser is a sink; not connected to destination (no playback / feedback)
+      stopMic(); // replace any previously-committed mic before taking ownership
+      micStream = stream;
+      audioCtx = ctx;
+      analyser = an;
+      return true;
     } catch {
-      // Synthetic or already-released pointers can't be captured; drawing still works.
+      micError = true;
+      abandon();
+      return false;
     }
   };
-  const onMove = (ev: PointerEvent) => {
-    if (drawing) stroke.push(toNorm(ev));
-  };
-  const onUp = () => {
-    if (!drawing) return;
-    drawing = false;
-    if (stroke.length > 8) {
-      setShapeInternal(stroke, true);
-      onDrawnShape?.();
+
+  // ——— signal sources: fill timeBuf with the current measured window ———
+  const synthSample = (tSec: number): number => {
+    const w = 2 * Math.PI * tSec;
+    switch (source) {
+      case 'chord': // just-intonation major triad 4:5:6 → three clean peaks
+        return (Math.sin(w * toneHz) + Math.sin(w * toneHz * 1.25) + Math.sin(w * toneHz * 1.5)) / 3;
+      case 'square': // odd harmonics f, 3f, 5f, …
+        return 0.7 * Math.sign(Math.sin(w * toneHz) || 1);
+      case 'noise':
+        return Math.random() * 2 - 1;
+      case 'tone':
+      default:
+        return Math.sin(w * toneHz);
     }
-    stroke = [];
   };
-  canvas.addEventListener('pointerdown', onDown);
-  canvas.addEventListener('pointermove', onMove);
-  canvas.addEventListener('pointerup', onUp);
-  canvas.addEventListener('pointercancel', onUp);
 
-  // Colors are sampled fresh from the shared viz tokens/ramps every frame
-  // (see draw()), so theme changes are reflected immediately without a
-  // separate cache-invalidation observer — the rAF loop already runs
-  // continuously at 60fps.
-
-  const resize = () => {
-    const dpr = Math.min(window.devicePixelRatio, 2);
-    canvas.width = Math.max(1, Math.round(canvas.clientWidth * dpr));
-    canvas.height = Math.max(1, Math.round(canvas.clientHeight * dpr));
-  };
-  const resizeObserver = new ResizeObserver(resize);
-  resizeObserver.observe(canvas);
-  window.addEventListener('resize', resize);
-  resize();
-
-  let rafId = 0;
-  let last = performance.now();
-  const draw = (now: number) => {
-    rafId = requestAnimationFrame(draw);
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-    if (!drawing) t = (t + dt / PERIOD_S) % 1;
-
-    const dpr = Math.min(window.devicePixelRatio, 2);
-    const w = canvas.width / dpr;
-    const h = canvas.height / dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    // Normalized → screen: center origin, y up.
-    const s = Math.min(w, h) * 0.36;
-    const sx = (p: Pt) => w / 2 + p.x * s;
-    const sy = (p: Pt) => h / 2 - p.y * s;
-
-    const tk = tokens();
-    const goldRamp = ramp('gold');
-
-    if (drawing && stroke.length > 1) {
-      // Live hand-drawn input: a thread of gold light with a bright tip.
-      const pts = stroke.map((p) => ({ x: sx(p), y: sy(p) }));
-      glowStroke(ctx, pts, sampleRamp(goldRamp, 0.82), 1.6, tk.glowAlpha, tk.dark);
-      const tip = pts[pts.length - 1];
-      glowDot(ctx, tip.x, tip.y, 2.2, sampleRamp(goldRamp, 1), tk.dark ? 1 : 0.75);
+  // Fills timeBuf with the current measured window and records its sample rate.
+  const measure = (dt: number): void => {
+    if (source === 'mic' && analyser && audioCtx) {
+      analyser.getFloatTimeDomainData(micTime);
+      for (let n = 0; n < N; n++) timeBuf[n] = micTime[n];
+      currentSR = audioCtx.sampleRate;
       return;
     }
-    if (!epicycles.length) return;
-
-    // A hand-drawn shape keeps tracing in gold; presets trace in emerald.
-    const curveRamp: Ramp = drawnSource ? goldRamp : ramp('emerald');
-
-    // Full reconstruction: a whisper-quiet outline of where the trace is headed.
-    ctx.strokeStyle = rgb(tk.ink, tk.dark ? 0.08 : 0.13);
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    path.forEach((p, i) => (i ? ctx.lineTo(sx(p), sy(p)) : ctx.moveTo(sx(p), sy(p))));
-    ctx.closePath();
-    ctx.stroke();
-
-    const upto = Math.floor(t * path.length);
-    if (upto > 1) {
-      // Traced-so-far: a luminous gradient stroke — a dim tail feeding a
-      // bright comet head at the current point.
-      const tail = Math.max(0, upto - COMET_LEN);
-      if (tail > 0) {
-        const basePts: { x: number; y: number }[] = [];
-        for (let i = 0; i <= tail; i++) {
-          const p = path[i];
-          basePts.push({ x: sx(p), y: sy(p) });
-        }
-        glowStroke(ctx, basePts, sampleRamp(curveRamp, 0.4), 1.3, tk.glowAlpha * 0.5, tk.dark);
-      }
-      // Comet head [tail, upto]: draw in short sub-chunks that share endpoints
-      // and lerp their brightness/width from the tail values up to the head,
-      // so the fade is continuous instead of a single flat step.
-      const COMET_CHUNKS = 8;
-      const span = upto - tail;
-      for (let c = 0; c < COMET_CHUNKS; c++) {
-        const i0 = tail + Math.floor((span * c) / COMET_CHUNKS);
-        const i1 = tail + Math.floor((span * (c + 1)) / COMET_CHUNKS);
-        if (i1 <= i0) continue;
-        const chunk: { x: number; y: number }[] = [];
-        for (let i = i0; i <= i1; i++) {
-          const p = path[i];
-          chunk.push({ x: sx(p), y: sy(p) });
-        }
-        // f runs 0 (tail) → 1 (head) across the comet span.
-        const f = (c + 0.5) / COMET_CHUNKS;
-        const shade = sampleRamp(curveRamp, 0.4 + 0.5 * f);
-        const width = 1.3 + 1.1 * f;
-        const glow = tk.glowAlpha * (0.5 + 0.5 * f);
-        glowStroke(ctx, chunk, shade, width, glow, tk.dark);
-      }
-    }
-
-    // Epicycle chain: barely-there rings + thin, glowing radius vectors.
-    let cx = 0;
-    let cy = 0;
-    const k = Math.min(terms, epicycles.length);
-    for (let i = 0; i < k; i++) {
-      const e = epicycles[i];
-      const a = 2 * Math.PI * e.freq * t + e.phase;
-      const nx = cx + e.amp * Math.cos(a);
-      const ny = cy + e.amp * Math.sin(a);
-      if (e.amp * s > 1.5) {
-        const origin = { x: sx({ x: cx, y: cy }), y: sy({ x: cx, y: cy }) };
-        const vecTip = { x: sx({ x: nx, y: ny }), y: sy({ x: nx, y: ny }) };
-        ctx.strokeStyle = rgb(tk.ink, tk.dark ? 0.045 : 0.07);
-        ctx.lineWidth = 0.75;
-        ctx.beginPath();
-        ctx.arc(origin.x, origin.y, e.amp * s, 0, 2 * Math.PI);
-        ctx.stroke();
-        glowStroke(ctx, [origin, vecTip], sampleRamp(curveRamp, 0.55), 0.8, tk.glowAlpha * 0.4, tk.dark);
-      }
-      cx = nx;
-      cy = ny;
-    }
-
-    // Tip: a bright point of light at the pen's current position.
-    const tip = { x: sx({ x: cx, y: cy }), y: sy({ x: cx, y: cy }) };
-    glowDot(ctx, tip.x, tip.y, 2.6, sampleRamp(curveRamp, 1), tk.dark ? 1.05 : 0.85);
+    // synth: slide the analysis window forward so the waveform scrolls
+    clock += SYNTH_SR * dt;
+    for (let n = 0; n < N; n++) timeBuf[n] = synthSample((clock + n) / SYNTH_SR);
+    currentSR = SYNTH_SR;
   };
-  rafId = requestAnimationFrame(draw);
+
+  // ——— the transform + readouts ———
+  const transform = () => {
+    const sr = currentSR;
+    let wmax = 1e-4;
+    for (let n = 0; n < N; n++) {
+      const v = timeBuf[n];
+      const a = v < 0 ? -v : v;
+      if (a > wmax) wmax = a;
+      re[n] = v * win[n];
+      im[n] = 0;
+    }
+    waveMax += (wmax - waveMax) * 0.1; // smooth auto-gain
+    fft(re, im, -1);
+    const mag = magnitude(re, im);
+    let mmax = 1e-6;
+    for (let k = 0; k < mag.length; k++) {
+      magSmooth[k] += (mag[k] - magSmooth[k]) * 0.35; // temporal averaging → calm display
+      if (magSmooth[k] > mmax) mmax = magSmooth[k];
+    }
+    specMax = Math.max(specMax * 0.985, mmax);
+
+    // dominant frequency, only reported when there is a genuine peak
+    const loBin = Math.max(2, Math.round((50 * N) / sr));
+    const hiBin = Math.max(loBin, Math.min(magSmooth.length - 1, Math.round((FMAX_HZ * N) / sr)));
+    let sum = 0;
+    for (let k = loBin; k <= hiBin; k++) sum += magSmooth[k];
+    const mean = sum / Math.max(1, hiBin - loBin + 1);
+    const pb = peakBin(magSmooth, loBin, hiBin);
+    const pv = magSmooth[Math.round(pb)];
+    peakHz = pv > 4 * mean ? (pb * sr) / N : null;
+    return { mag: magSmooth, sr, hiBin };
+  };
+
+  // ——— DFT matrix heatmap (static; rebuilt on theme/size change) ———
+  const matCells = dftMatrixCos(N_MAT);
+  let matOff: HTMLCanvasElement | null = null;
+  let matDark: boolean | null = null;
+  const buildMatrix = (dark: boolean) => {
+    const off = document.createElement('canvas');
+    off.width = N_MAT;
+    off.height = N_MAT;
+    const octx = off.getContext('2d')!;
+    const phase = ramp('phase'); // gold ↔ mint diverging, for signed cos values
+    const img = octx.createImageData(N_MAT, N_MAT);
+    for (let k = 0; k < N_MAT; k++) {
+      for (let n = 0; n < N_MAT; n++) {
+        const v = matCells[k * N_MAT + n]; // cos ∈ [-1, 1]
+        const c = sampleRamp(phase, (v + 1) / 2);
+        const o = (k * N_MAT + n) * 4;
+        const dim = dark ? 1 : 0.92;
+        img.data[o] = c[0] * dim;
+        img.data[o + 1] = c[1] * dim;
+        img.data[o + 2] = c[2] * dim;
+        img.data[o + 3] = 255;
+      }
+    }
+    octx.putImageData(img, 0, 0);
+    matOff = off;
+    matDark = dark;
+  };
+
+  const drawMatrix = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = matrixCanvas.clientWidth || 1;
+    const h = matrixCanvas.clientHeight || 1;
+    if (matrixCanvas.width !== Math.round(w * dpr) || matrixCanvas.height !== Math.round(h * dpr)) {
+      matrixCanvas.width = Math.max(1, Math.round(w * dpr));
+      matrixCanvas.height = Math.max(1, Math.round(h * dpr));
+    }
+    const tk = tokens();
+    if (!matOff || matDark !== tk.dark) buildMatrix(tk.dark);
+    mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    mctx.clearRect(0, 0, w, h);
+    const pad = 22; // room for axis labels
+    const gx = pad;
+    const gy = 6;
+    const gw = w - pad - 6;
+    const gh = h - gy - 18;
+    mctx.imageSmoothingEnabled = false;
+    mctx.globalAlpha = tk.dark ? 0.95 : 1;
+    mctx.drawImage(matOff!, gx, gy, gw, gh);
+    mctx.globalAlpha = 1;
+
+    // highlight the matrix row for the currently-dominant frequency
+    if (peakHz != null) {
+      const row = Math.round((peakHz * N_MAT) / currentSR);
+      if (row >= 1 && row < N_MAT) {
+        const rh = gh / N_MAT;
+        mctx.strokeStyle = rgb(tk.gold, tk.dark ? 0.95 : 0.85);
+        mctx.lineWidth = 1.5;
+        mctx.strokeRect(gx, gy + row * rh, gw, rh);
+      }
+    }
+    // axis labels
+    label(mctx, `k ${labels.matrixRow}`, gx, h - 5, tk.inkMuted, { size: 10, align: 'left' });
+    label(mctx, 'n →', gx + gw, h - 5, tk.inkMuted, { size: 10, align: 'right' });
+    label(mctx, 'F', gx - 13, gy + 11, tk.gold, { size: 12, weight: 600, align: 'center' });
+  };
+
+  // ——— main render: measured waveform (top) → spectrum (bottom) ———
+  const draw = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = main.width / dpr;
+    const h = main.height / dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const tk = tokens();
+    const greenRamp = ramp('emerald');
+    const goldRamp = ramp('gold');
+    const pad = 14;
+    const waveTop = pad;
+    const waveBot = h * 0.44;
+    const specTop = h * 0.54;
+    const specBot = h - 26;
+    const waveMid = (waveTop + waveBot) / 2;
+
+    subtleGrid(ctx, w, h, Math.max(28, w / 16), tk.grid);
+
+    // waveform (measurement)
+    const waveH = (waveBot - waveTop) * 0.9;
+    const gain = 1 / (waveMax * 1.15);
+    const wpts: { x: number; y: number }[] = [];
+    const step = Math.max(1, Math.floor(N / Math.max(64, w)));
+    for (let n = 0; n < N; n += step) {
+      const x = pad + (n / (N - 1)) * (w - 2 * pad);
+      const y = waveMid - Math.max(-1.2, Math.min(1.2, timeBuf[n] * gain)) * (waveH / 2);
+      wpts.push({ x, y });
+    }
+    glowStroke(ctx, wpts, sampleRamp(greenRamp, 0.72), 1.4, tk.glowAlpha, tk.dark);
+    label(ctx, labels.measured, pad, waveTop + 12, tk.green, { size: 12, weight: 600 });
+    label(ctx, labels.time, w - pad, waveBot - 2, tk.inkMuted, { size: 10, align: 'right' });
+
+    // the transform, between the two bands
+    label(ctx, labels.transform, w / 2, (waveBot + specTop) / 2 + 4, tk.inkMuted, {
+      size: 12,
+      align: 'center',
+    });
+
+    // spectrum (frequency domain) — measure() already filled timeBuf this frame
+    const { mag, sr, hiBin } = transform();
+    const specW = w - 2 * pad;
+    const spts: { x: number; y: number }[] = [];
+    const norm = 1 / specMax;
+    for (let px = 0; px <= specW; px++) {
+      const freq = (px / specW) * FMAX_HZ;
+      const binF = (freq * N) / sr;
+      const k = Math.min(hiBin, Math.round(binF));
+      const v = Math.min(1, mag[k] * norm);
+      const y = specBot - Math.pow(v, 0.7) * (specBot - specTop);
+      spts.push({ x: pad + px, y });
+    }
+    areaFill(ctx, spts, specBot, sampleRamp(goldRamp, 0.7), tk.dark ? 0.3 : 0.22);
+    glowStroke(ctx, spts, sampleRamp(goldRamp, 0.82), 1.4, tk.glowAlpha, tk.dark);
+    label(ctx, labels.spectrum, pad, specTop + 12, tk.gold, { size: 12, weight: 600 });
+
+    // frequency axis ticks
+    for (let f = 0; f <= FMAX_HZ; f += 500) {
+      const x = pad + (f / FMAX_HZ) * specW;
+      label(ctx, f === 0 ? '0' : `${f}`, x, specBot + 14, tk.inkMuted, {
+        size: 9,
+        align: f === 0 ? 'left' : f === FMAX_HZ ? 'right' : 'center',
+      });
+    }
+    label(ctx, labels.freq, w - pad, specTop + 12, tk.inkMuted, { size: 10, align: 'right' });
+
+    // dominant-frequency marker
+    if (peakHz != null && peakHz <= FMAX_HZ) {
+      const x = pad + (peakHz / FMAX_HZ) * specW;
+      ctx.save();
+      ctx.strokeStyle = rgb(tk.gold, tk.dark ? 0.5 : 0.6);
+      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, specTop);
+      ctx.lineTo(x, specBot);
+      ctx.stroke();
+      ctx.restore();
+      const yMark = specBot - Math.pow(Math.min(1, mag[Math.round((peakHz * N) / sr)] * norm), 0.7) * (specBot - specTop);
+      glowDot(ctx, x, yMark, 2.2, sampleRamp(goldRamp, 1), tk.dark ? 1 : 0.8);
+      label(ctx, `${Math.round(peakHz)} Hz`, Math.min(w - pad, x + 6), specTop + 26, tk.gold, {
+        size: 11,
+        weight: 600,
+        align: x > w - 60 ? 'right' : 'left',
+      });
+    }
+  };
+
+  // ——— rAF loop drives both canvases; dt from a wall clock ———
+  let rafId = 0;
+  let last = performance.now();
+  let lastEmitKey = '';
+  const loop = (now: number) => {
+    rafId = requestAnimationFrame(loop);
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    measure(dt); // fill timeBuf + set currentSR (also advances the synth clock)
+    draw();
+    drawMatrix();
+    // emit only on a meaningful change (rounded Hz / source / mic state), not every frame
+    const key = `${source}|${peakHz == null ? '-' : Math.round(peakHz)}|${!!analyser}|${micError}`;
+    if (key !== lastEmitKey) {
+      lastEmitKey = key;
+      emit();
+    }
+  };
+
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    main.width = Math.max(1, Math.round(main.clientWidth * dpr));
+    main.height = Math.max(1, Math.round(main.clientHeight * dpr));
+  };
+  const ro = new ResizeObserver(resize);
+  ro.observe(main);
+  window.addEventListener('resize', resize);
+  resize();
+  rafId = requestAnimationFrame(loop);
+  emit();
 
   return {
-    setShape,
-    setPreset(name) {
-      setShape(PRESETS[name]());
+    async setSource(kind) {
+      if (kind === source) return;
+      const gen = ++micGen; // invalidate any mic open still in flight
+      let changed = false;
+      if (kind === 'mic') {
+        // Opening the mic can fail (no device / denied); on failure keep the
+        // current synth source and surface micError to the page.
+        const okMic = await startMic(gen);
+        if (gen !== micGen) return; // superseded by a newer setSource
+        if (okMic) {
+          source = 'mic';
+          changed = true;
+        }
+      } else {
+        if (source === 'mic') stopMic();
+        source = kind;
+        micError = false; // a successful non-mic switch clears any stale denial
+        changed = true;
+      }
+      if (changed) {
+        // reset scaling so the new source fills the display cleanly
+        specMax = 1e-6;
+        waveMax = 0.5;
+        magSmooth.fill(0);
+        peakHz = null;
+      }
+      emit();
     },
-    setTerms(k) {
-      terms = Math.max(1, Math.round(k));
-      recomputePath();
+    setFrequency(hz) {
+      toneHz = Math.max(50, Math.min(FMAX_HZ, hz));
     },
-    restoreDrawn() {
-      if (!drawnPts) return false;
-      setShapeInternal(drawnPts, true);
-      return true;
-    },
-    get maxTerms() {
-      return SAMPLES;
+    reset() {
+      specMax = 1e-6;
+      waveMax = 0.5;
+      magSmooth.fill(0);
+      clock = 0;
     },
     dispose() {
       cancelAnimationFrame(rafId);
-      resizeObserver.disconnect();
+      ro.disconnect();
       window.removeEventListener('resize', resize);
-      canvas.removeEventListener('pointerdown', onDown);
-      canvas.removeEventListener('pointermove', onMove);
-      canvas.removeEventListener('pointerup', onUp);
-      canvas.removeEventListener('pointercancel', onUp);
+      stopMic();
     },
   };
 }

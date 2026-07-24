@@ -1,0 +1,183 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 16 — Crystallography',
+    title: '結晶と回折 — 逆空間の世界',
+    intro:
+      '結晶に X線や電子線を当てると、スクリーンにブラッグ斑点が並んだ回折パターンが現れます。その正体は結晶の電子密度の2次元フーリエ変換 — 検出器が測るのはその強度 |F(q)|²。左が実空間の結晶、右がその回折像です。フーリエ変換は回転と可換なので、結晶を回すと回折像も同じだけ回ります。格子間隔 d を広げると、斑点は逆に狭まる（これが「逆空間」）。',
+    hint: '格子（正方／六方）と基底を変えると斑点の並びが変わる。「2原子」にすると構造因子の系統的消滅で斑点が間引かれる。「位相を捨てる」で位相問題も体感できる',
+    spacing: '格子間隔 d',
+    latticeLabel: '格子',
+    basisLabel: '基底（モチーフ）',
+    phaseLabel: '位相',
+    sq: '正方',
+    hex: '六方',
+    b1: '1原子',
+    b2: '2原子',
+    pCrystal: '結晶',
+    pNo: '位相を捨てる',
+    reading: '実空間の間隔',
+    note:
+      'X線結晶構造解析はこの逆問題です — 回折強度 |F|² を測り、フーリエ変換で電子密度（＝原子配置）へ戻す。ただし測れるのは強度だけで位相が失われる（位相問題）。位相なしで逆変換しても、原子の「像」ではなく原子間ベクトルの地図＝自己相関（パターソン関数）しか得られません。実務では重原子法・分子置換・直接法などで位相を復元します。同じ逆空間の発想は電子回折や MRI（k空間）にも共通。DNA の二重らせんも、フランクリンの回折写真「Photo 51」の斑点配置から読み解かれました。',
+    l: {
+      real: '結晶（実空間）',
+      recip: '回折 |F|²（逆空間）',
+      patterson: '強度だけで復元（位相なし）→ 自己相関',
+    },
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 16 — Crystallography',
+    title: 'Crystals & Diffraction — The Reciprocal World',
+    intro:
+      'Shine X-rays or electrons on a crystal and a pattern of Bragg spots appears on the screen. That pattern is the 2D Fourier transform of the crystal’s electron density — and what a detector measures is its intensity |F(q)|². Left is the real-space crystal; right is its diffraction. Because the Fourier transform commutes with rotation, spinning the crystal spins the pattern in lock-step. Widen the spacing d and the spots move closer — that is “reciprocal space.”',
+    hint: 'Change the lattice (square/hex) and basis and the spots rearrange. Switch to “2 atoms” and structure-factor extinctions thin them out. “Discard phase” lets you feel the phase problem.',
+    spacing: 'Lattice spacing d',
+    latticeLabel: 'Lattice',
+    basisLabel: 'Basis (motif)',
+    phaseLabel: 'Phase',
+    sq: 'Square',
+    hex: 'Hex',
+    b1: '1 atom',
+    b2: '2 atoms',
+    pCrystal: 'Crystal',
+    pNo: 'Discard phase',
+    reading: 'Real-space spacing',
+    note:
+      'X-ray crystallography is this inverse problem — measure the diffracted intensities |F|² and Fourier-transform back to the electron density (the atomic positions). But only the intensities are measured; the phase is lost (the phase problem). Inverse-transforming intensities alone yields not an image of the atoms but a map of interatomic vectors — the autocorrelation, or Patterson function. In practice the phases are recovered by heavy-atom, molecular-replacement, or direct methods. The same reciprocal-space idea underlies electron diffraction and MRI (k-space). Even DNA’s double helix was read from the spot pattern of Franklin’s diffraction image, “Photo 51.”',
+    l: {
+      real: 'Crystal (real space)',
+      recip: 'Diffraction |F|² (reciprocal)',
+      patterson: 'Reconstruct from intensity only (no phase) → autocorrelation',
+    },
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <Formula
+    label="Structure factor, measured intensity, and Bragg’s law"
+    tex={String.raw`F(\mathbf{q})=\sum_j f_j\,e^{\,i\,\mathbf{q}\cdot\mathbf{r}_j}\qquad I(\mathbf{q})=\bigl|F(\mathbf{q})\bigr|^2\qquad 2d\sin\theta = n\lambda`}
+  />
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas
+        id="diffraction-canvas"
+        class="lab-canvas diffraction-canvas"
+        aria-label={t.title}
+        data-labels={JSON.stringify(t.l)}
+      ></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="diff-spacing">
+          <span class="lab-readout-label">{t.spacing}</span>
+          <span id="diff-spacing-value">d = 5.7 Å</span>
+        </label>
+        <input id="diff-spacing" class="lab-slider" type="range" min="12" max="44" step="1" value="22" />
+      </div>
+
+      <div class="lab-meta lab-meta-row">
+        <div class="diff-group">
+          <span class="lab-readout-label">{t.latticeLabel}</span>
+          <div class="lab-chips" role="group" aria-label={t.latticeLabel}>
+            <button type="button" class="lab-chip active" data-lattice="square" aria-pressed="true">{t.sq}</button>
+            <button type="button" class="lab-chip" data-lattice="hex" aria-pressed="false">{t.hex}</button>
+          </div>
+        </div>
+        <div class="diff-group">
+          <span class="lab-readout-label">{t.basisLabel}</span>
+          <div class="lab-chips" role="group" aria-label={t.basisLabel}>
+            <button type="button" class="lab-chip active" data-basis="1" aria-pressed="true">{t.b1}</button>
+            <button type="button" class="lab-chip" data-basis="2" aria-pressed="false">{t.b2}</button>
+          </div>
+        </div>
+        <div class="diff-group">
+          <span class="lab-readout-label">{t.phaseLabel}</span>
+          <div class="lab-chips" role="group" aria-label={t.phaseLabel}>
+            <button type="button" class="lab-chip active" data-phase="crystal" aria-pressed="true">{t.pCrystal}</button>
+            <button type="button" class="lab-chip" data-phase="nophase" aria-pressed="false">{t.pNo}</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.reading}</span>
+        <span id="diff-info">—</span>
+      </p>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createDiffractionScene, type Lattice, type PhaseMode } from '../lib/lab/diffraction';
+
+  const canvas = document.getElementById('diffraction-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels || '{}');
+    const info = document.getElementById('diff-info');
+    const spacing = document.getElementById('diff-spacing') as HTMLInputElement;
+    const spacingValue = document.getElementById('diff-spacing-value');
+
+    const scene = createDiffractionScene(canvas, labels, (i) => {
+      // Both readouts derive d from the scene's own Å-per-px constant (no local copy).
+      if (spacingValue) spacingValue.textContent = `d = ${i.dAngstrom.toFixed(1)} Å`;
+      if (info) info.textContent = `d = ${i.dAngstrom.toFixed(1)} Å · 2π/d = ${i.qInv.toFixed(2)} Å⁻¹`;
+    });
+
+    // one exclusive-highlight helper per chip group
+    const wireGroup = (attr: string, apply: (v: string) => void) => {
+      const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(`.lab-chip[data-${attr}]`));
+      for (const chip of chips) {
+        chip.addEventListener('click', () => {
+          for (const c of chips) {
+            const on = c === chip;
+            c.classList.toggle('active', on);
+            c.setAttribute('aria-pressed', String(on));
+          }
+          apply(chip.dataset[attr]!);
+        });
+      }
+    };
+    wireGroup('lattice', (v) => scene.setLattice(v as Lattice));
+    wireGroup('basis', (v) => scene.setBasis(Number(v)));
+    wireGroup('phase', (v) => scene.setPhaseMode(v as PhaseMode));
+
+    spacing.addEventListener('input', () => {
+      scene.setSpacing(Number(spacing.value)); // scene emits → onInfo updates the label
+    });
+  }
+</script>
+
+<style>
+  .diffraction-canvas {
+    height: clamp(320px, 54vw, 460px);
+  }
+  .lab-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+  .diff-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+</style>

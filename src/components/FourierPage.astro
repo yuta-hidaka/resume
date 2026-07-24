@@ -8,34 +8,52 @@ const copy = {
   ja: {
     back: '← ラボ',
     label: 'Lab 02 — Signal Processing',
-    title: 'フーリエ変換の描画機械',
-    introBefore:
-      '回転する円を鎖のようにつなぎ、いちばん先の一点をペンにして図形を一筆書きする機械です。種を明かせばフーリエ変換 — 閉じた図形を周期的な複素信号 ',
-    introAfter:
-      ' とみなすと、回転する円（エピサイクル）の連なりに分解できます。振幅の大きい順に K 個だけ残しても、形の大部分はきちんと再現される。スライダーで確かめたら、マウスやタッチで自分の図形も描いてみてください。',
-    hint: 'キャンバスに直接描くと、その図形を分解します。閉じた一筆書きがコツ',
-    terms: '円の数',
-    presetStar: '星',
-    presetHeart: 'ハート',
-    presetLemniscate: 'レムニスケート',
-    drawn: '手描き',
-    note: 'これは JPEG や MP3 の圧縮と同じ原理 — 信号を周波数に分解し、寄与の小さい成分を捨てる。K を下げるほど「粗い要約」になり、上げるほど原形に収束していきます。',
+    title: 'フーリエ変換 — 測って、周波数へ',
+    intro:
+      '何かを測ると、たいてい「波形（時間の信号）」が手に入ります。フーリエ変換はその測定値 x を、周波数という別の基底へ移す線形写像 X = F x。混ざって届いた信号を、足し算のまま「どの周波数がどれだけ入っているか」へほどきます。上の緑が測定した波形、下の金がその変換結果（スペクトル）。マイクを選べば、あなたの声や口笛を実際に測って、その場で変換します。',
+    hint: '音源を選ぶ：純音はピーク1本、和音は3本、方形波は奇数倍音の櫛、ノイズは真っ平ら。「🎤 マイク」は実測（ブラウザの許可が必要）',
+    baseFreq: '基本周波数 f',
+    reading: '状態',
+    matrixTitle: 'X = F x',
+    matrixText:
+      '離散フーリエ変換は、行列 F を左から掛けるだけの一次変換。測定信号 x を「周波数」という基底に取り替える操作です。F の各行 k は1つの周波数の波、成分 X_k はその行と信号の内積（相関）。色は cos の符号（金＝＋／緑＝−）。今いちばん強い周波数の行が光ります。',
+    note:
+      '実際の計測でもこの流れは定番です — マイクで音圧を測ってピッチや声紋にする、FTIR 赤外分光は干渉計で干渉波形を測ってフーリエ変換でスペクトルにする、NMR は原子核の減衰信号（FID）を、MRI は空間周波数（k空間）を測って画像に戻す、X線結晶構造解析は回折を測って電子密度に。JPEG や MP3 の圧縮も本質は同じ — 周波数に分解し、寄与の小さい成分を捨てているだけです。',
+    src: { tone: '純音', chord: '和音', square: '方形波', noise: 'ノイズ', mic: '🎤 マイク' },
+    l: {
+      measured: '測定：波形 x(t)',
+      transform: 'フーリエ変換 ↓ X = F x',
+      spectrum: 'スペクトル |X(f)|',
+      time: '時間 →',
+      freq: '周波数 (Hz)',
+      micDenied: 'マイクを開けませんでした（合成音源で表示中）',
+      matrixRow: '＝1つの周波数',
+    },
   },
   en: {
     back: '← Lab',
     label: 'Lab 02 — Signal Processing',
-    title: 'Fourier Drawing Machine',
-    introBefore:
-      'A machine that draws with a chain of spinning circles, using the very tip as its pen. The secret is the Fourier transform: treat a closed shape as a periodic complex signal ',
-    introAfter:
-      ', and it splits into a chain of rotating circles — epicycles. Keep only the K largest terms, and most of the form still comes through. Try the slider, then draw your own shape with mouse or touch.',
-    hint: 'Draw your own shape right on the canvas — a closed single stroke works best',
-    terms: 'Circles',
-    presetStar: 'Star',
-    presetHeart: 'Heart',
-    presetLemniscate: 'Lemniscate',
-    drawn: 'Drawn',
-    note: 'This is the same principle behind JPEG and MP3 compression — decompose a signal into frequencies and discard the small contributions. Lower K gives a rougher summary; higher K converges to the original.',
+    title: 'The Fourier Transform — Measure, Then Frequencies',
+    intro:
+      'Measure almost anything and you get a waveform — a signal in time. The Fourier transform is the linear map X = F·x that moves that measurement into a different basis: frequency. It unmixes a signal that arrived as a sum back into “how much of each frequency is in it.” Green on top is the measured waveform; gold below is its transform (the spectrum). Pick the mic and it really measures your voice or whistle and transforms it live.',
+    hint: 'Pick a source: a pure tone is one peak, a chord is three, a square wave is a comb of odd harmonics, noise is flat. “🎤 Mic” is a real measurement (needs browser permission).',
+    baseFreq: 'Base frequency f',
+    reading: 'State',
+    matrixTitle: 'X = F x',
+    matrixText:
+      'The discrete Fourier transform is just left-multiplication by a matrix F — a linear change of basis that swaps your measured signal x into “frequency.” Each row k of F is one frequency; the component X_k is that row’s inner product (correlation) with the signal. Color is the sign of cosine (gold = +, green = −). The row of the strongest current frequency lights up.',
+    note:
+      'This flow is a workhorse of real instrumentation — a mic measures sound pressure to get pitch or a voiceprint; FTIR infrared spectroscopy measures an interferogram and Fourier-transforms it into a spectrum; NMR measures a decaying nuclear signal (the FID), MRI measures spatial frequencies (k-space) and transforms back to an image; X-ray crystallography measures diffraction to recover electron density. JPEG and MP3 compression are the same idea — decompose into frequencies and discard the small contributions.',
+    src: { tone: 'Pure tone', chord: 'Chord', square: 'Square', noise: 'Noise', mic: '🎤 Mic' },
+    l: {
+      measured: 'Measured: waveform x(t)',
+      transform: 'Fourier transform ↓ X = F x',
+      spectrum: 'Spectrum |X(f)|',
+      time: 'time →',
+      freq: 'frequency (Hz)',
+      micDenied: 'Could not open the mic (showing a synth source)',
+      matrixRow: '= one frequency',
+    },
   },
 } as const;
 const t = copy[lang];
@@ -45,46 +63,56 @@ const t = copy[lang];
   <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
   <p class="section-label mt-6">{t.label}</p>
   <h1 class="page-title mt-2">{t.title}</h1>
-  <p class="mt-5 text-[var(--ink-secondary)]">
-    {t.introBefore}<Formula
-      display={false}
-      tex={String.raw`z(t) = x(t) + i\,y(t)`}
-      label="complex signal z of t equals x of t plus i y of t"
-    />{t.introAfter}
-  </p>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
 
   <Formula
-    label="Discrete Fourier transform"
-    tex={String.raw`c_k = \dfrac{1}{N}\sum_{n=0}^{N-1} z_n\, e^{-2\pi i k n / N}, \qquad z(t) \approx \sum_{\text{top-}K} c_k\, e^{2\pi i k t}`}
+    label="Discrete Fourier transform — a linear change of basis"
+    tex={String.raw`X_k=\sum_{n=0}^{N-1}x_n\,e^{-2\pi i kn/N}\ \Longleftrightarrow\ X=F\,x,\qquad F(\alpha x+\beta y)=\alpha\,Fx+\beta\,Fy`}
   />
 
   <div class="glass mt-8 overflow-hidden">
     <div class="lab-stage">
-      <canvas id="fourier-canvas" class="lab-canvas fourier-canvas" aria-label={t.title}></canvas>
+      <canvas
+        id="fourier-canvas"
+        class="lab-canvas fourier-canvas"
+        aria-label={t.title}
+        data-labels={JSON.stringify(t.l)}
+      ></canvas>
       <p class="lab-hint">{t.hint}</p>
     </div>
 
     <div class="lab-panel">
-      <div class="lab-chips" role="group" aria-label="Shape">
-        <button type="button" class="lab-chip active" data-preset="star">{t.presetStar}</button>
-        <button type="button" class="lab-chip" data-preset="heart">{t.presetHeart}</button>
-        <button type="button" class="lab-chip" data-preset="lemniscate">{t.presetLemniscate}</button>
-        <button type="button" class="lab-chip" data-preset="drawn" id="drawn-chip" disabled>{t.drawn}</button>
+      <div class="lab-chips" role="group" aria-label="source">
+        <button type="button" class="lab-chip active" data-source="tone">{t.src.tone}</button>
+        <button type="button" class="lab-chip" data-source="chord">{t.src.chord}</button>
+        <button type="button" class="lab-chip" data-source="square">{t.src.square}</button>
+        <button type="button" class="lab-chip" data-source="noise">{t.src.noise}</button>
+        <button type="button" class="lab-chip" data-source="mic">{t.src.mic}</button>
       </div>
 
       <div class="lab-meta">
-        <label class="lab-readout" for="terms-slider">
-          <span class="lab-readout-label">{t.terms}</span>
-          <span id="terms-value">K = 32</span>
+        <label class="lab-readout" for="fourier-freq">
+          <span class="lab-readout-label">{t.baseFreq}</span>
+          <span id="fourier-freq-value">f = 440 Hz</span>
         </label>
-        <input
-          id="terms-slider"
-          class="lab-slider"
-          type="range"
-          min="1"
-          max="128"
-          value="32"
-        />
+        <input id="fourier-freq" class="lab-slider" type="range" min="100" max="1000" step="1" value="440" />
+      </div>
+
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.reading}</span>
+        <span id="fourier-info">—</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="glass mt-6 overflow-hidden">
+    <div class="fourier-matrix-grid">
+      <div class="lab-stage fourier-matrix-stage">
+        <canvas id="fourier-matrix" class="fourier-matrix-canvas" aria-label="DFT matrix F"></canvas>
+      </div>
+      <div class="fourier-matrix-note">
+        <p class="section-label">{t.matrixTitle}</p>
+        <p class="mt-2 text-sm text-[var(--ink-secondary)]">{t.matrixText}</p>
       </div>
     </div>
   </div>
@@ -93,51 +121,85 @@ const t = copy[lang];
 </section>
 
 <script>
-  import { createFourierMachine, PRESETS } from '../lib/lab/fourier';
+  import { createFourierScope, type SourceKind } from '../lib/lab/fourier';
 
   const canvas = document.getElementById('fourier-canvas') as HTMLCanvasElement | null;
-  if (canvas) {
-    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.lab-chip'));
-    const drawnChip = document.getElementById('drawn-chip') as HTMLButtonElement;
-    const slider = document.getElementById('terms-slider') as HTMLInputElement;
-    const termsValue = document.getElementById('terms-value');
+  const matrix = document.getElementById('fourier-matrix') as HTMLCanvasElement | null;
+  if (canvas && matrix) {
+    const labels = JSON.parse(canvas.dataset.labels || '{}');
+    const info = document.getElementById('fourier-info');
+    const freq = document.getElementById('fourier-freq') as HTMLInputElement;
+    const freqValue = document.getElementById('fourier-freq-value');
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.lab-chip[data-source]'));
+    const nameOf = (kind: string) =>
+      chips.find((c) => c.dataset.source === kind)?.textContent?.trim() || kind;
 
-    const activate = (chip: HTMLButtonElement) => {
-      chips.forEach((c) => c.classList.toggle('active', c === chip));
+    const highlight = (kind: string) => {
+      for (const c of chips) {
+        const on = c.dataset.source === kind;
+        c.classList.toggle('active', on);
+        c.setAttribute('aria-pressed', String(on));
+      }
     };
 
-    const machine = createFourierMachine(canvas, () => {
-      // A hand-drawn shape replaces the current one.
-      drawnChip.disabled = false;
-      activate(drawnChip);
+    const scope = createFourierScope(canvas, matrix, labels, (i) => {
+      highlight(i.source); // keep the UI in sync with the ACTUAL source (mic may have failed)
+      if (!info) return;
+      if (i.micError) {
+        info.textContent = labels.micDenied;
+        return;
+      }
+      const pk = i.peakHz != null ? ` · ${Math.round(i.peakHz)} Hz` : '';
+      info.textContent = `${nameOf(i.source)}${pk}`;
     });
-    machine.setPreset('star');
-    slider.max = String(machine.maxTerms);
 
-    chips.forEach((chip) => {
+    for (const chip of chips) {
       chip.addEventListener('click', () => {
-        const preset = chip.dataset.preset;
-        if (preset === 'drawn') {
-          // Restore the last hand-drawn shape instead of a preset.
-          if (machine.restoreDrawn()) activate(chip);
-          return;
-        }
-        if (preset && preset in PRESETS) {
-          machine.setPreset(preset as keyof typeof PRESETS);
-          activate(chip);
-        }
+        highlight(chip.dataset.source!); // optimistic; onInfo corrects it if the mic fails
+        void scope.setSource(chip.dataset.source as SourceKind);
       });
-    });
+    }
 
-    slider.addEventListener('input', () => {
-      machine.setTerms(Number(slider.value));
-      if (termsValue) termsValue.textContent = `K = ${slider.value}`;
+    freq.addEventListener('input', () => {
+      scope.setFrequency(Number(freq.value));
+      if (freqValue) freqValue.textContent = `f = ${freq.value} Hz`;
     });
   }
 </script>
 
 <style>
   .fourier-canvas {
-    cursor: crosshair;
+    height: clamp(380px, 64vw, 520px);
+  }
+  .fourier-matrix-grid {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    align-items: center;
+  }
+  .fourier-matrix-stage {
+    padding: 0;
+    aspect-ratio: 1 / 1;
+    max-width: 320px;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .fourier-matrix-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .fourier-matrix-note {
+    min-width: 0;
+  }
+  /* Keep the formula's lowercase x (section-label otherwise uppercases it → "F X"). */
+  .fourier-matrix-note .section-label {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  @media (min-width: 720px) {
+    .fourier-matrix-grid {
+      grid-template-columns: minmax(220px, 300px) 1fr;
+    }
   }
 </style>

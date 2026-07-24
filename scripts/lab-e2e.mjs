@@ -7,6 +7,7 @@ const BASE = process.env.BASE || 'http://localhost:4321';
 const PIECES = [
   '', 'hydrogen', 'fourier', 'entropy', 'ising', 'polarizer', 'molecules',
   'millikan', 'tunnel', 'kinetics', 'well', 'chirality', 'polymer', 'fusion', 'fission', 'doubleslit',
+  'diffraction',
 ];
 const LANGS = ['ja', 'en'];
 const urls = [];
