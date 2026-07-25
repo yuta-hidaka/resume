@@ -1,0 +1,255 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 17 — Fluid Dynamics',
+    title: 'ベルヌーイの定理 — 速いところは、圧力が低い',
+    intro:
+      '非圧縮性の流体は、どの断面でも同じ体積を運ばなければなりません（A₁v₁ = A₂v₂）。だから管を絞れば、流体は否応なく加速します。そしてエネルギーは保存されるので、速くなった分だけ静圧が下がる。これがベルヌーイの定理です。下は口径 100 mm のベンチュリ管を水平に置いて水を流したところ（なので ρgz は一定）。上のグラフの金色の線が全圧、緑の線が静圧で、その差が動圧 ½ρv²。喉部を絞るほど緑の線が沈み込みます。',
+    hint: '喉部を絞る／流量を上げると、喉の圧力が大気圧を割り、さらに水の蒸気圧まで落ちる。そこで水は室温のまま沸騰する — キャビテーション',
+    betaLabel: '絞り比 β = d₂/d₁',
+    flowLabel: '流量 Q',
+    viewLabel: '色',
+    lossLabel: '条件',
+    cSpeed: '速度',
+    cPressure: '圧力',
+    lIdeal: '理想（損失なし）',
+    lReal: '実際（損失あり）',
+    rSpeed: '流速',
+    rPressure: '圧力',
+    rMeter: '流量計として',
+    note:
+      'ベルヌーイの定理が成り立つのは「非粘性・非圧縮・定常・同一流線上」という条件つきです。それでも実用性は絶大で、この Δp から流量を読む装置が JIS/ISO 5167 のベンチュリ流量計です。実機の流出係数 C_d は β = 0.3–0.75 でおよそ 0.984 です。ここの「実際（損失あり）」は損失を喉部の動圧に比例させただけの1パラメータの代用品で、その係数は C_d がそのあたりに来るよう選んだものです — レイノルズ数依存も形状依存も持たないので（β を 0.9 まで上げると 0.96 まで落ちます）、一致は「おおよその大きさが合う」程度に読んでください。喉部の負圧を使うのが霧吹き・キャブレター・アスピレーター、全圧と静圧の差から速度を得るのが航空機のピトー管。なお「翼の上面は距離が長いので空気が速く流れ、ベルヌーイで揚力が出る」という説明は誤りです（同時到達の仮定に根拠がない）。揚力の本体は循環と気流の下向き偏向で、ベルヌーイは速度と圧力の関係を正しく結ぶ役割にとどまります。',
+    l: {
+      egl: '全圧（ピトー管が測る）',
+      hgl: '静圧（壁の圧力孔が測る）',
+      dyn: '動圧 ½ρv²',
+      zero: '大気圧',
+      duct: 'ベンチュリ管 — 口径 100 mm・水 20 °C',
+      cav: 'キャビテーション',
+      vap: '水の蒸気圧 — これより下がれない',
+      predicted: 'ベルヌーイの予測（水は追随できない）',
+      taps: ['①入口', '②喉部', '③回復'],
+    },
+    // Punctuation lives with the copy, not in the template — Japanese takes
+    // full-width brackets with no leading space, English the opposite.
+    r: {
+      throat: '喉部',
+      gauge: '（ゲージ圧）',
+      pinned: '（蒸気圧で頭打ち・キャビテーション）',
+      predictOpen: '（ベルヌーイの予測は ',
+      predictClose: '）',
+      saturated: 'Δp が飽和するので流量計はもう流量を追えない',
+      cd: 'C_d',
+    },
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 17 — Fluid Dynamics',
+    title: 'Bernoulli — Where It Runs Fast, the Pressure Drops',
+    intro:
+      'An incompressible fluid must carry the same volume through every cross-section (A₁v₁ = A₂v₂), so pinching the pipe *forces* the fluid to speed up. Energy is conserved, so whatever it gains in speed it must give up in static pressure. That is Bernoulli’s principle. Below, water flows through a horizontal 100 mm Venturi — so the ρgz term is constant. In the graph the gold line is total pressure, the green line is static pressure, and the gap between them is the dynamic pressure ½ρv². Squeeze the throat and the green line dives.',
+    hint: 'Tighten the throat or raise the flow and the throat pressure falls below atmospheric, then all the way to water’s vapour pressure — where it boils at room temperature. That is cavitation.',
+    betaLabel: 'Throat ratio β = d₂/d₁',
+    flowLabel: 'Flow rate Q',
+    viewLabel: 'Colour',
+    lossLabel: 'Condition',
+    cSpeed: 'Speed',
+    cPressure: 'Pressure',
+    lIdeal: 'Ideal (lossless)',
+    lReal: 'Real (with losses)',
+    rSpeed: 'Velocity',
+    rPressure: 'Pressure',
+    rMeter: 'As a flowmeter',
+    note:
+      'Bernoulli’s equation holds only for inviscid, incompressible, steady flow along a single streamline — and is enormously useful anyway. Reading flow rate from this Δp is exactly what an ISO 5167 Venturi meter does; a real one has a discharge coefficient of about 0.984 for β between 0.3 and 0.75. The “real (with losses)” mode here is a one-parameter stand-in — head loss taken proportional to the throat velocity head — whose coefficient was chosen so that C_d lands in that neighbourhood. It carries no Reynolds or geometry dependence (push β to 0.9 and it falls to 0.96), so read the agreement as order-of-magnitude, not as a match to the standard. The throat’s suction is what drives atomisers, carburettors and water aspirators; the difference between total and static pressure is what an aircraft’s Pitot tube measures. One warning: “air travels farther over the top of a wing, so it goes faster, so Bernoulli makes lift” is wrong — nothing requires the two flows to arrive together. Lift comes from circulation and from deflecting air downward; Bernoulli only relates the resulting speeds and pressures correctly.',
+    l: {
+      egl: 'Total pressure (what a Pitot tube reads)',
+      hgl: 'Static pressure (what a wall tap reads)',
+      dyn: 'Dynamic ½ρv²',
+      zero: 'Atmospheric',
+      duct: 'Venturi meter — 100 mm bore, water at 20 °C',
+      cav: 'Cavitation',
+      vap: 'Vapour pressure — water cannot go below this',
+      predicted: 'What Bernoulli predicts (water cannot follow)',
+      taps: ['① inlet', '② throat', '③ recovery'],
+    },
+    r: {
+      throat: 'throat',
+      gauge: ' (gauge)',
+      pinned: ' — pinned at the vapour pressure, cavitating',
+      predictOpen: ' (Bernoulli predicts ',
+      predictClose: ')',
+      saturated: 'Δp has saturated, so the meter no longer tracks flow',
+      cd: 'C_d',
+    },
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <Formula
+    label="Bernoulli, continuity, and the meter that inverts them"
+    tex={String.raw`p+\tfrac12\rho v^2+\rho g z=\mathrm{const.}\qquad A_1v_1=A_2v_2\qquad Q=C_d\,A_2\sqrt{\frac{2\,\Delta p}{\rho\,(1-\beta^4)}}`}
+  />
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas
+        id="bernoulli-canvas"
+        class="lab-canvas bernoulli-canvas"
+        aria-label={t.title}
+        data-labels={JSON.stringify(t.l)}
+        data-readout={JSON.stringify(t.r)}
+      ></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="bern-beta">
+          <span class="lab-readout-label bern-math">{t.betaLabel}</span>
+          <span id="bern-beta-value">0.55</span>
+        </label>
+        <input id="bern-beta" class="lab-slider" type="range" min="30" max="90" step="1" value="55" />
+      </div>
+
+      <div class="lab-meta">
+        <label class="lab-readout" for="bern-flow">
+          <span class="lab-readout-label">{t.flowLabel}</span>
+          <span id="bern-flow-value">9.0 L/s</span>
+        </label>
+        <input id="bern-flow" class="lab-slider" type="range" min="1" max="20" step="0.5" value="9" />
+      </div>
+
+      <div class="lab-meta bern-row">
+        <div class="bern-group">
+          <span class="lab-readout-label">{t.viewLabel}</span>
+          <div class="lab-chips" role="group" aria-label={t.viewLabel}>
+            <button type="button" class="lab-chip active" data-color="speed" aria-pressed="true">{t.cSpeed}</button>
+            <button type="button" class="lab-chip" data-color="pressure" aria-pressed="false">{t.cPressure}</button>
+          </div>
+        </div>
+        <div class="bern-group">
+          <span class="lab-readout-label">{t.lossLabel}</span>
+          <div class="lab-chips" role="group" aria-label={t.lossLabel}>
+            <button type="button" class="lab-chip active" data-loss="ideal" aria-pressed="true">{t.lIdeal}</button>
+            <button type="button" class="lab-chip" data-loss="real" aria-pressed="false">{t.lReal}</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rSpeed}</span>
+        <span id="bern-v" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rPressure}</span>
+        <span id="bern-p" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rMeter}</span>
+        <span id="bern-meter" aria-live="polite">—</span>
+      </p>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createBernoulliScene, type ColorMode, type LossMode } from '../lib/lab/bernoulli';
+
+  const canvas = document.getElementById('bernoulli-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels || '{}');
+    const betaEl = document.getElementById('bern-beta') as HTMLInputElement | null;
+    const flowEl = document.getElementById('bern-flow') as HTMLInputElement | null;
+    const betaVal = document.getElementById('bern-beta-value');
+    const flowVal = document.getElementById('bern-flow-value');
+    const vOut = document.getElementById('bern-v');
+    const pOut = document.getElementById('bern-p');
+    const mOut = document.getElementById('bern-meter');
+    const r = JSON.parse(canvas.dataset.readout || '{}');
+
+    // a gentle throat produces only tens of pascals — don't round it away to 0.0
+    const press = (pa: number) =>
+      Math.abs(pa) < 1000 ? `${pa.toFixed(0)} Pa` : `${(pa / 1000).toFixed(1)} kPa`;
+
+    const scene = createBernoulliScene(canvas, labels, (i) => {
+      if (betaVal) betaVal.textContent = i.beta.toFixed(2);
+      if (flowVal) flowVal.textContent = `${i.qLps.toFixed(1)} L/s`;
+      if (vOut) {
+        vOut.textContent = `v₁ = ${i.v1.toFixed(2)} m/s → v₂ = ${i.v2.toFixed(2)} m/s (×${(i.v2 / i.v1).toFixed(2)})`;
+      }
+      if (pOut) {
+        // Δp is what the two taps can actually read. Once the throat bottoms out
+        // on the vapour pressure it saturates there, so show Bernoulli's larger
+        // prediction alongside it rather than passing the prediction off as a
+        // reading no instrument could take.
+        pOut.textContent = i.cavitating
+          ? `Δp = ${press(i.dp)}${r.predictOpen}${press(i.dpIdeal)}${r.predictClose} · ${r.throat} ${press(i.p2Actual)}${r.pinned}`
+          : `Δp = ${press(i.dp)} · ${r.throat} ${press(i.p2Gauge)}${r.gauge}`;
+      }
+      if (mOut) {
+        const q = i.qFromDp * 1000;
+        mOut.textContent = i.cavitating
+          ? `Δp → Q = ${q.toFixed(2)} L/s — ${r.saturated}`
+          : `Δp → Q = ${q.toFixed(2)} L/s · ${r.cd} = ${i.cd.toFixed(3)}`;
+      }
+    });
+
+    if (betaEl) betaEl.addEventListener('input', () => scene.setBeta(Number(betaEl.value) / 100));
+    if (flowEl) flowEl.addEventListener('input', () => scene.setFlowLps(Number(flowEl.value)));
+
+    const wireGroup = (attr: string, apply: (v: string) => void) => {
+      const chips = Array.from(
+        document.querySelectorAll<HTMLButtonElement>(`.lab-chip[data-${attr}]`),
+      );
+      for (const chip of chips) {
+        chip.addEventListener('click', () => {
+          for (const c of chips) {
+            const on = c === chip;
+            c.classList.toggle('active', on);
+            c.setAttribute('aria-pressed', String(on));
+          }
+          apply(chip.dataset[attr]!);
+        });
+      }
+    };
+    wireGroup('color', (v) => scene.setColorMode(v as ColorMode));
+    wireGroup('loss', (v) => scene.setLossMode(v as LossMode));
+  }
+</script>
+
+<style>
+  .bernoulli-canvas {
+    height: clamp(360px, 58vw, 520px);
+  }
+  .bern-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+  .bern-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  /* the global readout label uppercases, which turns β into Β and d₂ into D₂ */
+  .bern-math {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>
