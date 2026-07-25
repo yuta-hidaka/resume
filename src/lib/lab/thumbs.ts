@@ -586,6 +586,88 @@ const DRAWERS: Record<string, Drawer> = {
     }
   },
 
+  tduality(ctx, p) {
+    // M² curves against log R: momentum falls, winding rises, and the picture is
+    // mirror-symmetric about the self-dual radius in the middle.
+    const X = (lr: number) => LW / 2 + (lr / 0.62) * (LW / 2 - 8);
+    const Y = (m2: number) => LH - 14 - (m2 / 17) * (LH - 26);
+    const line = (f: (r: number) => number, c: RGB) => {
+      const pts: [number, number][] = [];
+      for (let i = 0; i <= 40; i++) {
+        const lr = -0.6 + (1.2 * i) / 40;
+        pts.push([X(lr), Y(Math.min(17, f(Math.pow(10, lr))))]);
+      }
+      glowLine(ctx, pts, c, 1.3, p.dark);
+    };
+    line((r) => 1 / (r * r), p.green); // momentum
+    line((r) => r * r, p.gold); // winding
+    line((r) => 1 / (r * r) + r * r - 2, p.mid); // massless at R = 1
+
+    // the mirror line
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = rgb(p.gold, 0.5);
+    ctx.lineWidth = 0.7;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(X(0), 6);
+    ctx.lineTo(X(0), LH - 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // a marker sliding back and forth, mirrored about the self-dual point
+    const lr = 0.5 * Math.sin(p.T * 0.7);
+    dot(ctx, X(lr), Y(Math.min(17, 1 / Math.pow(10, 2 * lr))), 1.3, p.green, 0.95, p.dark);
+    dot(ctx, X(-lr), Y(Math.min(17, Math.pow(10, -2 * lr))), 1.3, p.gold, 0.95, p.dark);
+  },
+
+  friedmann(ctx, p) {
+    // a(t) sweeping up from the Big Bang, with a marker riding the curve and a
+    // comoving grid stretching underneath.
+    const OM = 0.315;
+    const OL = 0.685;
+    // a(t) for flat ΛCDM has a closed form: a = (Ω_m/Ω_Λ)^{1/3} sinh^{2/3}(3√Ω_Λ t/2)
+    const k = Math.cbrt(OM / OL);
+    const aOf = (tH: number) => k * Math.pow(Math.sinh((3 * Math.sqrt(OL) * tH) / 2), 2 / 3);
+    const tEnd = 2.4; // Hubble times
+    const aEnd = aOf(tEnd);
+    const X = (tH: number) => 8 + (tH / tEnd) * (LW - 16);
+    const Y = (a: number) => LH * 0.52 - (a / (aEnd * 1.05)) * (LH * 0.52 - 8);
+
+    const curve: [number, number][] = [];
+    for (let i = 0; i <= 60; i++) {
+      const tH = (i / 60) * tEnd;
+      curve.push([X(tH), Y(aOf(tH))]);
+    }
+    glowLine(ctx, curve, p.green, 1.5, p.dark);
+
+    // the playhead
+    const ph = (p.T * 0.2) % 1;
+    const tCur = ph * tEnd;
+    const aCur = aOf(tCur);
+    dot(ctx, X(tCur), Y(aCur), 1.7, p.gold, 0.95, p.dark);
+    dot(ctx, X(0), Y(0), 1.4, p.gold, 0.8, p.dark); // the singularity
+
+    // comoving grid, stretching with the playhead
+    const gy = LH * 0.78;
+    const sp = Math.max(2.5, aCur * 13);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = rgb(p.mid, 0.35);
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    for (let i = -5; i <= 5; i++) {
+      const x = LW / 2 + i * sp;
+      if (x < 4 || x > LW - 4) continue;
+      ctx.moveTo(x, gy - 9);
+      ctx.lineTo(x, gy + 9);
+    }
+    ctx.stroke();
+    for (let i = -5; i <= 5; i++) {
+      const x = LW / 2 + i * sp;
+      if (x < 4 || x > LW - 4) continue;
+      dot(ctx, x, gy, 1, i % 2 ? p.green : p.gold, 0.8, p.dark);
+    }
+  },
+
   bernoulli(ctx, p) {
     // A Venturi: the duct narrows, the fluid is forced to accelerate, and the
     // static-pressure line above dips exactly where the throat is.

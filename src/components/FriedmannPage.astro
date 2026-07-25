@@ -1,0 +1,415 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 18 — Cosmology',
+    title: 'フリードマン方程式 — 宇宙の一生を決める1本の式',
+    intro:
+      '宇宙が一様で等方だと仮定すると、アインシュタイン方程式はたった1本に潰れます。あとは「中に何がどれだけ入っているか」— 放射 Ω_r、物質 Ω_m、曲率 Ω_k、宇宙定数 Ω_Λ — を決めれば、宇宙の全史が一意に出てきます。各成分は薄まる速さが違う（放射が最速、次に物質、Λ は薄まらない）ので、どれが優勢かが時代とともに入れ替わる。それが宇宙の歴史そのものです。上のグラフがスケール因子 a(t)、下は同じ解を空間として描いたもの。放射は測定量である Ω_r h² = 4.15×10⁻⁵ で固定し、Ω_r は H₀ から導いています。放射がある以上どの設定でも初期は放射優勢で、そのため Ω_k = Ω_Λ = 0 のちょうどアインシュタイン＝ドジッター宇宙はスライダー上には存在しません（「平坦に固定」で Ω_m = 1 にすると Ω_Λ = −9×10⁻⁵ になり、a ≈ 10⁴ で再収縮します）。',
+    hint: 'Ω_m と Ω_Λ を動かすと宇宙の運命が変わる。「Planck 2018」で実測値に戻すと、年齢が 13.8 Gyr に落ち着く',
+    omLabel: '物質 Ω_m',
+    olLabel: '宇宙定数 Ω_Λ',
+    h0Label: 'ハッブル定数 H₀',
+    geoLabel: '幾何',
+    gFlat: '平坦に固定',
+    gFree: '自由',
+    preset: 'Planck 2018 に戻す',
+    rAge: '宇宙年齢',
+    rGeo: '幾何と加速',
+    rFate: '運命',
+    rEras: '転換点',
+    rCursor: '再生位置',
+    eraLambda: 'Λ が物質を追い越した',
+    eraEq: '物質と放射が等しかった',
+    crunchFar: '（グラフの表示範囲の外）',
+    crunchIn: ' 後',
+    onsetAt: '加速に転じるのは a = ',
+    notYet: 'まだ先（a = ',
+    notYetEnd: '）',
+    fateAccel: '加速膨張を続ける',
+    fateWillAccel: 'いまは減速中だが、やがて Λ が勝って加速に転じる',
+    fateCoast: '減速しながら膨張を続ける',
+    fateCrunch: 'ビッグクランチへ',
+    flatWord: '平坦',
+    closedWord: '閉じている',
+    openWord: '開いている',
+    accelWord: '加速',
+    decelWord: '減速',
+    noBang: 'ビッグバンなし（始まりが有限の過去にない）',
+    note:
+      '数字は本物です。実測値（H₀ = 67.4 km/s/Mpc、Ω_m = 0.315、Ω_Λ = 0.685）を入れると年齢 13.79 Gyr — Planck 2018 の 13.797 ± 0.023 Gyr と一致します。減速パラメータ q₀ = −0.527 が負であること、これが1998年に超新星で見つかった「宇宙は加速している」という結果そのものです。Λ が物質を追い越したのは z ≈ 0.3（つい最近）、物質と放射が等しかったのは z ≈ 3400（宇宙の晴れ上がりの少し前）。積分器は閉じた形の解があるケース — アインシュタイン＝ドジッター（2/3H₀）、空虚な宇宙（1/H₀）、放射のみ（1/2H₀）、平坦 ΛCDM の asinh 解、物質＋放射の閉形式、閉じた物質宇宙の再収縮時刻 — と照合してあります（前4つは 1e-8 以上、再収縮時刻は 2e-4）。なお a が小さいところに描かれた銀河は「共動座標の目印」で、実際には最初の数億年に銀河はまだありません。ニュートリノも今日は非相対論的なので、Ω_r は初期宇宙の実効的な放射を a⁻⁴ で今日まで外挿した量です（慣例どおり、効いてくる a ≪ 1 では正しい）。',
+    l: {
+      scale: 'スケール因子 a',
+      today: '今',
+      bang: 'ビッグバン',
+      crunch: 'ビッグクランチ',
+      noBang: '始まりがない',
+      continues: '→ この先で再収縮',
+      gyr: 'Gyr',
+    },
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 18 — Cosmology',
+    title: 'The Friedmann Equation — One Line That Sets a Universe’s Whole Life',
+    intro:
+      'Assume the universe is homogeneous and isotropic and Einstein’s equations collapse to a single line. All that is left is to say what is inside — radiation Ω_r, matter Ω_m, curvature Ω_k, a cosmological constant Ω_Λ — and the entire history follows. Each component dilutes at its own rate (radiation fastest, then matter, while Λ never dilutes at all), so which one dominates keeps changing, and that ordering *is* the history of the universe. Above is the scale factor a(t); below is the same solution drawn as space itself. Radiation is pinned by the measured quantity Ω_r h² = 4.15×10⁻⁵, with Ω_r derived from H₀. Because radiation is always present, every setting starts radiation-dominated — and exact Einstein–de Sitter (Ω_k = Ω_Λ = 0) is not on the slider: hold flat at Ω_m = 1 and Ω_Λ becomes −9×10⁻⁵, which recollapses at a ≈ 10⁴.',
+    hint: 'Move Ω_m and Ω_Λ and the fate of the universe changes. Hit “Planck 2018” for the measured values and the age settles at 13.8 Gyr.',
+    omLabel: 'Matter Ω_m',
+    olLabel: 'Cosmological constant Ω_Λ',
+    h0Label: 'Hubble constant H₀',
+    geoLabel: 'Geometry',
+    gFlat: 'Hold flat',
+    gFree: 'Free',
+    preset: 'Reset to Planck 2018',
+    rAge: 'Age',
+    rGeo: 'Geometry & acceleration',
+    rFate: 'Fate',
+    rEras: 'Turning points',
+    rCursor: 'Playhead',
+    eraLambda: 'Λ overtook matter',
+    eraEq: 'matter = radiation',
+    crunchFar: '(beyond the plotted range)',
+    crunchIn: ' from now',
+    onsetAt: 'acceleration starts at a = ',
+    notYet: 'not yet — at a = ',
+    notYetEnd: '',
+    fateAccel: 'expands forever, accelerating',
+    fateWillAccel: 'decelerating now, but Λ takes over and it accelerates later',
+    fateCoast: 'expands forever, decelerating',
+    fateCrunch: 'recollapses to a Big Crunch',
+    flatWord: 'flat',
+    closedWord: 'closed',
+    openWord: 'open',
+    accelWord: 'accelerating',
+    decelWord: 'decelerating',
+    noBang: 'no Big Bang — no beginning a finite time ago',
+    note:
+      'The numbers are real. Feed in the measured values (H₀ = 67.4 km/s/Mpc, Ω_m = 0.315, Ω_Λ = 0.685) and the age comes out 13.79 Gyr, against Planck 2018’s 13.797 ± 0.023 Gyr. The deceleration parameter q₀ = −0.527 is negative — that negative sign is exactly what the 1998 supernova surveys found when they discovered the expansion is speeding up. Λ overtook matter only at z ≈ 0.3, geologically recently; matter and radiation were equal at z ≈ 3400, just before the universe became transparent. The integrator is checked against every case with a closed form: Einstein–de Sitter (2/3H₀), the empty universe (1/H₀), radiation only (1/2H₀), the asinh solution for flat ΛCDM, the closed form for matter + radiation, and the recollapse time of a closed matter universe — to 1e-8 or better for the first five, 2e-4 for the recollapse. Two caveats: the galaxies drawn at small a are comoving markers — for the first few hundred million years there were no galaxies yet — and neutrinos are non-relativistic today, so Ω_r is the effective early-time radiation extrapolated back as a⁻⁴, which is standard and accurate where it matters (a ≪ 1).',
+    l: {
+      scale: 'scale factor a',
+      today: 'now',
+      bang: 'Big Bang',
+      crunch: 'Big Crunch',
+      noBang: 'no beginning',
+      continues: '→ recollapses later',
+      gyr: 'Gyr',
+    },
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]">{t.intro}</p>
+
+  <Formula
+    label="The Friedmann equation, with curvature fixed by normalising a = 1 today"
+    tex={String.raw`\left(\frac{\dot a}{a}\right)^{2}=H_0^{2}\left[\frac{\Omega_r}{a^4}+\frac{\Omega_m}{a^3}+\frac{\Omega_k}{a^2}+\Omega_\Lambda\right],\qquad \Omega_k=1-\Omega_r-\Omega_m-\Omega_\Lambda`}
+  />
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="friedmann-3d" class="lab-canvas friedmann-3d" aria-hidden="true"></canvas>
+      <canvas
+        id="friedmann-canvas"
+        class="lab-canvas friedmann-canvas"
+        aria-label={t.title}
+        data-labels={JSON.stringify(t.l)}
+        data-words={JSON.stringify({
+          fateAccel: t.fateAccel,
+          fateCoast: t.fateCoast,
+          fateCrunch: t.fateCrunch,
+          flat: t.flatWord,
+          closed: t.closedWord,
+          open: t.openWord,
+          accel: t.accelWord,
+          decel: t.decelWord,
+          noBang: t.noBang,
+          eraLambda: t.eraLambda,
+          eraEq: t.eraEq,
+          crunchFar: t.crunchFar,
+          crunchIn: t.crunchIn,
+          onsetAt: t.onsetAt,
+          notYet: t.notYet,
+          notYetEnd: t.notYetEnd,
+          fateWillAccel: t.fateWillAccel,
+        })}
+      ></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="fr-om">
+          <span class="lab-readout-label fr-math">{t.omLabel}</span>
+          <span id="fr-om-value">0.315</span>
+        </label>
+        <input id="fr-om" class="lab-slider" type="range" min="0" max="150" step="0.5" value="31.5" />
+      </div>
+
+      <div class="lab-meta">
+        <label class="lab-readout" for="fr-ol">
+          <span class="lab-readout-label fr-math">{t.olLabel}</span>
+          <span id="fr-ol-value">0.685</span>
+        </label>
+        <input id="fr-ol" class="lab-slider" type="range" min="0" max="150" step="0.5" value="68.5" disabled />
+      </div>
+
+      <div class="lab-meta">
+        <label class="lab-readout" for="fr-h0">
+          <span class="lab-readout-label fr-math">{t.h0Label}</span>
+          <span id="fr-h0-value">67.4 km/s/Mpc</span>
+        </label>
+        <input id="fr-h0" class="lab-slider" type="range" min="55" max="85" step="0.1" value="67.4" />
+      </div>
+
+      <div class="lab-meta fr-row">
+        <div class="fr-group">
+          <span class="lab-readout-label">{t.geoLabel}</span>
+          <div class="lab-chips" role="group" aria-label={t.geoLabel}>
+            <button type="button" class="lab-chip active" data-geo="flat" aria-pressed="true">{t.gFlat}</button>
+            <button type="button" class="lab-chip" data-geo="free" aria-pressed="false">{t.gFree}</button>
+          </div>
+        </div>
+        <div class="fr-group">
+          <button type="button" class="lab-chip fr-action" id="fr-planck">{t.preset}</button>
+        </div>
+      </div>
+
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rAge}</span>
+        <span id="fr-age" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rGeo}</span>
+        <span id="fr-geo" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rFate}</span>
+        <span id="fr-fate" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rEras}</span>
+        <span id="fr-eras">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rCursor}</span>
+        <span id="fr-cursor">—</span>
+      </p>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createFriedmannScene } from '../lib/lab/friedmann';
+  import { hasWebGL } from '../lib/lab/viz';
+  import { createFriedmann3D } from '../lib/lab/friedmann3d';
+
+  const canvas = document.getElementById('friedmann-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels || '{}');
+    const words = JSON.parse(canvas.dataset.words || '{}');
+    const omEl = document.getElementById('fr-om') as HTMLInputElement | null;
+    const olEl = document.getElementById('fr-ol') as HTMLInputElement | null;
+    const h0El = document.getElementById('fr-h0') as HTMLInputElement | null;
+    const omVal = document.getElementById('fr-om-value');
+    const olVal = document.getElementById('fr-ol-value');
+    const h0Val = document.getElementById('fr-h0-value');
+    const ageOut = document.getElementById('fr-age');
+    const geoOut = document.getElementById('fr-geo');
+    const fateOut = document.getElementById('fr-fate');
+    const erasOut = document.getElementById('fr-eras');
+    const curOut = document.getElementById('fr-cursor');
+
+    // Only touch the DOM when the string actually changed: these are aria-live
+    // regions and the playhead drives them ~11×/s, which some screen readers
+    // re-announce every time the text node is replaced.
+    const put = (el: HTMLElement | null, text: string) => {
+      if (el && el.textContent !== text) el.textContent = text;
+    };
+
+    const scene = createFriedmannScene(canvas, labels, (i) => {
+      put(omVal, i.cosmo.om.toFixed(3));
+      // In flat mode Ω_Λ is derived, so mirror the value the scene actually used
+      // rather than whatever the disabled slider happens to sit at.
+      const olTxt = Math.abs(i.cosmo.ol) < 5e-4 ? '0.000' : i.cosmo.ol.toFixed(3);
+      put(olVal, olTxt);
+      // M4: mirror the derived Ω_Λ into the disabled slider, or switching to
+      // "Free" restores a stale value the user never saw and silently flips the
+      // universe's fate.
+      if (olEl && olEl.disabled) olEl.value = String(Math.round(Math.max(0, i.cosmo.ol) * 100));
+      put(h0Val, `${i.cosmo.h0.toFixed(1)} km/s/Mpc`);
+
+      if (ageOut) {
+        put(ageOut, i.hasBigBang
+          ? `${i.ageGyr.toFixed(2)} Gyr  (1/H₀ = ${(9.77792 / (i.cosmo.h0 / 100)).toFixed(2)} Gyr)`
+          : words.noBang);
+      }
+      if (geoOut) {
+        const shape = Math.abs(i.ok) < 5e-3 ? words.flat : i.ok < 0 ? words.closed : words.open;
+        // avoid printing a signed zero for a universe that is flat by construction
+        const okTxt = Math.abs(i.ok) < 5e-4 ? '0.000' : i.ok.toFixed(3);
+        put(geoOut, `Ω_k = ${okTxt} (${shape}) · q₀ = ${i.q0.toFixed(3)} (${i.q0 < 0 ? words.accel : words.decel})`);
+      }
+      if (fateOut) {
+        // The fate is decided analytically, so a universe can be doomed without
+        // the crunch falling inside the integrated window.
+        // "Decelerating" read off today's q₀ is a claim about NOW; the row is
+        // labelled 運命 / Fate. Any Ω_Λ > 0 without a turnaround ends up
+        // Λ-dominated, so it has to be reported as accelerating later.
+        if (i.fate === 'crunch') {
+          const when = `${i.crunchGyr.toFixed(1)} Gyr${words.crunchIn}`;
+          put(fateOut, i.truncated ? `${words.fateCrunch} — ${when} ${words.crunchFar}` : `${words.fateCrunch} — ${when}`);
+        } else if (i.fate === 'accelerating') {
+          put(fateOut, words.fateAccel);
+        } else if (i.fate === 'willAccelerate') {
+          put(fateOut, `${words.fateWillAccel}（${words.onsetAt}${i.accelAtA.toFixed(2)}）`);
+        } else {
+          put(fateOut, words.fateCoast);
+        }
+      }
+      if (erasOut) {
+        // A negative redshift means the crossover is in the FUTURE — printing
+        // "z = −0.25" under a past-tense label was simply wrong.
+        const era = (z: number | null, digits: number) => {
+          if (z === null) return '—';
+          if (z < 0) return `${words.notYet}${(1 / (1 + z)).toFixed(2)}${words.notYetEnd}`;
+          return `z = ${z.toFixed(digits)}`;
+        };
+        const zl = era(i.zLambda, 2);
+        const ze = era(i.zEq, 0);
+        put(erasOut, `${words.eraLambda}: ${zl} · ${words.eraEq}: ${ze}`);
+      }
+      if (curOut) {
+        // z is a redshift of light we receive today — it has no meaning for the
+        // future half of the curve, so it is omitted there rather than printed
+        // as a negative number.
+        const zTxt =
+          i.cursorA <= 0 ? 'z = ∞' : i.cursorGyr > 0 ? '' : ` · z = ${i.cursorZ.toFixed(2)}`;
+        put(curOut, `t = ${i.cursorGyr >= 0 ? '+' : ''}${i.cursorGyr.toFixed(2)} Gyr · a = ${i.cursorA.toFixed(3)}${i.cursorA <= 0 ? ` · ${zTxt}` : zTxt}`);
+      }
+    });
+
+    // Ω_Λ is not free when the geometry is held flat.
+    const setFlatUi = (on: boolean) => {
+      if (olEl) olEl.disabled = on;
+    };
+
+    omEl?.addEventListener('input', () => scene.setOmegaM(Number(omEl.value) / 100));
+    olEl?.addEventListener('input', () => scene.setOmegaL(Number(olEl.value) / 100));
+    h0El?.addEventListener('input', () => scene.setH0(Number(h0El.value)));
+
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.lab-chip[data-geo]'));
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        for (const c of chips) {
+          const on = c === chip;
+          c.classList.toggle('active', on);
+          c.setAttribute('aria-pressed', String(on));
+        }
+        const flat = chip.dataset.geo === 'flat';
+        // Hand the scene the value the slider is showing, or leaving flat mode
+        // snaps Ω_Λ back to whatever it held internally and flips the fate with
+        // no interaction on that control.
+        if (!flat && olEl) scene.setOmegaL(Number(olEl.value) / 100);
+        scene.setFlat(flat);
+        setFlatUi(flat);
+      });
+    }
+
+    // ——— the 3D universe, driven by the same solution ———
+    const gl = document.getElementById('friedmann-3d') as HTMLCanvasElement | null;
+    if (gl) {
+      // WebGL can be unavailable (old hardware, a blocklisted driver, a headless
+      // browser). Probe first — the renderer's constructor logs console.error and
+      // then throws — and drop the canvas rather than taking the whole page down;
+      // the chart needs no GPU at all.
+      let view: ReturnType<typeof createFriedmann3D> | null = null;
+      if (hasWebGL()) {
+        try {
+          view = createFriedmann3D(gl);
+        } catch {
+          view = null;
+        }
+      }
+      if (!view) gl.remove();
+      if (view) {
+        const v = view;
+        const ro = new ResizeObserver(() => v.resize());
+        ro.observe(gl);
+        let last = performance.now();
+        const loop = (now: number) => {
+          requestAnimationFrame(loop);
+          const dt = Math.min(0.05, (now - last) / 1000);
+          last = now;
+          v.setScale(scene.scaleNow());
+          v.setPhase(scene.phaseNow());
+          v.render(dt);
+        };
+        requestAnimationFrame(loop);
+      }
+    }
+
+    document.getElementById('fr-planck')?.addEventListener('click', () => {
+      scene.usePlanck();
+      if (omEl) omEl.value = '31.5';
+      if (olEl) olEl.value = '68.5';
+      if (h0El) h0El.value = '67.4';
+      for (const c of chips) {
+        const on = c.dataset.geo === 'flat';
+        c.classList.toggle('active', on);
+        c.setAttribute('aria-pressed', String(on));
+      }
+      setFlatUi(true);
+    });
+  }
+</script>
+
+<style>
+  /* The 3D universe carries the visual weight; the a(t) chart sits above it as a
+     transparent instrument panel. */
+  .friedmann-3d {
+    height: clamp(300px, 46vw, 440px);
+    display: block;
+  }
+  .friedmann-canvas {
+    height: clamp(150px, 22vw, 210px);
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .fr-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: flex-end;
+  }
+  .fr-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  /* an action, not a member of a toggle group — no aria-pressed, never .active */
+  .fr-action {
+    align-self: flex-end;
+  }
+  /* the global readout label uppercases, which mangles Ω_m / H₀ subscripts */
+  .fr-math {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .lab-slider:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+</style>

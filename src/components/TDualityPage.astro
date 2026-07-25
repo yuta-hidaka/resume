@@ -1,0 +1,248 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import Formula from './Formula.astro';
+
+const lang = getLangFromUrl(Astro.url);
+
+const copy = {
+  ja: {
+    back: '← ラボ',
+    label: 'Lab 19 — String Theory',
+    title: 'T双対性 — 小さすぎる円は、大きい円と見分けがつかない',
+    intro:
+      '余分な次元を半径 R の円に丸めます。点粒子ならできることは1つ、円周方向に量子化された運動量 n を持つだけ。ところが閉じた弦は、円に w 回**巻きつく**こともできます。運動量モードの重さは n/R なので円を縮めると重くなり、巻きつきモードの重さは wR/α′ なので円を縮めると軽くなる。この2つの役割を入れ替えると、スペクトルは1ミリも変わりません。つまり半径 R の円と半径 α′/R の円は、物理として同じものです。',
+    hint: 'R を動かすとグラフが左右対称に動く。「双対を重ねる」で α′/R のスペクトルを重ねると、破線が完全に元の曲線に沈む',
+    rLabel: '円の半径 R / ℓs',
+    overlayLabel: '検証',
+    ovOn: '双対を重ねる',
+    ovOff: '重ねない',
+    rRadius: '半径',
+    rModes: 'モードの重さ',
+    rEnhanced: '対称性が増える状態 (1,1)',
+    rResidual: '双対性の残差',
+    regimeMomentum: '運動量モードが軽い（大きい円）',
+    regimeWinding: '巻きつきモードが軽い（小さい円）',
+    regimeSelf: '自己双対点 — 運動量と巻きつきが同値',
+    residualNote: '（浮動小数点の丸め以下＝一致）',
+    note:
+      'T双対性は近似ではなく厳密な等式です。スペクトル全体（|n|,|w| ≤ 3、N+Ñ ≤ 3 の全準位マッチ状態）を R と α′/R で計算して並べ替えると、R² と 1/R² を足すときの丸め（≲1e-13）以下で一致します。帰結が2つ。ひとつは「最小長さ」— R を 0 に近づけても、それは大きい円を別の言葉で書いただけなので、弦は √α′ より短い距離を分解できません。もうひとつは自己双対点 R = √α′ で (n,w) = (±1,±1) の4状態がちょうど質量ゼロになること（M² = 1/R² + R² − 2 → 0）。ゲージ場が左右それぞれ2本ずつ増えるので、対称性は U(1)_L × U(1)_R から SU(2)_L × SU(2)_R へ増大します。下のグラフでその曲線が M² = 0 に触れるのが見えます。ただしこれはボゾン弦・ヘテロ弦の話で、II 型超弦の自己双対点にゲージ対称性の増大はありません。なお R = √α′ では (±2,0)・(0,±2) のタキオン塔もちょうど質量ゼロを通過するので、質量ゼロ状態はこの4つだけではありません。基底状態が M² = −4/α′ のタキオンなのはボゾン弦だから（超弦では消えます）。グラフに描いてあるのはその基底状態だけで、運動量・巻きつきの曲線は質量ゼロ準位（N = Ñ = 1）の上に立てた塔なので、N = Ñ = 0 のタキオン的な相方は描かれていません。T双対性はディラトンにも効く（g_s → g_s√α′/R）ことも申し添えます。',
+    l: {
+      spectrum: '質量スペクトル M² (1/α′ 単位)',
+      selfDual: '自己双対半径 R = √α′',
+      momentum: '運動量 (1,0)',
+      winding: '巻きつき (0,1)',
+      mixed: '(1,1) — 自己双対点で質量ゼロ',
+      tachyon: '基底状態（タキオン）',
+      radiusAxis: 'R / ℓs',
+    },
+  },
+  en: {
+    back: '← Lab',
+    label: 'Lab 19 — String Theory',
+    title: 'T-Duality — A Circle Too Small Is a Large Circle in Disguise',
+    intro:
+      'Roll an extra dimension into a circle of radius R. A point particle can do exactly one thing with it: carry quantised momentum n around the loop. A closed string can also **wind** around it, w times. Momentum modes cost n/R, so they get heavier as the circle shrinks; winding modes cost wR/α′, so they get lighter. Swap the two roles and the spectrum does not change at all. A circle of radius R and a circle of radius α′/R are the same physics.',
+    hint: 'Move R and the plot moves symmetrically. Switch on “overlay the dual” and the dashed α′/R spectrum vanishes into the solid curves.',
+    rLabel: 'Circle radius R / ℓs',
+    overlayLabel: 'Check',
+    ovOn: 'Overlay the dual',
+    ovOff: 'Off',
+    rRadius: 'Radius',
+    rModes: 'Mode masses',
+    rEnhanced: 'Symmetry-enhancing state (1,1)',
+    rResidual: 'Duality residual',
+    regimeMomentum: 'momentum modes are light (large circle)',
+    regimeWinding: 'winding modes are light (small circle)',
+    regimeSelf: 'self-dual point — momentum and winding cost the same',
+    residualNote: '(below floating-point rounding — a match)',
+    note:
+      'T-duality is not an approximation but an exact identity. Compute the whole spectrum (every level-matched state with |n|,|w| ≤ 3 and N+Ñ ≤ 3) at R and at α′/R, sort both, and they agree below the rounding you get from adding R² to 1/R² (≲1e-13). Two consequences follow. First, a minimum length: taking R toward zero just rewrites a large circle in other words, so a string cannot resolve any distance shorter than √α′. Second, at the self-dual radius the four states (n,w) = (±1,±1) become exactly massless (M² = 1/R² + R² − 2 → 0). That is two extra gauge bosons for each chirality, so the symmetry is enhanced from U(1)_L × U(1)_R to SU(2)_L × SU(2)_R — visible below as that curve touching M² = 0. This is a bosonic and heterotic phenomenon; type II strings get no enhanced gauge symmetry at the self-dual radius. Nor are those four the only massless states there: the (±2,0) and (0,±2) tachyonic levels pass through zero at R = √α′ as well. The ground state does sit at M² = −4/α′ — a tachyon, a feature of the bosonic string that supersymmetry removes — and it is the flat line on the plot. Note the momentum and winding curves are the towers built on the massless level (N = Ñ = 1), so their tachyonic N = Ñ = 0 partners are not drawn. T-duality also acts on the dilaton, g_s → g_s√α′/R.',
+    l: {
+      spectrum: 'mass spectrum M² (units of 1/α′)',
+      selfDual: 'self-dual radius R = √α′',
+      momentum: 'momentum (1,0)',
+      winding: 'winding (0,1)',
+      mixed: '(1,1) — massless at the self-dual point',
+      tachyon: 'ground state (tachyon)',
+      radiusAxis: 'R / ℓs',
+    },
+  },
+} as const;
+const t = copy[lang];
+---
+
+<section>
+  <a href={getLocalizedPath(lang, '/lab')} class="lab-back">{t.back}</a>
+  <p class="section-label mt-6">{t.label}</p>
+  <h1 class="page-title mt-2">{t.title}</h1>
+  <p class="mt-5 text-[var(--ink-secondary)]" set:html={t.intro.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')} />
+
+  <Formula
+    label="Closed-string spectrum on a circle, with level matching — and the duality it obeys"
+    tex={String.raw`M^{2}=\frac{n^{2}}{R^{2}}+\frac{w^{2}R^{2}}{\alpha'^{2}}+\frac{2}{\alpha'}\bigl(N+\tilde N-2\bigr),\quad N-\tilde N=nw\qquad\Longrightarrow\qquad M^{2}(n,w,R)=M^{2}(w,n,\alpha'/R)`}
+  />
+
+  <div class="glass mt-8 overflow-hidden">
+    <div class="lab-stage">
+      <canvas id="tduality-3d" class="lab-canvas tduality-3d" aria-hidden="true"></canvas>
+      <canvas
+        id="tduality-canvas"
+        class="lab-canvas tduality-canvas"
+        aria-label={t.title}
+        data-labels={JSON.stringify(t.l)}
+        data-words={JSON.stringify({
+          momentum: t.regimeMomentum,
+          winding: t.regimeWinding,
+          selfdual: t.regimeSelf,
+          exact: t.residualNote,
+        })}
+      ></canvas>
+      <p class="lab-hint">{t.hint}</p>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-meta">
+        <label class="lab-readout" for="td-r">
+          <span class="lab-readout-label td-math">{t.rLabel}</span>
+          <span id="td-r-value">2.20</span>
+        </label>
+        <input id="td-r" class="lab-slider" type="range" min="-0.60206" max="0.60206" step="0.002" value="0.34242" />
+      </div>
+
+      <div class="lab-meta">
+        <span class="lab-readout-label">{t.overlayLabel}</span>
+        <div class="lab-chips" role="group" aria-label={t.overlayLabel}>
+          <button type="button" class="lab-chip" data-ov="on" aria-pressed="false">{t.ovOn}</button>
+          <button type="button" class="lab-chip active" data-ov="off" aria-pressed="true">{t.ovOff}</button>
+        </div>
+      </div>
+
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rRadius}</span>
+        <span id="td-radius" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rModes}</span>
+        <span id="td-modes" aria-live="polite">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rEnhanced}</span>
+        <span id="td-enhanced">—</span>
+      </p>
+      <p class="lab-readout">
+        <span class="lab-readout-label">{t.rResidual}</span>
+        <span id="td-residual">—</span>
+      </p>
+    </div>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--ink-muted)]">{t.note}</p>
+</section>
+
+<script>
+  import { createTDualityScene } from '../lib/lab/tduality';
+  import { hasWebGL } from '../lib/lab/viz';
+  import { createTDuality3D } from '../lib/lab/tduality3d';
+
+  const canvas = document.getElementById('tduality-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const labels = JSON.parse(canvas.dataset.labels || '{}');
+    const words = JSON.parse(canvas.dataset.words || '{}');
+    const rEl = document.getElementById('td-r') as HTMLInputElement | null;
+    const rVal = document.getElementById('td-r-value');
+    const radiusOut = document.getElementById('td-radius');
+    const modesOut = document.getElementById('td-modes');
+    const enhOut = document.getElementById('td-enhanced');
+    const resOut = document.getElementById('td-residual');
+
+    const scene = createTDualityScene(canvas, labels, (i) => {
+      if (rVal) rVal.textContent = i.r.toFixed(2);
+      if (radiusOut) {
+        radiusOut.textContent = `R = ${i.r.toFixed(3)} ℓs · α′/R = ${i.rDual.toFixed(3)} ℓs — ${words[i.regime]}`;
+      }
+      if (modesOut) {
+        modesOut.textContent = `M²(1,0) = ${i.m2Momentum.toFixed(3)} · M²(0,1) = ${i.m2Winding.toFixed(3)}  (1/α′)`;
+      }
+      if (enhOut) {
+        // exactly zero at R = √α′, and continuous everywhere — unlike "the
+        // lightest state", whose value depends on where the tower is cut off
+        const z = Math.abs(i.m2Enhanced) < 5e-4 ? '0.000' : i.m2Enhanced.toFixed(3);
+        enhOut.textContent = `M² = 1/R² + R² − 2 = ${z}  (1/α′)`;
+      }
+      if (resOut) {
+        // The whole point: this number is zero, and it is computed rather than
+        // asserted — the sorted spectra at R and α′/R differ by this much.
+        // Below ~1e-13 the difference is float noise from summing R² and 1/R²;
+        // printing "1.4e-14" beside "exact match" would be the widget arguing
+        // with itself, so say what the number means instead of dressing it up.
+        const rres = i.dualityResidual < 1e-13 ? '< 1e-13' : i.dualityResidual.toExponential(1);
+        resOut.textContent = `max |ΔM²| = ${rres}  ${words.exact}`;
+      }
+    });
+
+    // the slider carries log10(R), so both ends of the duality get equal travel
+    rEl?.addEventListener('input', () => scene.setRadius(Math.pow(10, Number(rEl.value))));
+
+    // ——— the compactified dimension in 3D, following the same R ———
+    const gl = document.getElementById('tduality-3d') as HTMLCanvasElement | null;
+    let view: ReturnType<typeof createTDuality3D> | null = null;
+    if (gl) {
+      // No WebGL (old hardware, blocklisted driver, headless): probe first, since
+      // the renderer's constructor logs console.error before throwing. The
+      // spectrum plot needs no GPU, so a missing renderer must not take the page.
+      if (hasWebGL()) {
+        try {
+          view = createTDuality3D(gl);
+        } catch {
+          view = null;
+        }
+      }
+      if (!view) gl.remove();
+      if (view) {
+        const v = view;
+        const ro = new ResizeObserver(() => v.resize());
+        ro.observe(gl);
+        let last = performance.now();
+        const loop = (now: number) => {
+          requestAnimationFrame(loop);
+          const dt = Math.min(0.05, (now - last) / 1000);
+          last = now;
+          v.setRadius(scene.radiusNow());
+          v.render(dt);
+        };
+        requestAnimationFrame(loop);
+      }
+    }
+
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.lab-chip[data-ov]'));
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        for (const c of chips) {
+          const on = c === chip;
+          c.classList.toggle('active', on);
+          c.setAttribute('aria-pressed', String(on));
+        }
+        scene.setOverlay(chip.dataset.ov === 'on');
+        view?.setShowDual(chip.dataset.ov === 'on');
+      });
+    }
+  }
+</script>
+
+<style>
+  /* The compactified dimension gets the room; the spectrum sits above it. */
+  .tduality-3d {
+    height: clamp(300px, 46vw, 430px);
+    display: block;
+  }
+  .tduality-canvas {
+    height: clamp(170px, 24vw, 230px);
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  /* the global readout label uppercases, which mangles ℓs and α′ */
+  .td-math {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>

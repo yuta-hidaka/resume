@@ -311,6 +311,23 @@ export function label(
   ctx.restore();
 }
 
+/**
+ * Is WebGL available at all?
+ *
+ * Probe before constructing a three.js renderer: the renderer's constructor logs
+ * `console.error` and then throws when it cannot get a context, which both noises
+ * up the console for users with a blocklisted driver and trips the lab's e2e
+ * sweep. Cheap enough to call once per page.
+ */
+export function hasWebGL(): boolean {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch {
+    return false;
+  }
+}
+
 /** Standard theme observer + resize wiring; returns a disposer. Optional —
  *  pieces with existing wiring can keep it. */
 export function watchTheme(onChange: () => void): () => void {
