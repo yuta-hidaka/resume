@@ -146,6 +146,22 @@ const copy = {
         desc: 'ベンチュリ管に水を流す。喉を絞ると流れは加速し、静圧はその分だけ沈む。Δp から流量を逆算し、絞りすぎれば水が室温で沸く。',
         path: '/lab/bernoulli',
       },
+      {
+        no: '18',
+        key: 'friedmann',
+        tag: 'Cosmology',
+        title: 'フリードマン方程式 — 宇宙の一生を決める1本の式',
+        desc: 'Ω_m と Ω_Λ を動かすと宇宙の運命が変わる。実測値を入れれば年齢は 13.8 Gyr に落ち、q₀ が負＝加速膨張が読み取れる。',
+        path: '/lab/friedmann',
+      },
+      {
+        no: '19',
+        key: 'tduality',
+        tag: 'String Theory',
+        title: 'T双対性 — 小さすぎる円は、大きい円と見分けがつかない',
+        desc: '閉じた弦は円に巻きつける。運動量と巻きつきを入れ替えても質量スペクトルは一切変わらず、「これ以上短い長さは意味を持たない」が出てくる。',
+        path: '/lab/tduality',
+      },
     ],
   },
   en: {
@@ -290,6 +306,22 @@ const copy = {
         desc: 'Water through a Venturi: squeeze the throat, the flow speeds up and the static pressure dives. Read the flow rate back out of Δp — and squeeze harder to boil water at room temperature.',
         path: '/lab/bernoulli',
       },
+      {
+        no: '18',
+        key: 'friedmann',
+        tag: 'Cosmology',
+        title: 'The Friedmann Equation — One Line That Sets a Universe’s Whole Life',
+        desc: 'Move Ω_m and Ω_Λ and the fate of the universe changes. Dial in the measured values and the age lands on 13.8 Gyr with a negative q₀ — accelerating expansion.',
+        path: '/lab/friedmann',
+      },
+      {
+        no: '19',
+        key: 'tduality',
+        tag: 'String Theory',
+        title: 'T-Duality — A Circle Too Small Is a Large Circle in Disguise',
+        desc: 'A closed string can wind around a circle. Trade momentum for winding and the spectrum does not change at all — which is where a minimum length comes from.',
+        path: '/lab/tduality',
+      },
     ],
   },
 } as const;
@@ -412,15 +444,14 @@ const shortTitle = (title: string) => title.split(/\s*[—–]\s*/)[0].trim();
        does not implement — the frost then silently disappears in production. */
     backdrop-filter: blur(16px) saturate(150%);
     box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 10%, transparent);
-    opacity: 0;
-    transform: translateY(7px);
-    transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: background 0.22s ease, box-shadow 0.22s ease;
   }
 
+  /* Titles stay put — hover only deepens the glass and lifts the tag. */
   .lab-tile:hover .lab-tile-caption,
   .lab-tile:focus-visible .lab-tile-caption {
-    opacity: 1;
-    transform: none;
+    background: color-mix(in srgb, var(--paper) 68%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
   /* Without the frost, a 52% tint is not enough to keep the label readable over
@@ -438,10 +469,16 @@ const shortTitle = (title: string) => title.split(/\s*[—–]\s*/)[0].trim();
     font-weight: 600;
     letter-spacing: 0.11em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--accent) 72%, var(--ink-muted));
+    color: color-mix(in srgb, var(--accent) 62%, var(--ink-muted));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.22s ease;
+  }
+
+  .lab-tile:hover .lab-tile-tag,
+  .lab-tile:focus-visible .lab-tile-tag {
+    color: var(--accent);
   }
 
   .lab-tile-title {
