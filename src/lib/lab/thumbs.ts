@@ -17,6 +17,11 @@ interface P {
   faint: RGB;
   dark: boolean;
   state: Record<string, unknown>;
+  /** Logical rect covering the WHOLE cell. When the tile is not LW:LH the art is
+   *  letterboxed inside it, so a drawer that paints an opaque full-area fill has
+   *  to use this instead of (0, 0, LW, LH) — otherwise the letterbox shows up as
+   *  a hard-edged block. Line art on transparent can ignore it. */
+  bleed: { x: number; y: number; w: number; h: number };
 }
 
 const LW = 116; // logical drawing width
@@ -183,12 +188,14 @@ const DRAWERS: Record<string, Drawer> = {
       img.data[o] = c[0];
       img.data[o + 1] = c[1];
       img.data[o + 2] = c[2];
-      img.data[o + 3] = p.dark ? 190 : 235;
+      // Kept well below opaque: this is the only drawer that fills the cell, and
+      // at full strength it shouts over the glowing line art in every other tile.
+      img.data[o + 3] = p.dark ? 120 : 165;
     }
     octx.putImageData(img, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(off, 0, 0, LW, LH);
+    ctx.drawImage(off, p.bleed.x, p.bleed.y, p.bleed.w, p.bleed.h); // opaque fill: cover the cell
   },
 
   polarizer(ctx, p) {
@@ -578,6 +585,85 @@ const DRAWERS: Record<string, Drawer> = {
       }
     }
   },
+
+  bernoulli(ctx, p) {
+    // A Venturi: the duct narrows, the fluid is forced to accelerate, and the
+    // static-pressure line above dips exactly where the throat is.
+    const beta = 0.42;
+    const ss = (a: number, b: number, x: number) => {
+      const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    };
+    // same breakpoints as ductShape() in lib/lab/venturi.ts, so the tile is a
+    // caricature of the real piece rather than a different duct
+    const shape = (u: number) => {
+      if (u < 0.3) return 1;
+      if (u < 0.4) return 1 + (beta - 1) * ss(0.3, 0.4, u);
+      if (u < 0.5) return beta;
+      if (u < 0.88) return beta + (1 - beta) * ss(0.5, 0.88, u);
+      return 1;
+    };
+    const axis = LH * 0.66;
+    const maxR = 12;
+    const X = (u: number) => 6 + u * (LW - 12);
+
+    const Y_EGL = 12;
+    const Y_HGL0 = 17;
+    const M = 64;
+    const top: [number, number][] = [];
+    const bot: [number, number][] = [];
+    const hgl: [number, number][] = [];
+    // travel time to each station: du/dt ∝ A(u) ∝ shape², so τ = ∫ shape² du
+    const tau = [0];
+    for (let i = 0; i <= M; i++) {
+      const u = i / M;
+      const s = shape(u);
+      const r = s * maxR;
+      top.push([X(u), axis - r]);
+      bot.push([X(u), axis + r]);
+      // Total pressure sits at Y_EGL; static pressure starts a little below it —
+      // that gap is the inlet dynamic head, which must not be drawn as zero — and
+      // dips as v². Scaled so the trough stays clear of the pipe wall below.
+      hgl.push([X(u), Y_HGL0 + (1 / s ** 4 - 1) * 0.78]);
+      if (i > 0) tau.push(tau[i - 1] + (shape((i - 0.5) / M) ** 2) / M);
+    }
+    const total = tau[M];
+    const uAt = (ph: number) => {
+      const target = ((ph % 1) + 1) % 1 * total;
+      let i = 1;
+      while (i < M && tau[i] < target) i++;
+      const f = (target - tau[i - 1]) / Math.max(1e-9, tau[i] - tau[i - 1]);
+      return (i - 1 + f) / M;
+    };
+
+    glowLine(ctx, [[X(0), Y_EGL], [X(1), Y_EGL]], p.gold, 1, p.dark); // total pressure
+    glowLine(ctx, hgl, p.green, 1.2, p.dark); // static pressure
+    glowLine(ctx, top, p.mid, 1, p.dark);
+    glowLine(ctx, bot, p.mid, 1, p.dark);
+
+    for (let i = 0; i < 14; i++) {
+      const ph = p.T * 0.22 + i / 14;
+      const u = uAt(ph);
+      const u0 = uAt(ph - 0.012);
+      const zeta = Math.sin(i * 2.399) * 0.72;
+      const spd = Math.min(1, (1 / shape(u) ** 2 - 1) / (1 / beta ** 2 - 1));
+      const c: RGB = [
+        p.green[0] + (p.gold[0] - p.green[0]) * spd,
+        p.green[1] + (p.gold[1] - p.green[1]) * spd,
+        p.green[2] + (p.gold[2] - p.green[2]) * spd,
+      ];
+      glowLine(
+        ctx,
+        [
+          [X(u0), axis + shape(u0) * maxR * zeta],
+          [X(u), axis + shape(u) * maxR * zeta],
+        ],
+        c,
+        1.3,
+        p.dark,
+      );
+    }
+  },
 };
 
 function coarsen(f: Int8Array, gx: number, gy: number): Int8Array {
@@ -659,12 +745,17 @@ export function initThumbs() {
     if (!drawer) return;
     const { dpr, w, h } = sizeOf(tile);
     const ctx = tile.canvas.getContext('2d')!;
-    // Map the logical LWxLH drawing space onto the real tile size.
-    ctx.setTransform((dpr * w) / LW, 0, 0, (dpr * h) / LH, 0, 0);
-    ctx.clearRect(0, 0, LW, LH);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, tile.canvas.width, tile.canvas.height);
+    // Map the logical LW×LH drawing space onto the tile with ONE scale for both
+    // axes, centred. Independent x/y scales would stretch every drawer as soon as
+    // the tile stops being 4:3 — which it did the moment the index went square.
+    const k = Math.min(w / LW, h / LH);
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, (dpr * (w - LW * k)) / 2, (dpr * (h - LH * k)) / 2);
+    const bleed = { x: -(w / k - LW) / 2, y: -(h / k - LH) / 2, w: w / k, h: h / k };
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
-    drawer(ctx, { T, state: tile.state, ...pal });
+    drawer(ctx, { T, state: tile.state, bleed, ...pal });
   };
 
   const drawAll = (T: number) => {

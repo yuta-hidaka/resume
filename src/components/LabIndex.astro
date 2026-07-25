@@ -138,6 +138,14 @@ const copy = {
         desc: '実空間の結晶と回折 |F|² を並べ、格子を回すと回折像も回る。構造因子の系統的消滅、そして「強度だけでは像に戻らない」位相問題まで。',
         path: '/lab/diffraction',
       },
+      {
+        no: '17',
+        key: 'bernoulli',
+        tag: 'Fluid Dynamics',
+        title: 'ベルヌーイの定理 — 速いところは、圧力が低い',
+        desc: 'ベンチュリ管に水を流す。喉を絞ると流れは加速し、静圧はその分だけ沈む。Δp から流量を逆算し、絞りすぎれば水が室温で沸く。',
+        path: '/lab/bernoulli',
+      },
     ],
   },
   en: {
@@ -274,10 +282,23 @@ const copy = {
         desc: 'A real-space crystal beside its |F|² diffraction — rotate the lattice and the pattern rotates too; see structure-factor extinctions and the phase problem.',
         path: '/lab/diffraction',
       },
+      {
+        no: '17',
+        key: 'bernoulli',
+        tag: 'Fluid Dynamics',
+        title: 'Bernoulli — Where It Runs Fast, the Pressure Drops',
+        desc: 'Water through a Venturi: squeeze the throat, the flow speeds up and the static pressure dives. Read the flow rate back out of Δp — and squeeze harder to boil water at room temperature.',
+        path: '/lab/bernoulli',
+      },
     ],
   },
 } as const;
 const t = copy[lang];
+
+/** Tile caption: the name only. Every title is "Name — subtitle", and the
+ *  subtitle is what forced a cramped three-line wrap inside a 200px cell. The
+ *  full title still goes in the accessible name and the tooltip. */
+const shortTitle = (title: string) => title.split(/\s*[—–]\s*/)[0].trim();
 ---
 
 <section>
@@ -287,18 +308,18 @@ const t = copy[lang];
 
   <div class="lab-grid mt-10">
     {t.entries.map((e) => (
-      <a href={getLocalizedPath(lang, e.path)} class="glass lab-card">
-        <div class="lab-thumb-frame">
-          <canvas class="lab-thumb" data-thumb={e.key} aria-hidden="true"></canvas>
-        </div>
-        <div class="lab-card-body">
-          <div class="lab-card-head">
-            <span class="lab-card-no tnum">{e.no}</span>
-            <span class="lab-card-tag">{e.tag}</span>
-          </div>
-          <h2 class="lab-card-title font-display">{e.title}</h2>
-          <p class="lab-card-desc">{e.desc}</p>
-        </div>
+      <a
+        href={getLocalizedPath(lang, e.path)}
+        class="lab-tile"
+        aria-label={`${e.no} · ${e.tag} — ${e.title}`}
+        title={e.desc}
+      >
+        <canvas class="lab-thumb" data-thumb={e.key} aria-hidden="true"></canvas>
+        <span class="lab-tile-no tnum" aria-hidden="true">{e.no}</span>
+        <span class="lab-tile-caption" aria-hidden="true">
+          <span class="lab-tile-tag">{e.tag}</span>
+          <span class="lab-tile-title font-display">{shortTitle(e.title)}</span>
+        </span>
       </a>
     ))}
   </div>
@@ -310,106 +331,148 @@ const t = copy[lang];
 </script>
 
 <style>
-  /* Full-bleed gallery: the grid breaks out of the centered text column to
-     span the whole viewport, on desktop and mobile alike. */
+  /* Instagram-style contact sheet: a full-bleed mosaic of uniform square cells
+     with hairline gutters and no captions — the whole gallery reads at a glance
+     and the title only surfaces on hover/focus. */
   .lab-grid {
     width: 100vw;
     max-width: 100vw;
     margin-inline: calc(50% - 50vw);
-    padding-inline: clamp(14px, 3vw, 44px);
+    padding-inline: clamp(4px, 0.8vw, 18px);
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(48%, 250px), 1fr));
-    gap: clamp(10px, 1.4vw, 18px);
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(2px, 0.35vw, 5px);
+  }
+  @media (min-width: 640px) {
+    .lab-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (min-width: 940px) {
+    .lab-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+  @media (min-width: 1320px) {
+    .lab-grid { grid-template-columns: repeat(6, 1fr); }
   }
 
-  /* Instagram-style tile: big visual on top, compact caption below. */
-  .lab-card {
+  .lab-tile {
+    position: relative;
     display: block;
     overflow: hidden;
-    transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
-  }
-
-  .lab-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px -14px color-mix(in srgb, var(--accent) 60%, transparent);
-  }
-
-  /* Thumbnail frame carries the aurora/grid backdrop so the living preview
-     sits on the same depth as the full pieces. */
-  .lab-thumb-frame {
-    position: relative;
-    border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    border-radius: 3px;
+    /* the aurora backdrop the full pieces sit on, so the previews keep their depth */
     background:
       radial-gradient(120% 100% at 50% -10%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 62%),
-      radial-gradient(90% 80% at 85% 120%, color-mix(in srgb, #d9b36c 10%, transparent), transparent 58%);
+      radial-gradient(90% 80% at 85% 120%, color-mix(in srgb, #d9b36c 10%, transparent), transparent 58%),
+      color-mix(in srgb, var(--surface) 60%, transparent);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: box-shadow 0.18s ease, filter 0.18s ease;
   }
 
-  .lab-thumb-frame::after {
-    content: '';
+  .lab-tile:hover,
+  .lab-tile:focus-visible {
+    box-shadow: inset 0 0 0 1px var(--accent);
+    filter: brightness(1.06);
+  }
+
+  /* Always-on index number — the one affordance that survives on touch, where
+     there is no hover to reveal the caption. */
+  .lab-tile-no {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 0%, transparent), transparent 55%);
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    top: 0.5rem;
+    left: 0.6rem;
+    z-index: 2;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--ink-muted) 85%, transparent);
+    /* soft halo in the page colour so the number survives on top of a bright,
+       fully-opaque preview (the Ising field) as well as on the dark ones */
+    text-shadow: 0 0 7px color-mix(in srgb, var(--paper) 80%, transparent);
+    transition: color 0.2s ease;
   }
 
-  .lab-card:hover .lab-thumb-frame::after {
-    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent 55%);
-    opacity: 1;
-  }
-
-  .lab-card-body {
-    padding: 0.9rem 1.1rem 1.05rem;
-  }
-
-  .lab-card-head {
-    display: flex;
-    align-items: baseline;
-    gap: 0.8rem;
-  }
-
-  .lab-card-no {
-    font-size: 0.75rem;
-    color: var(--ink-muted);
-  }
-
-  .lab-card-tag {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+  .lab-tile:hover .lab-tile-no,
+  .lab-tile:focus-visible .lab-tile-no {
     color: var(--accent);
+  }
+
+  /* Frosted glass strip rather than a flat scrim — same material language as the
+     rest of the site, and it lets the artwork stay legible behind the label. */
+  .lab-tile-caption {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.08rem;
+    padding: 0.5rem 0.6rem 0.55rem;
+    background: color-mix(in srgb, var(--paper) 52%, transparent);
+    /* Standard property ONLY: writing the -webkit- alias alongside it makes
+       lightningcss collapse the pair down to the prefixed form, which Chromium
+       does not implement — the frost then silently disappears in production. */
+    backdrop-filter: blur(16px) saturate(150%);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 10%, transparent);
+    opacity: 0;
+    transform: translateY(7px);
+    transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .lab-tile:hover .lab-tile-caption,
+  .lab-tile:focus-visible .lab-tile-caption {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Without the frost, a 52% tint is not enough to keep the label readable over
+     a bright preview — lean on opacity instead. */
+  @supports not (backdrop-filter: blur(1px)) {
+    .lab-tile-caption {
+      background: color-mix(in srgb, var(--paper) 88%, transparent);
+    }
+  }
+
+  /* Hierarchy carried by size and weight, not by a loud colour: the tag is a
+     desaturated emerald whisper, the name does the talking. */
+  .lab-tile-tag {
+    font-size: 0.54rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 72%, var(--ink-muted));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .lab-card-title {
-    margin-top: 0.35rem;
-    font-size: 1.15rem;
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--ink);
-  }
-
-  .lab-card:hover .lab-card-title {
-    text-decoration: underline;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 0.35em;
-    text-decoration-color: var(--accent);
-  }
-
-  .lab-card-desc {
-    margin-top: 0.35rem;
+  .lab-tile-title {
     font-size: 0.85rem;
-    line-height: 1.7;
-    color: var(--ink-secondary);
+    font-weight: 500;
+    line-height: 1.28;
+    letter-spacing: 0.01em;
+    color: var(--ink);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* No hover on touch, so the caption is permanent — trimmed to the name alone
+     so a 125px cell still shows the artwork it is labelling. */
+  @media (hover: none) {
+    .lab-tile-caption {
+      opacity: 1;
+      transform: none;
+      gap: 0;
+      padding: 0.34rem 0.4rem 0.38rem;
+      backdrop-filter: blur(12px) saturate(140%);
+    }
+    .lab-tile-tag {
+      display: none;
+    }
+    .lab-tile-title {
+      font-size: 0.68rem;
+      line-height: 1.25;
+      -webkit-line-clamp: 1;
+    }
   }
 </style>

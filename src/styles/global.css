@@ -340,12 +340,12 @@ a {
 /* Governing equations are now typeset with KaTeX via the <Formula> component
    (see src/components/Formula.astro, class .lab-eq). */
 
-/* Living preview on the lab index tiles (framed by .lab-thumb-frame) */
+/* Living preview on the lab index tiles — square cells, Instagram-style */
 .lab-thumb {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
 }
 
 /* ——— Details ——— */
