@@ -3,25 +3,59 @@ name: Generate PDFs
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "public/pdf/**"
-      - "dist/**"
-      # The résumé PDFs render the resume pages only — the in-browser "/ask"
-      # feature never affects them, so don't burn a PDF run (and a regenerate
-      # commit) on ask-only changes.
-      - "src/lib/ask/**"
-      - "src/components/AskPage.astro"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: generate-pdfs-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  generate:
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      generate: ${{ steps.filter.outputs.generate }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check PDF inputs
+        id: filter
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          # Keep this check running for every main push so a required workflow
+          # check can complete even when the PDF job is skipped.
+          if ! git rev-parse --verify "${BEFORE}^{commit}" >/dev/null 2>&1; then
+            echo "generate=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          generate=false
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              astro.config.mjs|package.json|bun.lock|\
+              scripts/generate-static-pdfs.mjs|scripts/sync-doc-assets.mjs|\
+              src/data/profile/profile.ts|src/data/profile/types.ts|src/data/profile/validate.ts|\
+              src/lib/docs/career.ts|src/lib/docs/career-html.ts|src/lib/docs/career-markdown.ts|\
+              src/lib/docs/fonts-css.ts|src/lib/docs/html.ts|src/lib/docs/markdown-css.ts|\
+              src/lib/docs/rirekisho.ts|src/pages/ja/pdf/*|src/pages/en/pdf/*|\
+              docs/履歴書/images/*|public/docs/履歴書/images/*|public/fonts/*)
+                generate=true
+                break
+                ;;
+            esac
+          done < <(git diff --name-only -z "$BEFORE" "$GITHUB_SHA")
+          echo "generate=$generate" >> "$GITHUB_OUTPUT"
+
+  generate:
+    needs: changes
+    if: needs.changes.outputs.generate == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
         with:
@@ -58,4 +92,3 @@ jobs:
           else
             echo "No PDF changes."
           fi
-
