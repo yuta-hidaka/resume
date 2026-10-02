@@ -36,7 +36,7 @@ jobs:
           generate=false
           while IFS= read -r -d '' file; do
             case "$file" in
-              astro.config.mjs|package.json|bun.lock|\
+              .github/workflows/generate-pdfs.yml|astro.config.mjs|package.json|bun.lock|\
               scripts/generate-static-pdfs.mjs|scripts/sync-doc-assets.mjs|\
               src/data/profile/profile.ts|src/data/profile/types.ts|src/data/profile/validate.ts|\
               src/lib/docs/career.ts|src/lib/docs/career-html.ts|src/lib/docs/career-markdown.ts|\
