@@ -56,12 +56,8 @@ async function waitForServer(url, timeoutMs = 60_000) {
 }
 
 function startPreviewServer(port) {
-  // Use bun if available (project uses bun), but fall back to npm.
-  const useBun = fs.existsSync(path.join(ROOT, 'bun.lockb'));
-  const cmd = useBun ? 'bun' : 'npm';
-  const args = useBun
-    ? ['run', 'preview', '--', '--host', '127.0.0.1', '--port', String(port)]
-    : ['run', 'preview', '--', '--host', '127.0.0.1', '--port', String(port)];
+  const cmd = 'bun';
+  const args = ['run', 'preview', '--host', '127.0.0.1', '--port', String(port)];
 
   const child = spawn(cmd, args, {
     cwd: ROOT,

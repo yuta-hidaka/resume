@@ -18,14 +18,14 @@ unverifiable claim.
 
 | Command | Action |
 | :-- | :-- |
-| `npm run dev` | Dev server (`localhost:4321`) |
-| `npm run build` | Production build → `./dist/` |
-| `npm run preview` | Preview the production build |
-| `npm run generate:pdf` | Regenerate the résumé PDFs (puppeteer → `public/pdf/`) |
+| `bun run dev` | Dev server (`localhost:4321`) |
+| `bun run build` | Production build → `./dist/` |
+| `bun run preview` | Preview the production build |
+| `bun run generate:pdf` | Regenerate the résumé PDFs (puppeteer → `public/pdf/`) |
 | `bun test src` | Run the test suite (Ask AI + résumé data validation) |
 
 > **Do not add `vitest`.** It hoists a second `vite@5` that shadows Astro 7's
-> `vite@8` and breaks `npm run build` (`createIdResolver is not a function`).
+> `vite@8` and breaks `bun run build` (`createIdResolver is not a function`).
 > The `/ask` tests use `bun test` (Jest-compatible `bun:test`). Recover a broken
 > lockfile with `bun install`.
 
