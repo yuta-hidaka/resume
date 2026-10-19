@@ -15,7 +15,7 @@
 - 職務経歴書（ja HTML）/ CV（en HTML） — `src/lib/docs/career-html.ts`
 - テキスト版レジュメ（ja/en Markdown） — `src/lib/docs/career-markdown.ts`
 - 履歴書（JIS準拠・2ページ固定） — `src/lib/docs/rirekisho.ts`
-- PDF — 上記ページを `npm run generate:pdf`（CI: generate-pdfs.yml）で印刷
+- PDF — 上記ページを `bun run generate:pdf`（CI: generate-pdfs.yml）で印刷
 
 事実（日付・数値・タグ）は言語共通で1回だけ持ち、文章のみ `{ja, en}` で持つ。
 `validate.ts` が時系列・在籍期間の整合性をimport時に検証するので、矛盾した
@@ -35,7 +35,7 @@
 
 1. `src/data/profile/profile.ts` を更新する
 2. `bun test src` と `bun run build` が通ることを確認する（データ整合性もここで検証される）
-3. レイアウトに影響する変更なら `npm run generate:pdf` 後にPDF各ページがA4に収まっているか確認する
+3. レイアウトに影響する変更なら `bun run generate:pdf` 後にPDF各ページがA4に収まっているか確認する
 3. コミット・プッシュする
 4. **yuta.dev の全ページをブラウザで確認する**（日本語・英語の各ページ）:
    - `/ja/` — 日本語トップ

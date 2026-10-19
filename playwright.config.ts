@@ -46,7 +46,7 @@ export default defineConfig({
   // Build the site and serve the production output (dist) — the same artifact
   // that ships — then run the suite against it.
   webServer: {
-    command: `npm run build && npm run preview -- --port ${PORT}`,
+    command: `bun run build && bun run preview -- --port ${PORT}`,
     url: baseURL,
     timeout: 120_000,
     reuseExistingServer: !process.env.CI,

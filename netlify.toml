@@ -1,8 +1,9 @@
 [build]
-  command = "npm run build"
+  command = "bun run build"
   publish = "dist"
 
 [build.environment]
+  BUN_VERSION = "1.4.2"
   NODE_VERSION = "24"
   NPM_VERSION = "10"
   NETLIFY_NEXT_PLUGIN_SKIP = "true"

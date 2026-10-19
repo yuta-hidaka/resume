@@ -1,12 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build)",
-      "Bash(npm run preview)",
-      "Bash(npm run dev)"
+      "Bash(bun run build)",
+      "Bash(bun run preview)",
+      "Bash(bun run dev)"
     ],
     "ask": [
-      "Bash(npm run generate:pdf)",
+      "Bash(bun run generate:pdf)",
       "Bash(*migration*)",
       "Bash(rm -rf*)",
       "Bash(git push --force*)",

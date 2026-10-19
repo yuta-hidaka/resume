@@ -9,7 +9,7 @@ import { test, expect, type Page } from '@playwright/test';
  * changes don't churn every page's baseline.
  *
  * Baselines are platform-specific (macOS here). Regenerate with:
- *   npm run test:e2e:update
+ *   bun run test:e2e:update
  */
 
 const PAGES = [
