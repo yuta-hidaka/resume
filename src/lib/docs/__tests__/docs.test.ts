@@ -10,7 +10,8 @@ import { toHtmlDocument } from '../html';
 describe('buildCareerDoc', () => {
   test('companies are newest-first and derive periods from the canonical timeline', () => {
     const doc = buildCareerDoc('ja');
-    expect(doc.companies[0].header).toBe('SUPER STUDIO / Backend Engineer（2025-07 〜 現在）');
+    expect(doc.companies[0].header).toBe('UPSIDER / Software Engineer（2026-10 〜 現在）');
+    expect(doc.companies[1].header).toBe('SUPER STUDIO / Backend Engineer（2025-07 〜 2026-09）');
     expect(doc.companies.at(-1)!.header).toBe('住友化学 / 研究開発（2012-04 〜 2018-03）');
   });
 
@@ -25,7 +26,7 @@ describe('buildCareerDoc', () => {
 
   test('block meta omits the period when it matches the company period', () => {
     const doc = buildCareerDoc('ja');
-    const ss = doc.companies[0];
+    const ss = doc.companies.find((c) => c.header.startsWith('SUPER STUDIO'))!;
     expect(ss.blocks[0].meta).toBe('');
     const kitera = doc.companies.find((c) => c.header.startsWith('KiteRa'))!;
     expect(kitera.blocks[0].meta).not.toContain('2021');

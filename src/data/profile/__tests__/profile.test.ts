@@ -74,8 +74,11 @@ describe('deriveData', () => {
 
   test('current role has an empty endDate (legacy shape)', () => {
     const current = deriveData('ja').experience?.[0];
-    expect(current?.company).toBe('SUPER STUDIO');
+    expect(current?.company).toBe('UPSIDER');
+    expect(current?.startDate).toBe('2026-10-01');
     expect(current?.endDate).toBe('');
+    const former = deriveData('ja').experience?.find((e) => e.company === 'SUPER STUDIO');
+    expect(former?.endDate).toBe('2026-09-30');
   });
 
   test('entries without bullets/team omit those keys entirely', () => {
