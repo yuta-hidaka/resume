@@ -10,6 +10,7 @@ describe('coreProfile', () => {
   });
   it('carries the real current employer and companies', () => {
     const core = coreProfile('en');
+    expect(core).toContain('UPSIDER');
     expect(core).toContain('SUPER STUDIO');
     expect(core.toLowerCase()).toContain('go');
   });
@@ -31,7 +32,8 @@ describe('factChunks', () => {
     expect(certs.text).toContain('普通自動車免許 (2012)');
     const timeline = ja.find((c) => c.id === 'timeline')!;
     expect(timeline.text).toContain('住友化学 (2012-04–2018-03)');
-    expect(timeline.text).toContain('SUPER STUDIO (2025-07–現在)');
+    expect(timeline.text).toContain('UPSIDER (2026-10–現在)');
+    expect(timeline.text).toContain('SUPER STUDIO (2025-07–2026-09)');
     const en = factChunks('en');
     expect(en.find((c) => c.id === 'certs')!.text).toContain('Boiler Operator');
     expect(en.some((c) => c.id.startsWith('hl') && c.text.includes('1,600+'))).toBe(true);

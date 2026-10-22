@@ -24,8 +24,8 @@ export const profile: Profile = {
     gender: "男",
     profession: "Full Stack Developer / Tech Lead",
     bio: {
-      ja: `Go・TypeScriptを軸としたバックエンド/フルスタックエンジニア。高トラフィックシステムの設計・運用（数千RPS）、AWS/GCPでのクラウドインフラ構築、Kafka・Sparkを用いたイベント駆動アーキテクチャを得意とする。テックリードとしてベトナム16名のチームマネジメント、新規チーム立ち上げ、サーバーレス最適化によるインフラコスト30%削減など技術とビジネスの両面で貢献。化学メーカーでの研究開発を経て2018年にエンジニアへ転身、現在はSUPER STUDIOにてバックエンドエンジニアとして従事。`,
-      en: `Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in designing and operating high-traffic systems (thousands of RPS), building cloud infrastructure on AWS/GCP, and implementing event-driven architectures with Kafka and Spark. As a tech lead, managed a 16-member overseas team, launched a new cross-functional team, and reduced infrastructure costs by 30% through serverless optimization — contributing on both technical and business fronts. Transitioned to software engineering in 2018 after six years of R&D at a chemical manufacturer; currently working as a backend engineer at SUPER STUDIO.`,
+      ja: `Go・TypeScriptを軸としたバックエンド/フルスタックエンジニア。高トラフィックシステムの設計・運用（数千RPS）、AWS/GCPでのクラウドインフラ構築、Kafka・Sparkを用いたイベント駆動アーキテクチャを得意とする。テックリードとしてベトナム16名のチームマネジメント、新規チーム立ち上げ、サーバーレス最適化によるインフラコスト30%削減など技術とビジネスの両面で貢献。化学メーカーでの研究開発を経て2018年にエンジニアへ転身、現在はUPSIDERにてソフトウェアエンジニアとして従事。`,
+      en: `Backend/Full-stack engineer specializing in Go and TypeScript. Experienced in designing and operating high-traffic systems (thousands of RPS), building cloud infrastructure on AWS/GCP, and implementing event-driven architectures with Kafka and Spark. As a tech lead, managed a 16-member overseas team, launched a new cross-functional team, and reduced infrastructure costs by 30% through serverless optimization — contributing on both technical and business fronts. Transitioned to software engineering in 2018 after six years of R&D at a chemical manufacturer; currently working as a software engineer at UPSIDER.`,
     },
     address: { ja: "東京・渋谷", en: "Shibuya, Tokyo" },
     photo: "/docs/履歴書/images/image1.jpg",
@@ -131,16 +131,37 @@ export const profile: Profile = {
       role: "Backend Engineer",
       techStack: ["Go", "Next.js", "Kafka", "Spark", "Trino", "Iceberg", "Parquet", "Kubernetes", "ArgoCD", "k9s"],
       joinDate: "2025-07-01",
+      leaveDate: "2026-09-30",
+    },
+    {
+      id: "upsider",
+      name: "UPSIDER",
+      legalName: "株式会社UPSIDER",
+      kind: "employment",
+      role: "Software Engineer",
+      joinDate: "2026-10-01",
       leaveDate: null,
     },
   ],
   // Newest first (site display order).
   projects: [
     {
+      companyId: "upsider",
+      jobTitle: "Software Engineer",
+      startDate: "2026-10-01",
+      endDate: null,
+      tags: [],
+      job: { ja: "ソフトウェア開発", en: "Software Engineering" },
+      jobDescription: {
+        ja: "2026年10月よりUPSIDERにソフトウェアエンジニアとして入社。",
+        en: "Joined UPSIDER as a software engineer in October 2026.",
+      },
+    },
+    {
       companyId: "super-studio",
       jobTitle: "Backend Engineer",
       startDate: "2025-07-01",
-      endDate: null,
+      endDate: "2026-09-30",
       tags: [
         "Golang",
         "NextJS",
