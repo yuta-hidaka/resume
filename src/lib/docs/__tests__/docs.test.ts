@@ -15,6 +15,17 @@ describe('buildCareerDoc', () => {
     expect(doc.companies.at(-1)!.header).toBe('住友化学 / 研究開発（2012-04 〜 2018-03）');
   });
 
+  test('UPSIDER App Infra work appears in both languages and career documents', () => {
+    const ja = buildCareerDoc('ja').companies[0];
+    const en = buildCareerDoc('en').companies[0];
+    expect(ja.blocks[0].heading).toContain('App Infra');
+    expect(ja.blocks[0].bullets.join(' ')).toContain('銀行連携基盤');
+    expect(en.blocks[0].heading).toContain('Banking Integration');
+    expect(en.blocks[0].bullets.join(' ')).toContain('App Infra');
+    expect(renderCareerMarkdown('ja')).toContain('銀行連携基盤');
+    expect(renderCareerHtml('en').bodyHtml).toContain('Banking Integration');
+  });
+
   test('project blocks carry curated bullets in both languages', () => {
     for (const lang of ['ja', 'en'] as const) {
       const doc = buildCareerDoc(lang);

@@ -151,10 +151,17 @@ export const profile: Profile = {
       startDate: "2026-10-01",
       endDate: null,
       tags: [],
-      job: { ja: "ソフトウェア開発", en: "Software Engineering" },
+      job: { ja: "App Infraチーム / 銀行連携基盤", en: "App Infra Team / Banking Integration" },
       jobDescription: {
-        ja: "2026年10月よりUPSIDERにソフトウェアエンジニアとして入社。",
-        en: "Joined UPSIDER as a software engineer in October 2026.",
+        ja: "2026年10月よりUPSIDERのApp Infraチームにソフトウェアエンジニアとして所属。銀行連携基盤の開発を担当。",
+        en: "Joined UPSIDER in October 2026 as a Software Engineer on the App Infra team, working on banking integration infrastructure.",
+      },
+      detail: {
+        heading: { ja: "App Infraチーム / 銀行連携基盤", en: "App Infra Team / Banking Integration Infrastructure" },
+        bullets: {
+          ja: ["銀行連携基盤の開発を担当。"],
+          en: ["Developing banking integration infrastructure as part of the App Infra team."],
+        },
       },
     },
     {
